@@ -1,6 +1,8 @@
 import Head from 'next/head';
 
-const Page = ({ title, children }) => {
+const Page = ({ title, children, layoutProvider }) => {
+	const layoutedChild = layoutProvider ? layoutProvider(children) : children;
+
 	return (
 		<div>
 			<Head>
@@ -19,7 +21,7 @@ const Page = ({ title, children }) => {
 				<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 			</Head>
 			<div>
-				{children()}
+				{layoutedChild()}
 			</div>
 		</div>
 	);
