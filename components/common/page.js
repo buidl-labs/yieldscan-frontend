@@ -1,7 +1,14 @@
 import Head from 'next/head';
+import PolkadotApiContext from '@lib/contexts/polkadot-api';
+import createPolkadotAPIInstance from '@lib/polkadot-api';
+import { useState } from 'react';
 
 const Page = ({ title, children, layoutProvider }) => {
 	const layoutedChild = layoutProvider ? layoutProvider(children) : children;
+
+	// ensure only single api-instance is created in whole lifetime of this container
+	const [apiInstance, setApiInstance] = useState(); 
+	createPolkadotAPIInstance().then(setApiInstance);
 
 	return (
 		<div>
@@ -20,9 +27,11 @@ const Page = ({ title, children, layoutProvider }) => {
 				<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
 				<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 			</Head>
-			<div>
-				{layoutedChild()}
-			</div>
+			<PolkadotApiContext.Provider value={{ apiInstance }}>
+				<div>
+					{layoutedChild()}
+				</div>
+			</PolkadotApiContext.Provider>
 		</div>
 	);
 };
