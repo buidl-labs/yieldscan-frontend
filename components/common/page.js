@@ -1,14 +1,20 @@
 import Head from 'next/head';
+import { useState, useEffect } from 'react';
 import PolkadotApiContext from '@lib/contexts/polkadot-api';
 import createPolkadotAPIInstance from '@lib/polkadot-api';
-import { useState } from 'react';
+import getPolkadotExtensionInfo from '@lib/polkadot-extension';
+import PolkadotExtensionContext from '@lib/contexts/polkadot-extension';
 
 const Page = ({ title, children, layoutProvider }) => {
 	const layoutedChild = layoutProvider ? layoutProvider(children) : children;
-
-	// ensure only single api-instance is created in whole lifetime of this container
 	const [apiInstance, setApiInstance] = useState(); 
-	createPolkadotAPIInstance().then(setApiInstance);
+	const [polkadotExtensionInfo, setPolkadotExtensionInfo] = useState();
+
+	useEffect(() => {
+		// ensure only single api-instance is created in whole lifetime of this container
+		createPolkadotAPIInstance().then(setApiInstance);
+		getPolkadotExtensionInfo().then(setPolkadotExtensionInfo);
+	}, []);
 
 	return (
 		<div>
@@ -28,9 +34,11 @@ const Page = ({ title, children, layoutProvider }) => {
 				<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 			</Head>
 			<PolkadotApiContext.Provider value={{ apiInstance }}>
-				<div>
-					{layoutedChild()}
-				</div>
+				<PolkadotExtensionContext.Provider value={{ ...polkadotExtensionInfo }}>
+					<div>
+						{layoutedChild()}
+					</div>
+				</PolkadotExtensionContext.Provider>
 			</PolkadotApiContext.Provider>
 		</div>
 	);

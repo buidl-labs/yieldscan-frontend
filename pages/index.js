@@ -1,9 +1,14 @@
 import dynamic from 'next/dynamic';
-import Page from '@components/common/page';
 import withDashboardLayout from '@components/common/layouts/dashboard';
 
+const Page = dynamic(
+  () => import('@components/common/page').then(mod => mod.default),
+  { ssr: false },
+);
+
 const HomeComponent = dynamic(
-  () => import('@components/home').then(mod => mod.default)
+  () => import('@components/home').then(mod => mod.default),
+  { ssr: false },
 );
 
 const HomePage = () => (
