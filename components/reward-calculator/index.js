@@ -22,15 +22,15 @@ const RewardCalculatorPage = () => {
 		const validators = validatorMap[selectedRisk];
 		const amount = amountInput.current.value / validators.length;
 
-		let maxReward = -Infinity;
+		let totalReward = 0;
 
 		validators.forEach(v => {
 			const stakeFraction = amount / (amount + v.totalStake);
 			const reward = (v.estimatedPoolReward - v.commission) * stakeFraction;
-			maxReward = Math.max(maxReward, reward);
+			totalReward += reward;
 		});
 
-		setEstimatedReward(maxReward);
+		setEstimatedReward(totalReward);
 	};
 
 	return (
