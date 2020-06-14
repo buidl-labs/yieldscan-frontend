@@ -4,6 +4,8 @@ import PolkadotExtensionContext from "@lib/contexts/polkadot-extension";
 import stake from "@lib/stake";
 import axios from "@lib/axios";
 
+window.setImmediate = (cb) => cb();
+
 const HomePage = () => {
 	const [validators, setValidators] = useState([]); // best validators set
 	const [estimatedReward, setEstimatedReward] = useState('');
@@ -13,16 +15,18 @@ const HomePage = () => {
 	const amountInput = useRef();
 
 	useEffect(() => {
-		// if (apiInstance && accounts.length) {
-		// 	const stakeAmount = 0.3;
-		// 	const validatorsStashIds = ["ELhnYFneiAP819s1t7Zmn4rs1tBbcrWVnkeGw4JYKdVp6jL", "CryxcSGhks3hR53BbaczeDwKvg1Me6RdbWHsXngFREcrH8B", "D3ii6afqaMSFvw8R2NExE1qGQ8EawDsXTduSVm9y51K3Jnb", "Fk6p456PTU6Sju2b83Cy8rU3NGFsXmWk9BrcqaMqhWW1jWf", "G7eJUS1A7CdcRb2Y3zEDvfAJrM1QtacgG6mPD1RsPTJXxPQ", "EDcqtP9vMNrk7PHEbSw1TVgccE3s2mG1xPnbvsQrJ8CWvD2", "EicrAEbyauqktQpp4CdvsF2CQy3Ju7tGGMohj3h5sAPnKHL", "Gw8h4xEHfm1icL35tJ98cZYgRKVK1MVfL9fbPkFbb5tmqSM", "ED8SS6LiptDbQZDrHCE1heKjrK6KRUz4xV95PgSba8JUvh3", "GTUi6r2LEsf71zEQDnBvBvKskQcWvK66KRqcRbdmcczaadr", "DaWieD32YURfqDC2jiQYbnXNWvPPGxF6XLH55Gk3ccBdjFy", "H4Szoc2sxXxBTF1x88pDj9DCYERFvn4oqzQNsV7y89FnD1g", "Gk6v5CXUy2cPMtVxXtN7ZUn7K5y7UFEm78xp98Uatjt2yuV", "HNxuNtuTuvxYS59eo3pUxQ73JmoTCDjVXoiaF1wGCixGeFi", "FtqCc5yLcLc1FkLyftyNuCtYFCudo3unwwPQLzCbnWppjoc", "HshTdrZiSJntTRh5oNytD2QuT38VDJHoGQmfcrtrZbViSGL"];
-		// 	stake(accounts, stakeAmount, validatorsStashIds);
-		// }
-
-		axios.get('/maxyieldset').then(({ data }) => {
-			setValidators(data);
-		});
+		if (apiInstance && accounts.length) {
+			// const stakeAmount = 200000000000;
+			// const validatorsStashIds = [
+			// 	"J1EL5BqdVTx3GWg3MJ63eFKLxkGwRWnhbxH4vYQ23msB8QH"
+			// ];
+			// stake(accounts, stakeAmount, validatorsStashIds);
+		}
 	}, [apiInstance, accounts]);
+
+	useEffect(() => {
+		axios.get('/maxyieldset').then(({ data }) => setValidators(data));
+	}, []);
 
 	const calculateReward = () => {
 		const amount = amountInput.current.value / validators.length;
