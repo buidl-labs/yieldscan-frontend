@@ -1,11 +1,11 @@
+import Header from '@components/common/header';
+
 const withDashboardLayout = (children) => {
 	return () => (
 		<div>
-			<div className="flex w-full justify-between root-container">
-				<div className="dashboard-content">
-					<h5 className="text-xl m-10 font-thin">Dashboard stuff</h5>
-					{children()}
-				</div>
+			<Header />
+			<div className="dashboard-content">
+				{children()}
 			</div>
 			<style jsx>{`
 				.root-container {

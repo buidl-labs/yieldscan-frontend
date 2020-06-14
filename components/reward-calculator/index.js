@@ -9,13 +9,13 @@ const RewardCalculatorPage = () => {
 	const amountInput = useRef();
 
 	useEffect(() => {
-		axios.get('/yieldwithrisk').then(({ data }) => {
-			setValidatorMap({
-				low: data[0].lowriskset,
-				med: data[1].medriskset,
-				high: data[2].highriskset,
-			});
-		});
+		// axios.get('/yieldwithrisk').then(({ data }) => {
+		// 	setValidatorMap({
+		// 		low: data[0].lowriskset,
+		// 		med: data[1].medriskset,
+		// 		high: data[2].highriskset,
+		// 	});
+		// });
 	}, []);
 
 	const calculateReward = () => {
@@ -34,7 +34,7 @@ const RewardCalculatorPage = () => {
 	};
 
 	return (
-		<div className="m-10">
+		<div className="bg-gray-300 m-10">
 			<h1 className="text-5xl text-black font-black">
 				Welcome to YieldScan!
 			</h1>
