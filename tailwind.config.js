@@ -1,5 +1,5 @@
 // tailwind.config.js
-const { colors } = require('tailwindcss/defaultTheme');
+const { colors, borderRadius } = require('tailwindcss/defaultTheme');
 
 module.exports = {
   theme: {
@@ -21,7 +21,11 @@ module.exports = {
           ...colors.orange,
           '500': '#F5B100',
         },
-      }
+      },
+      borderRadius: {
+        ...borderRadius,
+        'xl': '1rem',
+      },
     }
   },
   variants: {},
