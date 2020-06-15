@@ -25,10 +25,7 @@ const Page = ({ title, children, layoutProvider }) => {
 					rel="stylesheet"
 					href="https://cdn.jsdelivr.net/npm/font-proxima-nova@1.0.1/style.css"
 				/>
-				<link
-					rel="stylesheet"
-					href="https://cdn.rawgit.com/mfd/f3d96ec7f0e8f034cc22ea73b3797b59/raw/856f1dbb8d807aabceb80b6d4f94b464df461b3e/gotham.css"
-				/>
+				<link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
 				<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 				<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
 				<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
