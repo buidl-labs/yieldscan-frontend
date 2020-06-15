@@ -17,6 +17,10 @@ module.exports = {
           '500': '#FF7CAB',
           '700': '#EF6093',
         },
+        orange: {
+          ...colors.orange,
+          '500': '#F5B100',
+        },
       }
     }
   },

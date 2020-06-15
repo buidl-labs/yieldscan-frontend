@@ -1,5 +1,75 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "@lib/axios";
+import { ChevronDown } from "react-feather";
+
+const AmountInput = () => {
+	return (
+		<div className="flex items-center justify-between p-2 py-1 rounded-full border border-gray-300 w-2/3">
+			<div className="flex flex-col ml-6">
+				<input type="number" value={3000} className="w-24 text-2xl p-0 outline-none" />
+				<h6 className="text-gray-600 text-sm">$1500</h6>
+			</div>
+			<div className="flex-center">
+				<div className="bg-gray-800 px-6 py-3 text-white rounded-full">
+					<div className="flex items-center relative cursor-pointer">
+						<span className="mr-8">KSM</span>
+						<ChevronDown className="absolute right-0" />
+					</div>
+				</div>
+			</div>
+			<style jsx>{`
+				/* hides number input controls */
+				input[type=number]::-webkit-inner-spin-button, 
+				input[type=number]::-webkit-outer-spin-button { 
+					-webkit-appearance: none; 
+					margin: 0; 
+				}
+			`}</style>
+		</div>
+	);
+};
+
+const RiskSelect = ({ selected = 'Low' }) => {
+	const options = ['Low', 'Medium', 'High'];
+	return (
+		<div className="flex rounded-full border border-gray-300 py-2 px-2 w-2/3">
+			{options.map(option => (
+				<span key={option} className={`
+					w-1/3 font-semibold py-4 flex-center rounded-full cursor-pointer
+					${selected === option ? 'bg-orange-500 text-white' : 'text-gray-600'}
+				`}>
+					{option}
+				</span>
+			))}
+		</div>
+	);
+};
+
+const TimePeriodInput = () => {
+	return (
+		<div className="flex items-center justify-between p-2 rounded-full border border-gray-300 w-2/3">
+			<div className="ml-6">
+				<input type="number" value={6} className="w-24 text-2xl p-0 outline-none" />
+			</div>
+			<div className="flex-center">
+				<div className="bg-gray-800 px-6 py-3 text-white rounded-full">
+					<div className="flex items-center relative cursor-pointer">
+						<span className="mr-8">Months</span>
+						<ChevronDown className="absolute right-0" />
+					</div>
+				</div>
+			</div>
+			<style jsx>{`
+				/* hides number input controls */
+				input[type=number]::-webkit-inner-spin-button, 
+				input[type=number]::-webkit-outer-spin-button { 
+					-webkit-appearance: none; 
+					margin: 0; 
+				}
+			`}</style>
+		</div>
+	);
+};
 
 const RewardCalculatorPage = () => {
 	const [validatorMap, setValidatorMap] = useState({}); // map with low/med/high risk sets
@@ -34,38 +104,27 @@ const RewardCalculatorPage = () => {
 	};
 
 	return (
-		<div className="bg-gray-100 px-10">
-			<h1 className="text-5xl text-black font-black">
-				Welcome to YieldScan!
-			</h1>
-			<div className="mt-10 shadow p-5">
-				<div>
-					<input type="number" className="mr-5 p-1" placeholder="Staked Amount" ref={amountInput} />
-					<button className="hover:text-white hover:bg-black p-2 rounded transition duration-200" onClick={calculateReward}>
-						Show me estimated reward
-					</button>
-				</div>
-				<div>
-					<select value={selectedRisk} onChange={ev => setSelectedRisk(ev.target.value)}>
-						<option value="low">low</option>
-						<option value="med">med</option>
-						<option value="high">high</option>
-					</select>
-				</div>
-				<div className="text-2xl font-black text-gray-600 mt-6" hidden={estimatedReward === ''}>
-					You earn {estimatedReward} KSM with {selectedRisk} risk 💸
+		<div className="flex px-24 pt-12">
+			<div className="w-1/2">
+				<h1 className="font-semibold text-3xl text-gray-800">Calculate Returns</h1>
+				<div className="mt-10 mx-2">
+					<h3 className="text-2xl text-gray-700">Staking Amount</h3>
+					<div className="mt-6">
+						<AmountInput />
+					</div>
+					<h3 className="text-2xl mt-10 text-gray-700">Risk Preference</h3>
+					<div className="mt-6">
+						<RiskSelect />
+					</div>
+					<h3 className="text-2xl mt-10 text-gray-700">Time Period</h3>
+					<div className="mt-6">
+						<TimePeriodInput />
+					</div>
 				</div>
 			</div>
-			{estimatedReward && (
-				<div className="mt-5 shadow p-10">
-					<h3 className="text-gray-600 font-thin text-2xl">Validator List</h3>
-					{validatorMap[selectedRisk].map(validator => (
-						<div key={validator.name}>
-							<span>{validator.name}</span>
-						</div>
-					))}
-				</div>
-			)}
+			<div className="w-1/2">
+				
+			</div>
 		</div>
 	);
 };
