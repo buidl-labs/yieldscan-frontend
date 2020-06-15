@@ -1,5 +1,4 @@
 import dynamic from 'next/dynamic';
-import withDashboardLayout from '@components/common/layouts/dashboard';
 
 const Page = dynamic(
   () => import('@components/common/page').then(mod => mod.default),
@@ -12,7 +11,7 @@ const HomeComponent = dynamic(
 );
 
 const HomePage = () => (
-  <Page title="Home" layoutProvider={withDashboardLayout}>
+  <Page title="Home">
     {() => <HomeComponent />}
   </Page>
 );
