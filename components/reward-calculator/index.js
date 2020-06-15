@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "@lib/axios";
-import { ChevronDown, HelpCircle } from "react-feather";
+import { ChevronDown, HelpCircle, Edit2 } from "react-feather";
 
 const AmountInput = () => {
 	return (
@@ -83,7 +83,7 @@ const ResultCardInsight = ({ label, value, supportValue }) => (
 );
 
 const ExpectedReturnsCard = () => (
-	<div className="rounded-xl bg-teal-500 text-white px-10 py-6">
+	<div className="rounded-xl bg-teal-500 text-white px-8 py-6">
 		<h1 className="font-semibold text-2xl">Expected Returns</h1>
 		<div className="flex flex-wrap mt-2">
 			<ResultCardInsight
@@ -106,6 +106,39 @@ const ExpectedReturnsCard = () => (
 		</button>
 	</div>
 );
+
+const ValidatorInfo = () => (
+	<div className="rounded-lg flex items-center border border-gray-200 px-4 py-2 mb-2">
+		<img src="http://placehold.it/255" className="rounded-full w-16 h-16 mr-4" />
+		<div className="flex flex-col items-start">
+			<h3 className="text-gray-700 text-xl">Validator Name</h3>
+			<span className="text-gray-500 text-sm">Risk Score 0.12</span>
+		</div>
+		<div className="flex flex-col ml-auto">
+			<span className="text-red-400">Amount</span>
+			<h5 className="text-gray-700 text-lg">30 KSM</h5>
+			<span className="text-gray-500 text-sm">$15</span>
+		</div>
+	</div>
+);
+
+const SelectedValidators = () => {
+	return (
+		<div className="rounded-xl border border-gray-200 px-8 py-6 mt-4">
+			<div className="flex items-center justify-between">
+				<h1 className="font-semibold text-gray-700 text-2xl">Suggested Validators</h1>
+				<Edit2 size="1.5rem" />
+			</div>
+			<div className="mt-4 overflow-auto h-64">
+				<ValidatorInfo />
+				<ValidatorInfo />
+				<ValidatorInfo />
+				<ValidatorInfo />
+				<ValidatorInfo />
+			</div>
+		</div>
+	);
+};
 
 const RewardCalculatorPage = () => {
 	const [validatorMap, setValidatorMap] = useState({}); // map with low/med/high risk sets
@@ -160,6 +193,7 @@ const RewardCalculatorPage = () => {
 			</div>
 			<div className="w-1/2">
 				<ExpectedReturnsCard />
+				<SelectedValidators />
 			</div>
 		</div>
 	);
