@@ -1,14 +1,14 @@
-import { Home, UserCheck, Users, Sliders, Globe } from 'react-feather';
+import { Home, UserCheck, Users, Sliders, Globe, Info } from 'react-feather';
 
-const MenuOption = ({ children, Icon, selected = false }) => {
+const MenuOption = ({ label, Icon, selected = false }) => {
 	return (
 		<div className={`rounded-full mx-1 px-5 py-1 mb-2 ${selected && 'teal-500-light py-2'}`}>
 			<button className={`
 				flex-center font-light text-xl
 				${selected ? 'text-teal-500' : 'text-gray-600'}
 			`}>
-				<Icon size="1.25rem" className="mr-2 mb-px" />
-				<span>{children}</span>
+				<Icon size="1.125rem" className="mr-2 mb-px" />
+				<span>{label}</span>
 			</button>
 			<style jsx>{`
 				.teal-500-light {
@@ -21,12 +21,28 @@ const MenuOption = ({ children, Icon, selected = false }) => {
 
 const SideMenu = () => {
 	return (
-		<div className="px-4 mt-10">
-			<MenuOption Icon={Home} selected>Overview</MenuOption>
-			<MenuOption Icon={Sliders}>Calculator</MenuOption>
-			<MenuOption Icon={UserCheck}>Validators</MenuOption>
-			<MenuOption Icon={Users}>Nominators</MenuOption>
-			<MenuOption Icon={Globe}>Governance</MenuOption>
+		<div className="px-4">
+			<MenuOption
+				label="Overview"
+				Icon={Home}
+			/>
+			<MenuOption
+				label="Calculator"
+				Icon={Sliders}
+				selected
+			/>
+			<MenuOption
+				label="Validators"
+				Icon={UserCheck}
+			/>
+			<MenuOption
+				label="Nominators"
+				Icon={Users}
+			/>
+			<MenuOption
+				label="Governance"
+				Icon={Globe}
+			/>
 		</div>
 	);
 };

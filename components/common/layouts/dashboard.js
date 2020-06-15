@@ -6,7 +6,7 @@ const withDashboardLayout = (children) => {
 		<div>
 			<Header />
 			<div className="dashboard-content flex">
-				<div className="h-full sidemenu-container">
+				<div className="h-full relative sidemenu-container py-10">
 					<SideMenu />
 				</div>
 				<div className="h-full core-content">
