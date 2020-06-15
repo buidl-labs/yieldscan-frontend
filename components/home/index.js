@@ -17,15 +17,14 @@ const HomePage = () => {
 	useEffect(() => {
 		if (apiInstance && accounts.length) {
 			// const stakeAmount = 200000000000;
-			// const validatorsStashIds = [
-			// 	"J1EL5BqdVTx3GWg3MJ63eFKLxkGwRWnhbxH4vYQ23msB8QH"
-			// ];
-			// stake(accounts, stakeAmount, validatorsStashIds);
+			const stakeAmount = 0.003 * (10 ** 12);
+			const validatorsStashIds = [];
+			stake(accounts, stakeAmount, validatorsStashIds);
 		}
 	}, [apiInstance, accounts]);
 
 	useEffect(() => {
-		axios.get('/maxyieldset').then(({ data }) => setValidators(data));
+		// axios.get('/maxyieldset').then(({ data }) => setValidators(data));
 	}, []);
 
 	const calculateReward = () => {
