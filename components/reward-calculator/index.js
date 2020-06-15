@@ -34,7 +34,7 @@ const RewardCalculatorPage = () => {
 	};
 
 	return (
-		<div className="bg-gray-300 m-10">
+		<div className="bg-gray-100 px-10">
 			<h1 className="text-5xl text-black font-black">
 				Welcome to YieldScan!
 			</h1>
