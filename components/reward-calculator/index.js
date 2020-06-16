@@ -6,8 +6,10 @@ import ValidatorsList from "./ValidatorsList";
 import TimePeriodInput from "./TimePeriodInput";
 import ExpectedReturnsCard from "./ExpectedReturnsCard";
 import CompoundRewardSlider from "./CompoundRewardSlider";
+import { WalletConnectPopover, useWalletConnect } from "@components/wallet-connect";
 
 const RewardCalculatorPage = () => {
+	const toggle = useWalletConnect(state => state.toggle);
 	const [amount, setAmount] = useState();
 	const [compounding, setCompounding] = useState(true);
 	const [validatorMap, setValidatorMap] = useState({}); // map with low/med/high risk sets
@@ -41,6 +43,7 @@ const RewardCalculatorPage = () => {
 
 	return (
 		<div className="flex px-24 pt-12">
+			<WalletConnectPopover />
 			<div className="w-1/2">
 				<h1 className="font-semibold text-3xl text-gray-800">Calculate Returns</h1>
 				<div className="mt-10 mx-2">
@@ -71,7 +74,9 @@ const RewardCalculatorPage = () => {
 				</div>
 			</div>
 			<div className="w-1/2">
-				<ExpectedReturnsCard />
+				<ExpectedReturnsCard
+					onWalletConnectClick={toggle}
+				/>
 				<ValidatorsList />
 			</div>
 		</div>

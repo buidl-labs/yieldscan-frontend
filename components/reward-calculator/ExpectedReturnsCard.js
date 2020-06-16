@@ -11,7 +11,7 @@ const ResultCardInsight = ({ label, value, supportValue }) => (
 	</div>
 );
 
-const ExpectedReturnsCard = () => (
+const ExpectedReturnsCard = ({ onWalletConnectClick }) => (
 	<div className="rounded-xl bg-teal-500 text-white px-8 py-6">
 		<h1 className="font-semibold text-2xl">Expected Returns</h1>
 		<div className="flex flex-wrap mt-2">
@@ -30,7 +30,10 @@ const ExpectedReturnsCard = () => (
 				value="5.46%"
 			/>
 		</div>
-		<button className="rounded-full font-semibold bg-white text-teal-500 text-lg mt-5 px-8 py-3">
+		<button
+			className="rounded-full font-semibold bg-white text-teal-500 text-lg mt-5 px-8 py-3"
+			onClick={onWalletConnectClick}
+		>
 			Connect Wallet to Stake
 		</button>
 	</div>
