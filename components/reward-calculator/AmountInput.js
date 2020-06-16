@@ -5,7 +5,7 @@ const AmountInput = ({ value, dollarValue, onChange }) => {
 				<input
 					type="number"
 					value={value}
-					placeholder="Amount"
+					placeholder="0"
 					onChange={e => onChange(e.target.value)}
 					className="w-24 text-2xl p-0 outline-none"
 				/>

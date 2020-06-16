@@ -45,7 +45,7 @@ const RewardCalculatorPage = () => {
 				<h1 className="font-semibold text-3xl text-gray-800">Calculate Returns</h1>
 				<div className="mt-10 mx-2">
 					<h3 className="text-2xl text-gray-700">Staking Amount</h3>
-					<div className="mt-6">
+					<div className="mt-3">
 						<AmountInput
 							value={amount}
 							dollarValue={!!amount ? amount * 2 : 0}
@@ -53,16 +53,16 @@ const RewardCalculatorPage = () => {
 						/>
 					</div>
 					<h3 className="text-2xl mt-10 text-gray-700">Risk Preference</h3>
-					<div className="mt-6">
+					<div className="mt-3">
 						<RiskSelect />
 					</div>
 					<h3 className="text-2xl mt-10 text-gray-700">Time Period</h3>
-					<div className="mt-6">
+					<div className="mt-3">
 						<TimePeriodInput />
 					</div>
 					<h3 className="text-2xl mt-10 text-gray-700">Compound Rewards</h3>
 					<span className="text-sm text-gray-500">Your rewards will be locked for staking over the specified time period</span>
-					<div className="mt-6">
+					<div className="mt-3">
 						<CompoundRewardSlider
 							checked={compounding}
 							setChecked={setCompounding}
