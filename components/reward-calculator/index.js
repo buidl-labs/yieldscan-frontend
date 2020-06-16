@@ -12,6 +12,8 @@ const RewardCalculatorPage = () => {
 	const { isOpen, toggle } = useWalletConnect();
 	const [amount, setAmount] = useState();
 	const [compounding, setCompounding] = useState(true);
+	const [timePeriodValue, setTimePeriod] = useState();
+	const [timePeriodUnit, setTimePeriodUnit] = useState('months');
 	const [validatorMap, setValidatorMap] = useState({}); // map with low/med/high risk sets
 	const [estimatedReward, setEstimatedReward] = useState('');
 	const [selectedRisk, setSelectedRisk] = useState('low');
@@ -61,7 +63,12 @@ const RewardCalculatorPage = () => {
 					</div>
 					<h3 className="text-2xl mt-10 text-gray-700">Time Period</h3>
 					<div className="mt-3">
-						<TimePeriodInput />
+						<TimePeriodInput
+							value={timePeriodValue}
+							unit={timePeriodUnit}
+							onChange={setTimePeriod}
+							onUnitChange={setTimePeriodUnit}
+						/>
 					</div>
 					<h3 className="text-2xl mt-10 text-gray-700">Compound Rewards</h3>
 					<span className="text-sm text-gray-500">Your rewards will be locked for staking over the specified time period</span>
