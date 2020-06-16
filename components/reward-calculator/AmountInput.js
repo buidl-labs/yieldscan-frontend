@@ -1,5 +1,3 @@
-import { ChevronDown } from "react-feather";
-
 const AmountInput = () => {
 	return (
 		<div className="flex items-center justify-between p-2 py-1 rounded-full border border-gray-300 w-2/3">
@@ -8,10 +6,9 @@ const AmountInput = () => {
 				<h6 className="text-gray-600 text-sm">$1500</h6>
 			</div>
 			<div className="flex-center">
-				<div className="bg-gray-800 px-6 py-3 text-white rounded-full">
+				<div className="bg-gray-800 px-10 py-3 text-white rounded-full">
 					<div className="flex items-center relative cursor-pointer">
-						<span className="mr-8">KSM</span>
-						<ChevronDown className="absolute right-0" />
+						<span>KSM</span>
 					</div>
 				</div>
 			</div>

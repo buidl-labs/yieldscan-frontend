@@ -1,4 +1,4 @@
-import { ChevronDown } from "react-feather";
+import { Select } from "@chakra-ui/core";
 
 const TimePeriodInput = () => {
 	return (
@@ -7,12 +7,20 @@ const TimePeriodInput = () => {
 				<input type="number" value={6} className="w-24 text-2xl p-0 outline-none" />
 			</div>
 			<div className="flex-center">
-				<div className="bg-gray-800 px-6 py-3 text-white rounded-full">
-					<div className="flex items-center relative cursor-pointer">
-						<span className="mr-8">Months</span>
-						<ChevronDown className="absolute right-0" />
-					</div>
-				</div>
+				<Select
+					backgroundColor="gray.800"
+					rounded="full"
+					color="white"
+					pl="2rem"
+					width="8.5rem"
+					fontSize="1.125rem"
+					cursor="pointer"
+					height="3rem"
+				>
+					<option value="eras">Eras</option>
+					<option value="days">Days</option>
+					<option value="months" selected>Months</option>
+				</Select>
 			</div>
 			<style jsx>{`
 				/* hides number input controls */
