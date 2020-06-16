@@ -22,7 +22,8 @@
     "next": "9.4.4",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-feather": "^2.0.8"
+    "react-feather": "^2.0.8",
+    "zustand": "^2.2.3"
   },
   "devDependencies": {
     "git-cz": "^4.6.2",
