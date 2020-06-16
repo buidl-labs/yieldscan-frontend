@@ -1,11 +1,15 @@
 import { Edit2 } from "react-feather";
+import RiskTag from "./RiskTag";
 
 const ValidatorInfo = () => (
 	<div className="rounded-lg flex items-center border border-gray-200 px-4 py-2 mb-2">
 		<img src="http://placehold.it/255" className="rounded-full w-16 h-16 mr-4" />
 		<div className="flex flex-col items-start">
 			<h3 className="text-gray-700 text-xl">Validator Name</h3>
-			<span className="text-gray-500 text-sm">Risk Score 0.12</span>
+			<span className="flex text-gray-500 text-sm">
+				Risk Score
+				<RiskTag risk={Number(Math.random().toFixed(2))} />
+			</span>
 		</div>
 		<div className="flex flex-col ml-auto">
 			<span className="text-red-400">Amount</span>
