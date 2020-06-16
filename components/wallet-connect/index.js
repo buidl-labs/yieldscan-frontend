@@ -1,11 +1,12 @@
 import { Modal, ModalBody, ModalOverlay, ModalContent, ModalCloseButton } from '@chakra-ui/core';
 import { create } from 'zustand';
+import withSlideIn from '@components/common/withSlideIn';
 
 const [useWalletConnect] = create(set => ({
-	isOpen: true,
+	isOpen: false,
 	toggle: () => set(state => ({ isOpen: !state.isOpen })),
-	close: () => set(state => ({ isOpen: false })),
-	open: () => set(state => ({ isOpen: true })),
+	close: () => set(() => ({ isOpen: false })),
+	open: () => set(() => ({ isOpen: true })),
 }));
 
 const IntroPage = () => (
@@ -19,19 +20,19 @@ const IntroPage = () => (
 	</div>
 );
 
-const WalletConnectPopover = () => {
-	const { isOpen, close } = useWalletConnect();
+const WalletConnectPopover = withSlideIn(({ styles }) => {
+	const { close } = useWalletConnect();
 	return (
-		<Modal isOpen={isOpen} onClose={close} isCentered>
+		<Modal isOpen={true} onClose={close} isCentered>
 			<ModalOverlay />
-			<ModalContent rounded="lg" maxWidth="33rem">
-				<ModalCloseButton />
+			<ModalContent rounded="lg" maxWidth="33rem" {...styles}>
+				<ModalCloseButton onClick={close} />
 				<ModalBody>
 					<IntroPage />
 				</ModalBody>
 			</ModalContent>
 		</Modal>
 	);
-};
+});
 
 export { WalletConnectPopover, useWalletConnect };
