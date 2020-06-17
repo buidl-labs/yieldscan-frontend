@@ -6,5 +6,6 @@
 			"@layouts/*": ["layouts/*"],
 			"@components/*": ["components/*"],
 		}
-	}
+	},
+	"exclude": ["node_modules/"]
 }
