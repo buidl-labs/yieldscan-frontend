@@ -1,14 +1,55 @@
-const WalletConnected = () => (
-	<div className="mx-10 my-10 flex flex-col text-center items-center">
-		<img src="images/polkadot-wallet-connect-success.png" width="100px" />
-		<h3 className="mt-4 px-5 text-2xl">Cheers, your wallet is successfully connected.</h3>
-		<h3 className="mt-10 text-2xl font-semibold">Import your account</h3>
-		<span className="mt-1 px-4 text-sm text-gray-500">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</span>
-		<div className="mt-16 flex justify-end">
-			<button className="px-6 py-3 mr-4 bg-white text-teal-500 rounded-lg border border-teal-500">Create an account</button>
-			<button className="px-12 py-3 bg-teal-500 text-white rounded-lg">Proceed</button>
+import { useState } from "react";
+import { CheckCircle, Circle } from "react-feather";
+
+const WalletConnected = ({ accounts, onStashSelected }) => {
+	const [selectedAccount, setSelected] = useState();
+	return (
+		<div className="mx-10 my-10 flex flex-col items-center">
+			<img src="images/polkadot-wallet-connect-success.png" width="100px" />
+			<h3 className="mt-4 px-5 text-2xl text-center">Cheers, your wallet is successfully connected.</h3>
+			<div className="mt-8 py-3 px-4 rounded-lg">
+				<h3 className="text-gray-600 mb-2">As a final step, please select stash account:</h3>
+				<div className="mt-1 overflow-y-scroll text-sm accounts-container">
+					{accounts.map(account => (
+						<div
+							key={account.address}
+							className={`
+								flex items-center rounded-lg border-2 border-teal-500 cursor-pointer px-3 py-2 mb-2
+								${selectedAccount === account ? 'text-white bg-teal-500' : 'text-gray-600'}
+							`}
+							onClick={() => setSelected(account)}
+						>
+							{selectedAccount === account ? (
+								<CheckCircle className="mr-2" />
+							) : (
+								<Circle className="mr-2" />
+							)}
+							<div className="flex flex-col">
+								<span>{account.meta.name}</span>
+								<p>{account.address}</p>
+							</div>
+						</div>
+					))}
+				</div>
+			</div>
+			<div className="mt-6 flex justify-end">
+				<button
+					className={`
+						px-12 py-3 text-white rounded-lg
+						${selectedAccount ? 'bg-teal-500' : 'bg-gray-400 cursor-not-allowed'}
+					`}
+					onClick={() => onStashSelected(selectedAccount)}
+				>
+					Proceed
+				</button>
+			</div>
+			<style jsx>{`
+				.accounts-container {
+					height: 12.75rem;
+				}
+			`}</style>
 		</div>
-	</div>
-);
+	);
+};
 
 export default WalletConnected;

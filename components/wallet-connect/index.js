@@ -8,6 +8,7 @@ import CreateWallet from './CreateWallet';
 import ImportAccount from './ImportAccount';
 import WalletConnected from './WalletConnected';
 import WalletDisclaimer from './WalletDisclaimer';
+import getPolkadotExtensionInfo from '@lib/polkadot-extension';
 
 const [useWalletConnect] = create(set => ({
 	isOpen: false,
@@ -26,7 +27,27 @@ const WalletConnectStates = {
 
 const WalletConnectPopover = withSlideIn(({ styles }) => {
 	const { close } = useWalletConnect();
+	const [accounts, setAccounts] = useState([]);
 	const [state, setState] = useState(WalletConnectStates.INTRO);
+
+	const onConnected = () => {
+		getPolkadotExtensionInfo().then(({ isExtensionAvailable, accounts = [] }) => {
+			if (!isExtensionAvailable) throw new Error('Extension not available.');
+			if (!accounts.length) throw new Error('No Accounts found.');
+
+			setState(WalletConnectStates.CONNECTED);
+			setAccounts(accounts);
+			console.log(accounts)
+		}).catch(error => {
+			// TODO: handle error properly using UI toast
+			alert(error);
+		});
+	};
+
+	const onStashSelected = (stashAccount) => {
+		// save to global store and localstorage (for debugging) and close the modal
+		console.log(stashAccount);
+	};
 
 	return (
 		<Modal isOpen={true} onClose={close} isCentered>
@@ -34,9 +55,9 @@ const WalletConnectPopover = withSlideIn(({ styles }) => {
 			<ModalContent rounded="lg" maxWidth="33rem" height="42rem" {...styles}>
 				<ModalHeader>
 					{[
-							WalletConnectStates.DISCLAIMER,
-							WalletConnectStates.CREATE,
-							WalletConnectStates.IMPORT
+						WalletConnectStates.DISCLAIMER,
+						WalletConnectStates.CREATE,
+						WalletConnectStates.IMPORT
 					].includes(state) && (
 						<div
 							className="text-sm flex-center px-2 py-1 text-gray-700 bg-gray-200 rounded-xl w-40 font-normal cursor-pointer"
@@ -52,11 +73,16 @@ const WalletConnectPopover = withSlideIn(({ styles }) => {
 					<div>
 						{state === WalletConnectStates.INTRO && (
 							<IntroPage
-								onConnected={() => setState(WalletConnectStates.CONNECTED)}
+								onConnected={onConnected}
 								onDisclaimer={() => setState(WalletConnectStates.DISCLAIMER)}
 							/>
 						)}
-						{state === WalletConnectStates.CONNECTED && <WalletConnected />}
+						{state === WalletConnectStates.CONNECTED && (
+							<WalletConnected
+								accounts={accounts}
+								onStashSelected={onStashSelected}
+							/>
+						)}
 						{state === WalletConnectStates.DISCLAIMER && (
 							<WalletDisclaimer
 								onCreate={() => setState(WalletConnectStates.CREATE)}
