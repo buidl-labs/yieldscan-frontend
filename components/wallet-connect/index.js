@@ -5,6 +5,7 @@ import { Modal, ModalBody, ModalOverlay, ModalContent, ModalCloseButton, Button,
 import withSlideIn from '@components/common/withSlideIn';
 import IntroPage from './Intro';
 import CreateWallet from './CreateWallet';
+import ImportAccount from './ImportAccount';
 import WalletConnected from './WalletConnected';
 import WalletDisclaimer from './WalletDisclaimer';
 
@@ -20,6 +21,7 @@ const WalletConnectStates = {
 	CONNECTED: 'connected',
 	DISCLAIMER: 'disclaimer',
 	CREATE: 'create',
+	IMPORT: 'import',
 };
 
 const WalletConnectPopover = withSlideIn(({ styles }) => {
@@ -33,7 +35,8 @@ const WalletConnectPopover = withSlideIn(({ styles }) => {
 				<ModalHeader>
 					{[
 							WalletConnectStates.DISCLAIMER,
-							WalletConnectStates.CREATE
+							WalletConnectStates.CREATE,
+							WalletConnectStates.IMPORT
 					].includes(state) && (
 						<div
 							className="text-sm flex-center px-2 py-1 text-gray-700 bg-gray-200 rounded-xl w-40 font-normal cursor-pointer"
@@ -62,6 +65,13 @@ const WalletConnectPopover = withSlideIn(({ styles }) => {
 						{state === WalletConnectStates.CREATE && (
 							<CreateWallet
 								onPrevious={() => setState(WalletConnectStates.DISCLAIMER)}
+								onNext={() => setState(WalletConnectStates.IMPORT)}
+							/>
+						)}
+						{state === WalletConnectStates.IMPORT && (
+							<ImportAccount
+								onPrevious={() => setState(WalletConnectStates.CREATE)}
+								onNext={() => setState(WalletConnectStates.CONNECTED)}
 							/>
 						)}
 					</div>

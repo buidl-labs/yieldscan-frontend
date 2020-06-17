@@ -8,7 +8,7 @@ const MenuOption = ({ label, Icon, selected = false }) => {
 				${selected ? 'text-teal-500' : 'text-gray-600'}
 			`}>
 				<Icon size="1.125rem" className="mr-2 mb-px" />
-				<span>{label}</span>
+				<span className="font-semibold">{label}</span>
 			</button>
 			<style jsx>{`
 				.teal-500-light {

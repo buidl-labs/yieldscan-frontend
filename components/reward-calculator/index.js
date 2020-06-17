@@ -40,6 +40,8 @@ const RewardCalculatorPage = () => {
 			totalReward += reward;
 		});
 
+		// TODO: take `timePeriod` into account
+		// `totalReward` is for the next era ONLY
 		setEstimatedReward(totalReward);
 	};
 
