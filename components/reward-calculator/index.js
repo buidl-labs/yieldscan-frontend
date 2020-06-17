@@ -54,13 +54,13 @@ const RewardCalculatorPage = () => {
 		}
 
 		const returns = Number((totalReward * timePeriodInEras).toFixed(4));
-		console.log(returns, risk);
-
+		const yieldPercentage = Number(((((amount + returns) / amount) - 1) * 100).toFixed(2));
 		setResult({
 			returns: {
 				currency: returns,
 				subCurrency: await convertCurrency(returns),
 			},
+			yieldPercentage,
 		});
 	};
 

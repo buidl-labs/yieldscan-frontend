@@ -40,7 +40,8 @@ const ExpectedReturnsCard = ({
 			/>
 			<ResultCardInsight
 				label="Estimated Yield"
-				value="5.46%"
+				value={`${result.yieldPercentage}%`}
+				emptyState={!result.yieldPercentage}
 			/>
 		</div>
 		<div className="flex justify-between">
