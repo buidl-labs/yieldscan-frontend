@@ -10,26 +10,29 @@ import { WalletConnectPopover, useWalletConnect } from "@components/wallet-conne
 
 const RewardCalculatorPage = () => {
 	const { isOpen, toggle } = useWalletConnect();
+
 	const [amount, setAmount] = useState();
-	const [compounding, setCompounding] = useState(true);
+	const [risk, setRisk] = useState('Low');
 	const [timePeriodValue, setTimePeriod] = useState();
 	const [timePeriodUnit, setTimePeriodUnit] = useState('months');
+	const [compounding, setCompounding] = useState(true);
+
 	const [validatorMap, setValidatorMap] = useState({}); // map with low/med/high risk sets
 	const [estimatedReward, setEstimatedReward] = useState('');
-	const [selectedRisk, setSelectedRisk] = useState('low');
 
 	useEffect(() => {
-		// axios.get('/yieldwithrisk').then(({ data }) => {
-		// 	setValidatorMap({
-		// 		low: data[0].lowriskset,
-		// 		med: data[1].medriskset,
-		// 		high: data[2].highriskset,
-		// 	});
-		// });
+		axios.get('/rewards/risk-set').then(({ data }) => {
+			setValidatorMap({
+				Low: data[0].lowriskset,
+				Med: data[1].medriskset,
+				High: data[2].highriskset,
+				total: data[3].totalset,
+			});
+		});
 	}, []);
 
 	const calculateReward = () => {
-		const validators = validatorMap[selectedRisk];
+		const validators = validatorMap[risk];
 		const amount = amountInput.current.value / validators.length;
 
 		let totalReward = 0;
@@ -42,7 +45,16 @@ const RewardCalculatorPage = () => {
 
 		// TODO: take `timePeriod` into account
 		// `totalReward` is for the next era ONLY
-		setEstimatedReward(totalReward);
+		const timePeriodInEras = timePeriodValue;
+		if (timePeriodUnit === 'months') {
+			// TODO: don't consider each month as 30 days
+			timePeriodInEras *= timePeriodValue * 30 * 4; // 4 eras / day, 30 days / months
+		} else if (timePeriodUnit === 'days') {
+			timePeriodInEras *= timePeriodValue * 4;
+		}
+
+		console.log(totalReward, timePeriodValue);
+		setEstimatedReward(totalReward * timePeriodInEras);
 	};
 
 	return (
@@ -61,7 +73,10 @@ const RewardCalculatorPage = () => {
 					</div>
 					<h3 className="text-2xl mt-10 text-gray-700">Risk Preference</h3>
 					<div className="mt-3">
-						<RiskSelect />
+						<RiskSelect
+							selected={risk}
+							setSelected={setRisk}
+						/>
 					</div>
 					<h3 className="text-2xl mt-10 text-gray-700">Time Period</h3>
 					<div className="mt-3">
