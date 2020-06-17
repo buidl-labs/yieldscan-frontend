@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Modal, ModalBody, ModalOverlay, ModalContent, ModalCloseButton, Button } from '@chakra-ui/core';
+import { Modal, ModalBody, ModalOverlay, ModalContent, ModalCloseButton, Button, ModalHeader } from '@chakra-ui/core';
 import { create } from 'zustand';
 import withSlideIn from '@components/common/withSlideIn';
+import { ChevronLeft } from 'react-feather';
 
 const [useWalletConnect] = create(set => ({
 	isOpen: true,
@@ -10,13 +11,13 @@ const [useWalletConnect] = create(set => ({
 	open: () => set(() => ({ isOpen: true })),
 }));
 
-const IntroPage = ({ onConnected }) => (
+const IntroPage = ({ onConnected, onDisclaimer }) => (
 	<>
 		<img src="images/polkadot-wallet-connect.png" width="200px" />
 		<h3 className="mt-4 text-2xl">Connect to the PolkaJS Wallet to Stake your KSM Tokens</h3>
 		<span className="mt-1 px-4 text-sm text-gray-500">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</span>
 		<button className="mt-8 px-24 py-4 bg-teal-500 text-white rounded-lg" onClick={onConnected}>Connect my wallet</button>
-		<button className="mt-2 px-12 py-4 bg-white text-teal-500 rounded-lg border border-teal-500">Create a wallet for my account</button>
+		<button className="mt-2 px-12 py-4 bg-white text-teal-500 rounded-lg border border-teal-500" onClick={onDisclaimer}>Create a wallet for my account</button>
 		<a href="#" className="mt-8 text-gray-500">How can I obtain KSM tokens?</a>
 	</>
 );
@@ -34,9 +35,19 @@ const WalletConnected = () => (
 	</>
 );
 
+const WalletDisclaimer = () => (
+	<>
+		<img src="images/polkadot-wallet-connect-info.png" width="120px" />
+		<h3 className="mt-4 px-5 text-xl">Ensure that you have an account with KSM tokens that can be connect to the PolkaJS Wallet.</h3>
+		<button className="mt-10 px-24 py-3 bg-teal-500 text-white rounded-lg">Yes, Proceed</button>
+		<button className="mt-4 px-4 py-3 bg-white text-teal-500 rounded-lg border border-teal-500 mb-12">No, how can I obtain KSM tokens?</button>
+	</>
+);
+
 const WalletConnectStates = {
 	INTRO: 'intro',
 	CONNECTED: 'connected',
+	DISCLAIMER: 'disclaimer',
 };
 
 const WalletConnectPopover = withSlideIn(({ styles }) => {
@@ -47,13 +58,28 @@ const WalletConnectPopover = withSlideIn(({ styles }) => {
 		<Modal isOpen={true} onClose={close} isCentered>
 			<ModalOverlay />
 			<ModalContent rounded="lg" maxWidth="33rem" {...styles}>
+				<ModalHeader>
+					{state === WalletConnectStates.DISCLAIMER && (
+						<div
+							className="text-sm flex-center px-2 py-1 text-gray-700 bg-gray-200 rounded-xl w-40 font-normal cursor-pointer"
+							onClick={() => setState(WalletConnectStates.INTRO)}
+						>
+							<ChevronLeft />
+							<span>Wallet Connect</span>
+						</div>
+					)}
+				</ModalHeader>
 				<ModalCloseButton onClick={close} />
 				<ModalBody>
-					<div className="mx-10 my-10 flex flex-col text-center items-center root">
+					<div className="mx-10 my-10 flex flex-col text-center items-center">
 						{state === WalletConnectStates.INTRO && (
-							<IntroPage onConnected={() => setState(WalletConnectStates.CONNECTED)} />
+							<IntroPage
+								onConnected={() => setState(WalletConnectStates.CONNECTED)}
+								onDisclaimer={() => setState(WalletConnectStates.DISCLAIMER)}
+							/>
 						)}
 						{state === WalletConnectStates.CONNECTED && <WalletConnected />}
+						{state === WalletConnectStates.DISCLAIMER && <WalletDisclaimer />}
 					</div>
 				</ModalBody>
 			</ModalContent>
