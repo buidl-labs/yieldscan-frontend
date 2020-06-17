@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "@lib/axios";
+import convertCurrency from "@lib/convert-currency";
 import RiskSelect from "./RiskSelect";
 import AmountInput from "./AmountInput";
 import ValidatorsList from "./ValidatorsList";
@@ -18,7 +19,7 @@ const RewardCalculatorPage = () => {
 	const [compounding, setCompounding] = useState(true);
 
 	const [validatorMap, setValidatorMap] = useState({}); // map with low/med/high risk sets
-	const [estimatedReward, setEstimatedReward] = useState('');
+	const [result, setResult] = useState({});
 
 	useEffect(() => {
 		axios.get('/rewards/risk-set').then(({ data }) => {
@@ -31,7 +32,7 @@ const RewardCalculatorPage = () => {
 		});
 	}, []);
 
-	const calculateReward = () => {
+	const calculateReward = async () => {
 		const validators = validatorMap[risk];
 		const amountPerValidator = Number(amount) / validators.length;
 
@@ -52,7 +53,15 @@ const RewardCalculatorPage = () => {
 			timePeriodInEras = timePeriodValue * 4;
 		}
 
-		setEstimatedReward(totalReward * timePeriodInEras);
+		const returns = Number((totalReward * timePeriodInEras).toFixed(4));
+		console.log(returns, risk);
+
+		setResult({
+			returns: {
+				currency: returns,
+				subCurrency: await convertCurrency(returns),
+			},
+		});
 	};
 
 	return (
@@ -100,6 +109,7 @@ const RewardCalculatorPage = () => {
 					calculate={calculateReward}
 					calculationDisabled={!amount || !timePeriodValue}
 					onWalletConnectClick={toggle}
+					result={result}
 				/>
 				<ValidatorsList />
 			</div>

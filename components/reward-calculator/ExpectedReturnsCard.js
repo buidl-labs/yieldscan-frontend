@@ -1,28 +1,41 @@
+import { get } from 'lodash';
 import { HelpCircle } from "react-feather";
 
-const ResultCardInsight = ({ label, value, supportValue }) => (
+const ResultCardInsight = ({ label, value, supportValue, emptyState }) => (
 	<div className="mt-2 mr-10">
 		<div className="flex-center">
 			<span className="opacity-75 mr-1">{label}</span>
 			<HelpCircle size="1rem" cursor="pointer" strokeOpacity="0.75" />
 		</div>
-		<h3 className="text-2xl">{value}</h3>
-		<span className="text-sm">{supportValue}</span>
+		{emptyState ? (
+			<h3 className="text-center text-2xl">?</h3>
+		) : (
+			<>
+				<h3 className="text-2xl">{value}</h3>
+				<span className="text-sm">{supportValue}</span>
+			</>
+		)}
 	</div>
 );
 
-const ExpectedReturnsCard = ({ calculate, calculationDisabled, onWalletConnectClick }) => (
+const ExpectedReturnsCard = ({
+	calculate,
+	calculationDisabled,
+	onWalletConnectClick,
+	result
+}) => (
 	<div className="rounded-xl bg-teal-500 text-white px-8 py-6">
 		<h1 className="font-semibold text-2xl">Expected Returns</h1>
 		<div className="flex flex-wrap mt-2">
 			<ResultCardInsight
 				label="Estimated Returns"
-				value="100 KSM"
-				supportValue="$50"
+				value={`${get(result, 'returns.currency')} KSM`}
+				supportValue={`$${get(result, 'returns.subCurrency')}`}
+				emptyState={!result.returns}
 			/>
 			<ResultCardInsight
 				label="Estimated Portfolio Value"
-				value="1000 KSM"
+				value={`1000 KSM`}
 				supportValue="$500"
 			/>
 			<ResultCardInsight
