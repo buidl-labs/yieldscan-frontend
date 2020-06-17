@@ -6,9 +6,8 @@ const TimePeriodInput = ({ value, unit, onChange, onUnitChange }) => {
 			<div className="ml-6">
 				<input
 					type="number"
-					value={value}
 					placeholder="0"
-					onChange={ev => onChange(ev.target.value)}
+					onChange={ev => onChange(Number(ev.target.value))}
 					className="w-24 text-2xl p-0 outline-none"
 				/>
 			</div>

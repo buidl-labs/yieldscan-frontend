@@ -4,9 +4,8 @@ const AmountInput = ({ value, dollarValue, onChange }) => {
 			<div className="flex flex-col ml-6">
 				<input
 					type="number"
-					value={value}
 					placeholder="0"
-					onChange={e => onChange(e.target.value)}
+					onChange={e => onChange(Number(e.target.value))}
 					className="w-24 text-2xl p-0 outline-none"
 				/>
 				<h6 className="text-gray-600 text-sm">${dollarValue}</h6>
