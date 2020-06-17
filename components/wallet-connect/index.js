@@ -9,6 +9,7 @@ import ImportAccount from './ImportAccount';
 import WalletConnected from './WalletConnected';
 import WalletDisclaimer from './WalletDisclaimer';
 import getPolkadotExtensionInfo from '@lib/polkadot-extension';
+import { useAccounts } from '@lib/store';
 
 const [useWalletConnect] = create(set => ({
 	isOpen: false,
@@ -26,8 +27,8 @@ const WalletConnectStates = {
 };
 
 const WalletConnectPopover = withSlideIn(({ styles }) => {
+	const { accounts, setAccounts, setStashAccount } = useAccounts();
 	const { close } = useWalletConnect();
-	const [accounts, setAccounts] = useState([]);
 	const [state, setState] = useState(WalletConnectStates.INTRO);
 
 	const onConnected = () => {
@@ -37,7 +38,6 @@ const WalletConnectPopover = withSlideIn(({ styles }) => {
 
 			setState(WalletConnectStates.CONNECTED);
 			setAccounts(accounts);
-			console.log(accounts)
 		}).catch(error => {
 			// TODO: handle error properly using UI toast
 			alert(error);
@@ -46,7 +46,8 @@ const WalletConnectPopover = withSlideIn(({ styles }) => {
 
 	const onStashSelected = (stashAccount) => {
 		// save to global store and localstorage (for debugging) and close the modal
-		console.log(stashAccount);
+		setStashAccount(stashAccount);
+		close();
 	};
 
 	return (

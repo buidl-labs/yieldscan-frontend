@@ -1,6 +1,5 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import PolkadotApiContext from "@lib/contexts/polkadot-api";
-import PolkadotExtensionContext from "@lib/contexts/polkadot-extension";
 import stake from "@lib/stake";
 import axios from "@lib/axios";
 
