@@ -1,5 +1,5 @@
 // tailwind.config.js
-const { colors, borderRadius } = require('tailwindcss/defaultTheme');
+const { colors, borderRadius, maxWidth } = require('tailwindcss/defaultTheme');
 
 module.exports = {
   theme: {
@@ -25,6 +25,11 @@ module.exports = {
       borderRadius: {
         ...borderRadius,
         'xl': '1rem',
+      },
+      maxWidth: {
+        ...maxWidth,
+        'xs': '16rem',
+        'xxs': '12rem',
       },
     }
   },
