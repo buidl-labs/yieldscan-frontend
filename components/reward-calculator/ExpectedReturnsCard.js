@@ -19,10 +19,12 @@ const ResultCardInsight = ({ label, value, supportValue, emptyState }) => (
 );
 
 const ExpectedReturnsCard = ({
+	result,
 	calculate,
+	stashAccount,
 	calculationDisabled,
 	onWalletConnectClick,
-	result
+	onPayment,
 }) => (
 	<div className="rounded-xl bg-teal-500 text-white px-8 py-6">
 		<h1 className="font-semibold text-2xl">Expected Returns</h1>
@@ -44,10 +46,10 @@ const ExpectedReturnsCard = ({
 				emptyState={!result.yieldPercentage}
 			/>
 		</div>
-		<div className="flex justify-between">
+		<div className="flex justify-end">
 			<button
 				className={`
-					rounded-full font-semibold text-lg mt-5 px-8 py-3
+					rounded-full font-semibold text-lg mt-5 px-8 py-3 mr-4
 					${calculationDisabled ? 'opacity-75 cursor-not-allowed bg-gray-400 text-white' : 'bg-white text-teal-500'}
 				`}
 				disabled={calculationDisabled}
@@ -56,10 +58,14 @@ const ExpectedReturnsCard = ({
 				Calculate
 			</button>
 			<button
-				className="rounded-full font-semibold bg-white text-teal-500 text-lg mt-5 px-8 py-3"
-				onClick={onWalletConnectClick}
+				className={`
+					rounded-full font-semibold text-lg mt-5 px-8 py-3
+					${stashAccount && calculationDisabled ? 'opacity-75 cursor-not-allowed bg-gray-400 text-white' : 'bg-white text-teal-500'}
+				`}
+				disabled={stashAccount && calculationDisabled}
+				onClick={() => stashAccount ? onPayment() : onWalletConnectClick()}
 			>
-				Connect Wallet to Stake
+				{stashAccount ? 'Stake' : 'Connect Wallet to Stake'}
 			</button>
 		</div>
 	</div>

@@ -8,8 +8,10 @@ import TimePeriodInput from "./TimePeriodInput";
 import ExpectedReturnsCard from "./ExpectedReturnsCard";
 import CompoundRewardSlider from "./CompoundRewardSlider";
 import { WalletConnectPopover, useWalletConnect } from "@components/wallet-connect";
+import { useAccounts } from "@lib/store";
 
 const RewardCalculatorPage = () => {
+	const { stashAccount } = useAccounts();
 	const { isOpen, toggle } = useWalletConnect();
 
 	const [amount, setAmount] = useState();
@@ -43,7 +45,6 @@ const RewardCalculatorPage = () => {
 			totalReward += reward;
 		});
 
-		// TODO: take `timePeriod` into account
 		// `totalReward` is for the next era ONLY
 		let timePeriodInEras = Number(timePeriodValue);
 		if (timePeriodUnit === 'months') {
@@ -64,6 +65,10 @@ const RewardCalculatorPage = () => {
 		});
 	};
 
+	const onPayment = () => {
+		console.log('redirect user to payments page');
+	};
+	
 	return (
 		<div className="flex px-24 pt-12">
 			<WalletConnectPopover isOpen={isOpen} />
@@ -106,10 +111,12 @@ const RewardCalculatorPage = () => {
 			</div>
 			<div className="w-1/2">
 				<ExpectedReturnsCard
+					result={result}
+					stashAccount={stashAccount}
 					calculate={calculateReward}
 					calculationDisabled={!amount || !timePeriodValue}
 					onWalletConnectClick={toggle}
-					result={result}
+					onPayment={onPayment}
 				/>
 				<ValidatorsList />
 			</div>
