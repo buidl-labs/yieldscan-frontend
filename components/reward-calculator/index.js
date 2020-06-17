@@ -24,36 +24,34 @@ const RewardCalculatorPage = () => {
 		axios.get('/rewards/risk-set').then(({ data }) => {
 			setValidatorMap({
 				Low: data[0].lowriskset,
-				Med: data[1].medriskset,
+				Medium: data[1].medriskset,
 				High: data[2].highriskset,
 				total: data[3].totalset,
-			});
+			});	
 		});
 	}, []);
 
 	const calculateReward = () => {
 		const validators = validatorMap[risk];
-		const amount = amountInput.current.value / validators.length;
+		const amountPerValidator = Number(amount) / validators.length;
 
 		let totalReward = 0;
-
 		validators.forEach(v => {
-			const stakeFraction = amount / (amount + v.totalStake);
+			const stakeFraction = amountPerValidator / (amountPerValidator + v.totalStake);
 			const reward = (v.estimatedPoolReward - v.commission) * stakeFraction;
 			totalReward += reward;
 		});
 
 		// TODO: take `timePeriod` into account
 		// `totalReward` is for the next era ONLY
-		const timePeriodInEras = timePeriodValue;
+		let timePeriodInEras = Number(timePeriodValue);
 		if (timePeriodUnit === 'months') {
 			// TODO: don't consider each month as 30 days
-			timePeriodInEras *= timePeriodValue * 30 * 4; // 4 eras / day, 30 days / months
+			timePeriodInEras = timePeriodValue * 30 * 4; // 4 eras / day, 30 days / months
 		} else if (timePeriodUnit === 'days') {
-			timePeriodInEras *= timePeriodValue * 4;
+			timePeriodInEras = timePeriodValue * 4;
 		}
 
-		console.log(totalReward, timePeriodValue);
 		setEstimatedReward(totalReward * timePeriodInEras);
 	};
 
@@ -99,6 +97,8 @@ const RewardCalculatorPage = () => {
 			</div>
 			<div className="w-1/2">
 				<ExpectedReturnsCard
+					calculate={calculateReward}
+					calculationDisabled={!amount || !timePeriodValue}
 					onWalletConnectClick={toggle}
 				/>
 				<ValidatorsList />

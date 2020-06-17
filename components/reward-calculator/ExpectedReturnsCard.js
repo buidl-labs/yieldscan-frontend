@@ -11,7 +11,7 @@ const ResultCardInsight = ({ label, value, supportValue }) => (
 	</div>
 );
 
-const ExpectedReturnsCard = ({ onWalletConnectClick }) => (
+const ExpectedReturnsCard = ({ calculate, calculationDisabled, onWalletConnectClick }) => (
 	<div className="rounded-xl bg-teal-500 text-white px-8 py-6">
 		<h1 className="font-semibold text-2xl">Expected Returns</h1>
 		<div className="flex flex-wrap mt-2">
@@ -30,12 +30,24 @@ const ExpectedReturnsCard = ({ onWalletConnectClick }) => (
 				value="5.46%"
 			/>
 		</div>
-		<button
-			className="rounded-full font-semibold bg-white text-teal-500 text-lg mt-5 px-8 py-3"
-			onClick={onWalletConnectClick}
-		>
-			Connect Wallet to Stake
-		</button>
+		<div className="flex justify-between">
+			<button
+				className={`
+					rounded-full font-semibold text-lg mt-5 px-8 py-3
+					${calculationDisabled ? 'opacity-75 cursor-not-allowed bg-gray-400 text-white' : 'bg-white text-teal-500'}
+				`}
+				disabled={calculationDisabled}
+				onClick={calculate}
+			>
+				Calculate
+			</button>
+			<button
+				className="rounded-full font-semibold bg-white text-teal-500 text-lg mt-5 px-8 py-3"
+				onClick={onWalletConnectClick}
+			>
+				Connect Wallet to Stake
+			</button>
+		</div>
 	</div>
 );
 
