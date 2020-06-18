@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ChevronRight } from "react-feather";
 import Confirmation from "./Confirmation";
 import RewardDestination from "./RewardDestination";
+import Transaction from "./Transaction";
 
 const Steps = ({ steps, currentStep }) => (
 	<>
@@ -41,6 +42,9 @@ const Payment = () => {
 					compounding={false}
 					onConfirm={() => setCurrentStep(step => step + 1)}
 				/>
+			)}
+			{currentStep === 2 && (
+				<Transaction />
 			)}
 		</div>
 	);
