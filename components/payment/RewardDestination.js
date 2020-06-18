@@ -1,11 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { get } from 'lodash';
 import { CheckCircle, Circle } from "react-feather";
 
-const RewardDestination = ({ compounding, onConfirm }) => {
+const RewardDestination = ({
+	transactionState,
+	setTransactionState,
+	onConfirm,
+}) => {
+	const [compounding] = useState(get(transactionState, 'compounding', true));
 	const [destination, setDestination] = useState('Stash');
 
 	const accounts = ['Stash'];
 	if (!compounding) accounts.push('Controller');
+
+	useEffect(() => {
+		if (!compounding) {
+			setTransactionState({ rewardDestination: destination === 'Stash' ? 1 : 2 });
+		}
+	}, [destination]);
 
 	return (
 		<div className="mt-10">
@@ -28,6 +40,7 @@ const RewardDestination = ({ compounding, onConfirm }) => {
 			<div className="flex justify-between mt-4">
 				{accounts.map(accountType => (
 					<div
+						key={accountType}
 						className={`
 							w-1/2 mr-2 flex items-center rounded-lg border-2 border-teal-500 cursor-pointer px-3 py-2 mb-2
 							${accountType === destination ? 'text-white bg-teal-500' : 'text-gray-600'}

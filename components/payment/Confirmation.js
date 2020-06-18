@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import RiskTag from "@components/reward-calculator/RiskTag";
 
 const ValidatorInfo = () => (
@@ -18,7 +19,8 @@ const ValidatorInfo = () => (
 	</div>
 );
 
-const Confirmation = ({ onConfirm }) => (
+// TODO: currency conversion in Confirmation
+const Confirmation = ({ transactionState, onConfirm }) => (
 	<div className="mt-10">
 		<h1 className="text-2xl">Confirmation</h1>
 		<span className="text-gray-600">
@@ -30,26 +32,29 @@ const Confirmation = ({ onConfirm }) => (
 			<div className="flex justify-between items-centerr">
 				<div className="flex justify-between items-center rounded-full px-4 py-2 border border-gray-200">
 					<span>Estimated Returns</span>
-					<div className="ml-2 px-3 py-2 bg-teal-500 text-white rounded-full">200 KSM</div>
+					<div className="ml-2 px-3 py-2 bg-teal-500 text-white rounded-full">
+						{get(transactionState, 'returns.currency')} KSM
+					</div>
 				</div>
 				<div className="flex justify-between items-center rounded-full px-4 py-2 border border-gray-200">
 					<span>Risk Preference</span>
-					<div className="ml-2 px-3 py-2 bg-orange-500 text-white rounded-full">Medium</div>
+					<div className="ml-2 px-3 py-2 bg-orange-500 text-white rounded-full">
+						{get(transactionState, 'riskPreference')}
+					</div>
 				</div>
 			</div>
 			<div className="mt-4 overflow-auto" style={{ height: '12rem' }}>
-				<ValidatorInfo />
-				<ValidatorInfo />
-				<ValidatorInfo />
-				<ValidatorInfo />
+				{get(transactionState, 'selectedValidators', []).map(validator => (
+					<ValidatorInfo key={validator.stashId} />
+				))}
 			</div>
 		</div>
 
 		<div className="my-5 rounded p-4 bg-gray-900 text-white flex items-center justify-around">
 			<div className="rounded p-3 flex flex-col bg-white text-black justify-center">
 				<span className="text-teal-500 text-sm font-semibold">Additional Funds to Bond</span>
-				<h3 className="text-lg font-semibold">200 KSM</h3>
-				<span className="text-gray-700 text-sm">$100</span>
+				<h3 className="text-lg font-semibold">{get(transactionState, 'stakingAmount')} KSM</h3>
+				<span className="text-gray-700 text-sm">${get(transactionState, 'stakingAmount')}</span>
 			</div>
 			<div className="rounded-lg p-2 flex flex-col text-white justify-center">
 				<span className="text-teal-500 text-sm font-semibold">Currently Bonded</span>

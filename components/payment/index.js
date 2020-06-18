@@ -42,10 +42,16 @@ const Payment = () => {
 				steps={['Confirmation', 'Reward Destination', 'Payment']}
 				currentStep={currentStep}
 			/>
-			{currentStep === 0 && <Confirmation onConfirm={() => setCurrentStep(step => step + 1)} />}
+			{currentStep === 0 && (
+				<Confirmation
+					transactionState={transactionState}
+					onConfirm={() => setCurrentStep(step => step + 1)}
+				/>
+			)}
 			{currentStep === 1 && (
 				<RewardDestination
-					compounding={false}
+					transactionState={transactionState}
+					setTransactionState={setTransactionState}
 					onConfirm={() => setCurrentStep(step => step + 1)}
 				/>
 			)}
