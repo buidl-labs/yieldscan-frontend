@@ -16,6 +16,8 @@ const RewardDestination = ({
 	useEffect(() => {
 		if (!compounding) {
 			setTransactionState({ rewardDestination: destination === 'Stash' ? 1 : 2 });
+		} else {
+			setTransactionState({ rewardDestination: 0 });
 		}
 	}, [destination]);
 
