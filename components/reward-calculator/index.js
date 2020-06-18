@@ -41,20 +41,18 @@ const RewardCalculatorPage = () => {
 	}, []);
 
 	useEffect(() => {
-		try {
-			if (risk && timePeriodValue && amount) {
-				calculateReward(
-					validatorMap[risk],
-					amount,
-					timePeriodValue,
-					timePeriodUnit,
-					compounding,
-					bondedAmount,
-				).then(setResult);
-			}
-		} catch (error) {
-			// TODO: handle error gracefully with UI toast
-			alert(error);
+		if (risk && timePeriodValue && amount) {
+			calculateReward(
+				validatorMap[risk],
+				amount,
+				timePeriodValue,
+				timePeriodUnit,
+				compounding,
+				bondedAmount,
+			).then(setResult).catch(error => {
+				// TODO: handle error gracefully with UI toast
+				alert(error);
+			});
 		}
 	}, [risk, amount, timePeriodValue, timePeriodUnit, compounding, bondedAmount]);
 
