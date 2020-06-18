@@ -60,7 +60,7 @@ const WalletConnectPopover = withSlideIn(({ styles }) => {
 				// check if `stashAccount` already has bonded on some controller
 				const { isSome: isBonded } = await api.query.staking.bonded(stashAccount.address);
 				const [lockedBalance] = await api.query.balances.locks(stashAccount.address);
-				const { free: freeBalance } = await api.query.balances.account(stashAccount.address);
+				const { data: { free: freeBalance } } = await api.query.system.account(stashAccount.address);
 
 				let bondedAmount, bondedAmountInSubCurrency, freeAmount, freeAmountInSubCurrency;
 				if (isBonded && lockedBalance) {
@@ -68,9 +68,12 @@ const WalletConnectPopover = withSlideIn(({ styles }) => {
 					bondedAmountInSubCurrency = await convertCurrency(bondedAmount);
 				}
 
-				// FIXME: not receiving right value of free balance
 				if (freeBalance) {
-					freeAmount = Number((freeBalance.toNumber() / (10 ** 12)).toFixed(4));
+					/**
+					 * `freeBalance` here includes `locked` balance also - that's how polkadot API is currently working
+					 *  so we need to subtract the `bondedBalance``
+					 */
+					freeAmount = Number((freeBalance.toNumber() / (10 ** 12)).toFixed(4)) - bondedAmount;
 					freeAmountInSubCurrency = await convertCurrency(freeAmount);
 				}
 
