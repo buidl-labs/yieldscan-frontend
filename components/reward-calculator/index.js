@@ -60,14 +60,20 @@ const RewardCalculatorPage = () => {
 		});
 
 		const returns = Number((totalReward * timePeriodInEras).toFixed(4));
+		const portfolioValue = returns + get(bondedAmount, 'currency', 0);
 
 		// TODO: yield-percentage to be calculated (for annual basis)
 		const yieldPercentage = Number(((((amount + returns) / amount) - 1) * 100).toFixed(2));
+
 
 		setResult({
 			returns: {
 				currency: returns,
 				subCurrency: await convertCurrency(returns),
+			},
+			portfolioValue: {
+				currency: portfolioValue,
+				subCurrency: await convertCurrency(portfolioValue),
 			},
 			yieldPercentage,
 		});

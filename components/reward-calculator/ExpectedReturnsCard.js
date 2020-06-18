@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { HelpCircle } from "react-feather";
 
 const ResultCardInsight = ({ label, value, supportValue, emptyState }) => (
@@ -37,13 +37,14 @@ const ExpectedReturnsCard = ({
 			/>
 			<ResultCardInsight
 				label="Estimated Portfolio Value"
-				value={`1000 KSM`}
-				supportValue="$500"
+				value={`${get(result, 'portfolioValue.currency')} KSM`}
+				supportValue={`$${get(result, 'portfolioValue.subCurrency')}`}
+				emptyState={!result.returns}
 			/>
 			<ResultCardInsight
 				label="Estimated Yield"
 				value={`${result.yieldPercentage}%`}
-				emptyState={!result.yieldPercentage}
+				emptyState={isNil(result.yieldPercentage)}
 			/>
 		</div>
 		<div className="flex justify-end">
