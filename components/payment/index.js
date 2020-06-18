@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronRight } from "react-feather";
 import Confirmation from "./Confirmation";
+import RewardDestination from "./RewardDestination";
 
 const Steps = ({ steps, currentStep }) => (
 	<>
@@ -23,10 +24,6 @@ const Steps = ({ steps, currentStep }) => (
 			))}
 		</div>
 	</>
-);
-
-const RewardDestination = () => (
-
 );
 
 const Payment = () => {
