@@ -64,7 +64,7 @@ const RewardCalculatorPage = () => {
 			riskPreference: risk,
 			timePeriodValue,
 			timePeriodUnit,
-			compounding: false, // TODO: make compounding dynamic when the formula is ready
+			compounding,
 			returns: _returns,
 			yieldPercentage: _yieldPercentage,
 			selectedValidators: validatorMap[risk],
