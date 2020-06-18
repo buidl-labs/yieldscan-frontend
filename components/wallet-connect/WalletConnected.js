@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { CheckCircle, Circle } from "react-feather";
+import { Spinner } from "@chakra-ui/core";
 
-const WalletConnected = ({ accounts, onStashSelected }) => {
+const WalletConnected = ({ accounts, onStashSelected, ledgerLoading }) => {
 	const [selectedAccount, setSelected] = useState();
 	return (
 		<div className="mx-10 my-10 flex flex-col items-center">
@@ -35,12 +36,13 @@ const WalletConnected = ({ accounts, onStashSelected }) => {
 			<div className="mt-6 flex justify-end">
 				<button
 					className={`
-						px-12 py-3 text-white rounded-lg
+						flex items-center px-12 py-3 text-white rounded-lg
 						${selectedAccount ? 'bg-teal-500' : 'bg-gray-400 cursor-not-allowed'}
 					`}
 					onClick={() => onStashSelected(selectedAccount)}
 				>
-					Proceed
+					<span>Proceed</span>
+					{ledgerLoading && <Spinner color="white" className="ml-4" />}
 				</button>
 			</div>
 			<style jsx>{`

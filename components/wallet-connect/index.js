@@ -9,7 +9,8 @@ import ImportAccount from './ImportAccount';
 import WalletConnected from './WalletConnected';
 import WalletDisclaimer from './WalletDisclaimer';
 import getPolkadotExtensionInfo from '@lib/polkadot-extension';
-import { useAccounts } from '@lib/store';
+import { useAccounts, useTransaction, usePolkadotApi } from '@lib/store';
+import createPolkadotAPIInstance from '@lib/polkadot-api';
 
 const [useWalletConnect] = create(set => ({
 	isOpen: false,
@@ -27,8 +28,11 @@ const WalletConnectStates = {
 };
 
 const WalletConnectPopover = withSlideIn(({ styles }) => {
-	const { accounts, setAccounts, setStashAccount } = useAccounts();
 	const { close } = useWalletConnect();
+	const [ledgerLoading, setLedgerLoading] = useState(false);
+	const setApiInstance = usePolkadotApi(state => state.setApiInstance);
+	const setTransactionState = useTransaction(state => state.setTransactionState);
+	const { accounts, setAccounts, setStashAccount } = useAccounts();
 	const [state, setState] = useState(WalletConnectStates.INTRO);
 
 	const onConnected = () => {
@@ -45,9 +49,21 @@ const WalletConnectPopover = withSlideIn(({ styles }) => {
 	};
 
 	const onStashSelected = (stashAccount) => {
-		// save to global store and localstorage (for debugging) and close the modal
+		// wallet connected state:
+		// when `stashAccount` is selected, fetch ledger for the account and save it.
+		if (stashAccount) {
+			setLedgerLoading(true);
+			createPolkadotAPIInstance().then(async api => {
+				setApiInstance(api);
+
+				const ledger = await api.query.staking.ledger(stashAccount.address);
+				console.log(ledger.isSome);
+				setTransactionState({ ledgerExists: ledger.isSome });
+				setLedgerLoading(false);
+				close();
+			});
+		}
 		setStashAccount(stashAccount);
-		close();
 	};
 
 	return (
@@ -81,6 +97,7 @@ const WalletConnectPopover = withSlideIn(({ styles }) => {
 						{state === WalletConnectStates.CONNECTED && (
 							<WalletConnected
 								accounts={accounts}
+								ledgerLoading={ledgerLoading}
 								onStashSelected={onStashSelected}
 							/>
 						)}
