@@ -5,11 +5,11 @@ const withDashboardLayout = (children) => {
 	return () => (
 		<div>
 			<Header />
-			<div className="dashboard-content flex">
+			<div className="dashboard-content fixed flex">
 				<div className="h-full relative sidemenu-container py-10">
 					<SideMenu />
 				</div>
-				<div className="h-full core-content">
+				<div className="h-full core-content overflow-y-scroll">
 					{children()}
 				</div>
 			</div>
