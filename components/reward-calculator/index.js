@@ -48,6 +48,7 @@ const RewardCalculatorPage = () => {
 					amount,
 					timePeriodValue,
 					timePeriodUnit,
+					compounding,
 					bondedAmount,
 				).then(setResult);
 			}
@@ -55,15 +56,10 @@ const RewardCalculatorPage = () => {
 			// TODO: handle error gracefully with UI toast
 			alert(error);
 		}
-	}, [risk, amount, timePeriodValue, timePeriodUnit, compounding]);
+	}, [risk, amount, timePeriodValue, timePeriodUnit, compounding, bondedAmount]);
 
 	const onPayment = async () => {
 		let _returns = get(result, 'returns'), _yieldPercentage = get(result, 'yieldPercentage');
-		if (!_returns) {
-			const result = await calculateReward();
-			_returns = get(result, 'returns');
-			_yieldPercentage = get(result, 'yieldPercentage');
-		}
 
 		setTransactionState({
 			stakingAmount: amount,
@@ -133,7 +129,6 @@ const RewardCalculatorPage = () => {
 				<ExpectedReturnsCard
 					result={result}
 					stashAccount={stashAccount}
-					calculate={calculateReward}
 					calculationDisabled={!amount || !timePeriodValue}
 					onWalletConnectClick={toggle}
 					onPayment={onPayment}

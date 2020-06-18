@@ -20,7 +20,6 @@ const ResultCardInsight = ({ label, value, supportValue, emptyState }) => (
 
 const ExpectedReturnsCard = ({
 	result,
-	calculate,
 	stashAccount,
 	calculationDisabled,
 	onWalletConnectClick,
@@ -48,16 +47,6 @@ const ExpectedReturnsCard = ({
 			/>
 		</div>
 		<div className="flex justify-end">
-			<button
-				className={`
-					rounded-full font-semibold text-lg mt-5 px-8 py-3 mr-4
-					${calculationDisabled ? 'opacity-75 cursor-not-allowed bg-gray-400 text-white' : 'bg-white text-teal-500'}
-				`}
-				disabled={calculationDisabled}
-				onClick={calculate}
-			>
-				Calculate
-			</button>
 			<button
 				className={`
 					rounded-full font-semibold text-lg mt-5 px-8 py-3
