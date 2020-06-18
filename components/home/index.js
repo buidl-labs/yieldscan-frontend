@@ -1,5 +1,4 @@
 import { useContext, useState, useEffect, useRef } from "react";
-import PolkadotApiContext from "@lib/contexts/polkadot-api";
 import stake from "@lib/stake";
 import axios from "@lib/axios";
 
@@ -8,19 +7,8 @@ window.setImmediate = (cb) => cb();
 const HomePage = () => {
 	const [validators, setValidators] = useState([]); // best validators set
 	const [estimatedReward, setEstimatedReward] = useState('');
-	const { apiInstance } = useContext(PolkadotApiContext);
-	const { isExtensionAvailable, accounts } = useContext(PolkadotExtensionContext);
 
 	const amountInput = useRef();
-
-	useEffect(() => {
-		if (apiInstance && accounts.length) {
-			// const stakeAmount = 200000000000;
-			const stakeAmount = 0.003 * (10 ** 12);
-			const validatorsStashIds = [];
-			stake(accounts, stakeAmount, validatorsStashIds);
-		}
-	}, [apiInstance, accounts]);
 
 	useEffect(() => {
 		// axios.get('/maxyieldset').then(({ data }) => setValidators(data));
