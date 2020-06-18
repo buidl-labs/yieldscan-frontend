@@ -15,7 +15,7 @@ import { get } from "lodash";
 const RewardCalculatorPage = () => {
 	const router = useRouter();
 	
-	const { stashAccount } = useAccounts();
+	const { stashAccount, ledgerExists, freeAmount, bondedAmount } = useAccounts();
 	const { isOpen, toggle } = useWalletConnect();
 	const setTransactionState = useTransaction(state => state.setTransactionState);
 
@@ -60,7 +60,10 @@ const RewardCalculatorPage = () => {
 		}
 
 		const returns = Number((totalReward * timePeriodInEras).toFixed(4));
+
+		// TODO: yield-percentage to be calculated (for annual basis)
 		const yieldPercentage = Number(((((amount + returns) / amount) - 1) * 100).toFixed(2));
+
 		setResult({
 			returns: {
 				currency: returns,
@@ -101,6 +104,17 @@ const RewardCalculatorPage = () => {
 				<div className="mt-10 mx-2">
 					<h3 className="text-2xl text-gray-700">Staking Amount</h3>
 					<div className="mt-3">
+						<div
+							className="m-2 text-gray-600 text-sm"
+							hidden={!ledgerExists}
+						>
+							Already bonded: {get(bondedAmount, 'currency', 0)} KSM
+						</div>
+						<div
+							className="m-2 text-gray-600 text-sm"
+						>
+							Free Balance: {get(freeAmount, 'currency', 0)} KSM
+						</div>
 						<AmountInput
 							value={amount}
 							dollarValue={!!amount ? amount * 2 : 0}
