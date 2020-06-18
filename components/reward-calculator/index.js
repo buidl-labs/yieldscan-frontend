@@ -43,14 +43,6 @@ const RewardCalculatorPage = () => {
 		const validators = validatorMap[risk];
 		const amountPerValidator = Number(amount) / validators.length;
 
-		let totalReward = 0;
-		validators.forEach(v => {
-			const stakeFraction = amountPerValidator / (amountPerValidator + v.totalStake);
-			const reward = (v.estimatedPoolReward - v.commission) * stakeFraction;
-			totalReward += reward;
-		});
-
-		// `totalReward` is for the next era ONLY
 		let timePeriodInEras = Number(timePeriodValue);
 		if (timePeriodUnit === 'months') {
 			// TODO: don't consider each month as 30 days
@@ -58,6 +50,14 @@ const RewardCalculatorPage = () => {
 		} else if (timePeriodUnit === 'days') {
 			timePeriodInEras = timePeriodValue * 4;
 		}
+
+		let totalReward = 0;
+		validators.forEach(v => {
+			const stakeFraction = amountPerValidator / (amountPerValidator + v.totalStake);
+			const reward = Math.max(v.estimatedPoolReward - v.commission, 0) * stakeFraction;
+			const compoundedReward = reward * (timePeriodInEras + (reward * (timePeriodInEras - 1) / amountPerValidator));
+			totalReward += compounding ? compoundedReward : reward;
+		});
 
 		const returns = Number((totalReward * timePeriodInEras).toFixed(4));
 
