@@ -44,7 +44,7 @@ const ValidatorInfo = () => (
 );
 
 const Payment = () => {
-	const [currentStep] = useState(0);
+	const [currentStep, setCurrentStep] = useState(0);
 
 	return (
 		<div className="mx-auto my-8" style={{ width: '45rem' }}>
@@ -70,13 +70,38 @@ const Payment = () => {
 							<div className="ml-2 px-3 py-2 bg-orange-500 text-white rounded-full">Medium</div>
 						</div>
 					</div>
-					<div className="mt-4 overflow-auto" style={{ height: '15rem' }}>
+					<div className="mt-4 overflow-auto" style={{ height: '12rem' }}>
 						<ValidatorInfo />
 						<ValidatorInfo />
 						<ValidatorInfo />
 						<ValidatorInfo />
 					</div>
 				</div>
+
+				<div className="my-5 rounded p-4 bg-gray-900 text-white flex items-center justify-around">
+					<div className="rounded p-3 flex flex-col bg-white text-black justify-center">
+						<span className="text-teal-500 text-sm font-semibold">Additional Funds to Bond</span>
+						<h3 className="text-lg font-semibold">200 KSM</h3>
+						<span className="text-gray-700 text-sm">$100</span>
+					</div>
+					<div className="rounded-lg p-2 flex flex-col text-white justify-center">
+						<span className="text-teal-500 text-sm font-semibold">Currently Bonded</span>
+						<h3 className="text-lg font-semibold">500 KSM</h3>
+						<span className="text-gray-200 text-sm">$250</span>
+					</div>
+					<div className="rounded-lg p-2 flex flex-col text-white justify-center">
+						<span className="text-teal-500 text-sm font-semibold">Total Staking Amount</span>
+						<h3 className="text-lg font-semibold">700 KSM</h3>
+						<span className="text-gray-200 text-sm">$350</span>
+					</div>
+				</div>
+
+				<button
+					className="px-6 py-2 shadow-lg rounded-lg text-white bg-teal-500"
+					onClick={() => setCurrentStep(step => step + 1)}
+				>
+					Agree and Confirm
+				</button>
 			</div>
 		</div>
 	);
