@@ -3,6 +3,7 @@ import { ChevronRight } from "react-feather";
 import Confirmation from "./Confirmation";
 import RewardDestination from "./RewardDestination";
 import Transaction from "./Transaction";
+import { useAccounts, useTransaction } from "@lib/store";
 
 const Steps = ({ steps, currentStep }) => (
 	<>
@@ -28,7 +29,12 @@ const Steps = ({ steps, currentStep }) => (
 );
 
 const Payment = () => {
+	const { accounts, stashAccount } = useAccounts();
 	const [currentStep, setCurrentStep] = useState(0);
+	const { setTransactionState, ...transactionState } = useTransaction();
+
+	console.log(transactionState);
+	localStorage.setItem('transaction-state', JSON.stringify(transactionState));
 
 	return (
 		<div className="mx-auto my-8" style={{ width: '45rem' }}>

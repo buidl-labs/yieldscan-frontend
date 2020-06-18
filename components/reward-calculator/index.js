@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import axios from "@lib/axios";
 import convertCurrency from "@lib/convert-currency";
 import RiskSelect from "./RiskSelect";
@@ -8,11 +9,15 @@ import TimePeriodInput from "./TimePeriodInput";
 import ExpectedReturnsCard from "./ExpectedReturnsCard";
 import CompoundRewardSlider from "./CompoundRewardSlider";
 import { WalletConnectPopover, useWalletConnect } from "@components/wallet-connect";
-import { useAccounts } from "@lib/store";
+import { useAccounts, useTransaction } from "@lib/store";
+import { get } from "lodash";
 
 const RewardCalculatorPage = () => {
+	const router = useRouter();
+	
 	const { stashAccount } = useAccounts();
 	const { isOpen, toggle } = useWalletConnect();
+	const setTransactionState = useTransaction(state => state.setTransactionState);
 
 	const [amount, setAmount] = useState();
 	const [risk, setRisk] = useState('Low');
@@ -30,7 +35,7 @@ const RewardCalculatorPage = () => {
 				Medium: data[1].medriskset,
 				High: data[2].highriskset,
 				total: data[3].totalset,
-			});	
+			});
 		});
 	}, []);
 
@@ -63,12 +68,31 @@ const RewardCalculatorPage = () => {
 			},
 			yieldPercentage,
 		});
+
+		return { returns, yieldPercentage };
 	};
 
-	const onPayment = () => {
-		console.log('redirect user to payments page');
+	const onPayment = async () => {
+		let _returns = get(result, 'returns'), _yieldPercentage = get(result, 'yieldPercentage');
+		if (!_returns) {
+			const result = await calculateReward();
+			_returns = get(result, 'returns');
+			_yieldPercentage = get(result, 'yieldPercentage');
+		}
+
+		setTransactionState({
+			stakingAmount: amount,
+			riskPreference: risk,
+			timePeriodValue,
+			timePeriodUnit,
+			compounding: false, // TODO: make compounding dynamic when the formula is ready
+			returns: _returns,
+			yieldPercentage: _yieldPercentage,
+			selectedValidators: validatorMap[risk],
+		});
+		router.push('/payment');
 	};
-	
+
 	return (
 		<div className="flex px-24 pt-12">
 			<WalletConnectPopover isOpen={isOpen} />
@@ -118,7 +142,7 @@ const RewardCalculatorPage = () => {
 					onWalletConnectClick={toggle}
 					onPayment={onPayment}
 				/>
-				<ValidatorsList />
+				<ValidatorsList validators={validatorMap[risk]} />
 			</div>
 		</div>
 	);
