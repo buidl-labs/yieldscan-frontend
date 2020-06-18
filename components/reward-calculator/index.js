@@ -11,6 +11,7 @@ import CompoundRewardSlider from "./CompoundRewardSlider";
 import { WalletConnectPopover, useWalletConnect } from "@components/wallet-connect";
 import { useAccounts, useTransaction } from "@lib/store";
 import { get } from "lodash";
+import calculateReward from "@lib/calculate-reward";
 
 const RewardCalculatorPage = () => {
 	const router = useRouter();
@@ -39,47 +40,22 @@ const RewardCalculatorPage = () => {
 		});
 	}, []);
 
-	const calculateReward = async () => {
-		const validators = validatorMap[risk];
-		const amountPerValidator = Number(amount) / validators.length;
-
-		let timePeriodInEras = Number(timePeriodValue);
-		if (timePeriodUnit === 'months') {
-			// TODO: don't consider each month as 30 days
-			timePeriodInEras = timePeriodValue * 30 * 4; // 4 eras / day, 30 days / months
-		} else if (timePeriodUnit === 'days') {
-			timePeriodInEras = timePeriodValue * 4;
+	useEffect(() => {
+		try {
+			if (risk && timePeriodValue && amount) {
+				calculateReward(
+					validatorMap[risk],
+					amount,
+					timePeriodValue,
+					timePeriodUnit,
+					bondedAmount,
+				).then(setResult);
+			}
+		} catch (error) {
+			// TODO: handle error gracefully with UI toast
+			alert(error);
 		}
-
-		let totalReward = 0;
-		validators.forEach(v => {
-			const stakeFraction = amountPerValidator / (amountPerValidator + v.totalStake);
-			const reward = Math.max(v.estimatedPoolReward - v.commission, 0) * stakeFraction;
-			const compoundedReward = reward * (timePeriodInEras + (reward * (timePeriodInEras - 1) / amountPerValidator));
-			totalReward += compounding ? compoundedReward : reward;
-		});
-
-		const returns = Number((totalReward * timePeriodInEras).toFixed(4));
-		const portfolioValue = returns + get(bondedAmount, 'currency', 0);
-
-		// TODO: yield-percentage to be calculated (for annual basis)
-		const yieldPercentage = Number(((((amount + returns) / amount) - 1) * 100).toFixed(2));
-
-
-		setResult({
-			returns: {
-				currency: returns,
-				subCurrency: await convertCurrency(returns),
-			},
-			portfolioValue: {
-				currency: portfolioValue,
-				subCurrency: await convertCurrency(portfolioValue),
-			},
-			yieldPercentage,
-		});
-
-		return { returns, yieldPercentage };
-	};
+	}, [risk, amount, timePeriodValue, timePeriodUnit, compounding]);
 
 	const onPayment = async () => {
 		let _returns = get(result, 'returns'), _yieldPercentage = get(result, 'yieldPercentage');
