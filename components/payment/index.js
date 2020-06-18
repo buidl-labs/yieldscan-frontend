@@ -29,7 +29,7 @@ const Steps = ({ steps, currentStep }) => (
 );
 
 const Payment = () => {
-	const { accounts, stashAccount } = useAccounts();
+	const { accounts, stashAccount, bondedAmount } = useAccounts();
 	const [currentStep, setCurrentStep] = useState(0);
 	const { setTransactionState, ...transactionState } = useTransaction();
 
@@ -44,6 +44,7 @@ const Payment = () => {
 			/>
 			{currentStep === 0 && (
 				<Confirmation
+					bondedAmount={bondedAmount}
 					transactionState={transactionState}
 					onConfirm={() => setCurrentStep(step => step + 1)}
 				/>
