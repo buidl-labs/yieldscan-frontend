@@ -57,7 +57,12 @@ const Payment = () => {
 				/>
 			)}
 			{currentStep === 2 && (
-				<Transaction />
+				<Transaction
+					accounts={accounts}
+					stashAccount={stashAccount}
+					transactionState={transactionState}
+					setController={controller => setTransactionState({ controller })}
+				/>
 			)}
 		</div>
 	);
