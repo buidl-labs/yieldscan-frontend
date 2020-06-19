@@ -32,10 +32,10 @@ const RewardCalculatorPage = () => {
 	useEffect(() => {
 		axios.get('/rewards/risk-set').then(({ data }) => {
 			setValidatorMap({
-				Low: data[0].lowriskset,
-				Medium: data[1].medriskset,
-				High: data[2].highriskset,
-				total: data[3].totalset,
+				Low: data.lowriskset,
+				Medium: data.medriskset,
+				High: data.highriskset,
+				total: data.totalset,
 			});
 		});
 	}, []);
