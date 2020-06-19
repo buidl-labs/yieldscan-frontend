@@ -43,6 +43,16 @@ const ValidatorsList = ({ risk, totalAmount = 0, validatorMap = {} }) => {
 						}}
 					/>
 				))}
+				{!validators.length && (
+					<div className="flex-center">
+						<img
+							src="images/empty-state.svg"
+							alt="empty-state"
+							className="w-64 h-64"
+						/>
+						<span className="text-sm text-gray-500">Select risk for suggestions...</span>
+					</div>
+				)}
 			</div>
 		</div>
 	);

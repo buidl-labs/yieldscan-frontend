@@ -10,7 +10,7 @@ import ExpectedReturnsCard from "./ExpectedReturnsCard";
 import CompoundRewardSlider from "./CompoundRewardSlider";
 import { WalletConnectPopover, useWalletConnect } from "@components/wallet-connect";
 import { useAccounts, useTransaction } from "@lib/store";
-import { get } from "lodash";
+import { get, isNil } from "lodash";
 import calculateReward from "@lib/calculate-reward";
 
 const RewardCalculatorPage = () => {
@@ -88,6 +88,7 @@ const RewardCalculatorPage = () => {
 						</div>
 						<div
 							className="m-2 text-gray-600 text-sm"
+							hidden={isNil(stashAccount)}
 						>
 							Free Balance: {get(freeAmount, 'currency', 0)} KSM
 						</div>
