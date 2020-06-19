@@ -5,14 +5,14 @@ import RiskTag from "./RiskTag";
 const ValidatorInfo = ({ name, riskScore, amountPerValidator}) => (
 	<div className="rounded-lg flex items-center border border-gray-200 px-4 py-2 mb-2">
 		<img src="http://placehold.it/255" className="rounded-full w-16 h-16 mr-4" />
-		<div className="flex flex-col items-start w-3/5">
+		<div className="flex flex-col items-start w-2/5">
 			<h3 className="text-gray-700 truncate w-full truncate">{name}</h3>
 			<span className="flex text-gray-500 text-sm">
 				Risk Score
 				<RiskTag risk={riskScore} />
 			</span>
 		</div>
-		<div className="flex flex-col ml-auto">
+		<div className="flex flex-col ml-auto w-auto">
 			<span className="text-red-400">Amount</span>
 			<h5 className="text-gray-700 text-lg">{amountPerValidator.currency} KSM</h5>
 			<span className="text-gray-500 text-sm">${amountPerValidator.subCurrency}</span>
