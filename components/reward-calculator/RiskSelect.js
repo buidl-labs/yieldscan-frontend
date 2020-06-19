@@ -1,4 +1,4 @@
-const RiskSelect = ({ selected = 'Medium', setSelected }) => {
+const RiskSelect = ({ selected, setSelected }) => {
 	const options = ['Low', 'Medium', 'High'];
 	return (
 		<div className="relative flex rounded-full border border-gray-300 py-2 px-2 w-2/3">

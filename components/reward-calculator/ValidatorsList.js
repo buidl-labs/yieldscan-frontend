@@ -1,25 +1,30 @@
 import { Edit2 } from "react-feather";
+import { get } from "lodash";
 import RiskTag from "./RiskTag";
 
-const ValidatorInfo = () => (
+const ValidatorInfo = ({ name, riskScore, amountPerValidator}) => (
 	<div className="rounded-lg flex items-center border border-gray-200 px-4 py-2 mb-2">
 		<img src="http://placehold.it/255" className="rounded-full w-16 h-16 mr-4" />
-		<div className="flex flex-col items-start">
-			<h3 className="text-gray-700 text-xl">Validator Name</h3>
+		<div className="flex flex-col items-start w-3/5">
+			<h3 className="text-gray-700 truncate w-full truncate">{name}</h3>
 			<span className="flex text-gray-500 text-sm">
 				Risk Score
-				<RiskTag risk={Number(Math.random().toFixed(2))} />
+				<RiskTag risk={riskScore} />
 			</span>
 		</div>
 		<div className="flex flex-col ml-auto">
 			<span className="text-red-400">Amount</span>
-			<h5 className="text-gray-700 text-lg">30 KSM</h5>
-			<span className="text-gray-500 text-sm">$15</span>
+			<h5 className="text-gray-700 text-lg">{amountPerValidator.currency} KSM</h5>
+			<span className="text-gray-500 text-sm">${amountPerValidator.subCurrency}</span>
 		</div>
 	</div>
 );
 
-const ValidatorsList = () => {
+// TODO: subCurrency to be calculated right
+const ValidatorsList = ({ risk, totalAmount = 0, validatorMap = {} }) => {
+	const validators = get(validatorMap, risk, []);
+	const amountPerValidator = totalAmount / validators.length;
+
 	return (
 		<div className="rounded-xl border border-gray-200 px-8 py-6 mt-4">
 			<div className="flex items-center justify-between">
@@ -27,11 +32,17 @@ const ValidatorsList = () => {
 				<Edit2 size="1.5rem" />
 			</div>
 			<div className="mt-4 overflow-auto h-64">
-				<ValidatorInfo />
-				<ValidatorInfo />
-				<ValidatorInfo />
-				<ValidatorInfo />
-				<ValidatorInfo />
+				{validators.map(validator => (
+					<ValidatorInfo
+						key={validator.stashId}
+						name={validator.stashId}
+						riskScore={Number(validator.riskScore).toFixed(2)}
+						amountPerValidator={{
+							currency: amountPerValidator,
+							subCurrency: amountPerValidator,
+						}}
+					/>
+				))}
 			</div>
 		</div>
 	);

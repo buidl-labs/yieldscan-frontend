@@ -21,7 +21,7 @@ const RewardCalculatorPage = () => {
 	const setTransactionState = useTransaction(state => state.setTransactionState);
 
 	const [amount, setAmount] = useState();
-	const [risk, setRisk] = useState('Low');
+	const [risk, setRisk] = useState();
 	const [timePeriodValue, setTimePeriod] = useState();
 	const [timePeriodUnit, setTimePeriodUnit] = useState('months');
 	const [compounding, setCompounding] = useState(true);
@@ -131,7 +131,11 @@ const RewardCalculatorPage = () => {
 					onWalletConnectClick={toggle}
 					onPayment={onPayment}
 				/>
-				<ValidatorsList validators={validatorMap[risk]} />
+				<ValidatorsList
+					risk={risk}
+					totalAmount={amount}
+					validatorMap={validatorMap}
+				/>
 			</div>
 		</div>
 	);
