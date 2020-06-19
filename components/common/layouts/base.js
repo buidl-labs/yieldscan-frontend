@@ -1,5 +1,9 @@
-import Header from '@components/common/header';
-import SideMenu from '@components/common/sidemenu';
+import dynamic from 'next/dynamic';
+
+const Header = dynamic(
+	() => import('@components/common/header').then(mod => mod.default),
+	{ ssr: false },
+);
 
 const withBaseLayout = (children) => {
 	return () => (

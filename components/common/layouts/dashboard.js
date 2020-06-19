@@ -1,5 +1,10 @@
-import Header from '@components/common/header';
+import dynamic from 'next/dynamic';
 import SideMenu from '@components/common/sidemenu';
+
+const Header = dynamic(
+	() => import('@components/common/header').then(mod => mod.default),
+	{ ssr: false },
+);
 
 const withDashboardLayout = (children) => {
 	return () => (

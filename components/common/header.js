@@ -1,18 +1,24 @@
 import { useAccounts } from "@lib/store";
 import { get, isNil } from "lodash";
 import { ChevronRight } from "react-feather";
+import { WalletConnectPopover, useWalletConnect } from "@components/wallet-connect";
 
 const Header = () => {
+	const { isOpen, toggle } = useWalletConnect();
 	const { stashAccount, freeAmount } = useAccounts();
-	console.log(stashAccount, freeAmount);
+
 	return (
 		<div className="flex items-center justify-between border border-bottom border-gray-200 bg-white p-8 h-12">
+			<WalletConnectPopover isOpen={isOpen} />
 			<div>
 				<span className="text-lg text-black">YieldScan</span>
 			</div>
 			<div className="flex items-center mr-16">
 				{isNil(stashAccount) ? (
-					<button className="rounded-full border border-gray-300 p-2 px-4 font-semibold text-gray-800 mr-2">
+					<button
+						className="rounded-full border border-gray-300 p-2 px-4 font-semibold text-gray-800 mr-2"
+						onClick={toggle}
+					>
 						Connect Wallet
 					</button>
 				) : (
