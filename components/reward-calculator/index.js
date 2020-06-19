@@ -21,7 +21,7 @@ const RewardCalculatorPage = () => {
 	const setTransactionState = useTransaction(state => state.setTransactionState);
 
 	const [amount, setAmount] = useState();
-	const [risk, setRisk] = useState();
+	const [risk, setRisk] = useState('Medium');
 	const [timePeriodValue, setTimePeriod] = useState();
 	const [timePeriodUnit, setTimePeriodUnit] = useState('months');
 	const [compounding, setCompounding] = useState(true);
