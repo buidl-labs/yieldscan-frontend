@@ -12,10 +12,12 @@ const ValidatorInfo = ({ name, riskScore, amountPerValidator}) => (
 				<RiskTag risk={riskScore} />
 			</span>
 		</div>
-		<div className="flex flex-col ml-auto w-auto">
-			<span className="text-red-400">Amount</span>
-			<h5 className="text-gray-700 text-lg">{amountPerValidator.currency} KSM</h5>
-			<span className="text-gray-500 text-sm">${amountPerValidator.subCurrency}</span>
+		<div className="flex flex-col w-2/5 ml-auto">
+			<div className="ml-auto">
+				<span className="text-red-400">Amount</span>
+				<h5 className="text-gray-700 text-lg truncate">{amountPerValidator.currency} KSM</h5>
+				<span className="text-gray-500 text-sm">${amountPerValidator.subCurrency}</span>
+			</div>
 		</div>
 	</div>
 );
