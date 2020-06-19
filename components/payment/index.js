@@ -49,7 +49,17 @@ const Payment = () => {
 			transactionState.stakingAmount,
 			transactionState.selectedValidators.map(v => v.stashId),
 			apiInstance,
-			(message) => {
+			(message, finished) => {
+				if (finished) {
+					toast({
+						title: message,
+						duration: 3000,
+						status: finished === 1 ? 'success' : 'error',
+						position: 'top-right',
+						isClosable: true,
+					});
+					setStakingLoading(false);
+				}
 				setStakingEvent(message);
 			},
 		);
