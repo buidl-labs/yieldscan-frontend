@@ -3,6 +3,7 @@ import { get } from 'lodash';
 import { CheckCircle, Circle } from "react-feather";
 
 const RewardDestination = ({
+	stashAccount,
 	transactionState,
 	setTransactionState,
 	onConfirm,
@@ -40,7 +41,7 @@ const RewardDestination = ({
 				When compounding is enabled, reward destination can only be stash account.
 			</p>
 			<div className="flex justify-between mt-4">
-				{accounts.map(accountType => (
+				{accounts.length > 1 ? accounts.map(accountType => (
 					<div
 						key={accountType}
 						className={`
@@ -58,7 +59,15 @@ const RewardDestination = ({
 							<span>{accountType}</span>
 						</div>
 					</div>
-				))}
+				)) : (
+					<div className="w-2/3 mr-2 flex items-center rounded-lg text-white bg-teal-500 cursor-pointer px-3 py-2 mb-2">
+						<CheckCircle className="mr-2" />
+						<div className="flex flex-col">
+							<h3>{stashAccount.meta.name}</h3>
+							<span className="text-sm">{stashAccount.address}</span>
+						</div>
+					</div>
+				)}
 			</div>
 
 			<button
