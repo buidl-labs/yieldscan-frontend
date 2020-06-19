@@ -75,10 +75,10 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 				<div className="rounded-lg p-2 flex flex-col text-white justify-center">
 					<span className="text-teal-500 text-sm font-semibold">Total Staking Amount</span>
 					<h3 className="text-lg font-semibold">
-						{bonded.currency + stakingAmount} KSM
+						{Number(bonded.currency + stakingAmount).toFixed(4)} KSM
 					</h3>
 					<span className="text-gray-200 text-sm">
-						${bonded.subCurrency + stakingAmount} KSM
+						${Number(bonded.subCurrency + stakingAmount).toFixed(4)} KSM
 					</span>
 				</div>
 			</div>

@@ -5,6 +5,7 @@ import { Circle, CheckCircle } from 'react-feather';
 const Transaction = ({
 	accounts,
 	stashAccount,
+	stakingLoading,
 	transactionState,
 	setController,
 	onConfirm
@@ -82,6 +83,7 @@ const Transaction = ({
 			</div>
 
 			<button
+				hidden={stakingLoading}
 				className="mt-12 px-12 py-2 shadow-lg rounded-lg text-white bg-teal-500"
 				onClick={onConfirm}
 			>

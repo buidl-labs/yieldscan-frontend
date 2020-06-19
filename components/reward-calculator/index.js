@@ -115,7 +115,7 @@ const RewardCalculatorPage = () => {
 					</div>
 					<h3 className="text-2xl mt-10 text-gray-700">Compound Rewards</h3>
 					<span className="text-sm text-gray-500">Your rewards will be locked for staking over the specified time period</span>
-					<div className="mt-3">
+					<div className="mt-3 my-10">
 						<CompoundRewardSlider
 							checked={compounding}
 							setChecked={setCompounding}

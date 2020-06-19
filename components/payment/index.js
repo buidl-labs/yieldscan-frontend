@@ -79,15 +79,19 @@ const Payment = () => {
 				<Transaction
 					accounts={accounts}
 					stashAccount={stashAccount}
+					stakingLoading={stakingLoading}
 					transactionState={transactionState}
 					setController={controller => setTransactionState({ controller })}
 					onConfirm={transact}
 				/>
 			)}
 			{stakingLoading && (
-				<div className="flex items-center justify-between">
-					<span>{stakingEvent}</span>
-					<Spinner className="ml-4" />
+				<div className="mt-6">
+					<h1 className="font-semibold text-xl text-gray-700">Status:</h1>
+					<div className="flex items-center justify-between">
+						<span>{stakingEvent}</span>
+						<Spinner className="ml-4" />
+					</div>
 				</div>
 			)}
 		</div>
