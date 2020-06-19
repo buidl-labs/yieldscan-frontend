@@ -30,6 +30,7 @@ const Steps = ({ steps, currentStep }) => (
 	</>
 );
 
+// TODO: add `back` button from `payments` to `reward-calculator` and calculator state should be maintained
 const Payment = () => {
 	const toast = useToast();
 	const { apiInstance } = usePolkadotApi();
@@ -62,7 +63,17 @@ const Payment = () => {
 				}
 				setStakingEvent(message);
 			},
-		);
+		).catch(error => {
+			toast({
+				title: 'Failure',
+				description: error.message,
+				duration: 3000,
+				status: 'error',
+				position: 'top-right',
+			});
+		}).finally(() => {
+			setStakingLoading(false);
+		});
 	};
 
 	return (
@@ -80,6 +91,7 @@ const Payment = () => {
 			)}
 			{currentStep === 1 && (
 				<RewardDestination
+					stashAccount={stashAccount}
 					transactionState={transactionState}
 					setTransactionState={setTransactionState}
 					onConfirm={() => setCurrentStep(step => step + 1)}
