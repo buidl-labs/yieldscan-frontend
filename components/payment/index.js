@@ -3,7 +3,9 @@ import { ChevronRight } from "react-feather";
 import Confirmation from "./Confirmation";
 import RewardDestination from "./RewardDestination";
 import Transaction from "./Transaction";
-import { useAccounts, useTransaction } from "@lib/store";
+import { useAccounts, useTransaction, usePolkadotApi } from "@lib/store";
+import stake from "@lib/stake";
+import { useToast, Spinner } from "@chakra-ui/core";
 
 const Steps = ({ steps, currentStep }) => (
 	<>
@@ -29,12 +31,29 @@ const Steps = ({ steps, currentStep }) => (
 );
 
 const Payment = () => {
-	const { accounts, stashAccount, bondedAmount } = useAccounts();
+	const toast = useToast();
+	const { apiInstance } = usePolkadotApi();
 	const [currentStep, setCurrentStep] = useState(0);
+	const { accounts, stashAccount, bondedAmount } = useAccounts();
 	const { setTransactionState, ...transactionState } = useTransaction();
 
+	const [stakingEvent, setStakingEvent] = useState();
+	const [stakingLoading, setStakingLoading] = useState(false);
+
 	console.log(transactionState);
-	localStorage.setItem('transaction-state', JSON.stringify(transactionState));
+	const transact = () => {
+		setStakingLoading(true);
+		stake(
+			stashAccount.address,
+			transactionState.controller,
+			transactionState.stakingAmount,
+			transactionState.selectedValidators.map(v => v.stashId),
+			apiInstance,
+			(message) => {
+				setStakingEvent(message);
+			},
+		);
+	};
 
 	return (
 		<div className="mx-auto my-8" style={{ width: '45rem' }}>
@@ -62,7 +81,14 @@ const Payment = () => {
 					stashAccount={stashAccount}
 					transactionState={transactionState}
 					setController={controller => setTransactionState({ controller })}
+					onConfirm={transact}
 				/>
+			)}
+			{stakingLoading && (
+				<div className="flex items-center justify-between">
+					<span>{stakingEvent}</span>
+					<Spinner className="ml-4" />
+				</div>
 			)}
 		</div>
 	);
