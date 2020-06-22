@@ -20,7 +20,7 @@ const RewardCalculatorPage = () => {
 	const { isOpen, toggle } = useWalletConnect();
 	const setTransactionState = useTransaction(state => state.setTransactionState);
 
-	const [amount, setAmount] = useState();
+	const [amount, setAmount] = useState(0);
 	const [risk, setRisk] = useState('Medium');
 	const [timePeriodValue, setTimePeriod] = useState();
 	const [timePeriodUnit, setTimePeriodUnit] = useState('months');
@@ -82,19 +82,13 @@ const RewardCalculatorPage = () => {
 					<div className="mt-3">
 						<div
 							className="m-2 text-gray-600 text-sm"
-							hidden={!ledgerExists}
-						>
-							Already bonded: {get(bondedAmount, 'currency', 0)} KSM
-						</div>
-						<div
-							className="m-2 text-gray-600 text-sm"
 							hidden={isNil(stashAccount)}
 						>
 							Free Balance: {get(freeAmount, 'currency', 0)} KSM
 						</div>
 						<AmountInput
-							value={amount}
-							dollarValue={!!amount ? amount * 2 : 0}
+							value={{ currency: amount, subCurrency: amount * 2 }}
+							bonded={bondedAmount}
 							onChange={setAmount}
 						/>
 					</div>
