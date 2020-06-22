@@ -12,11 +12,12 @@ import { WalletConnectPopover, useWalletConnect } from "@components/wallet-conne
 import { useAccounts, useTransaction } from "@lib/store";
 import { get, isNil } from "lodash";
 import calculateReward from "@lib/calculate-reward";
+import { Spinner } from "@chakra-ui/core";
 
 const RewardCalculatorPage = () => {
 	const router = useRouter();
 	
-	const { stashAccount, ledgerExists, freeAmount, bondedAmount } = useAccounts();
+	const { stashAccount, freeAmount, bondedAmount, accountInfoLoading } = useAccounts();
 	const { isOpen, toggle } = useWalletConnect();
 	const setTransactionState = useTransaction(state => state.setTransactionState);
 
@@ -71,6 +72,17 @@ const RewardCalculatorPage = () => {
 		});
 		router.push('/payment');
 	};
+
+	if (accountInfoLoading) {
+		return (
+			<div className="flex-center w-full h-full">
+				<div className="flex-center flex-col">
+					<Spinner size="xl" />
+					<span className="text-sm text-gray-600 mt-5">fetching your data from chain...</span>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="flex px-24 pt-12">
