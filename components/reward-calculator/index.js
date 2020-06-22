@@ -21,7 +21,7 @@ const RewardCalculatorPage = () => {
 	const { isOpen, toggle } = useWalletConnect();
 	const setTransactionState = useTransaction(state => state.setTransactionState);
 
-	const [amount, setAmount] = useState(0);
+	const [amount, setAmount] = useState();
 	const [risk, setRisk] = useState('Medium');
 	const [timePeriodValue, setTimePeriod] = useState();
 	const [timePeriodUnit, setTimePeriodUnit] = useState('months');
@@ -99,7 +99,7 @@ const RewardCalculatorPage = () => {
 							Free Balance: {get(freeAmount, 'currency', 0)} KSM
 						</div>
 						<AmountInput
-							value={{ currency: amount, subCurrency: amount * 2 }}
+							value={{ currency: amount, subCurrency: (amount || 0) * 2 }}
 							bonded={bondedAmount}
 							onChange={setAmount}
 						/>

@@ -78,7 +78,7 @@ const AmountInput = ({ value, bonded, onChange }) => {
 					value={value}
 					bonded={bonded}
 					total={{
-						currency: value.currency + bonded.currency,
+						currency: (value.currency || 0) + bonded.currency,
 						subCurrency: value.subCurrency + bonded.subCurrency,
 					}}
 					onChange={onChange}
