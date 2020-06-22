@@ -54,7 +54,7 @@ const withDashboardLayout = (children) => {
 						currency: freeAmount,
 						subCurrency: freeAmountInSubCurrency,
 					},
-					setAccountInfoLoading: false,
+					accountInfoLoading: false,
 				});
 			});
 		}
@@ -81,7 +81,7 @@ const withDashboardLayout = (children) => {
 					background: #F7FBFF;
 				}
 				.core-content {
-					width: calc(100% - 13rem);
+					width: calc(100vw - 13rem);
 				}
 				@keyframes fadein {
 					from { opacity: 0; transform: scale(0.7); }
