@@ -41,7 +41,7 @@ const ExpectedReturnsCard = ({
 			<div className="flex flex-wrap mt-2">
 				<ResultCardInsight
 					label="Estimated Returns"
-					value={`${returns.subCurrency} KSM`}
+					value={`${returns.currency} KSM`}
 					supportValue={`$${returns.subCurrency}`}
 					emptyState={!result.returns}
 				/>
