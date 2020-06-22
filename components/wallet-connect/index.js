@@ -50,48 +50,7 @@ const WalletConnectPopover = withSlideIn(({ styles }) => {
 	};
 
 	const onStashSelected = async (stashAccount) => {
-		// wallet connected state:
-		// when `stashAccount` is selected, fetch ledger for the account and save it.
-		if (stashAccount) {
-			setLedgerLoading(true);
-			createPolkadotAPIInstance().then(async api => {
-				setApiInstance(api);
-
-				// check if `stashAccount` already has bonded on some controller
-				const { isSome: isBonded } = await api.query.staking.bonded(stashAccount.address);
-				const { data: { free: freeBalance, miscFrozen: lockedBalance } } = await api.query.system.account(stashAccount.address);
-
-				let bondedAmount = 0, bondedAmountInSubCurrency = 0, freeAmount = 0, freeAmountInSubCurrency = 0;
-				if (isBonded && !lockedBalance.isEmpty) {
-					bondedAmount = Number((lockedBalance.toNumber() / (10 ** 12)).toFixed(4));
-					bondedAmountInSubCurrency = await convertCurrency(bondedAmount);
-				}
-
-				if (freeBalance) {
-					/**
-					 * `freeBalance` here includes `locked` balance also - that's how polkadot API is currently working
-					 *  so we need to subtract the `bondedBalance``
-					 */
-					freeAmount = Number(((freeBalance.toNumber() / (10 ** 12))  - bondedAmount).toFixed(4));
-					freeAmountInSubCurrency = await convertCurrency(freeAmount);
-				}
-
-				setAccountState({
-					ledgerExists: isBonded,
-					bondedAmount: {
-						currency: bondedAmount,
-						subCurrency: bondedAmountInSubCurrency,
-					},
-					freeAmount: {
-						currency: freeAmount,
-						subCurrency: freeAmountInSubCurrency,
-					},
-				});
-
-				setLedgerLoading(false);
-				close();
-			});
-		}
+		if (stashAccount) close();
 		setStashAccount(stashAccount);
 	};
 

@@ -1,5 +1,10 @@
 import dynamic from 'next/dynamic';
 import SideMenu from '@components/common/sidemenu';
+import { useAccounts, usePolkadotApi } from '@lib/store';
+import createPolkadotAPIInstance from '@lib/polkadot-api';
+import convertCurrency from '@lib/convert-currency';
+import { pick } from 'lodash';
+import { useEffect } from 'react';
 
 const Header = dynamic(
 	() => import('@components/common/header').then(mod => mod.default),
@@ -7,6 +12,54 @@ const Header = dynamic(
 );
 
 const withDashboardLayout = (children) => {
+	const { setApiInstance } = usePolkadotApi();
+	const { stashAccount, setAccountInfoLoading, setAccountState } = useAccounts(
+		state => pick(state, ['stashAccount', 'setAccountState', 'setAccountInfoLoading'])
+	);
+
+	useEffect(() => {
+		// wallet connected state:
+		// when `stashAccount` is selected, fetch ledger for the account and save it.
+		if (stashAccount) {
+			setAccountInfoLoading(true);
+			createPolkadotAPIInstance().then(async api => {
+				setApiInstance(api);
+
+				// check if `stashAccount` already has bonded on some controller
+				const { isSome: isBonded } = await api.query.staking.bonded(stashAccount.address);
+				const { data: { free: freeBalance, miscFrozen: lockedBalance } } = await api.query.system.account(stashAccount.address);
+
+				let bondedAmount = 0, bondedAmountInSubCurrency = 0, freeAmount = 0, freeAmountInSubCurrency = 0;
+				if (isBonded && !lockedBalance.isEmpty) {
+					bondedAmount = Number((lockedBalance.toNumber() / (10 ** 12)).toFixed(4));
+					bondedAmountInSubCurrency = await convertCurrency(bondedAmount);
+				}
+
+				if (freeBalance) {
+					/**
+					 * `freeBalance` here includes `locked` balance also - that's how polkadot API is currently working
+					 *  so we need to subtract the `bondedBalance``
+					 */
+					freeAmount = Number(((freeBalance.toNumber() / (10 ** 12))  - bondedAmount).toFixed(4));
+					freeAmountInSubCurrency = await convertCurrency(freeAmount);
+				}
+
+				setAccountState({
+					ledgerExists: isBonded,
+					bondedAmount: {
+						currency: bondedAmount,
+						subCurrency: bondedAmountInSubCurrency,
+					},
+					freeAmount: {
+						currency: freeAmount,
+						subCurrency: freeAmountInSubCurrency,
+					},
+					setAccountInfoLoading: false,
+				});
+			});
+		}
+	}, [stashAccount]);
+
 	return () => (
 		<div>
 			<Header />
