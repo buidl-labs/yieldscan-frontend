@@ -59,9 +59,10 @@ const Payment = () => {
 						isClosable: true,
 					});
 					setStakingLoading(false);
+				} else {
+					setStakingEvent(message);
 				}
-				setStakingEvent(message);
-			},
+			}
 		).catch(error => {
 			toast({
 				title: 'Failure',
@@ -70,8 +71,6 @@ const Payment = () => {
 				status: 'error',
 				position: 'top-right',
 			});
-		}).finally(() => {
-			setStakingLoading(false);
 		});
 	};
 
