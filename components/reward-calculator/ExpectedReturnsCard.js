@@ -8,7 +8,7 @@ const ResultCardInsight = ({ label, value, supportValue, emptyState }) => (
 			<HelpCircle size="1rem" cursor="pointer" strokeOpacity="0.75" />
 		</div>
 		{emptyState ? (
-			<h3 className="text-center text-2xl">?</h3>
+			<h3 className="text-center text-2xl">-</h3>
 		) : (
 			<>
 				<h3 className="text-2xl">{value}</h3>
