@@ -36,7 +36,7 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 
 			<div className="mt-6 rounded-xl border border-gray-200 px-8 py-3 mt-4">
 				{false && <h1 className="text-gray-700 text-2xl">Selected Validators</h1>}
-				<div className="flex justify-between items-centerr">
+				<div className="flex justify-between items-center">
 					<div className="flex justify-between items-center rounded-full px-4 py-2 border border-gray-200">
 						<span>Estimated Returns</span>
 						<div className="ml-2 px-3 py-2 bg-teal-500 text-white rounded-full">
@@ -61,17 +61,26 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 				</div>
 			</div>
 
-			<div className="my-5 rounded p-4 bg-gray-900 text-white flex items-center justify-around">
-				<div className="rounded p-3 flex flex-col bg-white text-black justify-center">
-					<span className="text-teal-500 text-sm font-semibold">Additional Funds to Bond</span>
-					<h3 className="text-lg font-semibold">{stakingAmount} KSM</h3>
-					<span className="text-gray-700 text-sm">${stakingAmount}</span>
-				</div>
-				<div className="rounded-lg p-2 flex flex-col text-white justify-center">
-					<span className="text-teal-500 text-sm font-semibold">Currently Bonded</span>
-					<h3 className="text-lg font-semibold">{bonded.currency} KSM</h3>
-					<span className="text-gray-200 text-sm">${bonded.subCurrency}</span>
-				</div>
+			<div
+				className={`
+					my-5 rounded p-4 bg-gray-900 text-white flex items-center justify-around
+					${!bonded.currency && 'w-1/3'}
+				`}
+			>
+				{!!bonded.currency && (
+					<>
+						<div className="rounded p-3 flex flex-col justify-center">
+							<span className="text-teal-500 text-sm font-semibold">Additional Funds to Bond</span>
+							<h3 className="text-lg font-semibold">{stakingAmount} KSM</h3>
+							<span className="text-gray-200 text-sm">${stakingAmount}</span>
+						</div>
+						<div className="rounded-lg p-2 flex flex-col text-white justify-center">
+							<span className="text-teal-500 text-sm font-semibold">Currently Bonded</span>
+							<h3 className="text-lg font-semibold">{bonded.currency} KSM</h3>
+							<span className="text-gray-200 text-sm">${bonded.subCurrency}</span>
+						</div>
+					</>
+				)}
 				<div className="rounded-lg p-2 flex flex-col text-white justify-center">
 					<span className="text-teal-500 text-sm font-semibold">Total Staking Amount</span>
 					<h3 className="text-lg font-semibold">

@@ -41,7 +41,6 @@ const Payment = () => {
 	const [stakingEvent, setStakingEvent] = useState();
 	const [stakingLoading, setStakingLoading] = useState(false);
 
-	console.log(transactionState);
 	const transact = () => {
 		setStakingLoading(true);
 		stake(
