@@ -1,14 +1,14 @@
 import { get } from 'lodash';
 import RiskTag from "@components/reward-calculator/RiskTag";
 
-const ValidatorInfo = ({ name, amountPerValidator }) => (
+const ValidatorInfo = ({ name, riskScore, amountPerValidator }) => (
 	<div className="rounded-lg flex items-center border border-gray-200 px-4 mb-2">
 		<img src="http://placehold.it/255" className="rounded-full w-12 h-12 mr-4" />
 		<div className="flex flex-col items-start">
 			<h3 className="text-gray-700 text-sm">{name}</h3>
 			<span className="flex text-gray-500 text-sm">
 				Risk Score
-				<RiskTag risk={Number(Math.random().toFixed(2))} />
+				<RiskTag risk={Number(riskScore).toFixed(2)} />
 			</span>
 		</div>
 		<div className="flex flex-col ml-auto">
@@ -55,6 +55,7 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 						<ValidatorInfo
 							key={validator.stashId}
 							name={validator.stashId}
+							riskScore={validator.riskScore}
 							amountPerValidator={stakingAmount / selectedValidators.length}
 						/>
 					))}
