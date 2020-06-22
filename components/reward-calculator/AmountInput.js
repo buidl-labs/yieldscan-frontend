@@ -14,7 +14,7 @@ const AmountInputDefault = ({ value, onChange }) => (
 		</div>
 		<div className="flex-center">
 			<div className="bg-gray-800 px-10 py-3 text-white rounded-full">
-				<div className="flex items-center relative cursor-pointer">
+				<div className="flex items-center relative">
 					<span>KSM</span>
 				</div>
 			</div>
