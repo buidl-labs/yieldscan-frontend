@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import SideMenu from '@components/common/sidemenu';
-import { useAccounts, usePolkadotApi } from '@lib/store';
+import { useAccounts, usePolkadotApi, useTransaction } from '@lib/store';
 import createPolkadotAPIInstance from '@lib/polkadot-api';
 import convertCurrency from '@lib/convert-currency';
 import { pick } from 'lodash';
@@ -15,6 +15,9 @@ const withDashboardLayout = (children) => {
 	const { setApiInstance } = usePolkadotApi();
 	const { stashAccount, setAccountInfoLoading, setAccountState } = useAccounts(
 		state => pick(state, ['stashAccount', 'setAccountState', 'setAccountInfoLoading'])
+	);
+	const { stakingAmount, setTransactionState } = useTransaction(
+		state => pick(state, ['stakingAmount', 'setTransactionState'])
 	);
 
 	useEffect(() => {
@@ -43,6 +46,9 @@ const withDashboardLayout = (children) => {
 					freeAmount = Number(((freeBalance.toNumber() / (10 ** 12))  - bondedAmount).toFixed(4));
 					freeAmountInSubCurrency = await convertCurrency(freeAmount);
 				}
+
+				const newStakingAmount = Math.max((stakingAmount || 0) - bondedAmount, 0);
+				setTransactionState({ stakingAmount: newStakingAmount });
 
 				setAccountState({
 					ledgerExists: isBonded,

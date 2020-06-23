@@ -20,8 +20,9 @@ const RewardCalculatorPage = () => {
 	const { stashAccount, freeAmount, bondedAmount, accountInfoLoading } = useAccounts();
 	const { isOpen, toggle } = useWalletConnect();
 	const setTransactionState = useTransaction(state => state.setTransactionState);
+	const stakingAmount = useTransaction(state => state.stakingAmount);
 
-	const [amount, setAmount] = useState();
+	const [amount, _setAmount] = useState();
 	const [risk, setRisk] = useState('Medium');
 	const [timePeriodValue, setTimePeriod] = useState();
 	const [timePeriodUnit, setTimePeriodUnit] = useState('months');
@@ -29,6 +30,13 @@ const RewardCalculatorPage = () => {
 
 	const [validatorMap, setValidatorMap] = useState({}); // map with low/med/high risk sets
 	const [result, setResult] = useState({});
+
+	useEffect(() => {
+		/**
+		 * global `stakingAmount` is updated hence update the local value
+		 */
+		if (stakingAmount !== amount) _setAmount(stakingAmount);
+	}, [stakingAmount]);
 
 	useEffect(() => {
 		axios.get('/rewards/risk-set').then(({ data }) => {
@@ -57,6 +65,15 @@ const RewardCalculatorPage = () => {
 		}
 	}, [risk, amount, timePeriodValue, timePeriodUnit, compounding, bondedAmount]);
 
+	const setAmount = (stakingAmount) => {
+		/**
+		 * Updating global state because we use it when user connects their wallet
+		 * and we re-calculate their stakingAmount based on currently bonded amount.
+		 */
+		setTransactionState({ stakingAmount });
+		_setAmount(stakingAmount);
+	};
+	
 	const onPayment = async () => {
 		let _returns = get(result, 'returns'), _yieldPercentage = get(result, 'yieldPercentage');
 
@@ -83,6 +100,8 @@ const RewardCalculatorPage = () => {
 			</div>
 		);
 	}
+
+	console.log(amount);
 
 	return (
 		<div className="flex px-24 pt-12">
