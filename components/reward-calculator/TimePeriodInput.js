@@ -7,6 +7,7 @@ const TimePeriodInput = ({ value, unit, onChange, onUnitChange }) => {
 				<input
 					type="number"
 					placeholder="0"
+					defaultValue={value === 0 ? null : value}
 					onChange={ev => onChange(Number(ev.target.value))}
 					className="w-24 text-2xl p-0 outline-none"
 				/>

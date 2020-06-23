@@ -6,7 +6,7 @@ const AmountInputDefault = ({ value, onChange }) => (
 			<input
 				type="number"
 				placeholder="0"
-				defaultValue={value.currency}
+				defaultValue={value.currency === 0 ? null : value.currency}
 				onChange={e => onChange(Number(e.target.value))}
 				className="w-24 text-2xl p-0 outline-none"
 			/>
@@ -45,7 +45,7 @@ const AmountInputAlreadyBonded = ({ value, bonded, total, onChange }) => (
 					<input
 						type="number"
 						placeholder="0"
-						defaultValue={value.currency}
+						defaultValue={value.currency === 0 ? null : value.currency}
 						className="text-xl outline-none w-24 mr-2"
 						onChange={e => onChange(Number(e.target.value))}
 					/>
