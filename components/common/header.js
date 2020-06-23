@@ -1,7 +1,8 @@
 import { useAccounts } from "@lib/store";
 import { get, isNil } from "lodash";
-import { ChevronRight } from "react-feather";
+import { ChevronDown } from "react-feather";
 import { WalletConnectPopover, useWalletConnect } from "@components/wallet-connect";
+import { Popover, PopoverTrigger, PopoverContent } from "@chakra-ui/core";
 
 const Header = () => {
 	const { isOpen, toggle } = useWalletConnect();
@@ -28,9 +29,22 @@ const Header = () => {
 					</div>
 				)}
 
-				<button hidden className="rounded-full border border-gray-300 p-2 px-4 font-semibold text-gray-800">
-					<ChevronRight />
-				</button>
+				<Popover>
+					<PopoverTrigger>
+						<button className="flex items-center rounded-full border border-gray-300 p-2 px-4 font-semibold text-gray-800">
+							<img src="images/kusama-logo.png" alt="kusama-logo" className="mr-2 w-6" />
+							<ChevronDown size="20px" />
+						</button>
+					</PopoverTrigger>
+					<PopoverContent zIndex={50}>
+						<div className="text-gray-600 text-sm p-4">
+							<div className="flex items-center justify-between">
+								<p>Current Network: <b>Kusama</b></p>
+								<button className="text-blue-500 p-1">Change</button>
+							</div>
+						</div>
+					</PopoverContent>
+				</Popover>
 			</div>
 		</div>
 	);

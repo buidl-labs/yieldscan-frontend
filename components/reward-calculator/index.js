@@ -12,15 +12,17 @@ import { WalletConnectPopover, useWalletConnect } from "@components/wallet-conne
 import { useAccounts, useTransaction } from "@lib/store";
 import { get, isNil } from "lodash";
 import calculateReward from "@lib/calculate-reward";
+import { Spinner } from "@chakra-ui/core";
 
 const RewardCalculatorPage = () => {
 	const router = useRouter();
 	
-	const { stashAccount, ledgerExists, freeAmount, bondedAmount } = useAccounts();
+	const { stashAccount, freeAmount, bondedAmount, accountInfoLoading } = useAccounts();
 	const { isOpen, toggle } = useWalletConnect();
 	const setTransactionState = useTransaction(state => state.setTransactionState);
+	const stakingAmount = useTransaction(state => state.stakingAmount);
 
-	const [amount, setAmount] = useState();
+	const [amount, _setAmount] = useState();
 	const [risk, setRisk] = useState('Medium');
 	const [timePeriodValue, setTimePeriod] = useState();
 	const [timePeriodUnit, setTimePeriodUnit] = useState('months');
@@ -28,6 +30,13 @@ const RewardCalculatorPage = () => {
 
 	const [validatorMap, setValidatorMap] = useState({}); // map with low/med/high risk sets
 	const [result, setResult] = useState({});
+
+	useEffect(() => {
+		/**
+		 * global `stakingAmount` is updated hence update the local value
+		 */
+		if (stakingAmount !== amount) _setAmount(stakingAmount);
+	}, [stakingAmount]);
 
 	useEffect(() => {
 		axios.get('/rewards/risk-set').then(({ data }) => {
@@ -56,6 +65,15 @@ const RewardCalculatorPage = () => {
 		}
 	}, [risk, amount, timePeriodValue, timePeriodUnit, compounding, bondedAmount]);
 
+	const setAmount = (stakingAmount) => {
+		/**
+		 * Updating global state because we use it when user connects their wallet
+		 * and we re-calculate their stakingAmount based on currently bonded amount.
+		 */
+		setTransactionState({ stakingAmount });
+		_setAmount(stakingAmount);
+	};
+	
 	const onPayment = async () => {
 		let _returns = get(result, 'returns'), _yieldPercentage = get(result, 'yieldPercentage');
 
@@ -72,6 +90,17 @@ const RewardCalculatorPage = () => {
 		router.push('/payment');
 	};
 
+	if (accountInfoLoading) {
+		return (
+			<div className="flex-center w-full h-full">
+				<div className="flex-center flex-col">
+					<Spinner size="xl" />
+					<span className="text-sm text-gray-600 mt-5">fetching your data from chain...</span>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="flex px-24 pt-12">
 			<WalletConnectPopover isOpen={isOpen} />
@@ -82,19 +111,13 @@ const RewardCalculatorPage = () => {
 					<div className="mt-3">
 						<div
 							className="m-2 text-gray-600 text-sm"
-							hidden={!ledgerExists}
-						>
-							Already bonded: {get(bondedAmount, 'currency', 0)} KSM
-						</div>
-						<div
-							className="m-2 text-gray-600 text-sm"
 							hidden={isNil(stashAccount)}
 						>
 							Free Balance: {get(freeAmount, 'currency', 0)} KSM
 						</div>
 						<AmountInput
-							value={amount}
-							dollarValue={!!amount ? amount * 2 : 0}
+							value={{ currency: amount, subCurrency: (amount || 0) * 2 }}
+							bonded={bondedAmount}
 							onChange={setAmount}
 						/>
 					</div>

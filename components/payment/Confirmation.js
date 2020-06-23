@@ -1,14 +1,14 @@
 import { get } from 'lodash';
 import RiskTag from "@components/reward-calculator/RiskTag";
 
-const ValidatorInfo = ({ name, amountPerValidator }) => (
+const ValidatorInfo = ({ name, riskScore, amountPerValidator }) => (
 	<div className="rounded-lg flex items-center border border-gray-200 px-4 mb-2">
 		<img src="http://placehold.it/255" className="rounded-full w-12 h-12 mr-4" />
 		<div className="flex flex-col items-start">
 			<h3 className="text-gray-700 text-sm">{name}</h3>
 			<span className="flex text-gray-500 text-sm">
 				Risk Score
-				<RiskTag risk={Number(Math.random().toFixed(2))} />
+				<RiskTag risk={Number(riskScore).toFixed(2)} />
 			</span>
 		</div>
 		<div className="flex flex-col ml-auto">
@@ -36,7 +36,7 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 
 			<div className="mt-6 rounded-xl border border-gray-200 px-8 py-3 mt-4">
 				{false && <h1 className="text-gray-700 text-2xl">Selected Validators</h1>}
-				<div className="flex justify-between items-centerr">
+				<div className="flex justify-between items-center">
 					<div className="flex justify-between items-center rounded-full px-4 py-2 border border-gray-200">
 						<span>Estimated Returns</span>
 						<div className="ml-2 px-3 py-2 bg-teal-500 text-white rounded-full">
@@ -55,23 +55,33 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 						<ValidatorInfo
 							key={validator.stashId}
 							name={validator.stashId}
+							riskScore={validator.riskScore}
 							amountPerValidator={stakingAmount / selectedValidators.length}
 						/>
 					))}
 				</div>
 			</div>
 
-			<div className="my-5 rounded p-4 bg-gray-900 text-white flex items-center justify-around">
-				<div className="rounded p-3 flex flex-col bg-white text-black justify-center">
-					<span className="text-teal-500 text-sm font-semibold">Additional Funds to Bond</span>
-					<h3 className="text-lg font-semibold">{stakingAmount} KSM</h3>
-					<span className="text-gray-700 text-sm">${stakingAmount}</span>
-				</div>
-				<div className="rounded-lg p-2 flex flex-col text-white justify-center">
-					<span className="text-teal-500 text-sm font-semibold">Currently Bonded</span>
-					<h3 className="text-lg font-semibold">{bonded.currency} KSM</h3>
-					<span className="text-gray-200 text-sm">${bonded.subCurrency}</span>
-				</div>
+			<div
+				className={`
+					my-5 rounded p-4 bg-gray-900 text-white flex items-center justify-around
+					${!bonded.currency && 'w-1/3'}
+				`}
+			>
+				{!!bonded.currency && (
+					<>
+						<div className="rounded p-3 flex flex-col justify-center">
+							<span className="text-teal-500 text-sm font-semibold">Additional Funds to Bond</span>
+							<h3 className="text-lg font-semibold">{stakingAmount} KSM</h3>
+							<span className="text-gray-200 text-sm">${stakingAmount}</span>
+						</div>
+						<div className="rounded-lg p-2 flex flex-col text-white justify-center">
+							<span className="text-teal-500 text-sm font-semibold">Currently Bonded</span>
+							<h3 className="text-lg font-semibold">{bonded.currency} KSM</h3>
+							<span className="text-gray-200 text-sm">${bonded.subCurrency}</span>
+						</div>
+					</>
+				)}
 				<div className="rounded-lg p-2 flex flex-col text-white justify-center">
 					<span className="text-teal-500 text-sm font-semibold">Total Staking Amount</span>
 					<h3 className="text-lg font-semibold">

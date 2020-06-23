@@ -6,6 +6,7 @@ import Transaction from "./Transaction";
 import { useAccounts, useTransaction, usePolkadotApi } from "@lib/store";
 import stake from "@lib/stake";
 import { useToast, Spinner } from "@chakra-ui/core";
+import { useRouter } from "next/router";
 
 const Steps = ({ steps, currentStep }) => (
 	<>
@@ -33,6 +34,7 @@ const Steps = ({ steps, currentStep }) => (
 // TODO: add `back` button from `payments` to `reward-calculator` and calculator state should be maintained
 const Payment = () => {
 	const toast = useToast();
+	const router = useRouter();
 	const { apiInstance } = usePolkadotApi();
 	const [currentStep, setCurrentStep] = useState(0);
 	const { accounts, stashAccount, bondedAmount } = useAccounts();
@@ -41,38 +43,37 @@ const Payment = () => {
 	const [stakingEvent, setStakingEvent] = useState();
 	const [stakingLoading, setStakingLoading] = useState(false);
 
-	console.log(transactionState);
 	const transact = () => {
 		setStakingLoading(true);
+
+		const handlers = {
+			onEvent: (eventInfo) => {
+				setStakingEvent(eventInfo.message);
+			},
+			onFinish: (status, message) => { // status = 0 for success, anything else for error code
+				toast({
+					title: status === 0 ? 'Successful!' : 'Error!',
+					status: status === 0 ? 'success' : 'error',
+					description: message,
+					position: 'top-right',
+					isClosable: true,
+					duration: 3000,
+				});
+				setStakingLoading(false);
+				
+				if (status === 0) router.replace('/reward-calculator');
+			},
+		};
+
 		stake(
 			stashAccount.address,
 			transactionState.controller,
 			transactionState.stakingAmount,
 			transactionState.selectedValidators.map(v => v.stashId),
 			apiInstance,
-			(message, finished) => {
-				if (finished) {
-					toast({
-						title: message,
-						duration: 3000,
-						status: finished === 1 ? 'success' : 'error',
-						position: 'top-right',
-						isClosable: true,
-					});
-					setStakingLoading(false);
-				}
-				setStakingEvent(message);
-			},
+			handlers
 		).catch(error => {
-			toast({
-				title: 'Failure',
-				description: error.message,
-				duration: 3000,
-				status: 'error',
-				position: 'top-right',
-			});
-		}).finally(() => {
-			setStakingLoading(false);
+			handlers.onFinish(1, error.message);
 		});
 	};
 
