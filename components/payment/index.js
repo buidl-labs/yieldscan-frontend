@@ -43,34 +43,33 @@ const Payment = () => {
 
 	const transact = () => {
 		setStakingLoading(true);
+
+		const handlers = {
+			onEvent: (eventInfo) => {
+				setStakingEvent(eventInfo.message);
+			},
+			onFinish: (status, message) => { // status = 0 for success, anything else for error code
+				toast({
+					title: status === 0 ? 'Success!' : 'Error!',
+					status: status === 0 ? 'success' : 'error',
+					description: message,
+					position: 'top-right',
+					isClosable: true,
+					duration: 3000,
+				});
+				setStakingLoading(false);
+			},
+		};
+
 		stake(
 			stashAccount.address,
 			transactionState.controller,
 			transactionState.stakingAmount,
 			transactionState.selectedValidators.map(v => v.stashId),
 			apiInstance,
-			(message, finished) => {
-				if (finished) {
-					toast({
-						title: message,
-						duration: 3000,
-						status: finished === 1 ? 'success' : 'error',
-						position: 'top-right',
-						isClosable: true,
-					});
-					setStakingLoading(false);
-				} else {
-					setStakingEvent(message);
-				}
-			}
+			handlers
 		).catch(error => {
-			toast({
-				title: 'Failure',
-				description: error.message,
-				duration: 3000,
-				status: 'error',
-				position: 'top-right',
-			});
+			handlers.onFinish(1, error.message);
 		});
 	};
 
