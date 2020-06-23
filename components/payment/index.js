@@ -6,6 +6,7 @@ import Transaction from "./Transaction";
 import { useAccounts, useTransaction, usePolkadotApi } from "@lib/store";
 import stake from "@lib/stake";
 import { useToast, Spinner } from "@chakra-ui/core";
+import { useRouter } from "next/router";
 
 const Steps = ({ steps, currentStep }) => (
 	<>
@@ -33,6 +34,7 @@ const Steps = ({ steps, currentStep }) => (
 // TODO: add `back` button from `payments` to `reward-calculator` and calculator state should be maintained
 const Payment = () => {
 	const toast = useToast();
+	const router = useRouter();
 	const { apiInstance } = usePolkadotApi();
 	const [currentStep, setCurrentStep] = useState(0);
 	const { accounts, stashAccount, bondedAmount } = useAccounts();
@@ -50,7 +52,7 @@ const Payment = () => {
 			},
 			onFinish: (status, message) => { // status = 0 for success, anything else for error code
 				toast({
-					title: status === 0 ? 'Success!' : 'Error!',
+					title: status === 0 ? 'Successful!' : 'Error!',
 					status: status === 0 ? 'success' : 'error',
 					description: message,
 					position: 'top-right',
@@ -58,6 +60,8 @@ const Payment = () => {
 					duration: 3000,
 				});
 				setStakingLoading(false);
+				
+				if (status === 0) router.replace('/reward-calculator');
 			},
 		};
 
