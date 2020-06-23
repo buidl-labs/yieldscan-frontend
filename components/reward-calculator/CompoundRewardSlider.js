@@ -6,9 +6,8 @@ const CompoundRewardSlider = ({ checked, setChecked }) => {
 			<Switch
 				size="lg"
 				color="teal"
-				checked={checked}
+				isChecked={checked}
 				onChange={e => setChecked(e.target.checked)}
-				defaultIsChecked
 			/>
 			<span
 				className={`

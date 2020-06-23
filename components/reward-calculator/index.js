@@ -101,8 +101,6 @@ const RewardCalculatorPage = () => {
 		);
 	}
 
-	console.log(amount);
-
 	return (
 		<div className="flex px-24 pt-12">
 			<WalletConnectPopover isOpen={isOpen} />
