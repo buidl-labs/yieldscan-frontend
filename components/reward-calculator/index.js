@@ -66,9 +66,9 @@ const RewardCalculatorPage = () => {
 
 	useEffect(() => {
 		if (risk && timePeriodValue && amount) {
-			// TODO: take selected validators into account
+			const selectedValidatorsList = Object.values(selectedValidators).filter(v => !isNil(v));
 			calculateReward(
-				validatorMap[risk],
+				selectedValidatorsList,
 				amount,
 				timePeriodValue,
 				timePeriodUnit,
