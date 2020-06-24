@@ -10,7 +10,7 @@ import ExpectedReturnsCard from "./ExpectedReturnsCard";
 import CompoundRewardSlider from "./CompoundRewardSlider";
 import { WalletConnectPopover, useWalletConnect } from "@components/wallet-connect";
 import { useAccounts, useTransaction } from "@lib/store";
-import { get, isNil } from "lodash";
+import { get, isNil, mapValues, keyBy, cloneDeep } from "lodash";
 import calculateReward from "@lib/calculate-reward";
 import { Spinner } from "@chakra-ui/core";
 
@@ -27,6 +27,7 @@ const RewardCalculatorPage = () => {
 	const [timePeriodValue, setTimePeriod] = useState();
 	const [timePeriodUnit, setTimePeriodUnit] = useState('months');
 	const [compounding, setCompounding] = useState(true);
+	const [selectedValidators, setSelectedValidators] = useState({});
 
 	const [validatorMap, setValidatorMap] = useState({}); // map with low/med/high risk sets
 	const [result, setResult] = useState({});
@@ -40,17 +41,27 @@ const RewardCalculatorPage = () => {
 
 	useEffect(() => {
 		axios.get('/rewards/risk-set').then(({ data }) => {
-			setValidatorMap({
-				Low: data.lowriskset,
-				Medium: data.medriskset,
-				High: data.highriskset,
+			/**
+			 * `mapValues(keyBy(array), 'value-key')`:
+			 * 	O(N + N) operation, using since each risk set will have maximum 16 validators
+			 */
+			const validatorMap = {
+				Low: mapValues(keyBy(data.lowriskset, 'stashId')),
+				Medium: mapValues(keyBy(data.medriskset, 'stashId')),
+				High: mapValues(keyBy(data.highriskset, 'stashId')),
 				total: data.totalset,
-			});
+			};
+
+			const selectedValidators = cloneDeep(validatorMap[risk]);
+
+			setValidatorMap(validatorMap);
+			setSelectedValidators(selectedValidators);
 		});
 	}, []);
 
 	useEffect(() => {
 		if (risk && timePeriodValue && amount) {
+			// TODO: take selected validators into account
 			calculateReward(
 				validatorMap[risk],
 				amount,
@@ -158,7 +169,9 @@ const RewardCalculatorPage = () => {
 				<ValidatorsList
 					risk={risk}
 					totalAmount={amount}
-					validatorMap={validatorMap}
+					validators={validatorMap.total}
+					selectedValidators={selectedValidators}
+					setSelectedValidators={setSelectedValidators}
 				/>
 			</div>
 		</div>
