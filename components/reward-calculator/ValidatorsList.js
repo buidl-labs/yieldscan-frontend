@@ -3,8 +3,13 @@ import { get } from "lodash";
 import RiskTag from "./RiskTag";
 import { useState } from "react";
 
-const ValidatorInfo = ({ name, riskScore, amountPerValidator}) => (
-	<div className="rounded-lg flex items-center border border-gray-200 px-4 py-2 mb-2">
+const ValidatorInfo = ({ name, riskScore, amountPerValidator, selected }) => (
+	<div
+		className={`
+			rounded-lg flex items-center border border-gray-200 px-4 py-2 mb-2
+			${selected && 'border-4 border-teal-500'}
+		`}
+	>
 		<img src="http://placehold.it/255" className="rounded-full w-16 h-16 mr-4" />
 		<div className="flex flex-col items-start w-2/5">
 			<h3 className="text-gray-700 truncate w-full truncate">{name}</h3>
