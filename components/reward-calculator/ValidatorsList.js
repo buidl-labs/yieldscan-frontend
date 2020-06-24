@@ -1,5 +1,5 @@
 import { Edit2, ChevronLeft, Settings, Check } from "react-feather";
-import { get, isNil } from "lodash";
+import { isNil } from "lodash";
 import RiskTag from "./RiskTag";
 import { useState } from "react";
 
@@ -50,9 +50,13 @@ const ValidatorsList = ({
 }) => {
 	const [editMode, setEditMode] = useState(false);
 	const amountPerValidator = totalAmount / validators.length;
+	const selectedCount = Object.values(selectedValidators).filter(v => !isNil(v)).length;
 
 	const toggleSelected = (validator) => {
 		const { stashId } = validator;
+
+		if (selectedCount === 16 && !selectedValidators[stashId]) return;
+
 		setSelectedValidators({
 			...selectedValidators,
 			[stashId]: isNil(selectedValidators[stashId]) ? validator : null,
@@ -87,7 +91,9 @@ const ValidatorsList = ({
 							<h1 className="text-gray-700 text-xl">
 								Edit Validators
 							</h1>
-							<span className="text-gray-500">16 selections</span>
+							<span className="text-gray-500">
+								{selectedCount} / 16 selections
+							</span>
 						</div>
 					</div>
 					<button className="p-2 text-sm flex-center rounded-lg bg-gray-200 text-gray-500 font-semibold cursor-pointer">
