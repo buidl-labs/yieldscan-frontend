@@ -73,7 +73,7 @@ const RewardCalculatorPage = () => {
 		setTransactionState({ stakingAmount });
 		_setAmount(stakingAmount);
 	};
-	
+
 	const onPayment = async () => {
 		let _returns = get(result, 'returns'), _yieldPercentage = get(result, 'yieldPercentage');
 

@@ -1,6 +1,7 @@
-import { Edit2 } from "react-feather";
+import { Edit2, ChevronLeft, Settings } from "react-feather";
 import { get } from "lodash";
 import RiskTag from "./RiskTag";
+import { useState } from "react";
 
 const ValidatorInfo = ({ name, riskScore, amountPerValidator}) => (
 	<div className="rounded-lg flex items-center border border-gray-200 px-4 py-2 mb-2">
@@ -24,15 +25,47 @@ const ValidatorInfo = ({ name, riskScore, amountPerValidator}) => (
 
 // TODO: subCurrency to be calculated right
 const ValidatorsList = ({ risk, totalAmount = 0, validatorMap = {} }) => {
+	const [editMode, setEditMode] = useState(false);
 	const validators = get(validatorMap, risk, []);
 	const amountPerValidator = totalAmount / validators.length;
 
 	return (
 		<div className="rounded-xl border border-gray-200 px-8 py-6 mt-4">
-			<div className="flex items-center justify-between">
-				<h1 className="font-semibold text-gray-700 text-2xl">Suggested Validators</h1>
-				<Edit2 size="1.5rem" />
-			</div>
+			{!editMode ? (
+				<div className="select-none flex items-center justify-between">
+					<h1 className="font-semibold text-gray-700 text-2xl">
+						Suggested Validators
+					</h1>
+					<Edit2
+						size="1.5rem"
+						className="cursor-pointer"
+						onClick={() => setEditMode(true)}
+					/>
+				</div>
+			) : (
+				<div className="select-none flex items-center justify-between">
+					<div className="flex items-center font-semibold">
+						<div className="mr-4">
+							<ChevronLeft
+								size="2rem"
+								strokeWidth="2px"
+								className="bg-gray-700 text-white rounded-full p-1 cursor-pointer"
+								onClick={() => setEditMode(false)}
+							/>
+						</div>
+						<div>
+							<h1 className="text-gray-700 text-xl">
+								Edit Validators
+							</h1>
+							<span className="text-gray-500">16 selections</span>
+						</div>
+					</div>
+					<button className="p-2 text-sm flex-center rounded-lg bg-gray-200 text-gray-500 font-semibold cursor-pointer">
+						<Settings className="mr-2 text-gray-700" size="1rem" />
+						<span>Advanced Selections</span>
+					</button>
+				</div>
+			)}
 			<div className="mt-4 overflow-auto h-64">
 				{validators.map(validator => (
 					<ValidatorInfo
