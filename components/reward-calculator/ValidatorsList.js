@@ -3,16 +3,16 @@ import { isNil } from "lodash";
 import RiskTag from "./RiskTag";
 import { useState } from "react";
 
-const ValidatorInfo = ({ name, riskScore, amountPerValidator, selected, toggleSelected }) => (
+const ValidatorInfo = ({ name, riskScore, amountPerValidator, editMode, selected, toggleSelected }) => (
 	<div
 		className={`
-			rounded-lg flex items-center px-4 py-2 mb-2 cursor-pointer transition duration-500
+			rounded-lg flex items-center px-4 py-2 mb-2 cursor-pointer transition duration-500 w-full overflow-x-hidden
 			${selected ? 'border-2 border-teal-500' : 'border border-gray-200'}
 		`}
 		onClick={toggleSelected}
 	>
 		{selected && (
-			<div>
+			<div className="w-1/5">
 				<Check
 					size="1.75rem"
 					className="p-1 bg-teal-500 text-white mr-2 rounded-full" 
@@ -20,22 +20,27 @@ const ValidatorInfo = ({ name, riskScore, amountPerValidator, selected, toggleSe
 				/>
 			</div>
 		)}
-		<div className={`flex items-center transition duration-200 ${selected && 'transform translate-x-4'}`}>
-			<img src="http://placehold.it/255" className="rounded-full w-16 h-16 mr-4" />
-			<div className="flex flex-col items-start w-2/5">
-				<h3 className="text-gray-700 truncate w-full truncate">{name}</h3>
-				<span className="select-none flex text-gray-500 text-sm">
-					Risk Score
-					<RiskTag risk={riskScore} />
-				</span>
+		<div
+			className={`flex items-center justify-between transition duration-200 ${selected && 'transform translate-x-4'}`}
+			style={{ width: '26rem' }}
+		>
+			<div className="flex items-center w-4/5">
+				<img src="http://placehold.it/255" className="rounded-full w-16 h-16 mr-4" />
+				<div className="flex flex-col items-start w-4/5">
+					<h3 className="text-gray-700 truncate w-4/5">{name}</h3>
+					<span className="select-none flex text-gray-500 text-sm">
+						Risk Score
+						<RiskTag risk={riskScore} />
+					</span>
+				</div>
 			</div>
-			<div className="flex flex-col w-2/5 ml-auto">
-				<div className="ml-auto">
+			{!editMode && (
+				<div className="flex flex-col ml-5 w-1/5">
 					<span className="text-red-400">Amount</span>
 					<h5 className="text-gray-700 text-lg truncate">{amountPerValidator.currency} KSM</h5>
 					<span className="text-gray-500 text-sm">${amountPerValidator.subCurrency}</span>
 				</div>
-			</div>
+			)}
 		</div>
 	</div>
 );
@@ -49,7 +54,7 @@ const ValidatorsList = ({
 	setSelectedValidators = {},
 }) => {
 	const [editMode, setEditMode] = useState(false);
-	const amountPerValidator = totalAmount / validators.length;
+	const amountPerValidator = Number((totalAmount / validators.length).toFixed(2));
 	const selectedValidatorsList = Object.values(selectedValidators).filter(v => !isNil(v));
 
 	const toggleSelected = (validator) => {
@@ -105,6 +110,7 @@ const ValidatorsList = ({
 			<div className="mt-4 overflow-auto h-64">
 				{editMode && validators.map(validator => (
 					<ValidatorInfo
+						editMode
 						key={validator.stashId}
 						name={validator.stashId}
 						riskScore={Number(validator.riskScore).toFixed(2)}
