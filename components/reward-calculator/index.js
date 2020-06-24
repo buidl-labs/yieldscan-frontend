@@ -92,6 +92,7 @@ const RewardCalculatorPage = () => {
 
 	const onPayment = async () => {
 		let _returns = get(result, 'returns'), _yieldPercentage = get(result, 'yieldPercentage');
+		const selectedValidatorsList = Object.values(selectedValidators).filter(v => !isNil(v));
 
 		setTransactionState({
 			stakingAmount: amount,
@@ -101,7 +102,7 @@ const RewardCalculatorPage = () => {
 			compounding,
 			returns: _returns,
 			yieldPercentage: _yieldPercentage,
-			selectedValidators: validatorMap[risk],
+			selectedValidators: selectedValidatorsList,
 		});
 		router.push('/payment');
 	};
