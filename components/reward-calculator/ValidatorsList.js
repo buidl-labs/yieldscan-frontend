@@ -1,38 +1,63 @@
-import { Edit2, ChevronLeft, Settings } from "react-feather";
-import { get } from "lodash";
+import { Edit2, ChevronLeft, Settings, Check } from "react-feather";
+import { get, isNil } from "lodash";
 import RiskTag from "./RiskTag";
 import { useState } from "react";
 
-const ValidatorInfo = ({ name, riskScore, amountPerValidator, selected }) => (
+const ValidatorInfo = ({ name, riskScore, amountPerValidator, selected, toggleSelected }) => (
 	<div
 		className={`
-			rounded-lg flex items-center border border-gray-200 px-4 py-2 mb-2
-			${selected && 'border-4 border-teal-500'}
+			rounded-lg flex items-center px-4 py-2 mb-2 cursor-pointer transition duration-500
+			${selected ? 'border-2 border-teal-500' : 'border border-gray-200'}
 		`}
+		onClick={toggleSelected}
 	>
-		<img src="http://placehold.it/255" className="rounded-full w-16 h-16 mr-4" />
-		<div className="flex flex-col items-start w-2/5">
-			<h3 className="text-gray-700 truncate w-full truncate">{name}</h3>
-			<span className="flex text-gray-500 text-sm">
-				Risk Score
-				<RiskTag risk={riskScore} />
-			</span>
-		</div>
-		<div className="flex flex-col w-2/5 ml-auto">
-			<div className="ml-auto">
-				<span className="text-red-400">Amount</span>
-				<h5 className="text-gray-700 text-lg truncate">{amountPerValidator.currency} KSM</h5>
-				<span className="text-gray-500 text-sm">${amountPerValidator.subCurrency}</span>
+		{selected && (
+			<div>
+				<Check
+					size="1.75rem"
+					className="p-1 bg-teal-500 text-white mr-2 rounded-full" 
+					strokeWidth="4px"
+				/>
+			</div>
+		)}
+		<div className={`flex items-center transition duration-200 ${selected && 'transform translate-x-4'}`}>
+			<img src="http://placehold.it/255" className="rounded-full w-16 h-16 mr-4" />
+			<div className="flex flex-col items-start w-2/5">
+				<h3 className="text-gray-700 truncate w-full truncate">{name}</h3>
+				<span className="select-none flex text-gray-500 text-sm">
+					Risk Score
+					<RiskTag risk={riskScore} />
+				</span>
+			</div>
+			<div className="flex flex-col w-2/5 ml-auto">
+				<div className="ml-auto">
+					<span className="text-red-400">Amount</span>
+					<h5 className="text-gray-700 text-lg truncate">{amountPerValidator.currency} KSM</h5>
+					<span className="text-gray-500 text-sm">${amountPerValidator.subCurrency}</span>
+				</div>
 			</div>
 		</div>
 	</div>
 );
 
 // TODO: subCurrency to be calculated right
-const ValidatorsList = ({ risk, totalAmount = 0, validatorMap = {} }) => {
+const ValidatorsList = ({
+	risk,
+	totalAmount = 0,
+	validators = [],
+	selectedValidators = {},
+	setSelectedValidators = {},
+}) => {
 	const [editMode, setEditMode] = useState(false);
-	const validators = get(validatorMap, risk, []);
 	const amountPerValidator = totalAmount / validators.length;
+
+	const toggleSelected = (validator) => {
+		const { stashId } = validator;
+		setSelectedValidators({
+			...selectedValidators,
+			[stashId]: isNil(selectedValidators[stashId]) ? validator : null,
+		});
+	};
 
 	return (
 		<div className="rounded-xl border border-gray-200 px-8 py-6 mt-4">
@@ -72,7 +97,7 @@ const ValidatorsList = ({ risk, totalAmount = 0, validatorMap = {} }) => {
 				</div>
 			)}
 			<div className="mt-4 overflow-auto h-64">
-				{validators.map(validator => (
+				{editMode && validators.map(validator => (
 					<ValidatorInfo
 						key={validator.stashId}
 						name={validator.stashId}
@@ -81,9 +106,22 @@ const ValidatorsList = ({ risk, totalAmount = 0, validatorMap = {} }) => {
 							currency: amountPerValidator,
 							subCurrency: amountPerValidator,
 						}}
+						selected={selectedValidators[validator.stashId]}
+						toggleSelected={() => toggleSelected(validator)}
 					/>
 				))}
-				{!validators.length && (
+				{!editMode && Object.entries(selectedValidators).map(([stashId, validator]) => (
+					<ValidatorInfo
+						key={stashId}
+						name={stashId}
+						riskScore={Number(validator.riskScore).toFixed(2)}
+						amountPerValidator={{
+							currency: amountPerValidator,
+							subCurrency: amountPerValidator,
+						}}
+					/>
+				))}
+				{!editMode && !validators.length && (
 					<div className="flex-center">
 						<img
 							src="images/empty-state.svg"
