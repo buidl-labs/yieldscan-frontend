@@ -40,6 +40,11 @@ const RewardCalculatorPage = () => {
 	}, [stakingAmount]);
 
 	useEffect(() => {
+		const selectedValidators = cloneDeep(validatorMap[risk]);
+		setSelectedValidators(selectedValidators);
+	}, [risk]);
+
+	useEffect(() => {
 		axios.get('/rewards/risk-set').then(({ data }) => {
 			/**
 			 * `mapValues(keyBy(array), 'value-key')`:
