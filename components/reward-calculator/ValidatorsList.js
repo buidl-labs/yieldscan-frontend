@@ -50,12 +50,12 @@ const ValidatorsList = ({
 }) => {
 	const [editMode, setEditMode] = useState(false);
 	const amountPerValidator = totalAmount / validators.length;
-	const selectedCount = Object.values(selectedValidators).filter(v => !isNil(v)).length;
+	const selectedValidatorsList = Object.values(selectedValidators).filter(v => !isNil(v));
 
 	const toggleSelected = (validator) => {
 		const { stashId } = validator;
 
-		if (selectedCount === 16 && !selectedValidators[stashId]) return;
+		if (selectedValidatorsList.length === 16 && !selectedValidators[stashId]) return;
 
 		setSelectedValidators({
 			...selectedValidators,
@@ -68,7 +68,7 @@ const ValidatorsList = ({
 			{!editMode ? (
 				<div className="select-none flex items-center justify-between">
 					<h1 className="font-semibold text-gray-700 text-2xl">
-						Suggested Validators
+						Suggested Validators ({ selectedValidatorsList.length })
 					</h1>
 					<Edit2
 						size="1.5rem"
@@ -92,7 +92,7 @@ const ValidatorsList = ({
 								Edit Validators
 							</h1>
 							<span className="text-gray-500">
-								{selectedCount} / 16 selections
+								{selectedValidatorsList.length} / 16 selections
 							</span>
 						</div>
 					</div>
@@ -116,10 +116,10 @@ const ValidatorsList = ({
 						toggleSelected={() => toggleSelected(validator)}
 					/>
 				))}
-				{!editMode && Object.entries(selectedValidators).map(([stashId, validator]) => (
+				{!editMode && selectedValidatorsList.map(validator => (
 					<ValidatorInfo
-						key={stashId}
-						name={stashId}
+						key={validator.stashId}
+						name={validator.stashId}
 						riskScore={Number(validator.riskScore).toFixed(2)}
 						amountPerValidator={{
 							currency: amountPerValidator,
