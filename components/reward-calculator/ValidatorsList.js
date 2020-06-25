@@ -47,7 +47,7 @@ const ValidatorInfo = ({ name, riskScore, amountPerValidator, editMode, selected
 
 // TODO: subCurrency to be calculated right
 const ValidatorsList = ({
-	risk,
+	disableList,
 	totalAmount = 0,
 	validators = [],
 	selectedValidators = {},
@@ -67,6 +67,21 @@ const ValidatorsList = ({
 			[stashId]: isNil(selectedValidators[stashId]) ? validator : null,
 		});
 	};
+
+	if (disableList) {
+		return (
+			<div className="rounded-xl border border-gray-200 px-8 py-6 mt-4">
+				<div className="flex-center">
+					<img
+						src="images/empty-state.svg"
+						alt="empty-state"
+						className="w-64 h-64"
+					/>
+					<span className="text-sm text-gray-500">Fill all inputs to see favourable validators...</span>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="rounded-xl border border-gray-200 px-8 py-6 mt-4">

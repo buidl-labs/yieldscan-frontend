@@ -179,7 +179,7 @@ const RewardCalculatorPage = () => {
 					onPayment={onPayment}
 				/>
 				<ValidatorsList
-					risk={risk}
+					disableList={!amount || !timePeriodValue || !stakingAmount}
 					totalAmount={amount}
 					validators={validatorMap.total}
 					selectedValidators={selectedValidators}
