@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "@lib/axios";
-import convertCurrency from "@lib/convert-currency";
 import RiskSelect from "./RiskSelect";
 import AmountInput from "./AmountInput";
 import ValidatorsList from "./ValidatorsList";
@@ -17,13 +16,13 @@ import { Spinner } from "@chakra-ui/core";
 const RewardCalculatorPage = () => {
 	const router = useRouter();
 	
-	const { stashAccount, freeAmount, bondedAmount, accountInfoLoading } = useAccounts();
 	const { isOpen, toggle } = useWalletConnect();
 	const setTransactionState = useTransaction(state => state.setTransactionState);
-	const stakingAmount = useTransaction(state => state.stakingAmount);
+	const { stashAccount, freeAmount, bondedAmount, accountInfoLoading } = useAccounts();
 
-	const [amount, _setAmount] = useState();
-	const [risk, setRisk] = useState('Medium');
+	const [loading, setLoading] = useState(false);
+	const [amount, setAmount] = useState();
+	const [risk, setRisk] = useState();
 	const [timePeriodValue, setTimePeriod] = useState();
 	const [timePeriodUnit, setTimePeriodUnit] = useState('months');
 	const [compounding, setCompounding] = useState(true);
@@ -33,18 +32,20 @@ const RewardCalculatorPage = () => {
 	const [result, setResult] = useState({});
 
 	useEffect(() => {
-		/**
-		 * global `stakingAmount` is updated hence update the local value
-		 */
-		if (stakingAmount !== amount) _setAmount(stakingAmount);
-	}, [stakingAmount]);
+		if (get(bondedAmount, 'currency')) {
+			setAmount(Number((Math.max((amount || 0) - bondedAmount.currency, 0)).toFixed(4)));
+		}
+	}, [bondedAmount]);
 
 	useEffect(() => {
-		const selectedValidators = cloneDeep(validatorMap[risk]);
-		setSelectedValidators(selectedValidators);
+		if (validatorMap[risk]) {
+			const selectedValidators = cloneDeep(validatorMap[risk]);
+			setSelectedValidators(selectedValidators);
+		}
 	}, [risk]);
 
 	useEffect(() => {
+		setLoading(true);
 		axios.get('/rewards/risk-set').then(({ data }) => {
 			/**
 			 * `mapValues(keyBy(array), 'value-key')`:
@@ -57,10 +58,8 @@ const RewardCalculatorPage = () => {
 				total: data.totalset,
 			};
 
-			const selectedValidators = cloneDeep(validatorMap[risk]);
-
 			setValidatorMap(validatorMap);
-			setSelectedValidators(selectedValidators);
+			setLoading(false);
 		});
 	}, []);
 
@@ -79,16 +78,7 @@ const RewardCalculatorPage = () => {
 				alert(error);
 			});
 		}
-	}, [risk, amount, timePeriodValue, timePeriodUnit, compounding, bondedAmount]);
-
-	const setAmount = (stakingAmount) => {
-		/**
-		 * Updating global state because we use it when user connects their wallet
-		 * and we re-calculate their stakingAmount based on currently bonded amount.
-		 */
-		setTransactionState({ stakingAmount });
-		_setAmount(stakingAmount);
-	};
+	}, [amount, timePeriodValue, timePeriodUnit, compounding, bondedAmount, selectedValidators]);
 
 	const onPayment = async () => {
 		let _returns = get(result, 'returns'), _yieldPercentage = get(result, 'yieldPercentage');
@@ -107,12 +97,12 @@ const RewardCalculatorPage = () => {
 		router.push('/payment');
 	};
 
-	if (accountInfoLoading) {
+	if (accountInfoLoading || loading) {
 		return (
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">
 					<Spinner size="xl" />
-					<span className="text-sm text-gray-600 mt-5">fetching your data from chain...</span>
+					<span className="text-sm text-gray-600 mt-5">Instantiating API and fetching data...</span>
 				</div>
 			</div>
 		);
@@ -134,7 +124,7 @@ const RewardCalculatorPage = () => {
 						</div>
 						<div
 							className="rounded-lg px-5 py-2 text-sm bg-red-200 text-red-600 my-4"
-							hidden={!stashAccount || stakingAmount < get(freeAmount, 'currency', -Infinity)}
+							hidden={!stashAccount || amount < get(freeAmount, 'currency', -Infinity)}
 						>
 							<span>We cannot stake this amount since you need to maintain a minimum balance of 0.1 KSM in your account at all times. <a href="#" className="text-blue-500">Learn More?</a></span>
 						</div>
@@ -174,12 +164,12 @@ const RewardCalculatorPage = () => {
 				<ExpectedReturnsCard
 					result={result}
 					stashAccount={stashAccount}
-					calculationDisabled={!amount || !timePeriodValue || stakingAmount > get(freeAmount, 'currency', -Infinity)}
+					calculationDisabled={!amount || !timePeriodValue || amount > get(freeAmount, 'currency', -Infinity)}
 					onWalletConnectClick={toggle}
 					onPayment={onPayment}
 				/>
 				<ValidatorsList
-					disableList={!amount || !timePeriodValue || !stakingAmount}
+					disableList={!amount || !timePeriodValue || !amount}
 					totalAmount={amount}
 					validators={validatorMap.total}
 					selectedValidators={selectedValidators}

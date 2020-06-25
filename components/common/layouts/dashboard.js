@@ -47,9 +47,6 @@ const withDashboardLayout = (children) => {
 					freeAmountInSubCurrency = await convertCurrency(freeAmount);
 				}
 
-				const newStakingAmount = Math.max((stakingAmount || 0) - bondedAmount, 0);
-				setTransactionState({ stakingAmount: newStakingAmount });
-
 				setAccountState({
 					ledgerExists: isBonded,
 					bondedAmount: {
