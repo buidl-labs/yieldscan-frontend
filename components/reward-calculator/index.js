@@ -132,6 +132,12 @@ const RewardCalculatorPage = () => {
 						>
 							Free Balance: {get(freeAmount, 'currency', 0)} KSM
 						</div>
+						<div
+							className="rounded-lg px-5 py-2 text-sm bg-red-200 text-red-600 my-4"
+							hidden={!stashAccount || stakingAmount < get(freeAmount, 'currency', -Infinity)}
+						>
+							<span>We cannot stake this amount since you need to maintain a minimum balance of 0.1 KSM in your account at all times. <a href="#" className="text-blue-500">Learn More?</a></span>
+						</div>
 						<AmountInput
 							value={{ currency: amount, subCurrency: (amount || 0) * 2 }}
 							bonded={bondedAmount}
@@ -168,7 +174,7 @@ const RewardCalculatorPage = () => {
 				<ExpectedReturnsCard
 					result={result}
 					stashAccount={stashAccount}
-					calculationDisabled={!amount || !timePeriodValue}
+					calculationDisabled={!amount || !timePeriodValue || stakingAmount > get(freeAmount, 'currency', -Infinity)}
 					onWalletConnectClick={toggle}
 					onPayment={onPayment}
 				/>
