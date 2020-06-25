@@ -18,17 +18,19 @@ const RewardCalculatorPage = () => {
 	
 	const { isOpen, toggle } = useWalletConnect();
 	const setTransactionState = useTransaction(state => state.setTransactionState);
+	const transactionState = useTransaction();
+	const previousValidatorMap = useTransaction(state => state.validatorMap);
 	const { stashAccount, freeAmount, bondedAmount, accountInfoLoading } = useAccounts();
 
 	const [loading, setLoading] = useState(false);
-	const [amount, setAmount] = useState();
-	const [risk, setRisk] = useState();
-	const [timePeriodValue, setTimePeriod] = useState();
-	const [timePeriodUnit, setTimePeriodUnit] = useState('months');
-	const [compounding, setCompounding] = useState(true);
+	const [amount, setAmount] = useState(transactionState.stakingAmount);
+	const [risk, setRisk] = useState(transactionState.riskPreference);
+	const [timePeriodValue, setTimePeriod] = useState(transactionState.timePeriodValue);
+	const [timePeriodUnit, setTimePeriodUnit] = useState(transactionState.timePeriodUnit || 'months');
+	const [compounding, setCompounding] = useState(transactionState.compounding);
 	const [selectedValidators, setSelectedValidators] = useState({});
 
-	const [validatorMap, setValidatorMap] = useState({}); // map with low/med/high risk sets
+	const [validatorMap, setValidatorMap] = useState(cloneDeep(previousValidatorMap)); // map with low/med/high risk sets
 	const [result, setResult] = useState({});
 
 	useEffect(() => {
@@ -38,29 +40,33 @@ const RewardCalculatorPage = () => {
 	}, [bondedAmount]);
 
 	useEffect(() => {
-		if (validatorMap[risk]) {
+		if (get(validatorMap, risk)) {
 			const selectedValidators = cloneDeep(validatorMap[risk]);
 			setSelectedValidators(selectedValidators);
 		}
 	}, [risk]);
 
 	useEffect(() => {
-		setLoading(true);
-		axios.get('/rewards/risk-set').then(({ data }) => {
-			/**
-			 * `mapValues(keyBy(array), 'value-key')`:
-			 * 	O(N + N) operation, using since each risk set will have maximum 16 validators
-			 */
-			const validatorMap = {
-				Low: mapValues(keyBy(data.lowriskset, 'stashId')),
-				Medium: mapValues(keyBy(data.medriskset, 'stashId')),
-				High: mapValues(keyBy(data.highriskset, 'stashId')),
-				total: data.totalset,
-			};
-
-			setValidatorMap(validatorMap);
-			setLoading(false);
-		});
+		if (!validatorMap) {
+			setLoading(true);
+			axios.get('/rewards/risk-set').then(({ data }) => {
+				/**
+				 * `mapValues(keyBy(array), 'value-key')`:
+				 * 	O(N + N) operation, using since each risk set will have maximum 16 validators
+				 */
+				const validatorMap = {
+					Low: mapValues(keyBy(data.lowriskset, 'stashId')),
+					Medium: mapValues(keyBy(data.medriskset, 'stashId')),
+					High: mapValues(keyBy(data.highriskset, 'stashId')),
+					total: data.totalset,
+				};
+	
+				setValidatorMap(validatorMap);
+				setLoading(false);
+			});
+		} else {
+			console.info('Using previous validator map.');
+		}
 	}, []);
 
 	useEffect(() => {
@@ -93,6 +99,7 @@ const RewardCalculatorPage = () => {
 			returns: _returns,
 			yieldPercentage: _yieldPercentage,
 			selectedValidators: selectedValidatorsList,
+			validatorMap
 		});
 		router.push('/payment');
 	};
@@ -169,9 +176,9 @@ const RewardCalculatorPage = () => {
 					onPayment={onPayment}
 				/>
 				<ValidatorsList
-					disableList={!amount || !timePeriodValue || !amount}
+					disableList={!amount || !timePeriodValue || !risk}
 					totalAmount={amount}
-					validators={validatorMap.total}
+					validators={get(validatorMap, 'total', [])}
 					selectedValidators={selectedValidators}
 					setSelectedValidators={setSelectedValidators}
 				/>
