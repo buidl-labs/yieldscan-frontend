@@ -12,7 +12,8 @@ import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 const Overview = () => {
 	const { isOpen, toggle } = useWalletConnect();
 	const { stashAccount } = useAccounts();
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(false);
 	const [userData, setUserData] = useState();
 
 	useEffect(() => {
@@ -20,6 +21,7 @@ const Overview = () => {
 		if (get(stashAccount, 'address')) {
 			const kusamaAddress = encodeAddress(decodeAddress(stashAccount.address), 2);
 			axios.get(`user/${kusamaAddress}`).then(({ data }) => {
+				if (data.message === 'No data found!') setError(true);
 				setUserData(data);
 				setLoading(false);
 			});
@@ -53,6 +55,20 @@ const Overview = () => {
 			</div>
 		);
 	}
+
+	if (error) {
+		return (
+			<div className="flex-center w-full h-full">
+				<div className="flex-center flex-col">
+					<AlertTriangle size="2rem" className="text-orange-500" />
+					<span className="font-semibold text-red-600 text-lg mb-10">You Unlucky bro, no data for you! 😭</span>
+					<span className="text-sm text-gray-600 mt-5">Try changing the stash account.</span>
+				</div>
+			</div>
+		);
+	}
+
+	console.log(stashAccount.address);
 
 	return (
 		<div className="px-10 py-10">
