@@ -32,8 +32,8 @@ const SideMenu = () => {
 			<MenuOption
 				label="Overview"
 				Icon={Home}
-				selected={router.pathname === Routes.DASHBOARD}
-				onClick={() => router.push(Routes.DASHBOARD)}
+				selected={router.pathname === Routes.OVERVIEW}
+				onClick={() => router.push(Routes.OVERVIEW)}
 			/>
 			<MenuOption
 				label="Calculator"
