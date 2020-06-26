@@ -87,7 +87,7 @@ const RewardCalculatorPage = () => {
 		}
 	}, [amount, timePeriodValue, timePeriodUnit, compounding, bondedAmount, selectedValidators]);
 
-	const onPayment = async () => {
+	const updateTransactionState = () => {
 		let _returns = get(result, 'returns'), _yieldPercentage = get(result, 'yieldPercentage');
 		const selectedValidatorsList = Object.values(selectedValidators).filter(v => !isNil(v));
 
@@ -102,16 +102,16 @@ const RewardCalculatorPage = () => {
 			selectedValidators: selectedValidatorsList,
 			validatorMap
 		});
+	};
+
+	const onPayment = async () => {
+		updateTransactionState();
 		router.push('/payment');
 	};
 
 	const onAdvancedSelection = () => {
-		router.push({
-			pathname: Routes.VALIDATORS,
-			query: {
-				name: 'Hello',
-			},
-		});
+		updateTransactionState();
+		router.push(Routes.VALIDATORS);
 	};
 
 	if (accountInfoLoading || loading) {
