@@ -57,7 +57,7 @@ const Overview = () => {
 	return (
 		<div className="px-10 py-10">
 			<WalletConnectPopover isOpen={isOpen} />
-			<OverviewCards />
+			<OverviewCards stats={userData.stats} />
 			<div className="mt-10">
 				<div className="flex justify-between items-center">
 					<h3 className="text-2xl">My Validators</h3>
