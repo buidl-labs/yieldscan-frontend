@@ -69,7 +69,7 @@ const Overview = () => {
 						<button className="text-teal-500 p-1">Claim All Rewards</button>
 					</div>
 				</div>
-				<NominationsTable />
+				<NominationsTable validators={userData.validatorsInfo} />
 			</div>
 		</div>
 	);

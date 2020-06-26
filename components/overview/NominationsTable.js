@@ -18,23 +18,28 @@ const StatusTag = ({ status }) => {
 	);
 };
 
-const ValidatorCard = () => {
+const ValidatorCard = ({
+	stashId,
+	riskScore,
+	stakedAmount,
+	estimatedReward,
+}) => {
 	return (
 		<div className="flex items-center justify-around rounded-lg border border-gray-300 py-2">
 			<img src="http://placehold.it/255" className="rounded-full w-12 h-12 mr-4" />
-			<span className="text-xs">DasX1jVCRMe5e2DN8XJjGQrWFkBkNvtRDRf5dkb6iUUGFfz</span>
+			<span className="text-xs">{stashId}</span>
 			<StatusTag status="active" />
 			<div className="flex flex-col">
 				<span className="text-xs text-gray-500 font-semibold">Risk Score</span>
-				<div className="rounded-full font-semibold"><RiskTag risk={55} /></div>
+				<div className="rounded-full font-semibold"><RiskTag risk={riskScore} /></div>
 			</div>
 			<div className="flex flex-col">
-				<span className="text-xs text-gray-500 font-semibold">Own Stake</span>
-				<h3 className="text-lg">100 KSM</h3>
+				<span className="text-xs text-gray-500 font-semibold">Staked Amount</span>
+				<h3 className="text-lg">{stakedAmount} KSM</h3>
 			</div>
 			<div className="flex flex-col">
-				<span className="text-xs text-gray-500 font-semibold">Other Stake</span>
-				<h3 className="text-lg">100 KSM</h3>
+				<span className="text-xs text-gray-500 font-semibold">Estimated Reward</span>
+				<h3 className="text-lg">{estimatedReward} KSM</h3>
 			</div>
 			<button className="flex items-center justify-between border-2 border-orange-500 rounded-lg py-1 px-3">
 				<Star className="text-orange-500 mr-2" fill="#F5B100" size="20px" strokeWidth="2px" />
@@ -47,18 +52,20 @@ const ValidatorCard = () => {
 	);
 };
 
-const NominationsTable = () => {
+const NominationsTable = ({ validators }) => {
+	console.log(validators);
 	return (
 		<div>
 			<div className="table-container overflow-y-scroll mt-5 py-4">
-				<ValidatorCard />
-				<ValidatorCard />
-				<ValidatorCard />
-				<ValidatorCard />
-				<ValidatorCard />
-				<ValidatorCard />
-				<ValidatorCard />
-				<ValidatorCard />
+				{validators.map(validator => (
+					<ValidatorCard
+						key={validator.stashId}
+						stashId={validator.stashId}
+						riskScore={Number(validator.riskScore.toFixed(2))}
+						stakedAmount={Number(validator.nomStake.toFixed(2))}
+						estimatedReward={Number(validator.estimatedReward.toFixed(2))}
+					/>
+				))}
 			</div>
 			<style jsx>{`
 				.table-container {
