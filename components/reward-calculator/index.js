@@ -12,6 +12,7 @@ import { useAccounts, useTransaction } from "@lib/store";
 import { get, isNil, mapValues, keyBy, cloneDeep } from "lodash";
 import calculateReward from "@lib/calculate-reward";
 import { Spinner } from "@chakra-ui/core";
+import Routes from "@lib/routes";
 
 const RewardCalculatorPage = () => {
 	const router = useRouter();
@@ -104,6 +105,15 @@ const RewardCalculatorPage = () => {
 		router.push('/payment');
 	};
 
+	const onAdvancedSelection = () => {
+		router.push({
+			pathname: Routes.VALIDATORS,
+			query: {
+				name: 'Hello',
+			},
+		});
+	};
+
 	if (accountInfoLoading || loading) {
 		return (
 			<div className="flex-center w-full h-full">
@@ -181,6 +191,7 @@ const RewardCalculatorPage = () => {
 					validators={get(validatorMap, 'total', [])}
 					selectedValidators={selectedValidators}
 					setSelectedValidators={setSelectedValidators}
+					onAdvancedSelection={onAdvancedSelection}
 				/>
 			</div>
 		</div>

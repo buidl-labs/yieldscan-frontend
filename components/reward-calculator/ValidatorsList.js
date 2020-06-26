@@ -1,5 +1,5 @@
 import { Edit2, ChevronLeft, Settings, Check } from "react-feather";
-import { isNil } from "lodash";
+import { isNil, noop } from "lodash";
 import RiskTag from "./RiskTag";
 import { useState } from "react";
 
@@ -52,6 +52,7 @@ const ValidatorsList = ({
 	validators = [],
 	selectedValidators = {},
 	setSelectedValidators = {},
+	onAdvancedSelection = noop,
 }) => {
 	const [editMode, setEditMode] = useState(false);
 	const amountPerValidator = Number((totalAmount / validators.length).toFixed(2));
@@ -116,7 +117,10 @@ const ValidatorsList = ({
 							</span>
 						</div>
 					</div>
-					<button className="p-2 text-sm flex-center rounded-lg bg-gray-200 text-gray-500 font-semibold cursor-pointer">
+					<button
+						className="p-2 text-sm flex-center rounded-lg bg-gray-200 text-gray-500 font-semibold cursor-pointer"
+						onClick={onAdvancedSelection}
+					>
 						<Settings className="mr-2 text-gray-700" size="1rem" />
 						<span>Advanced Selections</span>
 					</button>

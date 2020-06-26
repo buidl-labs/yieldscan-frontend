@@ -68,8 +68,6 @@ const Overview = () => {
 		);
 	}
 
-	console.log(stashAccount.address);
-
 	return (
 		<div className="px-10 py-10">
 			<WalletConnectPopover isOpen={isOpen} />

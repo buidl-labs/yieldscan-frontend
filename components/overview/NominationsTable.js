@@ -53,7 +53,6 @@ const ValidatorCard = ({
 };
 
 const NominationsTable = ({ validators }) => {
-	console.log(validators);
 	return (
 		<div>
 			<div className="table-container overflow-y-scroll mt-5 py-4">
