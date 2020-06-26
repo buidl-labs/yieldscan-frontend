@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { useTransaction, useAccounts } from "@lib/store";
 import { useDisclosure } from "@chakra-ui/core";
+import { useTransaction, useAccounts } from "@lib/store";
 import ValidatorsResult from "./ValidatorsResult";
 import ValidatorsTable from "./ValidatorsTable";
 import EditAmountModal from "./EditAmountModal";
