@@ -1,7 +1,6 @@
 import { Check } from "react-feather";
-import { isNil, mapValues, keyBy, noop } from "lodash";
+import { isNil, noop } from "lodash";
 import RiskTag from "@components/reward-calculator/RiskTag";
-import { useState, useEffect } from "react";
 
 const ValidatorCard = ({
 	stashId,
@@ -49,27 +48,19 @@ const ValidatorCard = ({
 	</div>
 );
 
-const ValidatorsTable = ({ validatorMap, selectedValidators }) => {
+const ValidatorsTable = ({ validatorMap, selectedValidatorsMap, setSelectedValidators }) => {
 	const { total: validators } = validatorMap;
 	const amountPerValidator = 30 //stakingAmount / selectedValidators.length;
 	// const amountPerValidator = Number((totalAmount / validators.length).toFixed(2));
-	
-	const [selectedValidatorsMap, setSelectedValidatorsMap] = useState(
-		mapValues(keyBy(selectedValidators, 'stashId'))
-	);
 
 	const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(v => !isNil(v));
-
-	useEffect(() => {
-		// trigger event to update the transaction state
-	}, [selectedValidatorsMap]);
 
 	const toggleSelected = (validator) => {
 		const { stashId } = validator;
 
 		if (selectedValidatorsList.length === 16 && !selectedValidatorsMap[stashId]) return;
 
-		setSelectedValidatorsMap({
+		setSelectedValidators({
 			...selectedValidatorsMap,
 			[stashId]: isNil(selectedValidatorsMap[stashId]) ? validator : null,
 		});

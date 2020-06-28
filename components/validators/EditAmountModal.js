@@ -1,8 +1,15 @@
+import { useState } from "react";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody } from "@chakra-ui/core";
 import AmountInput from "@components/reward-calculator/AmountInput";
 import withSlideIn from "@components/common/withSlideIn";
 
-const EditAmountModal = withSlideIn(({ styles, onClose }) => {
+const EditAmountModal = withSlideIn(({
+	styles,
+	onClose,
+	bondedAmount,
+	amount = '',
+	setAmount = noop,
+}) => {
 	return (
 		<Modal isOpen={true} onClose={onClose} isCentered>
 			<ModalOverlay />
@@ -15,12 +22,18 @@ const EditAmountModal = withSlideIn(({ styles, onClose }) => {
 					<div className="mt-10">
 						<div className="my-5">
 							<AmountInput
-								value={{ currency: 1, subCurrency: 1 }}
-								bonded={{ currency: 1, subCurrency: 1 }}
+								value={{ currency: amount, subCurrency: (amount || 0) * 2 }}
+								bonded={bondedAmount}
+								onChange={setAmount}
 							/>
 						</div>
 						<div className="">
-							<button className="bg-teal-500 text-white py-2 px-5 rounded">Confirm</button>
+							<button
+								className="bg-teal-500 text-white py-2 px-5 rounded"
+								onClick={onClose}
+							>
+								Confirm
+							</button>
 						</div>
 					</div>
 				</ModalBody>

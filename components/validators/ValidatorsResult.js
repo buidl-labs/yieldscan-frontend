@@ -1,14 +1,24 @@
+import { useState } from "react";
+import { get, noop } from "lodash";
 import { Edit2 } from "react-feather";
-import { get } from "lodash";
+import TimePeriodInput from "@components/reward-calculator/TimePeriodInput";
 
-const ValidatorsResult = ({ transactionState, bondedAmount }) => {
+const ValidatorsResult = ({
+	stakingAmount,
+	bondedAmount,
+	timePeriodValue,
+	timePeriodUnit,
+	result = {},
+	onTimePeriodValueChange = noop,
+	onTimePeriodUnitChange = noop,
+	onEditAmount = noop,
+}) => {
+	const [timePeriodEditable, setTimePeriodEditable] = useState(false);
+	
 	const {
-		returns,
-		stakingAmount,
-		timePeriodValue,
-		timePeriodUnit,
+		returns = {},
 		yieldPercentage,
-	} = transactionState;
+	} = result;
 
 	const estimatedPortfolio = {
 		currency: Number(returns.currency + stakingAmount + get(bondedAmount, 'currency', 0)).toFixed(3),
@@ -23,16 +33,26 @@ const ValidatorsResult = ({ transactionState, bondedAmount }) => {
 					<span className="text-sm text-teal-500">Staking Amount</span>
 					<h3 className="flex justify-between items-center text-xl">
 						<span className="mr-5">{stakingAmount} KSM</span>
-						<Edit2 size="20px" strokeWidth="2px" className="mb-1 cursor-pointer" />
+						<Edit2 size="20px" strokeWidth="2px" className="mb-1 cursor-pointer" onClick={onEditAmount} />
 					</h3>
 					<span hidden className="text-gray-600 text-xs">${stakingAmount * 2}</span>
 				</div>
 				<div className="flex flex-col px-3 py-1 border rounded-lg mr-2 h-16">
 					<span className="text-sm text-teal-500">Time Period</span>
-					<h3 className="flex justify-between items-center text-xl">
-						<span className="mr-5">{timePeriodValue} {timePeriodUnit}</span>
-						<Edit2 size="20px" strokeWidth="2px" className="mb-1 cursor-pointer" />
-					</h3>
+					{!timePeriodEditable && (
+						<h3 className="flex justify-between items-center text-xl">
+							<span className="mr-5">{timePeriodValue} {timePeriodUnit}</span>
+							<Edit2 size="20px" strokeWidth="2px" className="mb-1 cursor-pointer" onClick={() => setTimePeriodEditable(true)} />
+						</h3>
+					)}
+					{timePeriodEditable && (
+						<TimePeriodInput
+							value={timePeriodValue}
+							unit={timePeriodUnit}
+							onChange={onTimePeriodValueChange}
+							onUnitChange={onTimePeriodUnitChange}
+						/>
+					)}
 				</div>
 				<div className="flex flex-col px-3 py-1 border rounded-lg mr-2 h-16">
 					<span className="text-sm text-teal-500">Expected Yield</span>
