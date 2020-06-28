@@ -8,8 +8,15 @@ const EditAmountModal = withSlideIn(({
 	onClose,
 	bondedAmount,
 	amount = '',
-	setAmount = noop,
+	setAmount,
 }) => {
+	const [stakingAmount, setStakingAmount] = useState(amount);
+
+	const onConfirm = () => {
+		if (stakingAmount) setAmount(stakingAmount);
+		onClose();
+	};
+
 	return (
 		<Modal isOpen={true} onClose={onClose} isCentered>
 			<ModalOverlay />
@@ -22,15 +29,15 @@ const EditAmountModal = withSlideIn(({
 					<div className="mt-10">
 						<div className="my-5">
 							<AmountInput
-								value={{ currency: amount, subCurrency: (amount || 0) * 2 }}
+								value={{ currency: stakingAmount, subCurrency: (stakingAmount || 0) * 2 }}
 								bonded={bondedAmount}
-								onChange={setAmount}
+								onChange={setStakingAmount}
 							/>
 						</div>
 						<div className="">
 							<button
 								className="bg-teal-500 text-white py-2 px-5 rounded"
-								onClick={onClose}
+								onClick={onConfirm}
 							>
 								Confirm
 							</button>

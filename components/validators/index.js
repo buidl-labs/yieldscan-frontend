@@ -28,7 +28,6 @@ const Validators = () => {
 	useEffect(() => {
 		if (amount && timePeriodValue && timePeriodUnit) {
 			const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(v => !isNil(v));
-			console.log(selectedValidatorsList);
 			calculateReward(
 				selectedValidatorsList,
 				amount,
@@ -42,8 +41,6 @@ const Validators = () => {
 			});
 		}
 	}, [amount, timePeriodValue, timePeriodUnit, selectedValidatorsMap])
-
-	console.log(result);
 
 	return (
 		<div className="px-10 py-5">
