@@ -1,6 +1,7 @@
 import { Check } from "react-feather";
-import { isNil, mapValues, keyBy } from "lodash";
+import { isNil, mapValues, keyBy, noop } from "lodash";
 import RiskTag from "@components/reward-calculator/RiskTag";
+import { useState, useEffect } from "react";
 
 const ValidatorCard = ({
 	stashId,
@@ -9,12 +10,14 @@ const ValidatorCard = ({
 	stakeAmount,
 	otherStake,
 	commission,
+	toggleSelected = noop,
 }) => (
 	<div
 		className={`
 			flex justify-around items-center border-2 py-2 my-2 rounded-lg cursor-pointer
 			${selected ? 'border-teal-500' : 'border-gray-300'}
 		`}
+		onClick={toggleSelected}
 	>
 		<Check
 			size="1.75rem"
@@ -49,8 +52,28 @@ const ValidatorCard = ({
 const ValidatorsTable = ({ validatorMap, selectedValidators }) => {
 	const { total: validators } = validatorMap;
 	const amountPerValidator = 30 //stakingAmount / selectedValidators.length;
+	// const amountPerValidator = Number((totalAmount / validators.length).toFixed(2));
+	
+	const [selectedValidatorsMap, setSelectedValidatorsMap] = useState(
+		mapValues(keyBy(selectedValidators, 'stashId'))
+	);
 
-	const selectedValidatorsMap = mapValues(keyBy(selectedValidators, 'stashId'));
+	const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(v => !isNil(v));
+
+	useEffect(() => {
+		// trigger event to update the transaction state
+	}, [selectedValidatorsMap]);
+
+	const toggleSelected = (validator) => {
+		const { stashId } = validator;
+
+		if (selectedValidatorsList.length === 16 && !selectedValidatorsMap[stashId]) return;
+
+		setSelectedValidatorsMap({
+			...selectedValidatorsMap,
+			[stashId]: isNil(selectedValidatorsMap[stashId]) ? validator : null,
+		});
+	};
 
 	return (
 		<div>
@@ -64,10 +87,9 @@ const ValidatorsTable = ({ validatorMap, selectedValidators }) => {
 						otherStake={Number(validator.totalStake.toFixed(1))}
 						commission={validator.commission}
 						selected={!isNil(selectedValidatorsMap[validator.stashId])}
+						toggleSelected={() => toggleSelected(validator)}
 					/>
 				))}
-				<ValidatorCard selected />
-				<ValidatorCard />
 			</div>
 			<style jsx>{`
 				.table-container {
