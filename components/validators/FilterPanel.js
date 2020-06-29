@@ -17,14 +17,14 @@ const FilterPanel = ({ filterOptions, setFilterOptions }) => {
 						name="numOfNominators.min"
 						type="number"
 						placeholder="min"
-						width="4rem"
+						width="6rem"
 						onChange={onChange}
 					/>
 					<Input
 						name="numOfNominators.max"
 						type="number"
 						placeholder="max"
-						width="4rem"
+						width="6rem"
 						onChange={onChange}
 					/>
 				</div>
