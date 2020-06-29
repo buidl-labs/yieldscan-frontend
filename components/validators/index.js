@@ -9,6 +9,14 @@ import ValidatorsTable from "./ValidatorsTable";
 import EditAmountModal from "./EditAmountModal";
 import FilterPanel from "./FilterPanel";
 
+const DEFAULT_FILTER_OPTIONS = {
+	numOfNominators: { min: '', max: '' },
+	riskScore: '',
+	ownStake: { min: '', max: '' },
+	totalStake: { min: '', max: '' },
+	commission: '',
+};
+
 const Validators = () => {
 	const { bondedAmount } = useAccounts();
 	const { isOpen, onClose, onToggle } = useDisclosure();
@@ -23,6 +31,7 @@ const Validators = () => {
 	);
 
 	const [filterPanelOpen, setFilterPanelOpen] = useState(false);
+	const [filterOptions, setFilterOptions] = useState(DEFAULT_FILTER_OPTIONS);
 	const [sortOrder, setSortOrder] = useState('asc');
 	const [sortKey, setSortKey] = useState('estimatedPoolReward');
 	const [result, setResult] = useState({});
@@ -115,7 +124,10 @@ const Validators = () => {
 				</div>
 			</div>
 			<div className="mt-5" hidden={!filterPanelOpen}>
-				<FilterPanel />
+				<FilterPanel
+					filterOptions={filterOptions}
+					setFilterOptions={setFilterOptions}
+				/>
 			</div>
 			<ValidatorsTable
 				validators={validators}
