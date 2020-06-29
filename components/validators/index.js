@@ -1,7 +1,7 @@
 import { Filter, ChevronDown, ChevronUp } from "react-feather";
 import { useState, useEffect } from "react";
 import { useDisclosure, Select } from "@chakra-ui/core";
-import { mapValues, keyBy, isNil, get, orderBy } from "lodash";
+import { mapValues, keyBy, isNil, get, orderBy, filter } from "lodash";
 import { useTransaction, useAccounts } from "@lib/store";
 import calculateReward from "@lib/calculate-reward";
 import ValidatorsResult from "./ValidatorsResult";
@@ -23,6 +23,7 @@ const Validators = () => {
 	const transactionState = useTransaction();
 	
 	const [validators, setValidators] = useState(get(transactionState.validatorMap, 'total'));
+	const [filteredValidators, setFilteredValidators] = useState(validators);
 	const [amount, setAmount] = useState(transactionState.stakingAmount);
 	const [timePeriodValue, setTimePeriod] = useState(transactionState.timePeriodValue);
 	const [timePeriodUnit, setTimePeriodUnit] = useState(transactionState.timePeriodUnit || 'months');
@@ -44,6 +45,41 @@ const Validators = () => {
 	useEffect(() => {
 		// console.log(transactionState);
 	}, [transactionState]);
+
+	useEffect(() => {
+		if (!filterPanelOpen) return setFilteredValidators(validators);
+		// console.log(filterPanelOpen);
+
+		const riskGroup = get(filterOptions, 'riskScore');
+		const commission = get(filterOptions, 'commission');
+		const numOfNominators = get(filterOptions, 'numOfNominators', { min: '', max: '' });
+		const ownStake = get(filterOptions, 'ownStake', { min: '', max: '' });
+		const totalStake = get(filterOptions, 'totalStake', { min: '', max: '' });
+
+		const filtered = validators.filter(validator => {
+			if (riskGroup === 'Low' && validator.riskScore < 0.33) return true;
+			if (riskGroup === 'Medium' && (validator.riskScore >= 0.33 && validator.riskScore <= 0.66)) return true;
+			if (riskGroup === 'High' && validator.riskScore > 0.66) return true;
+
+			if (!isNil(commission) && validator.commission <= commission) return true;
+
+			const isNilNotZero = (num) => isNil(num) && num !== 0;
+
+			if (isNilNotZero(numOfNominators.min) && validator.numOfNominators >= numOfNominators.min) return true;
+			if (isNilNotZero(numOfNominators.max) && validator.numOfNominators <= numOfNominators.max) return true;
+
+			if (isNilNotZero(ownStake.min) && validator.ownStake >= ownStake.min) return true;
+			if (isNilNotZero(ownStake.max) && validator.ownStake <= ownStake.max) return true;
+
+			if (isNilNotZero(totalStake.min) && validator.totalStake >= totalStake.min) return true;
+			if (isNilNotZero(totalStake.max) && validator.totalStake <= totalStake.max) return true;
+
+			return false;
+		});
+
+		// console.log(filtered);
+		setFilteredValidators(filtered);
+	}, [filterPanelOpen, filterOptions]);
 
 	useEffect(() => {
 		if (amount && timePeriodValue && timePeriodUnit) {
@@ -130,7 +166,7 @@ const Validators = () => {
 				/>
 			</div>
 			<ValidatorsTable
-				validators={validators}
+				validators={filteredValidators}
 				selectedValidatorsMap={selectedValidatorsMap}
 				setSelectedValidators={setSelectedValidatorsMap}
 			/>

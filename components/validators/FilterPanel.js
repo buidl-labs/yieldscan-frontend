@@ -81,7 +81,7 @@ const FilterPanel = ({ filterOptions, setFilterOptions }) => {
 				</div>
 			</div>
 			<div className="flex flex-col border rounded-r-lg px-4 py-2">
-				<h1 className="text-gray-800 mb-1">Commission</h1>
+				<h1 className="text-gray-800 mb-1">Max Commission</h1>
 				<div className="flex">
 					<Input
 						name="commission"
