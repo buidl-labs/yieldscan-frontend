@@ -8,6 +8,8 @@ import ValidatorsResult from "./ValidatorsResult";
 import ValidatorsTable from "./ValidatorsTable";
 import EditAmountModal from "./EditAmountModal";
 import FilterPanel from "./FilterPanel";
+import { useWalletConnect } from "@components/wallet-connect";
+import { useRouter } from "next/router";
 
 const DEFAULT_FILTER_OPTIONS = {
 	numOfNominators: { min: '', max: '' },
@@ -18,9 +20,12 @@ const DEFAULT_FILTER_OPTIONS = {
 };
 
 const Validators = () => {
-	const { bondedAmount } = useAccounts();
+	const router = useRouter();
+	const { toggle: toggleWalletConnect } = useWalletConnect();
+	const { stashAccount, bondedAmount } = useAccounts();
 	const { isOpen, onClose, onToggle } = useDisclosure();
 	const transactionState = useTransaction();
+	const { setTransactionState } = transactionState;
 	
 	const [validators, setValidators] = useState(get(transactionState.validatorMap, 'total'));
 	const [filteredValidators, setFilteredValidators] = useState(validators);
@@ -38,8 +43,8 @@ const Validators = () => {
 	const [result, setResult] = useState({});
 
 	useEffect(() => {
-		const sorted = orderBy(validators, [sortKey], [sortOrder]);
-		setValidators(sorted);
+		const sorted = orderBy(filteredValidators, [sortKey], [sortOrder]);
+		setFilteredValidators(sorted);
 	}, [sortKey, sortOrder]);
 
 	useEffect(() => {
@@ -97,6 +102,28 @@ const Validators = () => {
 			});
 		}
 	}, [amount, timePeriodValue, timePeriodUnit, selectedValidatorsMap])
+
+	const updateTransactionState = () => {
+		let _returns = get(result, 'returns'), _yieldPercentage = get(result, 'yieldPercentage');
+		const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(v => !isNil(v));
+
+		setTransactionState({
+			stakingAmount: amount,
+			riskPreference: transactionState.riskPreference,
+			timePeriodValue,
+			timePeriodUnit,
+			compounding: transactionState.compounding,
+			returns: _returns,
+			yieldPercentage: _yieldPercentage,
+			selectedValidators: selectedValidatorsList,
+			validatorMap: transactionState.validatorMap,
+		});
+	};
+
+	const onPayment = async () => {
+		updateTransactionState();
+		router.push('/payment');
+	};
 
 	return (
 		<div className="px-10 py-5">
@@ -170,6 +197,27 @@ const Validators = () => {
 				selectedValidatorsMap={selectedValidatorsMap}
 				setSelectedValidators={setSelectedValidatorsMap}
 			/>
+			<div>
+				{stashAccount ? (
+					<div>
+						<button
+							className="rounded-lg bg-teal-500 text-white px-5 py-1"
+							onClick={onPayment}
+						>
+							Stake Now
+						</button>
+					</div>
+				) : (
+					<div className="flex-center">
+						<button
+							className="rounded-lg bg-teal-500 text-white px-5 py-1"
+							onClick={toggleWalletConnect}
+						>
+							Connect Wallet to Stake
+						</button>
+					</div>
+				)}
+			</div>
 		</div>
 	);
 }
