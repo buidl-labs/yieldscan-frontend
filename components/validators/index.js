@@ -1,12 +1,13 @@
 import { Filter, ChevronDown, ChevronUp } from "react-feather";
 import { useState, useEffect } from "react";
 import { useDisclosure, Select } from "@chakra-ui/core";
+import { mapValues, keyBy, isNil, get, orderBy } from "lodash";
 import { useTransaction, useAccounts } from "@lib/store";
 import calculateReward from "@lib/calculate-reward";
 import ValidatorsResult from "./ValidatorsResult";
 import ValidatorsTable from "./ValidatorsTable";
 import EditAmountModal from "./EditAmountModal";
-import { mapValues, keyBy, isNil, get, orderBy } from "lodash";
+import FilterPanel from "./FilterPanel";
 
 const Validators = () => {
 	const { bondedAmount } = useAccounts();
@@ -21,6 +22,7 @@ const Validators = () => {
 		mapValues(keyBy(transactionState.selectedValidators, 'stashId'))
 	);
 
+	const [filterPanelOpen, setFilterPanelOpen] = useState(false);
 	const [sortOrder, setSortOrder] = useState('asc');
 	const [sortKey, setSortKey] = useState('estimatedPoolReward');
 	const [result, setResult] = useState({});
@@ -100,11 +102,20 @@ const Validators = () => {
 					</div>
 				</div>
 				<div>
-					<button className="flex items-center select-none rounded-xl bg-gray-900 text-white px-3 py-1">
+					<button
+						className={`
+							flex items-center select-none rounded-xl px-3 py-1
+							${filterPanelOpen ? 'bg-gray-900 text-white' : 'border border-gray-900 text-gray-900'}
+						`}
+						onClick={() => setFilterPanelOpen(!filterPanelOpen)}
+					>
 						<Filter size="1rem" className="mr-2" />
 						<span>Filter</span>
 					</button>
 				</div>
+			</div>
+			<div className="mt-5" hidden={!filterPanelOpen}>
+				<FilterPanel />
 			</div>
 			<ValidatorsTable
 				validators={validators}
