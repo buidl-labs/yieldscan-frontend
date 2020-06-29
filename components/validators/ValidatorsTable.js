@@ -48,8 +48,7 @@ const ValidatorCard = ({
 	</div>
 );
 
-const ValidatorsTable = ({ validatorMap, selectedValidatorsMap, setSelectedValidators }) => {
-	const { total: validators } = validatorMap;
+const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidators }) => {
 	const amountPerValidator = 30 //stakingAmount / selectedValidators.length;
 	// const amountPerValidator = Number((totalAmount / validators.length).toFixed(2));
 

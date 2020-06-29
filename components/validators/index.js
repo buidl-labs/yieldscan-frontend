@@ -1,4 +1,4 @@
-import { Filter } from "react-feather";
+import { Filter, ChevronDown, ChevronUp } from "react-feather";
 import { useState, useEffect } from "react";
 import { useDisclosure, Select } from "@chakra-ui/core";
 import { useTransaction, useAccounts } from "@lib/store";
@@ -6,20 +6,29 @@ import calculateReward from "@lib/calculate-reward";
 import ValidatorsResult from "./ValidatorsResult";
 import ValidatorsTable from "./ValidatorsTable";
 import EditAmountModal from "./EditAmountModal";
-import { mapValues, keyBy, isNil } from "lodash";
+import { mapValues, keyBy, isNil, get, orderBy } from "lodash";
 
 const Validators = () => {
 	const { bondedAmount } = useAccounts();
 	const { isOpen, onClose, onToggle } = useDisclosure();
 	const transactionState = useTransaction();
-
+	
+	const [validators, setValidators] = useState(get(transactionState.validatorMap, 'total'));
 	const [amount, setAmount] = useState(transactionState.stakingAmount);
 	const [timePeriodValue, setTimePeriod] = useState(transactionState.timePeriodValue);
 	const [timePeriodUnit, setTimePeriodUnit] = useState(transactionState.timePeriodUnit || 'months');
 	const [selectedValidatorsMap, setSelectedValidatorsMap] = useState(
 		mapValues(keyBy(transactionState.selectedValidators, 'stashId'))
 	);
+
+	const [sortOrder, setSortOrder] = useState('asc');
+	const [sortKey, setSortKey] = useState('estimatedPoolReward');
 	const [result, setResult] = useState({});
+
+	useEffect(() => {
+		const sorted = orderBy(validators, [sortKey], [sortOrder]);
+		setValidators(sorted);
+	}, [sortKey, sortOrder]);
 
 	useEffect(() => {
 		// console.log(transactionState);
@@ -75,14 +84,20 @@ const Validators = () => {
 						fontSize="xs"
 						cursor="pointer"
 						height="2rem"
-						value="Estimated Rewards"
-						onChange={ev => onSortValueChange(ev.target.value)}
+						defaultValue="estimatedPoolReward"
+						value={sortKey}
+						onChange={ev => setSortKey(ev.target.value)}
 					>
-						<option value="estimated-rewards">Estimated Rewards</option>
-						<option value="risk-score">Risk Score</option>
+						<option value="estimatedPoolReward">Estimated Rewards</option>
+						<option value="riskScore">Risk Score</option>
 						<option value="commission">Commission</option>
-						<option value="other-stake">Other Stake</option>
+						<option value="numOfNominators">Nominators</option>
+						<option value="totalStake">Other Stake</option>
 					</Select>
+					<div className="flex flex-col items-center justify-between items-center ml-2">
+						<ChevronUp size="20px" className="bg-gray-300 cursor-pointer" onClick={() => setSortOrder('asc')} />
+						<ChevronDown size="20px" className="bg-gray-300 cursor-pointer" onClick={() => setSortOrder('desc')} />
+					</div>
 				</div>
 				<div>
 					<button className="flex items-center select-none rounded-xl bg-gray-900 text-white px-3 py-1">
@@ -92,7 +107,7 @@ const Validators = () => {
 				</div>
 			</div>
 			<ValidatorsTable
-				validatorMap={transactionState.validatorMap}
+				validators={validators}
 				selectedValidatorsMap={selectedValidatorsMap}
 				setSelectedValidators={setSelectedValidatorsMap}
 			/>
