@@ -4,7 +4,7 @@ import { Select, Input } from "@chakra-ui/core";
 const FilterPanel = ({ filterOptions, setFilterOptions }) => {
 	const onChange = (ev) => {
 		const { name, value } = ev.target;
-		set(filterOptions, name.split('.'), value);
+		set(filterOptions, name.split('.'), name === 'riskScore' ? value : Number(value));
 		setFilterOptions(cloneDeep(filterOptions));
 	};
 

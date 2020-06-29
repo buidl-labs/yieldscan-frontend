@@ -1,7 +1,7 @@
 import { Filter, ChevronDown, ChevronUp } from "react-feather";
 import { useState, useEffect } from "react";
 import { useDisclosure, Select } from "@chakra-ui/core";
-import { mapValues, keyBy, isNil, get, orderBy, filter } from "lodash";
+import { mapValues, keyBy, isNil, get, orderBy, filter, isNull } from "lodash";
 import { useTransaction, useAccounts } from "@lib/store";
 import calculateReward from "@lib/calculate-reward";
 import ValidatorsResult from "./ValidatorsResult";
@@ -61,28 +61,48 @@ const Validators = () => {
 		const ownStake = get(filterOptions, 'ownStake', { min: '', max: '' });
 		const totalStake = get(filterOptions, 'totalStake', { min: '', max: '' });
 
+		console.log({ riskGroup, commission, numOfNominators, ownStake, totalStake });
+
+		const isEmpty = (...values) => values.every(v => v === '');
+
+		if (isEmpty(
+			riskGroup,
+			commission,
+			numOfNominators.min,
+			numOfNominators.max,
+			ownStake.min,
+			ownStake.max,
+			totalStake.min,
+			totalStake.max
+		)) return setFilteredValidators(validators);
+
 		const filtered = validators.filter(validator => {
+			// console.log('.....................................');
 			if (riskGroup === 'Low' && validator.riskScore < 0.33) return true;
 			if (riskGroup === 'Medium' && (validator.riskScore >= 0.33 && validator.riskScore <= 0.66)) return true;
 			if (riskGroup === 'High' && validator.riskScore > 0.66) return true;
 
-			if (!isNil(commission) && validator.commission <= commission) return true;
+			// console.log(`commission: ${validator.commission}`);
 
-			const isNilNotZero = (num) => isNil(num) && num !== 0;
+			if (!isEmpty(validator.commission) && validator.commission <= commission) return true;
 
-			if (isNilNotZero(numOfNominators.min) && validator.numOfNominators >= numOfNominators.min) return true;
-			if (isNilNotZero(numOfNominators.max) && validator.numOfNominators <= numOfNominators.max) return true;
+			// console.log(`numOfNominators: ${validator.numOfNominators}`);
 
-			if (isNilNotZero(ownStake.min) && validator.ownStake >= ownStake.min) return true;
-			if (isNilNotZero(ownStake.max) && validator.ownStake <= ownStake.max) return true;
+			if (!isEmpty(numOfNominators.min) && validator.numOfNominators >= numOfNominators.min) return true;
+			if (!isEmpty(numOfNominators.max) && validator.numOfNominators <= numOfNominators.max) return true;
 
-			if (isNilNotZero(totalStake.min) && validator.totalStake >= totalStake.min) return true;
-			if (isNilNotZero(totalStake.max) && validator.totalStake <= totalStake.max) return true;
+			// console.log(`totalStake: ${validator.totalStake}`);
+
+			// if (!isNilNotZero(ownStake.min) && validator.ownStake >= ownStake.min) return true;
+			// if (!isNilNotZero(ownStake.max) && validator.ownStake <= ownStake.max) return true;
+
+			if (!isEmpty(totalStake.min) && validator.totalStake >= totalStake.min) return true;
+			if (!isEmpty(totalStake.max) && validator.totalStake <= totalStake.max) return true;
 
 			return false;
 		});
 
-		// console.log(filtered);
+		console.log(filtered);
 		setFilteredValidators(filtered);
 	}, [filterPanelOpen, filterOptions]);
 
