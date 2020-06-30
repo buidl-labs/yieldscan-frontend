@@ -87,7 +87,9 @@ const Validators = () => {
 			return true;
 		});
 
-		setFilteredValidators(filtered);
+		const filteredAndsorted = orderBy(filtered, [sortKey], [sortOrder]);
+
+		setFilteredValidators(filteredAndsorted);
 	}, [filterPanelOpen, filterOptions]);
 
 	useEffect(() => {
@@ -182,7 +184,7 @@ const Validators = () => {
 						className="text-sm text-gray-600 hover:underline mr-2"
 						onClick={() => setFilterOptions(cloneDeep(DEFAULT_FILTER_OPTIONS))}
 					>
-						clear filters
+						reset filters
 					</button>
 					<button
 						className={`
