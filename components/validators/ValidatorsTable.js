@@ -9,6 +9,7 @@ const ValidatorCard = ({
 	ownStake,
 	otherStake,
 	commission,
+	nominators,
 	returnsPer100KSM,
 	toggleSelected = noop,
 }) => (
@@ -37,6 +38,10 @@ const ValidatorCard = ({
 		<div className="flex flex-col">
 			<span className="text-xs text-gray-500 font-semibold">Other Stake</span>
 			<h3 className="text-lg">{otherStake} KSM</h3>
+		</div>
+		<div className="flex flex-col">
+			<span className="text-xs text-gray-500 font-semibold">Nominators</span>
+			<h3 className="text-lg">{nominators}</h3>
 		</div>
 		<div className="flex flex-col">
 			<span className="text-xs text-gray-500 font-semibold">Commission</span>
@@ -79,6 +84,7 @@ const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidat
 						ownStake={Number(validator.ownStake.toFixed(1))}
 						otherStake={Number(validator.totalStake.toFixed(1))}
 						commission={validator.commission}
+						nominators={validator.numOfNominators}
 						returnsPer100KSM={validator.rewardsPer100KSM}
 						selected={!isNil(selectedValidatorsMap[validator.stashId])}
 						toggleSelected={() => toggleSelected(validator)}
