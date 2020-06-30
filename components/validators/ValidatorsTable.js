@@ -6,7 +6,7 @@ const ValidatorCard = ({
 	stashId,
 	selected,
 	riskScore,
-	stakeAmount,
+	ownStake,
 	otherStake,
 	commission,
 	returnsPer100KSM,
@@ -32,7 +32,7 @@ const ValidatorCard = ({
 		</div>
 		<div className="flex flex-col">
 			<span className="text-xs text-gray-500 font-semibold">Own Stake</span>
-			<h3 className="text-lg">{stakeAmount} KSM</h3>
+			<h3 className="text-lg">{ownStake} KSM</h3>
 		</div>
 		<div className="flex flex-col">
 			<span className="text-xs text-gray-500 font-semibold">Other Stake</span>
@@ -65,6 +65,8 @@ const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidat
 			[stashId]: isNil(selectedValidatorsMap[stashId]) ? validator : null,
 		});
 	};
+	
+	console.log(validators);
 
 	return (
 		<div>
@@ -74,7 +76,7 @@ const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidat
 						key={validator.stashId}
 						stashId={validator.stashId}
 						riskScore={Number(validator.riskScore.toFixed(2))}
-						stakeAmount={amountPerValidator}
+						ownStake={Number(validator.ownStake.toFixed(1))}
 						otherStake={Number(validator.totalStake.toFixed(1))}
 						commission={validator.commission}
 						returnsPer100KSM={validator.rewardsPer100KSM}

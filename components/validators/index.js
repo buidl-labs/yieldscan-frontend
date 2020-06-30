@@ -93,8 +93,8 @@ const Validators = () => {
 
 			// console.log(`totalStake: ${validator.totalStake}`);
 
-			// if (!isNilNotZero(ownStake.min) && validator.ownStake >= ownStake.min) return true;
-			// if (!isNilNotZero(ownStake.max) && validator.ownStake <= ownStake.max) return true;
+			if (!isEmpty(ownStake.min) && validator.ownStake < ownStake.min) return false;
+			if (!isEmpty(ownStake.max) && validator.ownStake > ownStake.max) return false;
 
 			if (!isEmpty(totalStake.min) && validator.totalStake < totalStake.min) return false;
 			if (!isEmpty(totalStake.max) && validator.totalStake > totalStake.max) return false;
