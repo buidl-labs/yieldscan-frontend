@@ -1,7 +1,7 @@
 import { Filter, ChevronDown, ChevronUp } from "react-feather";
 import { useState, useEffect } from "react";
 import { useDisclosure, Select } from "@chakra-ui/core";
-import { mapValues, keyBy, isNil, get, orderBy, filter, isNull } from "lodash";
+import { mapValues, keyBy, isNil, get, orderBy, filter, isNull, cloneDeep } from "lodash";
 import { useTransaction, useAccounts } from "@lib/store";
 import calculateReward from "@lib/calculate-reward";
 import ValidatorsResult from "./ValidatorsResult";
@@ -37,7 +37,7 @@ const Validators = () => {
 	);
 
 	const [filterPanelOpen, setFilterPanelOpen] = useState(false);
-	const [filterOptions, setFilterOptions] = useState(DEFAULT_FILTER_OPTIONS);
+	const [filterOptions, setFilterOptions] = useState(cloneDeep(DEFAULT_FILTER_OPTIONS));
 	const [sortOrder, setSortOrder] = useState('asc');
 	const [sortKey, setSortKey] = useState('estimatedPoolReward');
 	const [result, setResult] = useState({});
@@ -53,7 +53,6 @@ const Validators = () => {
 
 	useEffect(() => {
 		if (!filterPanelOpen) return setFilteredValidators(validators);
-		// console.log(filterPanelOpen);
 
 		const riskGroup = get(filterOptions, 'riskScore');
 		const commission = get(filterOptions, 'commission');
@@ -61,7 +60,7 @@ const Validators = () => {
 		const ownStake = get(filterOptions, 'ownStake', { min: '', max: '' });
 		const totalStake = get(filterOptions, 'totalStake', { min: '', max: '' });
 
-		console.log({ riskGroup, commission, numOfNominators, ownStake, totalStake });
+		// console.log({ riskGroup, commission, numOfNominators, ownStake, totalStake });
 
 		const isEmpty = (...values) => values.every(v => v === '');
 
@@ -76,33 +75,34 @@ const Validators = () => {
 			totalStake.max
 		)) return setFilteredValidators(validators);
 
+		// console.log('going to update values...');
+
 		const filtered = validators.filter(validator => {
 			// console.log('.....................................');
-			if (riskGroup === 'Low' && validator.riskScore < 0.33) return true;
-			if (riskGroup === 'Medium' && (validator.riskScore >= 0.33 && validator.riskScore <= 0.66)) return true;
-			if (riskGroup === 'High' && validator.riskScore > 0.66) return true;
+			if (riskGroup === 'Low' && validator.riskScore > 0.32) return false;
+			if (riskGroup === 'Medium' && validator.riskScore > 0.66) return false;
 
 			// console.log(`commission: ${validator.commission}`);
 
-			if (!isEmpty(validator.commission) && validator.commission <= commission) return true;
+			if (!isEmpty(commission) && validator.commission > commission) return false;
 
 			// console.log(`numOfNominators: ${validator.numOfNominators}`);
 
-			if (!isEmpty(numOfNominators.min) && validator.numOfNominators >= numOfNominators.min) return true;
-			if (!isEmpty(numOfNominators.max) && validator.numOfNominators <= numOfNominators.max) return true;
+			if (!isEmpty(numOfNominators.min) && validator.numOfNominators < numOfNominators.min) return false;
+			if (!isEmpty(numOfNominators.max) && validator.numOfNominators > numOfNominators.max) return false;
 
 			// console.log(`totalStake: ${validator.totalStake}`);
 
 			// if (!isNilNotZero(ownStake.min) && validator.ownStake >= ownStake.min) return true;
 			// if (!isNilNotZero(ownStake.max) && validator.ownStake <= ownStake.max) return true;
 
-			if (!isEmpty(totalStake.min) && validator.totalStake >= totalStake.min) return true;
-			if (!isEmpty(totalStake.max) && validator.totalStake <= totalStake.max) return true;
+			if (!isEmpty(totalStake.min) && validator.totalStake < totalStake.min) return false;
+			if (!isEmpty(totalStake.max) && validator.totalStake > totalStake.max) return false;
 
-			return false;
+			return true;
 		});
 
-		console.log(filtered);
+		// console.log(filtered.length);
 		setFilteredValidators(filtered);
 	}, [filterPanelOpen, filterOptions]);
 
@@ -193,7 +193,13 @@ const Validators = () => {
 						<ChevronDown size="20px" className="bg-gray-300 cursor-pointer" onClick={() => setSortOrder('desc')} />
 					</div>
 				</div>
-				<div>
+				<div className="flex items-center">
+					<button
+						className="text-sm text-gray-600 hover:underline mr-2"
+						onClick={() => setFilterOptions(cloneDeep(DEFAULT_FILTER_OPTIONS))}
+					>
+						clear filters
+					</button>
 					<button
 						className={`
 							flex items-center select-none rounded-xl px-3 py-1

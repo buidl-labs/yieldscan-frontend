@@ -1,10 +1,11 @@
-import { set, cloneDeep } from "lodash";
+import { set, cloneDeep, get } from "lodash";
 import { Select, Input } from "@chakra-ui/core";
 
 const FilterPanel = ({ filterOptions, setFilterOptions }) => {
 	const onChange = (ev) => {
 		const { name, value } = ev.target;
-		set(filterOptions, name.split('.'), name === 'riskScore' ? value : Number(value));
+		if (name !== 'riskScore' && isNaN(Number(value))) return;
+		set(filterOptions, name.split('.'), name === 'riskScore' ? value : (value === '' ? '' : Number(value)));
 		setFilterOptions(cloneDeep(filterOptions));
 	};
 
@@ -15,16 +16,16 @@ const FilterPanel = ({ filterOptions, setFilterOptions }) => {
 				<div className="flex">
 					<Input
 						name="numOfNominators.min"
-						type="number"
 						placeholder="min"
 						width="6rem"
+						value={get(filterOptions, 'numOfNominators.min')}
 						onChange={onChange}
 					/>
 					<Input
 						name="numOfNominators.max"
-						type="number"
 						placeholder="max"
 						width="6rem"
+						value={get(filterOptions, 'numOfNominators.max')}
 						onChange={onChange}
 					/>
 				</div>
@@ -34,11 +35,15 @@ const FilterPanel = ({ filterOptions, setFilterOptions }) => {
 				<div className="flex">
 					<Select
 						name="riskScore"
+						defaultValue={get(filterOptions, 'riskScore')}
+						placeholder="Select Risk"
 						onChange={onChange}
 					>
-						<option value="Low" selected>Low</option>
-						<option value="Medium">Medium</option>
-						<option value="High">High</option>
+						{['Low', 'Medium', 'High'].map(option => (
+							<option key={option} value={option}>
+								{option}
+							</option>
+						))}
 					</Select>
 				</div>
 			</div>
@@ -48,15 +53,15 @@ const FilterPanel = ({ filterOptions, setFilterOptions }) => {
 					<Input
 						placeholder="min"
 						name="ownStake.min"
-						type="number"
 						width="8rem"
+						value={get(filterOptions, 'ownStake.min')}
 						onChange={onChange}
 					/>
 					<Input
 						placeholder="max"
 						name="ownStake.max"
-						type="number"
 						width="8rem"
+						value={get(filterOptions, 'ownStake.max')}
 						onChange={onChange}
 					/>
 				</div>
@@ -67,15 +72,15 @@ const FilterPanel = ({ filterOptions, setFilterOptions }) => {
 					<Input
 						placeholder="min"
 						name="totalStake.min"
-						type="number"
 						width="8rem"
+						value={get(filterOptions, 'totalStake.min')}
 						onChange={onChange}
 					/>
 					<Input
 						placeholder="max"
 						name="totalStake.max"
-						type="number"
 						width="8rem"
+						value={get(filterOptions, 'totalStake.max')}
 						onChange={onChange}
 					/>
 				</div>
@@ -87,7 +92,7 @@ const FilterPanel = ({ filterOptions, setFilterOptions }) => {
 						name="commission"
 						placeholder="%"
 						width="4rem"
-						type="number"
+						value={get(filterOptions, 'commission')}
 						onChange={onChange}
 					/>
 				</div>
