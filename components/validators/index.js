@@ -48,10 +48,6 @@ const Validators = () => {
 	}, [sortKey, sortOrder]);
 
 	useEffect(() => {
-		// console.log(transactionState);
-	}, [transactionState]);
-
-	useEffect(() => {
 		if (!filterPanelOpen) return setFilteredValidators(validators);
 
 		const riskGroup = get(filterOptions, 'riskScore');
@@ -59,8 +55,6 @@ const Validators = () => {
 		const numOfNominators = get(filterOptions, 'numOfNominators', { min: '', max: '' });
 		const ownStake = get(filterOptions, 'ownStake', { min: '', max: '' });
 		const totalStake = get(filterOptions, 'totalStake', { min: '', max: '' });
-
-		// console.log({ riskGroup, commission, numOfNominators, ownStake, totalStake });
 
 		const isEmpty = (...values) => values.every(v => v === '');
 
@@ -75,23 +69,14 @@ const Validators = () => {
 			totalStake.max
 		)) return setFilteredValidators(validators);
 
-		// console.log('going to update values...');
-
 		const filtered = validators.filter(validator => {
-			// console.log('.....................................');
 			if (riskGroup === 'Low' && validator.riskScore > 0.32) return false;
 			if (riskGroup === 'Medium' && validator.riskScore > 0.66) return false;
 
-			// console.log(`commission: ${validator.commission}`);
-
 			if (!isEmpty(commission) && validator.commission > commission) return false;
-
-			// console.log(`numOfNominators: ${validator.numOfNominators}`);
 
 			if (!isEmpty(numOfNominators.min) && validator.numOfNominators < numOfNominators.min) return false;
 			if (!isEmpty(numOfNominators.max) && validator.numOfNominators > numOfNominators.max) return false;
-
-			// console.log(`totalStake: ${validator.totalStake}`);
 
 			if (!isEmpty(ownStake.min) && validator.ownStake < ownStake.min) return false;
 			if (!isEmpty(ownStake.max) && validator.ownStake > ownStake.max) return false;
@@ -102,7 +87,6 @@ const Validators = () => {
 			return true;
 		});
 
-		// console.log(filtered.length);
 		setFilteredValidators(filtered);
 	}, [filterPanelOpen, filterOptions]);
 

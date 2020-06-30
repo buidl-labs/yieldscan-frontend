@@ -55,8 +55,6 @@ const ValidatorCard = ({
 );
 
 const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidators }) => {
-	const amountPerValidator = 30 //stakingAmount / selectedValidators.length;
-	// const amountPerValidator = Number((totalAmount / validators.length).toFixed(2));
 
 	const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(v => !isNil(v));
 
@@ -70,8 +68,6 @@ const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidat
 			[stashId]: isNil(selectedValidatorsMap[stashId]) ? validator : null,
 		});
 	};
-	
-	console.log(validators);
 
 	return (
 		<div>
