@@ -1,4 +1,6 @@
-const OverviewCards = ({ stats }) => (
+import { noop } from 'lodash';
+
+const OverviewCards = ({ stats, openRewardDestinationModal = noop }) => (
 	<div className="flex justify-between items-center">
 		<div className="shadow-lg px-4 py-6 rounded-xl" style={{ width: '30%' }}>
 			<h1 className="text-3xl text-teal-500 font-semibold">
@@ -37,8 +39,11 @@ const OverviewCards = ({ stats }) => (
 			</h3>
 			<div className="mt-8 flex justify-between items-center">
 				<h5>Earnings</h5>
-				<button className="bg-white text-teal-500 rounded-full px-4 py-2">
-					Reward Settings
+				<button
+					className="bg-white text-teal-500 rounded-full px-4 py-2"
+					onClick={openRewardDestinationModal}
+				>
+					Payment Destination
 				</button>
 			</div>
 		</div>

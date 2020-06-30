@@ -2,19 +2,25 @@ import { useState, useEffect } from "react";
 import { Edit2, AlertTriangle } from "react-feather";
 import OverviewCards from "./OverviewCards";
 import NominationsTable from "./NominationsTable";
-import { Spinner } from "@chakra-ui/core";
+import { Spinner, useDisclosure } from "@chakra-ui/core";
 import axios from "@lib/axios";
 import { useAccounts } from "@lib/store";
-import { WalletConnectPopover, useWalletConnect } from "@components/wallet-connect";
+import { useWalletConnect } from "@components/wallet-connect";
 import { get } from "lodash";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
+import RewardDestinationModal from "./RewardDestinationModal";
 
 const Overview = () => {
-	const { isOpen, toggle } = useWalletConnect();
+	const { toggle } = useWalletConnect();
 	const { stashAccount } = useAccounts();
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 	const [userData, setUserData] = useState();
+	const {
+		isOpen: isRewardDestinationModalOpen,
+		onToggle: toggleRewardDestinationModal,
+		onClose: closeRewardDestinationModal,
+	} = useDisclosure();
 
 	useEffect(() => {
 		setLoading(true);
@@ -70,8 +76,14 @@ const Overview = () => {
 
 	return (
 		<div className="px-10 py-10">
-			<WalletConnectPopover isOpen={isOpen} />
-			<OverviewCards stats={userData.stats} />
+			<RewardDestinationModal
+				isOpen={isRewardDestinationModalOpen}
+				close={closeRewardDestinationModal}
+			/>
+			<OverviewCards
+				stats={userData.stats}
+				openRewardDestinationModal={toggleRewardDestinationModal}
+			/>
 			<div className="mt-10">
 				<div className="flex justify-between items-center">
 					<h3 className="text-2xl">My Validators</h3>
