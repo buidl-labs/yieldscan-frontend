@@ -9,6 +9,7 @@ import { useWalletConnect } from "@components/wallet-connect";
 import { get } from "lodash";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 import RewardDestinationModal from "./RewardDestinationModal";
+import EditControllerModal from "./EditControllerModal";
 
 const Overview = () => {
 	const { toggle } = useWalletConnect();
@@ -20,6 +21,11 @@ const Overview = () => {
 		isOpen: isRewardDestinationModalOpen,
 		onToggle: toggleRewardDestinationModal,
 		onClose: closeRewardDestinationModal,
+	} = useDisclosure();
+	const {
+		isOpen: editControllerModalOpen,
+		onToggle: toggleEditControllerModal,
+		onClose: closeEditControllerModal,
 	} = useDisclosure();
 
 	useEffect(() => {
@@ -74,11 +80,21 @@ const Overview = () => {
 		);
 	}
 
+	const onEditController = () => {
+		closeRewardDestinationModal();
+		toggleEditControllerModal();
+	};
+
 	return (
 		<div className="px-10 py-10">
 			<RewardDestinationModal
 				isOpen={isRewardDestinationModalOpen}
 				close={closeRewardDestinationModal}
+				onEditController={onEditController}
+			/>
+			<EditControllerModal
+				isOpen={editControllerModalOpen}
+				close={closeEditControllerModal}
 			/>
 			<OverviewCards
 				stats={userData.stats}

@@ -12,7 +12,7 @@ import { useAccounts } from "@lib/store";
 import { useState } from "react";
 import { Circle, CheckCircle } from "react-feather";
 
-const RewardDestinationModal = withSlideIn(({ close, styles }) => {
+const RewardDestinationModal = withSlideIn(({ close, styles, onEditController }) => {
 	const { stashAccount } = useAccounts();
 	const [destination, setDestination] = useState('');
 	const [compounding, setCompounding] = useState(false);
@@ -74,6 +74,12 @@ const RewardDestinationModal = withSlideIn(({ close, styles }) => {
 								)}
 							</div>
 						</div>
+						<button
+							className="text-sm text-gray-600 hover:underline"
+							onClick={onEditController}
+						>
+							Edit Controller
+						</button>
 						<div className="mt-24 flex-center">
 							<button
 								className="rounded py-2 px-10 bg-teal-500 text-white"
