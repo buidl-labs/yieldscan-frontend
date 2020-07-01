@@ -13,7 +13,7 @@ import { useAccounts, usePolkadotApi } from "@lib/store";
 import { useState, useEffect } from "react";
 import { CheckCircle, Circle } from "react-feather";
 import { encodeAddress, decodeAddress } from "@polkadot/util-crypto";
-import { web3FromAddress } from "@polkadot/extension-dapp";
+import editController from "@lib/polkadot/edit-controller";
 
 const EditControllerModal = withSlideIn(({ styles, close }) => {
 	const toast = useToast();
@@ -38,31 +38,29 @@ const EditControllerModal = withSlideIn(({ styles, close }) => {
 	const updateController = () => {
 		const stashId = stashAccount.address;
 		const newControllerId = selectedAccount;
-		web3FromAddress(stashId).then(injector => {
-			apiInstance.setSigner(injector.signer);
-			apiInstance.tx.staking
-				.setController(newControllerId)
-				.signAndSend(stashId)
-				.then(({ events = [], status }) => {
-					toast({
-						title: 'Success',
-						description: 'Controller account updated.',
-						status: 'success',
-						position: 'top-right',
-						duration: 3000
-					});
-					close();
-				}).catch(error => {
-					toast({
-						title: 'Failure',
-						description: error.message,
-						status: 'error',
-						position: 'top-right',
-						duration: 3000
-					});
+		editController(newControllerId, stashId, apiInstance, {
+			onEvent: ({ message }) => {
+				toast({
+					title: 'Info',
+					description: message,
+					status: 'info',
+					duration: 3000,
+					position: 'top-right',
+					isClosable: true,
 				});
-			});
-	}
+			},
+			onFinish: (failed, message) => {
+				toast({
+					title: failed ? 'Failure' : 'Success',
+					description: message,
+					status: failed ? 'error' : 'success',
+					duration: 3000,
+					position: 'top-right',
+					isClosable: true,
+				});
+			},
+		});
+	};
 
 	return (
 		<Modal isOpen={true} onClose={close} isCentered>
