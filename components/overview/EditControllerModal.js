@@ -5,15 +5,18 @@ import {
 	ModalBody,
 	ModalCloseButton,
 	ModalHeader,
-	Spinner
+	Spinner,
+	useToast
 } from "@chakra-ui/core";
 import withSlideIn from "@components/common/withSlideIn";
 import { useAccounts, usePolkadotApi } from "@lib/store";
 import { useState, useEffect } from "react";
 import { CheckCircle, Circle } from "react-feather";
 import { encodeAddress, decodeAddress } from "@polkadot/util-crypto";
+import { web3FromAddress } from "@polkadot/extension-dapp";
 
-const EditControllerModal = withSlideIn(({ styles }) => {
+const EditControllerModal = withSlideIn(({ styles, close }) => {
+	const toast = useToast();
 	const { apiInstance } = usePolkadotApi();
 	const { stashAccount, accounts } = useAccounts();
 	const [selectedAccount, setSelected] = useState();
@@ -31,6 +34,35 @@ const EditControllerModal = withSlideIn(({ styles }) => {
 			setLoading(false);
 		});
 	}, []);
+
+	const updateController = () => {
+		const stashId = stashAccount.address;
+		const newControllerId = selectedAccount;
+		web3FromAddress(stashId).then(injector => {
+			apiInstance.setSigner(injector.signer);
+			apiInstance.tx.staking
+				.setController(newControllerId)
+				.signAndSend(stashId)
+				.then(({ events = [], status }) => {
+					toast({
+						title: 'Success',
+						description: 'Controller account updated.',
+						status: 'success',
+						position: 'top-right',
+						duration: 3000
+					});
+					close();
+				}).catch(error => {
+					toast({
+						title: 'Failure',
+						description: error.message,
+						status: 'error',
+						position: 'top-right',
+						duration: 3000
+					});
+				});
+			});
+	}
 
 	return (
 		<Modal isOpen={true} onClose={close} isCentered>
@@ -57,7 +89,7 @@ const EditControllerModal = withSlideIn(({ styles }) => {
 											flex items-center rounded-lg border-2 border-teal-500 cursor-pointer px-3 py-2 mb-2
 											${selectedAccount === account.address ? 'text-white bg-teal-500' : 'text-gray-600'}
 										`}
-										onClick={() => setSelected(account)}
+										onClick={() => setSelected(account.address)}
 									>
 										{selectedAccount === account.address ? (
 											<CheckCircle className="mr-2" />
@@ -74,6 +106,7 @@ const EditControllerModal = withSlideIn(({ styles }) => {
 							<div className="mt-5 flex-center">
 								<button
 									className="rounded-lg bg-teal-500 text-white px-5 py-2"
+									onClick={updateController}
 								>
 									Update Controller
 								</button>

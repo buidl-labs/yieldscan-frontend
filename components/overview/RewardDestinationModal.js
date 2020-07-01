@@ -40,6 +40,7 @@ const RewardDestinationModal = withSlideIn(({ close, styles, onEditController })
 						position: 'top-right',
 						duration: 3000
 					});
+					close();
 				}).catch(error => {
 					toast({
 						title: 'Failure',
