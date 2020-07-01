@@ -5,7 +5,8 @@ import {
 	ModalContent,
 	ModalBody,
 	ModalCloseButton,
-	ModalHeader
+	ModalHeader,
+	useToast
 } from "@chakra-ui/core";
 import CompoundRewardSlider from "@components/reward-calculator/CompoundRewardSlider";
 import { useAccounts, usePolkadotApi } from "@lib/store";
@@ -14,6 +15,7 @@ import { Circle, CheckCircle } from "react-feather";
 import { web3FromAddress } from "@polkadot/extension-dapp";
 
 const RewardDestinationModal = withSlideIn(({ close, styles, onEditController }) => {
+	const toast = useToast();
 	const { apiInstance } = usePolkadotApi();
 	const { stashAccount } = useAccounts();
 	const [destination, setDestination] = useState('');
@@ -31,9 +33,21 @@ const RewardDestinationModal = withSlideIn(({ close, styles, onEditController })
 				.setPayee(payee)
 				.signAndSend(stashId)
 				.then(() => {
-					// handle 
+					toast({
+						title: 'Success',
+						description: 'Reward destination updated.',
+						status: 'success',
+						position: 'top-right',
+						duration: 3000
+					});
 				}).catch(error => {
-
+					toast({
+						title: 'Failure',
+						description: error.message,
+						status: 'error',
+						position: 'top-right',
+						duration: 3000
+					});
 				});
 		});
 	};
@@ -78,7 +92,7 @@ const RewardDestinationModal = withSlideIn(({ close, styles, onEditController })
 										</div>
 									</div>
 								)) : (
-									<div className="h-24">
+									<div>
 										<span className="text-orange-500 text-sm font-semibold">
 											When compounding is enabled, reward destination can only be stash account.
 										</span>
@@ -98,7 +112,7 @@ const RewardDestinationModal = withSlideIn(({ close, styles, onEditController })
 						>
 							Edit Controller
 						</button>
-						<div className="mt-24 flex-center">
+						<div className="mt-12 flex-center">
 							<button
 								className="rounded py-2 px-10 bg-teal-500 text-white"
 								onClick={updatePayee}
