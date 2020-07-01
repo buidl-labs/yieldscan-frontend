@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "@lib/axios";
-import convertCurrency from "@lib/convert-currency";
 import RiskSelect from "./RiskSelect";
 import AmountInput from "./AmountInput";
 import ValidatorsList from "./ValidatorsList";
@@ -10,49 +9,72 @@ import ExpectedReturnsCard from "./ExpectedReturnsCard";
 import CompoundRewardSlider from "./CompoundRewardSlider";
 import { WalletConnectPopover, useWalletConnect } from "@components/wallet-connect";
 import { useAccounts, useTransaction } from "@lib/store";
-import { get, isNil } from "lodash";
+import { get, isNil, mapValues, keyBy, cloneDeep } from "lodash";
 import calculateReward from "@lib/calculate-reward";
 import { Spinner } from "@chakra-ui/core";
+import Routes from "@lib/routes";
 
 const RewardCalculatorPage = () => {
 	const router = useRouter();
 	
-	const { stashAccount, freeAmount, bondedAmount, accountInfoLoading } = useAccounts();
 	const { isOpen, toggle } = useWalletConnect();
 	const setTransactionState = useTransaction(state => state.setTransactionState);
-	const stakingAmount = useTransaction(state => state.stakingAmount);
+	const transactionState = useTransaction();
+	const previousValidatorMap = useTransaction(state => state.validatorMap);
+	const { stashAccount, freeAmount, bondedAmount, accountInfoLoading } = useAccounts();
 
-	const [amount, _setAmount] = useState();
-	const [risk, setRisk] = useState('Medium');
-	const [timePeriodValue, setTimePeriod] = useState();
-	const [timePeriodUnit, setTimePeriodUnit] = useState('months');
-	const [compounding, setCompounding] = useState(true);
+	const [loading, setLoading] = useState(false);
+	const [amount, setAmount] = useState(transactionState.stakingAmount);
+	const [risk, setRisk] = useState(transactionState.riskPreference);
+	const [timePeriodValue, setTimePeriod] = useState(transactionState.timePeriodValue);
+	const [timePeriodUnit, setTimePeriodUnit] = useState(transactionState.timePeriodUnit || 'months');
+	const [compounding, setCompounding] = useState(transactionState.compounding);
+	const [selectedValidators, setSelectedValidators] = useState({});
 
-	const [validatorMap, setValidatorMap] = useState({}); // map with low/med/high risk sets
+	const [validatorMap, setValidatorMap] = useState(cloneDeep(previousValidatorMap)); // map with low/med/high risk sets
 	const [result, setResult] = useState({});
 
 	useEffect(() => {
-		/**
-		 * global `stakingAmount` is updated hence update the local value
-		 */
-		if (stakingAmount !== amount) _setAmount(stakingAmount);
-	}, [stakingAmount]);
+		if (get(bondedAmount, 'currency')) {
+			setAmount(Number((Math.max((amount || 0) - bondedAmount.currency, 0)).toFixed(4)));
+		}
+	}, [bondedAmount]);
 
 	useEffect(() => {
-		axios.get('/rewards/risk-set').then(({ data }) => {
-			setValidatorMap({
-				Low: data.lowriskset,
-				Medium: data.medriskset,
-				High: data.highriskset,
-				total: data.totalset,
+		if (get(validatorMap, risk)) {
+			const selectedValidators = cloneDeep(validatorMap[risk]);
+			setSelectedValidators(selectedValidators);
+		}
+	}, [risk]);
+
+	useEffect(() => {
+		if (!validatorMap) {
+			setLoading(true);
+			axios.get('/rewards/risk-set').then(({ data }) => {
+				/**
+				 * `mapValues(keyBy(array), 'value-key')`:
+				 * 	O(N + N) operation, using since each risk set will have maximum 16 validators
+				 */
+				const validatorMap = {
+					Low: mapValues(keyBy(data.lowriskset, 'stashId')),
+					Medium: mapValues(keyBy(data.medriskset, 'stashId')),
+					High: mapValues(keyBy(data.highriskset, 'stashId')),
+					total: data.totalset,
+				};
+	
+				setValidatorMap(validatorMap);
+				setLoading(false);
 			});
-		});
+		} else {
+			console.info('Using previous validator map.');
+		}
 	}, []);
 
 	useEffect(() => {
 		if (risk && timePeriodValue && amount) {
+			const selectedValidatorsList = Object.values(selectedValidators).filter(v => !isNil(v));
 			calculateReward(
-				validatorMap[risk],
+				selectedValidatorsList,
 				amount,
 				timePeriodValue,
 				timePeriodUnit,
@@ -63,19 +85,11 @@ const RewardCalculatorPage = () => {
 				alert(error);
 			});
 		}
-	}, [risk, amount, timePeriodValue, timePeriodUnit, compounding, bondedAmount]);
+	}, [amount, timePeriodValue, timePeriodUnit, compounding, bondedAmount, selectedValidators]);
 
-	const setAmount = (stakingAmount) => {
-		/**
-		 * Updating global state because we use it when user connects their wallet
-		 * and we re-calculate their stakingAmount based on currently bonded amount.
-		 */
-		setTransactionState({ stakingAmount });
-		_setAmount(stakingAmount);
-	};
-	
-	const onPayment = async () => {
+	const updateTransactionState = () => {
 		let _returns = get(result, 'returns'), _yieldPercentage = get(result, 'yieldPercentage');
+		const selectedValidatorsList = Object.values(selectedValidators).filter(v => !isNil(v));
 
 		setTransactionState({
 			stakingAmount: amount,
@@ -85,17 +99,27 @@ const RewardCalculatorPage = () => {
 			compounding,
 			returns: _returns,
 			yieldPercentage: _yieldPercentage,
-			selectedValidators: validatorMap[risk],
+			selectedValidators: selectedValidatorsList,
+			validatorMap
 		});
+	};
+
+	const onPayment = async () => {
+		updateTransactionState();
 		router.push('/payment');
 	};
 
-	if (accountInfoLoading) {
+	const onAdvancedSelection = () => {
+		updateTransactionState();
+		router.push(Routes.VALIDATORS);
+	};
+
+	if (accountInfoLoading || loading) {
 		return (
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">
 					<Spinner size="xl" />
-					<span className="text-sm text-gray-600 mt-5">fetching your data from chain...</span>
+					<span className="text-sm text-gray-600 mt-5">Instantiating API and fetching data...</span>
 				</div>
 			</div>
 		);
@@ -114,6 +138,12 @@ const RewardCalculatorPage = () => {
 							hidden={isNil(stashAccount)}
 						>
 							Free Balance: {get(freeAmount, 'currency', 0)} KSM
+						</div>
+						<div
+							className="rounded-lg px-5 py-2 text-sm bg-red-200 text-red-600 my-4"
+							hidden={!stashAccount || amount < get(freeAmount, 'currency', -Infinity)}
+						>
+							<span>We cannot stake this amount since you need to maintain a minimum balance of 0.1 KSM in your account at all times. <a href="#" className="text-blue-500">Learn More?</a></span>
 						</div>
 						<AmountInput
 							value={{ currency: amount, subCurrency: (amount || 0) * 2 }}
@@ -151,14 +181,17 @@ const RewardCalculatorPage = () => {
 				<ExpectedReturnsCard
 					result={result}
 					stashAccount={stashAccount}
-					calculationDisabled={!amount || !timePeriodValue}
+					calculationDisabled={!amount || !timePeriodValue || amount > get(freeAmount, 'currency', -Infinity)}
 					onWalletConnectClick={toggle}
 					onPayment={onPayment}
 				/>
 				<ValidatorsList
-					risk={risk}
+					disableList={!amount || !timePeriodValue || !risk}
 					totalAmount={amount}
-					validatorMap={validatorMap}
+					validators={get(validatorMap, 'total', [])}
+					selectedValidators={selectedValidators}
+					setSelectedValidators={setSelectedValidators}
+					onAdvancedSelection={onAdvancedSelection}
 				/>
 			</div>
 		</div>

@@ -47,9 +47,6 @@ const withDashboardLayout = (children) => {
 					freeAmountInSubCurrency = await convertCurrency(freeAmount);
 				}
 
-				const newStakingAmount = Math.max((stakingAmount || 0) - bondedAmount, 0);
-				setTransactionState({ stakingAmount: newStakingAmount });
-
 				setAccountState({
 					ledgerExists: isBonded,
 					bondedAmount: {
@@ -80,7 +77,6 @@ const withDashboardLayout = (children) => {
 			<style jsx>{`
 				.dashboard-content {
 					height: calc(100vh - 4rem);
-					animation: fadein 100ms;
 				}
 				.sidemenu-container {
 					width: 13rem;
@@ -88,6 +84,7 @@ const withDashboardLayout = (children) => {
 				}
 				.core-content {
 					width: calc(100vw - 13rem);
+					animation: fadein 100ms;
 				}
 				@keyframes fadein {
 					from { opacity: 0; transform: scale(0.7); }

@@ -56,7 +56,7 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 							key={validator.stashId}
 							name={validator.stashId}
 							riskScore={validator.riskScore}
-							amountPerValidator={stakingAmount / selectedValidators.length}
+							amountPerValidator={Number((stakingAmount / selectedValidators.length).toFixed(2))}
 						/>
 					))}
 				</div>
