@@ -8,17 +8,35 @@ import {
 	ModalHeader
 } from "@chakra-ui/core";
 import CompoundRewardSlider from "@components/reward-calculator/CompoundRewardSlider";
-import { useAccounts } from "@lib/store";
+import { useAccounts, usePolkadotApi } from "@lib/store";
 import { useState } from "react";
 import { Circle, CheckCircle } from "react-feather";
+import { web3FromAddress } from "@polkadot/extension-dapp";
 
 const RewardDestinationModal = withSlideIn(({ close, styles, onEditController }) => {
+	const { apiInstance } = usePolkadotApi();
 	const { stashAccount } = useAccounts();
 	const [destination, setDestination] = useState('');
 	const [compounding, setCompounding] = useState(false);
 
 	const accounts = ['Stash'];
 	if (!compounding) accounts.push('Controller');
+
+	const updatePayee = () => {
+		const payee = compounding ? 0 : destination === 'Stash' ? 1 : 2;
+		const stashId = stashAccount.address;
+		web3FromAddress(stashId).then(injector => {
+			apiInstance.setSigner(injector.signer);
+			apiInstance._extrinsics.staking
+				.setPayee(payee)
+				.signAndSend(stashId)
+				.then(() => {
+					// handle 
+				}).catch(error => {
+
+				});
+		});
+	};
 
 	return (
 		<Modal isOpen={true} onClose={close} isCentered>
@@ -83,6 +101,7 @@ const RewardDestinationModal = withSlideIn(({ close, styles, onEditController })
 						<div className="mt-24 flex-center">
 							<button
 								className="rounded py-2 px-10 bg-teal-500 text-white"
+								onClick={updatePayee}
 							>
 								Update
 							</button>
