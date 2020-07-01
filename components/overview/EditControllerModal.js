@@ -21,6 +21,7 @@ const EditControllerModal = withSlideIn(({ styles, close }) => {
 	const { stashAccount, accounts } = useAccounts();
 	const [selectedAccount, setSelected] = useState();
 	const [loadingAccount, setLoading] = useState(true);
+	const [editLoading, setEditLoading] = useState(false);
 
 	useEffect(() => {
 		apiInstance.query.staking.bonded(stashAccount.address).then(account => {
@@ -36,6 +37,7 @@ const EditControllerModal = withSlideIn(({ styles, close }) => {
 	}, []);
 
 	const updateController = () => {
+		setEditLoading(true);
 		const stashId = stashAccount.address;
 		const newControllerId = selectedAccount;
 		editController(newControllerId, stashId, apiInstance, {
@@ -58,7 +60,19 @@ const EditControllerModal = withSlideIn(({ styles, close }) => {
 					position: 'top-right',
 					isClosable: true,
 				});
+				close();
 			},
+		}).catch(error => {
+			toast({
+				title: 'Error',
+				description: error.message,
+				status: 'error',
+				duration: 3000,
+				position: 'top-right',
+				isClosable: true,
+			});
+		}).finally(() => {
+			setEditLoading(false);
 		});
 	};
 
@@ -103,10 +117,12 @@ const EditControllerModal = withSlideIn(({ styles, close }) => {
 							</div>
 							<div className="mt-5 flex-center">
 								<button
-									className="rounded-lg bg-teal-500 text-white px-5 py-2"
+									className="flex-center rounded-lg bg-teal-500 text-white px-5 py-2"
 									onClick={updateController}
+									disabled={editLoading}
 								>
-									Update Controller
+									<span>Update Controller</span>
+									{editLoading && <Spinner size="sm" ml="4px" />}
 								</button>
 							</div>
 							<style jsx>{`
