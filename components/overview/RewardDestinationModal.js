@@ -24,10 +24,10 @@ const RewardDestinationModal = withSlideIn(({ close, styles }) => {
 		<Modal isOpen={true} onClose={close} isCentered>
 			<ModalOverlay />
 			<ModalContent rounded="lg" maxWidth="40rem" height="36rem" {...styles}>
-				<ModalCloseButton onClick={close} />
 				<ModalHeader>
-					<h1>Payment Destination</h1>
+				<h1>Payment Destination</h1>
 				</ModalHeader>
+				<ModalCloseButton onClick={close} />
 				<ModalBody>
 					<div className="px-20 py-5">
 						<h1 className="text-xl">Compound Rewards</h1>
