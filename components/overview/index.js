@@ -10,6 +10,7 @@ import { get } from "lodash";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 import RewardDestinationModal from "./RewardDestinationModal";
 import EditControllerModal from "./EditControllerModal";
+import FundsUpdate from "./FundsUpdate";
 
 const Overview = () => {
 	const { toggle } = useWalletConnect();
@@ -17,6 +18,7 @@ const Overview = () => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 	const [userData, setUserData] = useState();
+	const [fundsUpdateModalType, setFundsUpdateModalType] = useState();
 	const {
 		isOpen: isRewardDestinationModalOpen,
 		onToggle: toggleRewardDestinationModal,
@@ -26,6 +28,11 @@ const Overview = () => {
 		isOpen: editControllerModalOpen,
 		onToggle: toggleEditControllerModal,
 		onClose: closeEditControllerModal,
+	} = useDisclosure();
+	const {
+		isOpen: fundsUpdateModalOpen,
+		onToggle: toggleFundsUpdateModal,
+		onClose: closeFundsUpdateModal,
 	} = useDisclosure();
 
 	useEffect(() => {
@@ -85,6 +92,11 @@ const Overview = () => {
 		toggleEditControllerModal();
 	};
 
+	const openFundsUpdateModal = (type) => {
+		setFundsUpdateModalType(type);
+		toggleFundsUpdateModal();
+	};
+
 	return (
 		<div className="px-10 py-10">
 			<RewardDestinationModal
@@ -96,8 +108,15 @@ const Overview = () => {
 				isOpen={editControllerModalOpen}
 				close={closeEditControllerModal}
 			/>
+			<FundsUpdate
+				isOpen={fundsUpdateModalOpen}
+				close={closeFundsUpdateModal}
+				type={fundsUpdateModalType}
+			/>
 			<OverviewCards
 				stats={userData.stats}
+				bondFunds={() => openFundsUpdateModal('bond')}
+				unbondFunds={() => openFundsUpdateModal('unbond')}
 				openRewardDestinationModal={toggleRewardDestinationModal}
 			/>
 			<div className="mt-10">
