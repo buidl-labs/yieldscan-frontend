@@ -13,6 +13,7 @@ import {
 import withSlideIn from "@components/common/withSlideIn";
 import RiskTag from "@components/reward-calculator/RiskTag";
 import { random, get } from "lodash";
+import calculateReward from "@lib/calculate-reward";
 
 const ValidatorCard = ({
 	stashId,
@@ -40,6 +41,8 @@ const ValidatorCard = ({
 
 const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount }) => {
 	const [amount, _setAmount] = useState('');
+	const [estimatedReturns, setEstimatedReturns] = useState();
+	const [totalStakingAmount, setTotalStakingAmount] = useState(0);
 	const [validatorsLoading, setValidatorsLoading] = useState(true);
 	const title = `${type === 'bond' ? 'Bond Additional' : 'Unbond'} Funds`;
 
@@ -49,7 +52,30 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 		}, random(1000, 3000));
 	}, []);
 
+	useEffect(() => {
+		let amountByType = amount * (type === 'bond' ? 1 : -1);
+		const totalStakingAmount = get(bondedAmount, 'currency', 0) + amountByType;
+		const timePeriodValue = 1, timePeriodUnit = 'months', compounding = false;
+
+		calculateReward(
+			validators.map(validator => {
+				validator.totalStake = 1;
+				validator.estimatedPoolReward = validator.estimatedReward;
+				return validator;
+			}),
+			totalStakingAmount,
+			timePeriodValue,
+			timePeriodUnit,
+			compounding,
+			bondedAmount
+		).then(result => {
+			setTotalStakingAmount(totalStakingAmount);
+			setEstimatedReturns(get(result, 'returns.currency', 0));
+		});
+	}, [amount]);
+
 	const setAmount = (value) => {
+		if (value < 0) return;
 		_setAmount(value === '' ? '' : Number(value));
 	};
 
@@ -100,8 +126,8 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 									</div>
 									<div className="mt-10">
 										<h3 className="text-xl">Total Staking Amount</h3>
-										<h1 className="text-3xl">{Number(get(bondedAmount, 'currency', 0) + amount).toFixed(4)} KSM</h1>
-										<span className="text-lg text-gray-600">${Number(get(bondedAmount, 'currency', 0) * 2 + amount).toFixed(4)}</span>
+										<h1 className="text-3xl">{totalStakingAmount.toFixed(4)} KSM</h1>
+										<span className="text-lg text-gray-600">${(totalStakingAmount * 2).toFixed(4)}</span>
 									</div>
 								</div>
 								
@@ -111,8 +137,8 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 										<div className="flex items-center">
 											<span className="mr-2 text-sm">Estimated Monthly Returns</span>
 											<div className="py-1 px-2 flex flex-col rounded-lg border border-teal-500 w-24">
-												<h3 className="text-teal-500">460 KSM</h3>
-												<span hidden className="text-gray-600 text-sm">$120</span>
+												<h3 className="text-teal-500">{estimatedReturns} KSM</h3>
+												<span hidden className="text-gray-600 text-sm">${estimatedReturns * 2}</span>
 											</div>
 										</div>
 									</div>
