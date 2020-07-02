@@ -1,14 +1,38 @@
 import { noop } from 'lodash';
+import { Plus, Minus } from 'react-feather';
 
-const OverviewCards = ({ stats, openRewardDestinationModal = noop }) => (
+const OverviewCards = ({
+	stats,
+	openRewardDestinationModal = noop,
+	bondFunds = noop,
+	unbondFunds = noop,
+}) => (
 	<div className="flex justify-between items-center">
 		<div className="shadow-lg px-4 py-6 rounded-xl" style={{ width: '30%' }}>
-			<h1 className="text-3xl text-teal-500 font-semibold">
-				{Number(stats.totalAmountStaked.toFixed(3))} KSM
-			</h1>
-			<h3 className="text-lg text-gray-500">
-				${Number(stats.totalAmountStaked.toFixed(3)) * 2}
-			</h3>
+			<div className="flex items-center justify-between">
+				<div>
+					<h1 className="text-3xl text-teal-500 font-semibold">
+						{Number(stats.totalAmountStaked.toFixed(3))} KSM
+					</h1>
+					<h3 className="text-lg text-gray-500">
+						${Number(stats.totalAmountStaked.toFixed(3)) * 2}
+					</h3>
+				</div>
+				<div className="flex flex-col">
+					<button
+						className="rounded-full text-teal-500 border-2 border-teal-500"
+						onClick={bondFunds}
+					>
+						<Plus />
+					</button>
+					<button
+						className="mt-2 rounded-full text-teal-500 border-2 border-teal-500"
+						onClick={unbondFunds}
+					>
+						<Minus />
+					</button>
+				</div>
+			</div>
 			<div className="mt-8 flex justify-between items-center">
 				<h5 className="text-gray-800">Staked</h5>
 				<button className="text-gray-600 rounded-full border border-gray-500 px-4 py-2">
