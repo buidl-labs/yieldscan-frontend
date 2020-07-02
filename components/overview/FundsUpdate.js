@@ -14,6 +14,8 @@ import withSlideIn from "@components/common/withSlideIn";
 import RiskTag from "@components/reward-calculator/RiskTag";
 import { random, get } from "lodash";
 import calculateReward from "@lib/calculate-reward";
+import updateFunds from "@lib/polkadot/update-funds";
+import { usePolkadotApi, useAccounts } from "@lib/store";
 
 const ValidatorCard = ({
 	stashId,
@@ -40,7 +42,11 @@ const ValidatorCard = ({
 );
 
 const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount }) => {
+	const toast = useToast();
+	const { stashAccount } = useAccounts();
+	const { apiInstance } = usePolkadotApi();
 	const [amount, _setAmount] = useState('');
+	const [updatingFunds, setUpdatingFunds] = useState(false);
 	const [estimatedReturns, setEstimatedReturns] = useState();
 	const [totalStakingAmount, setTotalStakingAmount] = useState(0);
 	const [validatorsLoading, setValidatorsLoading] = useState(true);
@@ -54,7 +60,7 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 
 	useEffect(() => {
 		let amountByType = amount * (type === 'bond' ? 1 : -1);
-		const totalStakingAmount = get(bondedAmount, 'currency', 0) + amountByType;
+		const totalStakingAmount = Math.max(get(bondedAmount, 'currency', 0) + amountByType, 0);
 		const timePeriodValue = 1, timePeriodUnit = 'months', compounding = false;
 
 		calculateReward(
@@ -76,7 +82,40 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 	};
 
 	const onConfirm = () => {
-		
+		setUpdatingFunds(true);
+		updateFunds(type, stashAccount.address, amount, apiInstance, {
+			onEvent: ({ message }) => {
+				toast({
+					title: 'Info',
+					description: message,
+					status: 'info',
+					duration: 3000,
+					position: 'top-right',
+					isClosable: true,
+				});
+			},
+			onFinish: (failed, message) => {
+				toast({
+					title: failed ? 'Failure' : 'Success',
+					description: message,
+					status: failed ? 'error' : 'success',
+					duration: 3000,
+					position: 'top-right',
+					isClosable: true,
+				});
+				setUpdatingFunds(false);
+				close();
+			},
+		}).catch(error => {
+			toast({
+				title: 'Error',
+				description: error.message,
+				status: 'error',
+				duration: 3000,
+				position: 'top-right',
+				isClosable: true,
+			});
+		});
 	};
 
 	return (
@@ -152,8 +191,16 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 								</div>
 							</div>
 							<div className="flex-center">
-								<button className="bg-teal-500 text-white px-8 py-2 mt-5 rounded-lg">
-									Confirm
+								<button
+									className={`
+										px-8 py-2 mt-5 rounded-lg text-white
+										${!amount ? 'bg-gray-300 cursor-not-allowed' : 'bg-teal-500'}
+									`}
+									disabled={!amount}
+									onClick={onConfirm}
+								>
+									<span>Confirm</span>
+									{updatingFunds && <Spinner size="sm" ml="4px" />}
 								</button>
 							</div>
 						</div>
