@@ -31,7 +31,7 @@ const ValidatorCard = ({
 			<div className="rounded-full font-semibold"><RiskTag risk={Number(riskScore.toFixed(2))} /></div>
 		</div>
 		<div className="flex flex-col">
-			<span className="text-xs text-gray-500 font-semibold">Staked Amount</span>
+			<span className="text-xs text-gray-500 font-semibold">Total Staked</span>
 			<h3 className="text-lg">{stakedAmount.toFixed(1)} KSM</h3>
 		</div>
 		<div className="flex flex-col">
