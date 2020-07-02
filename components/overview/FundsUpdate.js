@@ -30,7 +30,7 @@ const ValidatorCard = ({
 		</div>
 		<div className="flex flex-col">
 			<span className="text-xs text-gray-500 font-semibold">Staked Amount</span>
-			<h3 className="text-lg">{stakedAmount} KSM</h3>
+			<h3 className="text-lg">{stakedAmount.toFixed(1)} KSM</h3>
 		</div>
 		<div className="flex flex-col">
 			<span className="text-xs text-gray-500 font-semibold">Estimated Reward</span>
@@ -132,7 +132,7 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 										<h3 className="text-lg font-semibold">VALIDATORS</h3>
 										<div className="flex items-center">
 											<span className="mr-2 text-sm">Estimated Monthly Returns</span>
-											<div className="py-1 px-2 flex flex-col rounded-lg border border-teal-500 w-24">
+											<div className="py-1 px-2 flex flex-col rounded-lg border border-teal-500 w-40">
 												<h3 className="text-teal-500">{estimatedReturns} KSM</h3>
 												<span hidden className="text-gray-600 text-sm">${estimatedReturns * 2}</span>
 											</div>
@@ -144,7 +144,7 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 												key={validator.stashId}
 												stashId={validator.stashId}
 												riskScore={validator.riskScore}
-												stakedAmount={30}
+												stakedAmount={validator.totalStake}
 												estimatedReward={validator.estimatedPoolReward}
 											/>
 										))}
