@@ -11,6 +11,7 @@ import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 import RewardDestinationModal from "./RewardDestinationModal";
 import EditControllerModal from "./EditControllerModal";
 import FundsUpdate from "./FundsUpdate";
+import EditValidators from "./EditValidators";
 
 const Overview = () => {
 	const { toggle } = useWalletConnect();
@@ -34,6 +35,12 @@ const Overview = () => {
 		onToggle: toggleFundsUpdateModal,
 		onClose: closeFundsUpdateModal,
 	} = useDisclosure();
+	const {
+		isOpen: editValidatorModalOpen,
+		onToggle: toggleEditValidatorsModal,
+		onClose: closeEditValidatorsModal,
+	} = useDisclosure();
+	
 
 	useEffect(() => {
 		setLoading(true);
@@ -115,6 +122,10 @@ const Overview = () => {
 				validators={userData.validatorsInfo}
 				bondedAmount={bondedAmount}
 			/>
+			<EditValidators
+				isOpen={editValidatorModalOpen}
+				close={closeEditValidatorsModal}
+			/>
 			<OverviewCards
 				stats={userData.stats}
 				bondFunds={() => openFundsUpdateModal('bond')}
@@ -125,7 +136,7 @@ const Overview = () => {
 				<div className="flex justify-between items-center">
 					<h3 className="text-2xl">My Validators</h3>
 					<div className="flex items-center">
-						<button className="flex items-center text-gray-500 mr-5 p-1">
+						<button className="flex items-center text-gray-500 mr-5 p-1" onClick={toggleEditValidatorsModal}>
 							<Edit2 size="20px" className="mr-2" />
 							<span>Edit Validators</span>
 						</button>
