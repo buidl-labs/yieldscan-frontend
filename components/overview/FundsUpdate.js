@@ -10,15 +10,15 @@ import {
 	useToast,
 	Input
 } from "@chakra-ui/core";
-import axios from "@lib/axios";
 import withSlideIn from "@components/common/withSlideIn";
 import RiskTag from "@components/reward-calculator/RiskTag";
+import { random, get } from "lodash";
 
 const ValidatorCard = ({
 	stashId,
 	riskScore,
 	stakedAmount,
-	returnsPer100KSM,
+	estimatedReward,
 }) => (
 	<div className="flex justify-around items-center py-2 my-2 rounded-lg cursor-pointer border border-gray-300">
 		<img src="http://placehold.it/255" className="rounded-full w-10 h-10 mr-4" />
@@ -32,29 +32,35 @@ const ValidatorCard = ({
 			<h3 className="text-lg">{stakedAmount} KSM</h3>
 		</div>
 		<div className="flex flex-col">
-			<span className="text-xs text-gray-500 font-semibold">Returns / 100 KSM</span>
-			<h3 className="text-lg">{returnsPer100KSM.toFixed(4)} KSM</h3>
+			<span className="text-xs text-gray-500 font-semibold">Estimated Reward</span>
+			<h3 className="text-lg">{estimatedReward.toFixed(4)} KSM</h3>
 		</div>
 	</div>
 );
 
-const FundsUpdate = withSlideIn(({ styles, type, close }) => {
-	const title = `${type === 'bond' ? 'Bond Additional' : 'Unbond'} Funds`;
+const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount }) => {
+	const [amount, _setAmount] = useState('');
 	const [validatorsLoading, setValidatorsLoading] = useState(true);
-	const [validators, setValidators] = useState([]);
+	const title = `${type === 'bond' ? 'Bond Additional' : 'Unbond'} Funds`;
+
 	useEffect(() => {
-		axios.get('/rewards/risk-set').then(({ data }) => {
-			const validators = data.lowriskset; // pick the low risk validator set automatically
-			console.log(validators);
-			setValidators(validators);
+		setTimeout(() => {
 			setValidatorsLoading(false);
-		});
+		}, random(1000, 3000));
 	}, []);
+
+	const setAmount = (value) => {
+		_setAmount(value === '' ? '' : Number(value));
+	};
+
+	const onConfirm = () => {
+		
+	};
 
 	return (
 		<Modal isOpen={true} onClose={close} isCentered>
 			<ModalOverlay />
-			<ModalContent rounded="lg" maxWidth="90vw" height="80vh" {...styles}>
+			<ModalContent rounded="lg" maxWidth="90vw" height="84vh" {...styles}>
 				<ModalHeader>
 				<h1>{title}</h1>
 				</ModalHeader>
@@ -66,58 +72,75 @@ const FundsUpdate = withSlideIn(({ styles, type, close }) => {
 							<span className="mt-5 text-sm text-gray-600">Quick deep breath...</span>
 						</div>
 					) : (
-						<div className="flex justify-around">
-							<div className="border border-gray-200 p-10 rounded-lg text-gray-800 w-1/3">
-								<div>
-									<h3 className="text-xl">Currently Bonded</h3>
-									<h1 className="text-3xl">700 KSM</h1>
-									<span className="text-lg text-gray-600">$350</span>
-								</div>
-								<div className="mt-10">
-									<h3>{title}</h3>
-									<div className="border border-gray-200 rounded-lg">
-										<input
-											className="rounded outline-none p-2 text-xl text-teal-500 rounded-lg"
-										/>
+						<div>
+							<div className="flex justify-around">
+								<div className="border border-gray-200 p-10 rounded-lg text-gray-800 w-1/3">
+									<div>
+										<h3 className="text-xl">Currently Bonded</h3>
+										<h1 className="text-3xl">{get(bondedAmount, 'currency', 0)} KSM</h1>
+										<span className="text-lg text-gray-600">${get(bondedAmount, 'currency', 0) * 2}</span>
 									</div>
-								</div>
-								<div className="mt-10">
-									<h3 className="text-xl">Total Staking Amount</h3>
-									<h1 className="text-3xl">1000 KSM</h1>
-									<span className="text-lg text-gray-600">$500</span>
-								</div>
-							</div>
-							
-							<div className="border border-gray-400 rounded-lg w-2/3">
-								<div className="flex justify-between items-center px-4 py-2 text-gray-700">
-									<h3 className="text-lg font-semibold">VALIDATORS</h3>
-									<div className="flex items-center">
-										<span className="mr-2 text-sm">Estimated Monthly Returns</span>
-										<div className="py-1 px-2 flex flex-col rounded-lg border border-teal-500 w-24">
-											<h3 className="text-teal-500">460 KSM</h3>
-											<span hidden className="text-gray-600 text-sm">$120</span>
+									<div className="mt-10">
+										<h3>{title}</h3>
+										<div className="flex items-center border border-gray-200 rounded-lg">
+											<input
+												type="number"
+												className={`
+													rounded outline-none p-2 font-semibold text-xl rounded-lg
+													${type === 'bond' ? 'text-teal-500' : 'text-red-500'}
+												`}
+												placeholder="Enter amount"
+												value={amount}
+												onChange={ev => setAmount(ev.target.value)}
+											/>
+											<span className={`${type === 'bond' ? 'text-teal-500' : 'text-red-500'} font-semibold ml-2`}>
+												KSM
+											</span>
 										</div>
 									</div>
+									<div className="mt-10">
+										<h3 className="text-xl">Total Staking Amount</h3>
+										<h1 className="text-3xl">{Number(get(bondedAmount, 'currency', 0) + amount).toFixed(4)} KSM</h1>
+										<span className="text-lg text-gray-600">${Number(get(bondedAmount, 'currency', 0) * 2 + amount).toFixed(4)}</span>
+									</div>
 								</div>
-								<div className="validator-table overflow-y-scroll px-4">
-									{validators.map(validator => (
-										<ValidatorCard
-											key={validator.stashId}
-											stashId={validator.stashId}
-											returnsPer100KSM={validator.rewardsPer100KSM}
-											riskScore={validator.riskScore}
-											stakedAmount={30}
-										/>
-									))}
+								
+								<div className="border border-gray-200 rounded-lg w-2/3">
+									<div className="flex justify-between items-center px-4 py-2 text-gray-700">
+										<h3 className="text-lg font-semibold">VALIDATORS</h3>
+										<div className="flex items-center">
+											<span className="mr-2 text-sm">Estimated Monthly Returns</span>
+											<div className="py-1 px-2 flex flex-col rounded-lg border border-teal-500 w-24">
+												<h3 className="text-teal-500">460 KSM</h3>
+												<span hidden className="text-gray-600 text-sm">$120</span>
+											</div>
+										</div>
+									</div>
+									<div className="validator-table overflow-y-scroll px-4">
+										{validators.map(validator => (
+											<ValidatorCard
+												key={validator.stashId}
+												stashId={validator.stashId}
+												estimatedReward={validator.estimatedReward}
+												riskScore={validator.riskScore}
+												stakedAmount={30}
+											/>
+										))}
+									</div>
 								</div>
 							</div>
-							<style jsx>{`
-								.validator-table {
-									height: 60vh;
-								}
-							`}</style>
+							<div className="flex-center">
+								<button className="bg-teal-500 text-white px-8 py-2 mt-5 rounded-lg">
+									Confirm
+								</button>
+							</div>
 						</div>
 					)}
+					<style jsx>{`
+						.validator-table {
+							height: 56vh;
+						}
+					`}</style>
 				</ModalBody>
 			</ModalContent>
 		</Modal>

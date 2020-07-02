@@ -14,7 +14,7 @@ import FundsUpdate from "./FundsUpdate";
 
 const Overview = () => {
 	const { toggle } = useWalletConnect();
-	const { stashAccount } = useAccounts();
+	const { stashAccount, bondedAmount } = useAccounts();
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 	const [userData, setUserData] = useState();
@@ -112,6 +112,8 @@ const Overview = () => {
 				isOpen={fundsUpdateModalOpen}
 				close={closeFundsUpdateModal}
 				type={fundsUpdateModalType}
+				validators={userData.validatorsInfo}
+				bondedAmount={bondedAmount}
 			/>
 			<OverviewCards
 				stats={userData.stats}
