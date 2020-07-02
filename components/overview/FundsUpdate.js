@@ -17,14 +17,14 @@ const FundsUpdate = withSlideIn(({ styles, type, close }) => {
 	return (
 		<Modal isOpen={true} onClose={close} isCentered>
 			<ModalOverlay />
-			<ModalContent rounded="lg" maxWidth="70vw" height="36rem" {...styles}>
+			<ModalContent rounded="lg" maxWidth="90vw" height="80vh" {...styles}>
 				<ModalHeader>
 				<h1>{title}</h1>
 				</ModalHeader>
 				<ModalCloseButton onClick={close} />
 				<ModalBody px="4rem">
 					<div className="flex justify-around">
-						<div className="border border-gray-200 p-10 rounded-lg text-gray-800">
+						<div className="border border-gray-200 p-10 rounded-lg text-gray-800 w-1/3">
 							<div>
 								<h3 className="text-xl">Currently Bonded</h3>
 								<h1 className="text-3xl">700 KSM</h1>
@@ -45,8 +45,17 @@ const FundsUpdate = withSlideIn(({ styles, type, close }) => {
 							</div>
 						</div>
 						
-						<div className="border border-gray-400">
-							Table here
+						<div className="border border-gray-400 rounded-lg w-2/3">
+							<div className="flex justify-between items-center px-4 py-2 text-gray-700">
+								<h3 className="text-lg">VALIDATORS</h3>
+								<div className="flex items-center">
+									<span className="mr-2 text-sm">Estimated Monthly Returns</span>
+									<div className="py-1 px-2 flex flex-col rounded-lg border border-teal-500 w-24">
+										<h3 className="text-teal-500">460 KSM</h3>
+										<span hidden className="text-gray-600 text-sm">$120</span>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</ModalBody>
