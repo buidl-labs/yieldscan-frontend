@@ -10,10 +10,36 @@ import {
 	Input
 } from "@chakra-ui/core";
 import withSlideIn from "@components/common/withSlideIn";
-import { CheckCircle, Circle } from "react-feather";
+import RiskTag from "@components/reward-calculator/RiskTag";
+
+const ValidatorCard = ({
+	stashId,
+	riskScore,
+	stakedAmount,
+	returnsPer100KSM,
+}) => (
+	<div className="flex justify-around items-center py-2 my-2 rounded-lg cursor-pointer border border-gray-300">
+		<img src="http://placehold.it/255" className="rounded-full w-10 h-10 mr-4" />
+		<h3 className="text-gray-700 text-xs w-48 truncate">{stashId}</h3>
+		<div className="flex flex-col">
+			<span className="text-xs text-gray-500 font-semibold">Risk Score</span>
+			<div className="rounded-full font-semibold"><RiskTag risk={riskScore} /></div>
+		</div>
+		<div className="flex flex-col">
+			<span className="text-xs text-gray-500 font-semibold">Staked Amount</span>
+			<h3 className="text-lg">{stakedAmount} KSM</h3>
+		</div>
+		<div className="flex flex-col">
+			<span className="text-xs text-gray-500 font-semibold">Returns / 100 KSM</span>
+			<h3 className="text-lg">{returnsPer100KSM.toFixed(4)} KSM</h3>
+		</div>
+	</div>
+);
 
 const FundsUpdate = withSlideIn(({ styles, type, close }) => {
 	const title = `${type === 'bond' ? 'Bond Additional' : 'Unbond'} Funds`;
+	const [validatorsLoading, setValidatorsLoading] = useState(true);
+
 	return (
 		<Modal isOpen={true} onClose={close} isCentered>
 			<ModalOverlay />
@@ -47,7 +73,7 @@ const FundsUpdate = withSlideIn(({ styles, type, close }) => {
 						
 						<div className="border border-gray-400 rounded-lg w-2/3">
 							<div className="flex justify-between items-center px-4 py-2 text-gray-700">
-								<h3 className="text-lg">VALIDATORS</h3>
+								<h3 className="text-lg font-semibold">VALIDATORS</h3>
 								<div className="flex items-center">
 									<span className="mr-2 text-sm">Estimated Monthly Returns</span>
 									<div className="py-1 px-2 flex flex-col rounded-lg border border-teal-500 w-24">
@@ -55,6 +81,9 @@ const FundsUpdate = withSlideIn(({ styles, type, close }) => {
 										<span hidden className="text-gray-600 text-sm">$120</span>
 									</div>
 								</div>
+							</div>
+							<div className="overflow-y-scroll">
+
 							</div>
 						</div>
 					</div>
