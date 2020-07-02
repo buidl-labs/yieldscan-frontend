@@ -22,20 +22,31 @@ const EditValidators = withSlideIn(({ styles, close }) => {
 				<ModalCloseButton onClick={close} />
 				<ModalBody px="4rem">
 					<div className="flex justify-around">
-						<div className="bg-gray-300 p-2">
-							<div className="flex items-center px-2">
-								<h3 className="text-lg">Candidate Validators</h3>
+						<div className="w-1/2 bg-gray-300 p-2 mr-2 rounded-lg">
+							<div className="">
+								<h3 className="font-semibold">CANDIDATE VALIDATORS</h3>
+							</div>
+							<div>
+								validators card here
 							</div>
 						</div>
-						<div className="border border-gray-300 p-2">
+						<div className="w-1/2 border border-gray-300 p-2 rounded-lg">
 							<div className="flex justify-between items-center">
-								<h3 className="text-lg">
-									Selected Validators
-									<span className="text-sm rounded-full bg-gray-300 text-gray-800 font-semibold">
+								<h3 className="font-semibold">
+									SELECTED VALIDATORS
+									<span className="p-1 ml-2 rounded-full bg-gray-300 text-gray-600 font-semibold">
 										16
 									</span>
 								</h3>
-								<div></div>
+								<div className="flex items-center text-sm">
+									<span className="mr-2">Estimated Monthly Returns</span>
+									<div className="w-32 border border-teal-500 text-teal-500 p-1 rounded-lg">
+										450 KSM
+									</div>
+								</div>
+							</div>
+							<div>
+								validators card here
 							</div>
 						</div>
 					</div>
