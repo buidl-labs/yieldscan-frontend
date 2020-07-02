@@ -43,7 +43,7 @@ const ValidatorCard = ({
 
 const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount }) => {
 	const toast = useToast();
-	const { stashAccount } = useAccounts();
+	const { stashAccount, freeAmount } = useAccounts();
 	const { apiInstance } = usePolkadotApi();
 	const [amount, _setAmount] = useState('');
 	const [updatingFunds, setUpdatingFunds] = useState(false);
@@ -78,6 +78,8 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 
 	const setAmount = (value) => {
 		if (value < 0) return;
+		if (type === 'unbond' && value >= get(bondedAmount, 'currency', 0)) return; 
+		if (type === 'bond' && value >= get(freeAmount, 'currency', 0)) return; 
 		_setAmount(value === '' ? '' : Number(value));
 	};
 
@@ -143,6 +145,12 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 									</div>
 									<div className="mt-10">
 										<h3>{title}</h3>
+										<span
+											className="text-gray-700 text-xs mb-2 ml-px"
+											hidden={type === 'unbond'}
+										>
+											Free Balance: {freeAmount.currency} KSM
+										</span>
 										<div className="flex items-center border border-gray-200 rounded-lg">
 											<input
 												type="number"
