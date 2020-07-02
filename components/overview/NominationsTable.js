@@ -62,7 +62,7 @@ const NominationsTable = ({ validators }) => {
 						stashId={validator.stashId}
 						riskScore={Number(validator.riskScore.toFixed(2))}
 						stakedAmount={Number(validator.nomStake.toFixed(2))}
-						estimatedReward={Number(validator.estimatedReward.toFixed(2))}
+						estimatedReward={Number(validator.estimatedPoolReward.toFixed(2))}
 					/>
 				))}
 			</div>

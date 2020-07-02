@@ -58,11 +58,7 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 		const timePeriodValue = 1, timePeriodUnit = 'months', compounding = false;
 
 		calculateReward(
-			validators.map(validator => {
-				validator.totalStake = 1;
-				validator.estimatedPoolReward = validator.estimatedReward;
-				return validator;
-			}),
+			validators,
 			totalStakingAmount,
 			timePeriodValue,
 			timePeriodUnit,
@@ -147,9 +143,9 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 											<ValidatorCard
 												key={validator.stashId}
 												stashId={validator.stashId}
-												estimatedReward={validator.estimatedReward}
 												riskScore={validator.riskScore}
 												stakedAmount={30}
+												estimatedReward={validator.estimatedPoolReward}
 											/>
 										))}
 									</div>
