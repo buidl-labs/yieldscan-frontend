@@ -25,7 +25,7 @@ const ValidatorCard = ({
 		<h3 className="text-gray-700 text-xs w-48 truncate">{stashId}</h3>
 		<div className="flex flex-col">
 			<span className="text-xs text-gray-500 font-semibold">Risk Score</span>
-			<div className="rounded-full font-semibold"><RiskTag risk={riskScore} /></div>
+			<div className="rounded-full font-semibold"><RiskTag risk={Number(riskScore.toFixed(2))} /></div>
 		</div>
 		<div className="flex flex-col">
 			<span className="text-xs text-gray-500 font-semibold">Staked Amount</span>
@@ -45,6 +45,7 @@ const FundsUpdate = withSlideIn(({ styles, type, close }) => {
 	useEffect(() => {
 		axios.get('/rewards/risk-set').then(({ data }) => {
 			const validators = data.lowriskset; // pick the low risk validator set automatically
+			console.log(validators);
 			setValidators(validators);
 			setValidatorsLoading(false);
 		});
@@ -98,10 +99,23 @@ const FundsUpdate = withSlideIn(({ styles, type, close }) => {
 										</div>
 									</div>
 								</div>
-								<div className="overflow-y-scroll">
-
+								<div className="validator-table overflow-y-scroll px-4">
+									{validators.map(validator => (
+										<ValidatorCard
+											key={validator.stashId}
+											stashId={validator.stashId}
+											returnsPer100KSM={validator.rewardsPer100KSM}
+											riskScore={validator.riskScore}
+											stakedAmount={30}
+										/>
+									))}
 								</div>
 							</div>
+							<style jsx>{`
+								.validator-table {
+									height: 60vh;
+								}
+							`}</style>
 						</div>
 					)}
 				</ModalBody>
