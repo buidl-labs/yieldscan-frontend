@@ -141,7 +141,7 @@ const Overview = () => {
 							<Edit2 size="20px" className="mr-2" />
 							<span>Edit Validators</span>
 						</button>
-						<button className="text-teal-500 p-1">Claim All Rewards</button>
+						<button hidden className="text-teal-500 p-1">Claim All Rewards</button>
 					</div>
 				</div>
 				<NominationsTable validators={userData.validatorsInfo} />

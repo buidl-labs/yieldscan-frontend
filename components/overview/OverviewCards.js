@@ -49,9 +49,6 @@ const OverviewCards = ({
 			</h3>
 			<div className="mt-8 flex justify-between items-center">
 				<h5 className="text-gray-800">Estimated Returns</h5>
-				<button className="bg-teal-500 text-white rounded-full px-4 py-2">
-					Calculate
-				</button>
 			</div>
 		</div>
 		<div className="shadow-lg px-4 py-6 bg-teal-500 text-white rounded-xl" style={{ width: '30%' }}>
