@@ -8,6 +8,7 @@ import ProfileTabs from "./ProfileTabs";
 import ValidatorKeyStats from "./ValidatorKeyStats";
 import ValidatorInfoHeader from "./ValidatorInfoHeader";
 import LinkedValidatorsGroup from "./LInkedValidatorsGroup";
+import { useWalletConnect } from "@components/wallet-connect";
 
 const ProfileTabsConfig = {
 	ACTIVITY: 'Activity',
@@ -19,6 +20,7 @@ const ValidatorProfile = () => {
 	const router = useRouter();
 	const { query: { id: validatorStashId } } = router;
 
+	const { toggle: toggleWalletConnect } = useWalletConnect();
 	const { stashAccount } = useAccounts();
 	const [error, setError] = useState(false);
 	const [loading, setLoading] = useState(true);
@@ -57,8 +59,9 @@ const ValidatorProfile = () => {
 		<div className="px-16 py-16">
 			<ValidatorInfoHeader
 				stashId={validatorStashId}
-				socialInfo={validatorData.socialInfo}
 				stashAccount={stashAccount}
+				socialInfo={validatorData.socialInfo}
+				toggleWalletConnect={toggleWalletConnect}
 			/>
 
 			<div className="my-5">

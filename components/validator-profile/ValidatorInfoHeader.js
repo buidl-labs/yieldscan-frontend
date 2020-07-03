@@ -1,8 +1,8 @@
 import { Twitter, Link, ChevronRight } from "react-feather";
-import { get } from "lodash";
+import { get, noop } from "lodash";
 import { encodeAddress, decodeAddress } from "@polkadot/util-crypto";
 
-const ValidatorInfoHeader = ({ stashId, socialInfo, stashAccount }) => {
+const ValidatorInfoHeader = ({ stashId, socialInfo, stashAccount, toggleWalletConnect = noop }) => {
 	const userStashId = get(stashAccount, 'address');
 	let userStashKusamaId;
 	if (userStashId) {
@@ -46,7 +46,10 @@ const ValidatorInfoHeader = ({ stashId, socialInfo, stashAccount }) => {
 				</p>
 				<div>
 					{!get(stashAccount, 'address') && (
-						<button className="flex items-center text-xs text-gray-700 hover:underline">
+						<button
+							className="flex items-center text-xs text-gray-700 hover:underline"
+							onClick={toggleWalletConnect}
+						>
 							<span>Own this profile? Connect Wallet now to verify</span>
 							<ChevronRight size="1rem" className="text-gray-700" />
 						</button>
