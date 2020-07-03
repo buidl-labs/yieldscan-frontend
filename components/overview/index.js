@@ -55,6 +55,9 @@ const Overview = () => {
 			axios.get(`user/${kusamaAddress}`).then(({ data }) => {
 				if (data.message === 'No data found!') setError(true);
 				setUserData(data);
+			}).catch(() => {
+				setError(true);
+			}).finally(() => {
 				setLoading(false);
 			});
 		}
