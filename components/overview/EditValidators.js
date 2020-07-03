@@ -10,11 +10,12 @@ import {
 	useToast,
 	Input
 } from "@chakra-ui/core";
-import { CheckCircle, PlusCircle, MinusCircle } from "react-feather";
+import { PlusCircle, MinusCircle } from "react-feather";
 import useHover from "@components/common/hooks/useHover";
 import { useState, useEffect } from "react";
 import axios from "@lib/axios";
 import RiskTag from "@components/reward-calculator/RiskTag";
+import { noop, mapValues, keyBy } from "lodash";
 
 const ValidatorCard = ({
 	stashId,
@@ -22,6 +23,7 @@ const ValidatorCard = ({
 	stakedAmount,
 	estimatedReward,
 	isSelected = false,
+	onClick = noop,
 }) => {
 	const [ref, hovered] = useHover();
 	return (
@@ -48,9 +50,12 @@ const ValidatorCard = ({
 	);
 };
 
-const EditValidators = withSlideIn(({ styles, close }) => {
+const EditValidators = withSlideIn(({ styles, close, currentValidators }) => {
 	const [validators, setValidators] = useState([]);
 	const [validatorsLoading, setValidatorsLoading] = useState(true);
+	const [selectedValidatorsMap, setSelectedValidatorsMap] = useState(
+		mapValues(keyBy(currentValidators, 'stashId'))
+	);
 
 	useEffect(() => {
 		axios.get('/rewards/risk-set').then(({ data }) => {
@@ -59,6 +64,8 @@ const EditValidators = withSlideIn(({ styles, close }) => {
 			setValidatorsLoading(false);
 		});
 	}, []);
+
+	const selectedValidatorsList = Object.values(selectedValidatorsMap);
 
 	return (
 		<Modal isOpen={true} onClose={close} isCentered>
@@ -88,7 +95,6 @@ const EditValidators = withSlideIn(({ styles, close }) => {
 											riskScore={validator.riskScore}
 											estimatedReward={validator.estimatedPoolReward}
 											stakedAmount={validator.totalStake}
-											type='add'
 										/>
 									))}
 								</div>
@@ -98,7 +104,7 @@ const EditValidators = withSlideIn(({ styles, close }) => {
 									<h3 className="font-semibold">
 										SELECTED VALIDATORS
 										<span className="p-1 ml-2 rounded-full bg-gray-300 text-gray-600 font-semibold">
-											16
+											{selectedValidatorsList.length}
 										</span>
 									</h3>
 									<div className="flex items-center text-sm">
@@ -108,15 +114,24 @@ const EditValidators = withSlideIn(({ styles, close }) => {
 										</div>
 									</div>
 								</div>
-								<div>
-									validators card here
+								<div className="my-2 overflow-y-scroll validators-table">
+									{selectedValidatorsList.map(validator => (
+										<ValidatorCard
+											key={validator.stashId}
+											stashId={validator.stashId}
+											riskScore={validator.riskScore}
+											estimatedReward={validator.estimatedPoolReward}
+											stakedAmount={validator.totalStake}
+											isSelected
+										/>
+									))}
 								</div>
 							</div>
 						</div>
 					)}
 					<style jsx>{`
 						.validators-table {
-							height: 62vh;
+							height: 60vh;
 						}
 					`}</style>
 				</ModalBody>

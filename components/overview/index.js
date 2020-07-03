@@ -125,6 +125,7 @@ const Overview = () => {
 			<EditValidators
 				isOpen={editValidatorModalOpen}
 				close={closeEditValidatorsModal}
+				currentValidators={userData.validatorsInfo}
 			/>
 			<OverviewCards
 				stats={userData.stats}
