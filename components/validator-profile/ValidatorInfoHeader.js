@@ -1,20 +1,26 @@
 import { Twitter, Link, ChevronRight } from "react-feather";
+import { get } from "lodash";
 
-const ValidatorInfoHeader = () => {
+const ValidatorInfoHeader = ({ stashId, socialInfo }) => {
 	return (
 		<div className="flex">
 			<img src="http://placehold.it/300" className="w-24 h-24 mr-5 rounded-full" />
 			<div className="flex flex-col">
 				<div className="flex justify-between items-center mb-2">
-					<h3 className="text-2xl text-gray-700 font-semibold">Validator Name</h3>
+					<h3 className="text-2xl text-gray-700 font-semibold">{get(socialInfo, 'name', stashId)}</h3>
 					<div className="flex items-center">
-						<button className="mr-4 text-sm flex items-center hover:underline" style={{ color: '#1DA1F2' }}>
+						<button
+							className="mr-4 text-sm flex items-center hover:underline"
+							style={{ color: '#1DA1F2' }}
+						>
 							<Twitter className="mr-1 mt-px" size="1rem" />
-							<span>@akshatbhargava123</span>
+							<span>{get(socialInfo, 'twitter')}</span>
 						</button>
-						<button className="text-sm flex items-center hover:underline">
+						<button
+							className="text-sm flex items-center hover:underline"
+						>
 							<Link className="mr-1 mt-px" size="1rem" />
-							<span>www.staking.com</span>
+							<span>{get(socialInfo, 'web')}</span>
 						</button>
 					</div>
 				</div>

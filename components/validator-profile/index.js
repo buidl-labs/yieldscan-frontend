@@ -40,7 +40,9 @@ const ValidatorProfile = () => {
 
 	return (
 		<div className="px-16 py-16">
-			<ValidatorInfoHeader />
+			<ValidatorInfoHeader
+				socialInfo={validatorData.socialInfo}
+			/>
 
 			<div className="my-5">
 				<div className="flex items-center justify-between">
