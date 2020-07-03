@@ -1,6 +1,8 @@
 import { Check } from "react-feather";
 import { isNil, noop } from "lodash";
 import RiskTag from "@components/reward-calculator/RiskTag";
+import { useRouter } from "next/router";
+import Routes from "@lib/routes";
 
 const ValidatorCard = ({
 	stashId,
@@ -12,6 +14,7 @@ const ValidatorCard = ({
 	nominators,
 	returnsPer100KSM,
 	toggleSelected = noop,
+	onProfile = noop,
 }) => (
 	<div
 		className={`
@@ -25,7 +28,11 @@ const ValidatorCard = ({
 			className={`p-1 mr-2 rounded-full text-white ${selected ? 'bg-teal-500' : 'bg-gray-500'}`}
 			strokeWidth="4px"
 		/>
-		<img src="http://placehold.it/255" className="rounded-full w-10 h-10 mr-4" />
+		<img
+			src="http://placehold.it/255"
+			className="rounded-full w-10 h-10 mr-4"
+			onClick={onProfile}
+		/>
 		<h3 className="text-gray-700 text-xs w-48 truncate">{stashId}</h3>
 		<div className="flex flex-col">
 			<span className="text-xs text-gray-500 font-semibold">Risk Score</span>
@@ -55,7 +62,7 @@ const ValidatorCard = ({
 );
 
 const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidators }) => {
-
+	const router = useRouter();
 	const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(v => !isNil(v));
 
 	const toggleSelected = (validator) => {
@@ -84,6 +91,7 @@ const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidat
 						returnsPer100KSM={validator.rewardsPer100KSM}
 						selected={!isNil(selectedValidatorsMap[validator.stashId])}
 						toggleSelected={() => toggleSelected(validator)}
+						onProfile={() => router.push(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`)}
 					/>
 				))}
 			</div>
