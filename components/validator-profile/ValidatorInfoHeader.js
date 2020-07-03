@@ -2,6 +2,10 @@ import { Twitter, Link, ChevronRight } from "react-feather";
 import { get } from "lodash";
 
 const ValidatorInfoHeader = ({ stashId, socialInfo }) => {
+	const openWindow = (url) => {
+		window.open(url, '_blank');
+	};
+	
 	return (
 		<div className="flex">
 			<img src="http://placehold.it/300" className="w-24 h-24 mr-5 rounded-full" />
@@ -12,12 +16,14 @@ const ValidatorInfoHeader = ({ stashId, socialInfo }) => {
 						<button
 							className="mr-4 text-sm flex items-center hover:underline"
 							style={{ color: '#1DA1F2' }}
+							onClick={() => openWindow(`https://twitter.com/${socialInfo.twitter.slice(1)}`)}
 						>
 							<Twitter className="mr-1 mt-px" size="1rem" />
 							<span>{get(socialInfo, 'twitter')}</span>
 						</button>
 						<button
 							className="text-sm flex items-center hover:underline"
+							onClick={() => openWindow(socialInfo.web)}
 						>
 							<Link className="mr-1 mt-px" size="1rem" />
 							<span>{get(socialInfo, 'web')}</span>
