@@ -17,7 +17,8 @@ import axios from "@lib/axios";
 import RiskTag from "@components/reward-calculator/RiskTag";
 import { noop, mapValues, keyBy, isNil, get } from "lodash";
 import calculateReward from "@lib/calculate-reward";
-import { useAccounts } from "@lib/store";
+import { useAccounts, usePolkadotApi } from "@lib/store";
+import nominate from "@lib/polkadot/nominate";
 
 const ValidatorCard = ({
 	stashId,
@@ -60,7 +61,9 @@ const ValidatorCard = ({
 };
 
 const EditValidators = withSlideIn(({ styles, close, currentValidators }) => {
-	const { freeAmount, bondedAmount } = useAccounts();
+	const toast = useToast();
+	const { apiInstance } = usePolkadotApi();
+	const { stashAccount, freeAmount, bondedAmount } = useAccounts();
 	const [validators, setValidators] = useState([]);
 	const [editLoading, setEditLoading] = useState(false);
 	const [estimatedReward, setEstimatedReward] = useState();
@@ -105,7 +108,47 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators }) => {
 	};
 
 	const onConfirm = () => {
+		const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(v => !isNil(v));
+		const stashIds = selectedValidatorsList.map(validator => validator.stashId);
+
 		setEditLoading(true);
+		nominate(
+			stashAccount.address,
+			stashIds,
+			apiInstance,
+			{
+				onEvent: ({ message }) => {
+					toast({
+						title: 'Info',
+						description: message,
+						status: 'info',
+						duration: 3000,
+						position: 'top-right',
+						isClosable: true,
+					});
+				},
+				onFinish: (failed, message) => {
+					toast({
+						title: failed ? 'Failure' : 'Success',
+						description: message,
+						status: failed ? 'error' : 'success',
+						duration: 3000,
+						position: 'top-right',
+						isClosable: true,
+					});
+					setEditLoading(false);
+					close();
+				},
+			}).catch(error => {
+				toast({
+					title: 'Error',
+					description: error.message,
+					status: 'error',
+					duration: 3000,
+					position: 'top-right',
+					isClosable: true,
+				});
+			});
 	};
 
 	return (
