@@ -12,6 +12,7 @@ import RewardDestinationModal from "./RewardDestinationModal";
 import EditControllerModal from "./EditControllerModal";
 import FundsUpdate from "./FundsUpdate";
 import EditValidators from "./EditValidators";
+import ChillAlert from "./ChillAlert";
 
 const Overview = () => {
 	const { toggle } = useWalletConnect();
@@ -39,6 +40,11 @@ const Overview = () => {
 		isOpen: editValidatorModalOpen,
 		onToggle: toggleEditValidatorsModal,
 		onClose: closeEditValidatorsModal,
+	} = useDisclosure();
+	const {
+		isOpen: chillAlertOpen,
+		onToggle: toggleChillAlert,
+		onClose: closeChillAlert,
 	} = useDisclosure();
 	
 
@@ -126,6 +132,14 @@ const Overview = () => {
 				isOpen={editValidatorModalOpen}
 				close={closeEditValidatorsModal}
 				currentValidators={userData.validatorsInfo}
+				onChill={() => {
+					closeEditValidatorsModal();
+					setTimeout(() => toggleChillAlert(), 500);
+				}}
+			/>
+			<ChillAlert
+				isOpen={chillAlertOpen}
+				close={closeChillAlert}
 			/>
 			<OverviewCards
 				stats={userData.stats}

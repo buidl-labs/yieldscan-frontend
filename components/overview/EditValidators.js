@@ -60,7 +60,7 @@ const ValidatorCard = ({
 	);
 };
 
-const EditValidators = withSlideIn(({ styles, close, currentValidators }) => {
+const EditValidators = withSlideIn(({ styles, close, currentValidators, onChill = noop }) => {
 	const toast = useToast();
 	const { apiInstance } = usePolkadotApi();
 	const { stashAccount, freeAmount, bondedAmount } = useAccounts();
@@ -154,7 +154,7 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators }) => {
 	return (
 		<Modal isOpen={true} onClose={close} isCentered>
 			<ModalOverlay />
-			<ModalContent rounded="lg" maxWidth="90vw" height="84vh" {...styles}>
+			<ModalContent rounded="lg" maxWidth="90vw" height="90vh" {...styles}>
 				<ModalHeader>
 					<h1>Edit Validators</h1>
 				</ModalHeader>
@@ -218,15 +218,21 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators }) => {
 									</div>
 								</div>
 							</div>
-							<div className="mt-2 flex-center">
-							<button
-								className="flex-center rounded-lg bg-teal-500 text-white px-5 py-2"
-								onClick={onConfirm}
-								disabled={editLoading}
-							>
-								<span>Confirm Edit</span>
-								{editLoading && <Spinner size="sm" ml="4px" />}
-							</button>
+							<div className="mt-2 flex-center flex-col">
+								<button
+									className="flex-center rounded-lg bg-teal-500 text-white px-5 py-2"
+									onClick={onConfirm}
+									disabled={editLoading}
+								>
+									<span>Confirm Edit</span>
+									{editLoading && <Spinner size="sm" ml="4px" />}
+								</button>
+								<button
+									className="hover:underline text-gray-600 text-sm mt-2"
+									onClick={onChill}
+								>
+									Stop all nominations
+								</button>
 							</div>
 						</div>
 					)}
