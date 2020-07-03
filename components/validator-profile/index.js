@@ -65,7 +65,7 @@ const ValidatorProfile = () => {
 						selectedTab={selectedTab}
 						setSelectedTab={setSelectedTab}
 					/>
-					<LinkedValidatorsGroup />
+					<LinkedValidatorsGroup validators={validatorData.linkedValidators} />
 				</div>
 			</div>
 
