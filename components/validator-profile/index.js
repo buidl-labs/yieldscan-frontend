@@ -18,6 +18,7 @@ const ValidatorProfile = () => {
 	const router = useRouter();
 	const { query: { id: validatorStashId } } = router;
 
+	const [error, setError] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [validatorData, setValidatorData] = useState();
 	const [selectedTab, setSelectedTab] = useState(ProfileTabsConfig.ACTIVITY);
@@ -25,6 +26,9 @@ const ValidatorProfile = () => {
 	useEffect(() => {
 		axios.get(`validator/${validatorStashId}`).then(({ data }) => {
 			setValidatorData(data);
+		}).catch(() => {
+			setError(true);
+		}).finally(() => {
 			setLoading(false);
 		});
 	}, []);
@@ -34,6 +38,15 @@ const ValidatorProfile = () => {
 			<div className="flex-center flex-col mt-40">
 				<Spinner className="text-gray-700 mb-2" />
 				<span className="text-gray-600 text-sm">Fetching Validator Profile...</span>
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="flex-center flex-col mt-40">
+				<div className="text-4xl">🧐</div>
+				<h3>Sorry, this validator's info couldn't be fetched! We'll surely look into this.</h3>
 			</div>
 		);
 	}
