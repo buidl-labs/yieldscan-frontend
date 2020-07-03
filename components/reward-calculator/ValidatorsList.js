@@ -74,7 +74,7 @@ const ValidatorsList = ({
 			<div className="rounded-xl border border-gray-200 px-8 py-6 mt-4">
 				<div className="flex-center">
 					<img
-						src="images/empty-state.svg"
+						src="/images/empty-state.svg"
 						alt="empty-state"
 						className="w-64 h-64"
 					/>
@@ -155,7 +155,7 @@ const ValidatorsList = ({
 				{!editMode && !validators.length && (
 					<div className="flex-center">
 						<img
-							src="images/empty-state.svg"
+							src="/images/empty-state.svg"
 							alt="empty-state"
 							className="w-64 h-64"
 						/>
