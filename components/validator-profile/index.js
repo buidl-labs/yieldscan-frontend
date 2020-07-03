@@ -1,10 +1,12 @@
+import axios from "@lib/axios";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { Spinner } from "@chakra-ui/core";
+import { useState, useEffect } from "react";
+import TeamMembers from "./TeamMembers";
 import ProfileTabs from "./ProfileTabs";
 import ValidatorKeyStats from "./ValidatorKeyStats";
 import ValidatorInfoHeader from "./ValidatorInfoHeader";
 import LinkedValidatorsGroup from "./LInkedValidatorsGroup";
-import TeamMembers from "./TeamMembers";
 
 const ProfileTabsConfig = {
 	ACTIVITY: 'Activity',
@@ -14,8 +16,27 @@ const ProfileTabsConfig = {
 
 const ValidatorProfile = () => {
 	const router = useRouter();
+	const { query: { id: validatorStashId } } = router;
+
+	const [loading, setLoading] = useState(true);
+	const [validatorData, setValidatorData] = useState();
 	const [selectedTab, setSelectedTab] = useState(ProfileTabsConfig.ACTIVITY);
-	console.log(router.query);
+
+	useEffect(() => {
+		axios.get(`validator/${validatorStashId}`).then(({ data }) => {
+			setValidatorData(data);
+			setLoading(false);
+		});
+	}, []);
+
+	if (loading) {
+		return (
+			<div className="flex-center flex-col mt-40">
+				<Spinner className="text-gray-700 mb-2" />
+				<span className="text-gray-600 text-sm">Fetching Validator Profile...</span>
+			</div>
+		);
+	}
 
 	return (
 		<div className="px-16 py-16">
