@@ -15,7 +15,7 @@ import useHover from "@components/common/hooks/useHover";
 import { useState, useEffect } from "react";
 import axios from "@lib/axios";
 import RiskTag from "@components/reward-calculator/RiskTag";
-import { noop, mapValues, keyBy } from "lodash";
+import { noop, mapValues, keyBy, isNil } from "lodash";
 
 const ValidatorCard = ({
 	stashId,
@@ -23,11 +23,18 @@ const ValidatorCard = ({
 	stakedAmount,
 	estimatedReward,
 	isSelected = false,
+	type,
 	onClick = noop,
 }) => {
 	const [ref, hovered] = useHover();
+
+	/**
+	 * hacky solution but super efficient since it saves us to update the actual validator list
+	 */
+	if (type === 'candidate' && isSelected) return '';
+
 	return (
-		<div ref={ref} className="relative bg-white flex justify-around items-center py-2 my-2 rounded-lg border border-gray-300">
+		<div ref={ref} className="relative bg-white flex justify-around items-center p-2 my-2 rounded-lg border border-gray-300">
 			<img src="http://placehold.it/255" className="rounded-full w-10 h-10 mr-4" />
 			<h3 className="text-gray-700 text-xs w-48 truncate">{stashId}</h3>
 			<div className="flex flex-col">
@@ -42,9 +49,9 @@ const ValidatorCard = ({
 				<span className="text-xs text-gray-500 font-semibold">Estimated Reward</span>
 				<h3 className="text-lg">{estimatedReward.toFixed(4)} KSM</h3>
 			</div>
-			<div hidden={!hovered} className="absolute bg-white bg-opacity-25 cursor-pointer right-0 px-4 py-2">
-				{!isSelected && <PlusCircle size="2rem" fill="#2BCACA" className="text-white" />}
-				{isSelected && <MinusCircle size="2rem" fill="#e53e3e" className="text-white" />}
+			<div hidden={!hovered} className="absolute bg-white bg-opacity-25 cursor-pointer right-0 px-4 py-2" onClick={onClick}>
+				{type === 'candidate' && <PlusCircle size="2rem" fill="#2BCACA" className="text-white" />}
+				{type === 'selected' && <MinusCircle size="2rem" fill="#e53e3e" className="text-white" />}
 			</div>
 		</div>
 	);
@@ -65,7 +72,19 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators }) => {
 		});
 	}, []);
 
-	const selectedValidatorsList = Object.values(selectedValidatorsMap);
+	const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(v => !isNil(v));
+
+	const toggleSelected = (validator, index) => {
+		const { stashId } = validator;
+
+		if (selectedValidatorsList.length === 16 && !selectedValidatorsMap[stashId]) return;
+
+		setSelectedValidatorsMap({
+			...selectedValidatorsMap,
+			[stashId]: isNil(selectedValidatorsMap[stashId]) ? validator : null,
+		});
+	};
+
 
 	return (
 		<Modal isOpen={true} onClose={close} isCentered>
@@ -88,13 +107,16 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators }) => {
 									<h3 className="font-semibold">CANDIDATE VALIDATORS</h3>
 								</div>
 								<div className="my-2 overflow-y-scroll validators-table">
-									{validators.map(validator => (
+									{validators.map((validator, index) => (
 										<ValidatorCard
 											key={validator.stashId}
+											type="candidate"
 											stashId={validator.stashId}
 											riskScore={validator.riskScore}
 											estimatedReward={validator.estimatedPoolReward}
 											stakedAmount={validator.totalStake}
+											onClick={() => toggleSelected(validator, index)}
+											isSelected={!isNil(selectedValidatorsMap[validator.stashId])}
 										/>
 									))}
 								</div>
@@ -118,10 +140,12 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators }) => {
 									{selectedValidatorsList.map(validator => (
 										<ValidatorCard
 											key={validator.stashId}
+											type="selected"
 											stashId={validator.stashId}
 											riskScore={validator.riskScore}
 											estimatedReward={validator.estimatedPoolReward}
 											stakedAmount={validator.totalStake}
+											onClick={() => toggleSelected(validator)}
 											isSelected
 										/>
 									))}
