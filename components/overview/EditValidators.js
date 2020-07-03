@@ -15,7 +15,9 @@ import useHover from "@components/common/hooks/useHover";
 import { useState, useEffect } from "react";
 import axios from "@lib/axios";
 import RiskTag from "@components/reward-calculator/RiskTag";
-import { noop, mapValues, keyBy, isNil } from "lodash";
+import { noop, mapValues, keyBy, isNil, get } from "lodash";
+import calculateReward from "@lib/calculate-reward";
+import { useAccounts } from "@lib/store";
 
 const ValidatorCard = ({
 	stashId,
@@ -58,7 +60,10 @@ const ValidatorCard = ({
 };
 
 const EditValidators = withSlideIn(({ styles, close, currentValidators }) => {
+	const { freeAmount, bondedAmount } = useAccounts();
 	const [validators, setValidators] = useState([]);
+	const [editLoading, setEditLoading] = useState(false);
+	const [estimatedReward, setEstimatedReward] = useState();
 	const [validatorsLoading, setValidatorsLoading] = useState(true);
 	const [selectedValidatorsMap, setSelectedValidatorsMap] = useState(
 		mapValues(keyBy(currentValidators, 'stashId'))
@@ -72,9 +77,23 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators }) => {
 		});
 	}, []);
 
+	useEffect(() => {
+		const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(v => !isNil(v));
+		calculateReward(
+			selectedValidatorsList,
+			get(freeAmount, 'currency', 0),
+			1,
+			'months',
+			false,
+			bondedAmount
+		).then(result => {
+			setEstimatedReward(result.returns.currency);
+		});
+	}, [selectedValidatorsMap]);
+
 	const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(v => !isNil(v));
 
-	const toggleSelected = (validator, index) => {
+	const toggleSelected = (validator) => {
 		const { stashId } = validator;
 
 		if (selectedValidatorsList.length === 16 && !selectedValidatorsMap[stashId]) return;
@@ -85,6 +104,9 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators }) => {
 		});
 	};
 
+	const onConfirm = () => {
+		setEditLoading(true);
+	};
 
 	return (
 		<Modal isOpen={true} onClose={close} isCentered>
@@ -101,55 +123,67 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators }) => {
 							<span className="mt-5 text-sm text-gray-600">Quick deep breath...</span>
 						</div>
 					) : (
-						<div className="flex justify-around">
-							<div className="w-1/2 bg-gray-300 p-2 mr-2 rounded-lg">
-								<div className="">
-									<h3 className="font-semibold">CANDIDATE VALIDATORS</h3>
-								</div>
-								<div className="my-2 overflow-y-scroll validators-table">
-									{validators.map((validator, index) => (
-										<ValidatorCard
-											key={validator.stashId}
-											type="candidate"
-											stashId={validator.stashId}
-											riskScore={validator.riskScore}
-											estimatedReward={validator.estimatedPoolReward}
-											stakedAmount={validator.totalStake}
-											onClick={() => toggleSelected(validator, index)}
-											isSelected={!isNil(selectedValidatorsMap[validator.stashId])}
-										/>
-									))}
-								</div>
-							</div>
-							<div className="w-1/2 border border-gray-300 p-2 rounded-lg">
-								<div className="flex justify-between items-center">
-									<h3 className="font-semibold">
-										SELECTED VALIDATORS
-										<span className="p-1 ml-2 rounded-full bg-gray-300 text-gray-600 font-semibold">
-											{selectedValidatorsList.length}
-										</span>
-									</h3>
-									<div className="flex items-center text-sm">
-										<span className="mr-2">Estimated Monthly Returns</span>
-										<div className="w-32 border border-teal-500 text-teal-500 p-1 rounded-lg">
-											450 KSM
-										</div>
+						<div>
+							<div className="flex justify-around">
+								<div className="w-1/2 bg-gray-300 p-2 mr-2 rounded-lg">
+									<div className="">
+										<h3 className="font-semibold">CANDIDATE VALIDATORS</h3>
+									</div>
+									<div className="my-2 overflow-y-scroll validators-table">
+										{validators.map(validator => (
+											<ValidatorCard
+												key={validator.stashId}
+												type="candidate"
+												stashId={validator.stashId}
+												riskScore={validator.riskScore}
+												estimatedReward={validator.estimatedPoolReward}
+												stakedAmount={validator.totalStake}
+												onClick={() => toggleSelected(validator)}
+												isSelected={!isNil(selectedValidatorsMap[validator.stashId])}
+											/>
+										))}
 									</div>
 								</div>
-								<div className="my-2 overflow-y-scroll validators-table">
-									{selectedValidatorsList.map(validator => (
-										<ValidatorCard
-											key={validator.stashId}
-											type="selected"
-											stashId={validator.stashId}
-											riskScore={validator.riskScore}
-											estimatedReward={validator.estimatedPoolReward}
-											stakedAmount={validator.totalStake}
-											onClick={() => toggleSelected(validator)}
-											isSelected
-										/>
-									))}
+								<div className="w-1/2 border border-gray-300 p-2 rounded-lg">
+									<div className="flex justify-between items-center">
+										<h3 className="font-semibold">
+											SELECTED VALIDATORS
+											<span className="p-1 ml-2 text-sm rounded-full bg-gray-300 text-gray-600 font-semibold">
+												{selectedValidatorsList.length}
+											</span>
+										</h3>
+										<div className="flex items-center text-sm">
+											<span className="mr-2">Estimated Monthly Returns</span>
+											<div className="w-32 border border-teal-500 text-teal-500 p-1 rounded-lg">
+												{estimatedReward.toFixed(2)} KSM
+											</div>
+										</div>
+									</div>
+									<div className="my-2 overflow-y-scroll validators-table">
+										{selectedValidatorsList.map(validator => (
+											<ValidatorCard
+												key={validator.stashId}
+												type="selected"
+												stashId={validator.stashId}
+												riskScore={validator.riskScore}
+												estimatedReward={validator.estimatedPoolReward}
+												stakedAmount={validator.totalStake}
+												onClick={() => toggleSelected(validator)}
+												isSelected
+											/>
+										))}
+									</div>
 								</div>
+							</div>
+							<div className="mt-2 flex-center">
+							<button
+								className="flex-center rounded-lg bg-teal-500 text-white px-5 py-2"
+								onClick={onConfirm}
+								disabled={editLoading}
+							>
+								<span>Confirm Edit</span>
+								{editLoading && <Spinner size="sm" ml="4px" />}
+							</button>
 							</div>
 						</div>
 					)}
