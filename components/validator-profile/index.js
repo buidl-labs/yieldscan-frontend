@@ -41,6 +41,7 @@ const ValidatorProfile = () => {
 	return (
 		<div className="px-16 py-16">
 			<ValidatorInfoHeader
+				stashId={validatorStashId}
 				socialInfo={validatorData.socialInfo}
 			/>
 
@@ -62,7 +63,9 @@ const ValidatorProfile = () => {
 					)}
 				</div>
 				<div className="w-1/3 flex flex-col">
-					<ValidatorKeyStats />
+					<ValidatorKeyStats
+						stats={validatorData.keyStats}
+					/>
 				</div>
 			</div>
 		</div>
