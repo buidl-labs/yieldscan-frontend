@@ -1,12 +1,20 @@
 import { useRouter } from "next/router";
 import { Twitter, Link, ChevronRight } from "react-feather";
+import { useState } from "react";
+
+const ProfileTabs = {
+	ACTIVITY: 'Activity',
+	VISUALISATION: 'Visualisation',
+	TEAM: 'Team',
+};
 
 const ValidatorProfile = () => {
 	const router = useRouter();
+	const [selectedTab, setSelectedTab] = useState(ProfileTabs.ACTIVITY);
 	console.log(router.query);
 
 	return (
-		<div className="px-16 py-24">
+		<div className="px-16 py-16">
 			<div className="flex">
 				<img src="http://placehold.it/300" className="w-24 h-24 mr-5 rounded-full" />
 				<div className="flex flex-col">
@@ -32,6 +40,22 @@ const ValidatorProfile = () => {
 							<ChevronRight size="1rem" className="text-gray-700" />
 						</button>
 					</div>
+				</div>
+			</div>
+
+			<div className="flex items-center justify-between my-5">
+				<div className="flex items-center">
+					{Object.entries(ProfileTabs).map(([key, value]) => (
+						<button
+							className={`
+								mx-3 px-1 py-3 transition duration-500 focus:outline-none
+								${selectedTab === value ? 'border-b-2 border-teal-500 text-gray-900 font-semibold' : 'text-gray-700'}
+							`}
+							onClick={() => setSelectedTab(value)}
+						>
+							<span>{value}</span>
+						</button>
+					))}
 				</div>
 			</div>
 		</div>
