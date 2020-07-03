@@ -12,6 +12,7 @@ const LinkedValidatorsGroup = ({ validators = [] }) => {
 					/>
 				))}
 			</AvatarGroup>
+			{!validators.length && <span className="text-gray-700 text-xs mr-2 font-semibold">: 0</span>}
 		</div>
 	);
 };

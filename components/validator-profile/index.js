@@ -2,6 +2,7 @@ import axios from "@lib/axios";
 import { useRouter } from "next/router";
 import { Spinner } from "@chakra-ui/core";
 import { useState, useEffect } from "react";
+import { useAccounts } from "@lib/store";
 import TeamMembers from "./TeamMembers";
 import ProfileTabs from "./ProfileTabs";
 import ValidatorKeyStats from "./ValidatorKeyStats";
@@ -18,6 +19,7 @@ const ValidatorProfile = () => {
 	const router = useRouter();
 	const { query: { id: validatorStashId } } = router;
 
+	const { stashAccount } = useAccounts();
 	const [error, setError] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [validatorData, setValidatorData] = useState();
@@ -56,6 +58,7 @@ const ValidatorProfile = () => {
 			<ValidatorInfoHeader
 				stashId={validatorStashId}
 				socialInfo={validatorData.socialInfo}
+				stashAccount={stashAccount}
 			/>
 
 			<div className="my-5">
