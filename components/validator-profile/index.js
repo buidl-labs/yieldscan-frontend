@@ -1,6 +1,6 @@
 import axios from "@lib/axios";
 import { useRouter } from "next/router";
-import { Spinner } from "@chakra-ui/core";
+import { Spinner, useDisclosure } from "@chakra-ui/core";
 import { useState, useEffect } from "react";
 import { useAccounts } from "@lib/store";
 import TeamMembers from "./TeamMembers";
@@ -9,6 +9,7 @@ import ValidatorKeyStats from "./ValidatorKeyStats";
 import ValidatorInfoHeader from "./ValidatorInfoHeader";
 import LinkedValidatorsGroup from "./LInkedValidatorsGroup";
 import { useWalletConnect } from "@components/wallet-connect";
+import EditProfileModal from "./EditProfileModal";
 
 const ProfileTabsConfig = {
 	ACTIVITY: 'Activity',
@@ -26,6 +27,11 @@ const ValidatorProfile = () => {
 	const [loading, setLoading] = useState(true);
 	const [validatorData, setValidatorData] = useState();
 	const [selectedTab, setSelectedTab] = useState(ProfileTabsConfig.ACTIVITY);
+	const {
+		isOpen: editProfileModalOpen,
+		onClose: closeEditProfileModal,
+		onToggle: toggleEditProfileModal,
+	} = useDisclosure();
 
 	useEffect(() => {
 		axios.get(`validator/${validatorStashId}`).then(({ data }) => {
@@ -57,10 +63,16 @@ const ValidatorProfile = () => {
 
 	return (
 		<div className="px-16 py-16">
+			<EditProfileModal
+				isOpen={editProfileModalOpen}
+				onClose={closeEditProfileModal}
+			/>
+		
 			<ValidatorInfoHeader
 				stashId={validatorStashId}
 				stashAccount={stashAccount}
 				socialInfo={validatorData.socialInfo}
+				openEditProfile={toggleEditProfileModal}
 				toggleWalletConnect={toggleWalletConnect}
 			/>
 
