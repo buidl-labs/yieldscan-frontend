@@ -14,6 +14,7 @@ import { useAccounts, usePolkadotApi } from "@lib/store";
 import { useState } from "react";
 import { Circle, CheckCircle } from "react-feather";
 import { web3FromAddress } from "@polkadot/extension-dapp";
+import updatePayee from "@lib/polkadot/update-payee";
 
 const RewardDestinationModal = withSlideIn(({ close, styles, onEditController }) => {
 	const toast = useToast();
@@ -26,36 +27,43 @@ const RewardDestinationModal = withSlideIn(({ close, styles, onEditController })
 	const accounts = ['Stash'];
 	if (!compounding) accounts.push('Controller');
 
-	const updatePayee = () => {
+	const onUpdatePayee = () => {
 		const payee = compounding ? 0 : destination === 'Stash' ? 1 : 2;
-		const stashId = stashAccount.address;
 
 		setUpdatingFunds(true);
-		web3FromAddress(stashId).then(injector => {
-			apiInstance.setSigner(injector.signer);
-			apiInstance._extrinsics.staking
-				.setPayee(payee)
-				.signAndSend(stashId)
-				.then(() => {
-					toast({
-						title: 'Success',
-						description: 'Reward destination updated.',
-						status: 'success',
-						position: 'top-right',
-						duration: 3000
-					});
-					close();
-				}).catch(error => {
-					toast({
-						title: 'Failure',
-						description: error.message,
-						status: 'error',
-						position: 'top-right',
-						duration: 3000
-					});
-				}).finally(() => {
-					setUpdatingFunds(false);
+		updatePayee(stashAccount.address, payee, apiInstance, {
+			onEvent: ({ message }) => {
+				toast({
+					title: 'Info',
+					description: message,
+					status: 'info',
+					duration: 3000,
+					position: 'top-right',
+					isClosable: true,
 				});
+			},
+			onFinish: (failed, message) => {
+				toast({
+					title: failed ? 'Failure' : 'Success',
+					description: message,
+					status: failed ? 'error' : 'success',
+					duration: 3000,
+					position: 'top-right',
+					isClosable: true,
+				});
+				setUpdatingFunds(false);
+				close();
+			},
+		}).catch(error => {
+			setUpdatingFunds(false);
+			toast({
+				title: 'Error',
+				description: error.message,
+				status: 'error',
+				duration: 3000,
+				position: 'top-right',
+				isClosable: true,
+			});
 		});
 	};
 
@@ -127,7 +135,7 @@ const RewardDestinationModal = withSlideIn(({ close, styles, onEditController })
 								rounded="0.5rem"
 								backgroundColor="teal.500"
 								color="white"
-								onClick={updatePayee}
+								onClick={onUpdatePayee}
 								isLoading={updatingFunds}
 							>
 								Update
