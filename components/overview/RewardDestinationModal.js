@@ -6,7 +6,8 @@ import {
 	ModalBody,
 	ModalCloseButton,
 	ModalHeader,
-	useToast
+	useToast,
+	Button
 } from "@chakra-ui/core";
 import CompoundRewardSlider from "@components/reward-calculator/CompoundRewardSlider";
 import { useAccounts, usePolkadotApi } from "@lib/store";
@@ -18,6 +19,7 @@ const RewardDestinationModal = withSlideIn(({ close, styles, onEditController })
 	const toast = useToast();
 	const { apiInstance } = usePolkadotApi();
 	const { stashAccount } = useAccounts();
+	const [updatingFunds, setUpdatingFunds] = useState(false);
 	const [destination, setDestination] = useState('');
 	const [compounding, setCompounding] = useState(false);
 
@@ -27,6 +29,8 @@ const RewardDestinationModal = withSlideIn(({ close, styles, onEditController })
 	const updatePayee = () => {
 		const payee = compounding ? 0 : destination === 'Stash' ? 1 : 2;
 		const stashId = stashAccount.address;
+
+		setUpdatingFunds(true);
 		web3FromAddress(stashId).then(injector => {
 			apiInstance.setSigner(injector.signer);
 			apiInstance._extrinsics.staking
@@ -49,6 +53,8 @@ const RewardDestinationModal = withSlideIn(({ close, styles, onEditController })
 						position: 'top-right',
 						duration: 3000
 					});
+				}).finally(() => {
+					setUpdatingFunds(false);
 				});
 		});
 	};
@@ -114,12 +120,18 @@ const RewardDestinationModal = withSlideIn(({ close, styles, onEditController })
 							Edit Controller
 						</button>
 						<div className="mt-12 flex-center">
-							<button
-								className="rounded py-2 px-10 bg-teal-500 text-white"
+							<Button
+								px="8"
+								py="2"
+								mt="5"
+								rounded="0.5rem"
+								backgroundColor="teal.500"
+								color="white"
 								onClick={updatePayee}
+								isLoading={updatingFunds}
 							>
 								Update
-							</button>
+							</Button>
 						</div>
 					</div>
 				</ModalBody>
