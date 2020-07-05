@@ -8,7 +8,8 @@ import {
 	ModalHeader,
 	Spinner,
 	useToast,
-	Input
+	Input,
+	Button
 } from "@chakra-ui/core";
 import { PlusCircle, MinusCircle } from "react-feather";
 import useHover from "@components/common/hooks/useHover";
@@ -140,6 +141,7 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators, onChill 
 					close();
 				},
 			}).catch(error => {
+				setEditLoading(false);
 				toast({
 					title: 'Error',
 					description: error.message,
@@ -219,14 +221,18 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators, onChill 
 								</div>
 							</div>
 							<div className="mt-2 flex-center flex-col">
-								<button
-									className="flex-center rounded-lg bg-teal-500 text-white px-5 py-2"
+								<Button
+									px="8"
+									py="2"
+									mt="5"
+									rounded="0.5rem"
+									backgroundColor="teal.500"
+									color="white"
 									onClick={onConfirm}
-									disabled={editLoading}
+									isLoading={editLoading}
 								>
-									<span>Confirm Edit</span>
-									{editLoading && <Spinner size="sm" ml="4px" />}
-								</button>
+									Confirm Edit
+								</Button>
 								<button
 									className="hover:underline text-gray-600 text-sm mt-2"
 									onClick={onChill}
