@@ -16,7 +16,7 @@ import ChillAlert from "./ChillAlert";
 
 const Overview = () => {
 	const { toggle } = useWalletConnect();
-	const { stashAccount, bondedAmount } = useAccounts();
+	const { stashAccount, bondedAmount, accountInfoLoading } = useAccounts();
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 	const [userData, setUserData] = useState();
@@ -80,7 +80,7 @@ const Overview = () => {
 		);
 	}
 
-	if (loading) {
+	if (loading || accountInfoLoading) {
 		return (
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">
@@ -96,7 +96,7 @@ const Overview = () => {
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">
 					<AlertTriangle size="2rem" className="text-orange-500" />
-					<span className="font-semibold text-red-600 text-lg mb-10">You Unlucky bro, no data for you! 😭</span>
+					<span className="font-semibold text-red-600 text-lg mb-10">Sorry, no data for your account! :(</span>
 					<span className="text-sm text-gray-600 mt-5">Try changing the stash account.</span>
 				</div>
 			</div>
