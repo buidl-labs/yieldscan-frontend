@@ -12,7 +12,7 @@ import { useWalletConnect } from "@components/wallet-connect";
 import EditProfileModal from "./EditProfileModal";
 
 const ProfileTabsConfig = {
-	ACTIVITY: 'Activity',
+	// ACTIVITY: 'Activity',
 	VISUALISATION: 'Visualisation',
 	TEAM: 'Team',
 };
@@ -26,7 +26,7 @@ const ValidatorProfile = () => {
 	const [error, setError] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [validatorData, setValidatorData] = useState();
-	const [selectedTab, setSelectedTab] = useState(ProfileTabsConfig.ACTIVITY);
+	const [selectedTab, setSelectedTab] = useState(ProfileTabsConfig.VISUALISATION);
 	const {
 		isOpen: editProfileModalOpen,
 		onClose: closeEditProfileModal,
