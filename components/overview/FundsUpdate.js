@@ -8,7 +8,8 @@ import {
 	ModalHeader,
 	Spinner,
 	useToast,
-	Input
+	Input,
+	Button
 } from "@chakra-ui/core";
 import withSlideIn from "@components/common/withSlideIn";
 import RiskTag from "@components/reward-calculator/RiskTag";
@@ -78,8 +79,8 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 
 	const setAmount = (value) => {
 		if (value < 0) return;
-		if (type === 'unbond' && value >= get(bondedAmount, 'currency', 0)) return; 
-		if (type === 'bond' && value >= get(freeAmount, 'currency', 0)) return; 
+		if (type === 'unbond' && value >= get(bondedAmount, 'currency', 0)) return;
+		if (type === 'bond' && value >= get(freeAmount, 'currency', 0)) return;
 		_setAmount(value === '' ? '' : Number(value));
 	};
 
@@ -149,7 +150,7 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 											className="text-gray-700 text-xs mb-2 ml-px"
 											hidden={type === 'unbond'}
 										>
-											Free Balance: {freeAmount.currency} KSM
+											Free Balance: {get(freeAmount, 'currency', 0)} KSM
 										</span>
 										<div className="flex items-center border border-gray-200 rounded-lg">
 											<input
@@ -199,17 +200,19 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 								</div>
 							</div>
 							<div className="flex-center">
-								<button
-									className={`
-										px-8 py-2 mt-5 rounded-lg text-white
-										${!amount ? 'bg-gray-300 cursor-not-allowed' : 'bg-teal-500'}
-									`}
-									disabled={!amount}
+								<Button
+									px="8"
+									py="2"
+									mt="5"
+									rounded="0.5rem"
+									backgroundColor="teal.500"
+									color="white"
 									onClick={onConfirm}
+									isDisabled={!amount}
+									isLoading={updatingFunds}
 								>
-									<span>Confirm</span>
-									{updatingFunds && <Spinner size="sm" ml="4px" />}
-								</button>
+									Confirm
+								</Button>
 							</div>
 						</div>
 					)}
