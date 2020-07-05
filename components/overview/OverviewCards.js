@@ -1,5 +1,6 @@
 import { noop } from 'lodash';
-import { Plus, Minus } from 'react-feather';
+import { Plus, Minus, Clock } from 'react-feather';
+import { Popover, PopoverTrigger, PopoverContent } from '@chakra-ui/core';
 
 const OverviewCards = ({
 	stats,
@@ -43,9 +44,27 @@ const OverviewCards = ({
 				<div className="mt-8 flex justify-between items-center">
 					<h5 className="text-gray-800">Staked</h5>
 					<div className="flex items-center">
-						<span className="cursor-help hover:underline text-gray-500 text-sm">
-							Unlocking: {totalUnlockingBalanceinKSM.toFixed(2)}
-						</span>
+						<Popover trigger="hover">
+							<PopoverTrigger>
+								<span className="cursor-help hover:underline text-gray-500 text-sm">
+									Unlocking: {totalUnlockingBalanceinKSM.toFixed(2)}
+								</span>
+							</PopoverTrigger>
+							<PopoverContent zIndex={4} px="1.5rem" py="0.5rem" width="16rem" rounded="1rem">
+								<div>
+									<h5 className="font-semibold text-gray-600">Unlocking Balances:</h5>
+									<div>
+										{unlockingBalances.map(balanceInfo => (
+											<div className="flex items-center justify-around text-gray-600 text-sm">
+												<Clock className="text-gray-600 mr-2" size="0.75rem" />
+												<span>{(balanceInfo.value / (10 ** 12)).toFixed(2)} KSM</span>
+												<span className="ml-2">ERA: {balanceInfo.era}</span>
+											</div>
+										))}
+									</div>
+								</div>
+							</PopoverContent>
+						</Popover>
 					</div>
 				</div>
 			</div>
