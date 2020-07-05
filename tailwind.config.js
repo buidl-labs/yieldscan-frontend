@@ -31,6 +31,9 @@ module.exports = {
         'xs': '16rem',
         'xxs': '12rem',
       },
+      cursor: {
+        help: 'help',
+      },
     }
   },
   variants: {},
