@@ -16,7 +16,7 @@ import ChillAlert from "./ChillAlert";
 
 const Overview = () => {
 	const { toggle } = useWalletConnect();
-	const { stashAccount, bondedAmount, accountInfoLoading } = useAccounts();
+	const { stashAccount, bondedAmount, unlockingBalances, accountInfoLoading } = useAccounts();
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 	const [userData, setUserData] = useState();
@@ -146,6 +146,7 @@ const Overview = () => {
 			/>
 			<OverviewCards
 				stats={userData.stats}
+				unlockingBalances={unlockingBalances}
 				bondFunds={() => openFundsUpdateModal('bond')}
 				unbondFunds={() => openFundsUpdateModal('unbond')}
 				openRewardDestinationModal={toggleRewardDestinationModal}
