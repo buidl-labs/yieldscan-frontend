@@ -10,6 +10,7 @@ import ValidatorInfoHeader from "./ValidatorInfoHeader";
 import LinkedValidatorsGroup from "./LInkedValidatorsGroup";
 import { useWalletConnect } from "@components/wallet-connect";
 import EditProfileModal from "./EditProfileModal";
+import ValidatorReturnsCalculator from "./ValidatorReturnsCalculator";
 
 const ProfileTabsConfig = {
 	// ACTIVITY: 'Activity',
@@ -36,6 +37,7 @@ const ValidatorProfile = () => {
 	useEffect(() => {
 		axios.get(`validator/${validatorStashId}`).then(({ data }) => {
 			setValidatorData(data);
+			console.log(data);
 		}).catch(() => {
 			setError(true);
 		}).finally(() => {
@@ -94,6 +96,9 @@ const ValidatorProfile = () => {
 					)}
 				</div>
 				<div className="w-1/3 flex flex-col">
+					<div className="mb-2">
+						<ValidatorReturnsCalculator />
+					</div>
 					<ValidatorKeyStats
 						stats={validatorData.keyStats}
 					/>
