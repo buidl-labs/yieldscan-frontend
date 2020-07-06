@@ -9,7 +9,7 @@ import ValidatorKeyStats from "./ValidatorKeyStats";
 import ValidatorInfoHeader from "./ValidatorInfoHeader";
 import LinkedValidatorsGroup from "./LInkedValidatorsGroup";
 import { useWalletConnect } from "@components/wallet-connect";
-import EditProfileModal from "./EditProfileModal";
+import EditValidatorProfileModal from "./EditValidatorProfileModal";
 import ValidatorReturnsCalculator from "./ValidatorReturnsCalculator";
 
 const ProfileTabsConfig = {
@@ -65,7 +65,7 @@ const ValidatorProfile = () => {
 
 	return (
 		<div className="px-16 py-16">
-			<EditProfileModal
+			<EditValidatorProfileModal
 				isOpen={editProfileModalOpen}
 				onClose={closeEditProfileModal}
 			/>

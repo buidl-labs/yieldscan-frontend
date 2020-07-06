@@ -4,7 +4,7 @@ import { Popover, PopoverTrigger, PopoverContent } from '@chakra-ui/core';
 
 const OverviewCards = ({
 	stats,
-	unlockingBalances,
+	unlockingBalances = [],
 	openRewardDestinationModal = noop,
 	bondFunds = noop,
 	unbondFunds = noop,
