@@ -76,6 +76,7 @@ const ValidatorProfile = () => {
 				socialInfo={validatorData.socialInfo}
 				openEditProfile={toggleEditProfileModal}
 				toggleWalletConnect={toggleWalletConnect}
+				vision={validatorData.additionalInfo.vision}
 			/>
 
 			<div className="my-5">
@@ -92,7 +93,7 @@ const ValidatorProfile = () => {
 			<div className="flex w-full">
 				<div className="w-2/3 mr-4">
 					{selectedTab === ProfileTabsConfig.TEAM && (
-						<TeamMembers />
+						<TeamMembers members={validatorData.additionalInfo} />
 					)}
 				</div>
 				<div className="w-1/3 flex flex-col">

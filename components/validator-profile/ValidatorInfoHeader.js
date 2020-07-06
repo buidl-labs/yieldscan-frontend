@@ -2,7 +2,7 @@ import { Twitter, Link, ChevronRight } from "react-feather";
 import { get, noop } from "lodash";
 import { encodeAddress, decodeAddress } from "@polkadot/util-crypto";
 
-const ValidatorInfoHeader = ({ stashId, socialInfo, stashAccount, openEditProfile = noop, toggleWalletConnect = noop }) => {
+const ValidatorInfoHeader = ({ stashId, vision = '', socialInfo, stashAccount, openEditProfile = noop, toggleWalletConnect = noop }) => {
 	const userStashId = get(stashAccount, 'address');
 	let userStashKusamaId;
 	if (userStashId) {
@@ -42,7 +42,7 @@ const ValidatorInfoHeader = ({ stashId, socialInfo, stashAccount, openEditProfil
 					</div>
 				</div>
 				<p className="text-gray-500 text-sm mb-2">
-					Staked runs the most reliable and secure validation services for crypto investors. The smartest investors in crypto choose Staked because of our secure technology and offerings that encompass the most proof-of-stake chains.
+					{vision}
 				</p>
 				<div>
 					{!get(stashAccount, 'address') && (
