@@ -97,7 +97,9 @@ const ValidatorProfile = () => {
 				</div>
 				<div className="w-1/3 flex flex-col">
 					<div className="mb-2">
-						<ValidatorReturnsCalculator />
+						<ValidatorReturnsCalculator
+							validatorInfo={validatorData.keyStats}
+						/>
 					</div>
 					<ValidatorKeyStats
 						stats={validatorData.keyStats}
