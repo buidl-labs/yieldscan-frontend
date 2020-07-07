@@ -47,7 +47,7 @@ const OverviewCards = ({
 						<Popover trigger="hover">
 							<PopoverTrigger>
 								<span className="cursor-help hover:underline text-gray-500 text-sm">
-									Unlocking: {totalUnlockingBalanceinKSM.toFixed(2)}
+									Unlocking: {totalUnlockingBalanceinKSM.toFixed(4)}
 								</span>
 							</PopoverTrigger>
 							<PopoverContent zIndex={4} px="1.5rem" py="0.5rem" width="16rem" rounded="1rem">
@@ -57,7 +57,7 @@ const OverviewCards = ({
 										{unlockingBalances.map((balanceInfo, index) => (
 											<div key={index} className="flex items-center justify-around text-gray-600 text-sm">
 												<Clock className="text-gray-600 mr-2" size="0.75rem" />
-												<span>{(balanceInfo.value / (10 ** 12)).toFixed(2)} KSM</span>
+												<span>{(balanceInfo.value / (10 ** 12)).toFixed(4)} KSM</span>
 												<span className="ml-2">ERA: {balanceInfo.era}</span>
 											</div>
 										))}
