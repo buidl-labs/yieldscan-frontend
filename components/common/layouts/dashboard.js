@@ -34,13 +34,16 @@ const withDashboardLayout = (children) => {
 				const { value: { unlocking } } =  await api.query.staking.ledger(stashAccount.address);
 
 				const unlockingBalances = [];
-				unlocking.forEach(unlockingBalance => {
-					const { era, value } = unlockingBalance;
-					unlockingBalances.push({
-						era: Number(era.toString()),
-						value: Number(value.toString()),
+
+				if (unlocking && !unlocking.isEmpty && unlocking.length > 0) {
+					unlocking.forEach(unlockingBalance => {
+						const { era, value } = unlockingBalance;
+						unlockingBalances.push({
+							era: Number(era.toString()),
+							value: Number(value.toString()),
+						});
 					});
-				});
+				}
 
 				let bondedAmount = 0, bondedAmountInSubCurrency = 0, freeAmount = 0, freeAmountInSubCurrency = 0;
 				if (isBonded && !lockedBalance.isEmpty) {

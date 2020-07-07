@@ -50,10 +50,10 @@ const Overview = () => {
 
 	useEffect(() => {
 		setLoading(true);
+		setError(false);
 		if (get(stashAccount, 'address')) {
 			const kusamaAddress = encodeAddress(decodeAddress(stashAccount.address), 2);
 			axios.get(`user/${kusamaAddress}`).then(({ data }) => {
-				console.log(data);
 				if (data.message === 'No data found!') setError(true);
 				setUserData(data);
 			}).catch(() => {

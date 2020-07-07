@@ -54,8 +54,8 @@ const OverviewCards = ({
 								<div>
 									<h5 className="font-semibold text-gray-600">Unlocking Balances:</h5>
 									<div>
-										{unlockingBalances.map(balanceInfo => (
-											<div className="flex items-center justify-around text-gray-600 text-sm">
+										{unlockingBalances.map((balanceInfo, index) => (
+											<div key={index} className="flex items-center justify-around text-gray-600 text-sm">
 												<Clock className="text-gray-600 mr-2" size="0.75rem" />
 												<span>{(balanceInfo.value / (10 ** 12)).toFixed(2)} KSM</span>
 												<span className="ml-2">ERA: {balanceInfo.era}</span>
