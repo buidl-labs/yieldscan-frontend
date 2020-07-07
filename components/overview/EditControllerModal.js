@@ -6,7 +6,8 @@ import {
 	ModalCloseButton,
 	ModalHeader,
 	Spinner,
-	useToast
+	useToast,
+	Button
 } from "@chakra-ui/core";
 import withSlideIn from "@components/common/withSlideIn";
 import { useAccounts, usePolkadotApi } from "@lib/store";
@@ -60,9 +61,11 @@ const EditControllerModal = withSlideIn(({ styles, close }) => {
 					position: 'top-right',
 					isClosable: true,
 				});
+				setEditLoading(false);
 				close();
 			},
 		}).catch(error => {
+			setEditLoading(false);
 			toast({
 				title: 'Error',
 				description: error.message,
@@ -71,8 +74,6 @@ const EditControllerModal = withSlideIn(({ styles, close }) => {
 				position: 'top-right',
 				isClosable: true,
 			});
-		}).finally(() => {
-			setEditLoading(false);
 		});
 	};
 
@@ -116,14 +117,18 @@ const EditControllerModal = withSlideIn(({ styles, close }) => {
 								))}
 							</div>
 							<div className="mt-5 flex-center">
-								<button
-									className="flex-center rounded-lg bg-teal-500 text-white px-5 py-2"
+								<Button
+									px="8"
+									py="2"
+									mt="5"
+									rounded="0.5rem"
+									backgroundColor="teal.500"
+									color="white"
 									onClick={updateController}
-									disabled={editLoading}
+									isLoading={editLoading}
 								>
-									<span>Update Controller</span>
-									{editLoading && <Spinner size="sm" ml="4px" />}
-								</button>
+									Update Controller
+								</Button>
 							</div>
 							<style jsx>{`
 								.accounts-container {
