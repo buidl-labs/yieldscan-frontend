@@ -41,13 +41,15 @@ const ValidatorCard = ({
 				<span className="text-xs text-gray-500 font-semibold">Estimated Reward</span>
 				<h3 className="text-lg">{estimatedReward} KSM</h3>
 			</div>
-			<button className="flex items-center justify-between border-2 border-orange-500 rounded-lg py-1 px-3">
-				<Star className="text-orange-500 mr-2" fill="#F5B100" size="20px" strokeWidth="2px" />
-				<div className="flex flex-col items-center">
-					<span className="text-sm text-gray-900">Claim Rewards</span>
-					<span className="text-xs text-gray-700">3 days left</span>
-				</div>
-			</button>
+			{false && (
+				<button className="flex items-center justify-between border-2 border-orange-500 rounded-lg py-1 px-3">
+					<Star className="text-orange-500 mr-2" fill="#F5B100" size="20px" strokeWidth="2px" />
+					<div className="flex flex-col items-center">
+						<span className="text-sm text-gray-900">Claim Rewards</span>
+						<span className="text-xs text-gray-700">3 days left</span>
+					</div>
+				</button>
+			)}
 		</div>
 	);
 };
@@ -62,7 +64,7 @@ const NominationsTable = ({ validators }) => {
 						stashId={validator.stashId}
 						riskScore={Number(validator.riskScore.toFixed(2))}
 						stakedAmount={Number(validator.nomStake.toFixed(2))}
-						estimatedReward={Number(validator.estimatedReward.toFixed(2))}
+						estimatedReward={Number(validator.estimatedPoolReward.toFixed(2))}
 					/>
 				))}
 			</div>

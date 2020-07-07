@@ -6,7 +6,7 @@ const WalletConnected = ({ accounts, onStashSelected, ledgerLoading }) => {
 	const [selectedAccount, setSelected] = useState();
 	return (
 		<div className="mx-10 my-10 flex flex-col items-center">
-			<img src="images/polkadot-wallet-connect-success.png" width="100px" />
+			<img src="/images/polkadot-wallet-connect-success.png" width="100px" />
 			<h3 className="mt-4 px-5 text-2xl text-center">Cheers, your wallet is successfully connected.</h3>
 			<div className="mt-8 py-3 px-4 rounded-lg">
 				<h3 className="text-gray-600 mb-2">As a final step, please select stash account:</h3>

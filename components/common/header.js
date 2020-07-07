@@ -56,7 +56,7 @@ const Header = () => {
 				<Popover>
 					<PopoverTrigger>
 						<button className="flex items-center rounded-full border border-gray-300 p-2 px-4 ml-10 font-semibold text-gray-800">
-							<img src="images/kusama-logo.png" alt="kusama-logo" className="mr-2 w-6" />
+							<img src="/images/kusama-logo.png" alt="kusama-logo" className="mr-2 w-6" />
 							<ChevronDown size="20px" />
 						</button>
 					</PopoverTrigger>

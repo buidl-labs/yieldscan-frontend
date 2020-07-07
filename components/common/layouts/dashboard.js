@@ -31,6 +31,19 @@ const withDashboardLayout = (children) => {
 				// check if `stashAccount` already has bonded on some controller
 				const { isSome: isBonded } = await api.query.staking.bonded(stashAccount.address);
 				const { data: { free: freeBalance, miscFrozen: lockedBalance } } = await api.query.system.account(stashAccount.address);
+				const { value: { unlocking } } =  await api.query.staking.ledger(stashAccount.address);
+
+				const unlockingBalances = [];
+
+				if (unlocking && !unlocking.isEmpty && unlocking.length > 0) {
+					unlocking.forEach(unlockingBalance => {
+						const { era, value } = unlockingBalance;
+						unlockingBalances.push({
+							era: Number(era.toString()),
+							value: Number(value.toString()),
+						});
+					});
+				}
 
 				let bondedAmount = 0, bondedAmountInSubCurrency = 0, freeAmount = 0, freeAmountInSubCurrency = 0;
 				if (isBonded && !lockedBalance.isEmpty) {
@@ -57,6 +70,7 @@ const withDashboardLayout = (children) => {
 						currency: freeAmount,
 						subCurrency: freeAmountInSubCurrency,
 					},
+					unlockingBalances,
 					accountInfoLoading: false,
 				});
 			});
