@@ -16,7 +16,7 @@ const ValidatorInfoHeader = ({ stashId, vision = '', socialInfo, stashAccount, o
 	return (
 		<div className="flex">
 			<img src="http://placehold.it/300" className="w-24 h-24 mr-5 rounded-full" />
-			<div className="flex flex-col">
+			<div className="flex flex-col w-full">
 				<div className="flex justify-between items-center mb-2">
 					<h3 className="text-2xl text-gray-700 font-semibold">{get(socialInfo, 'name', stashId)}</h3>
 					<div className="flex items-center">
