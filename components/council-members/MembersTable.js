@@ -1,7 +1,10 @@
-const MemberCard = ({ name, accountId, backing, totalBalance, numberOfBackers }) => {
+import { useRouter } from "next/router";
+import Routes from "@lib/routes";
+
+const MemberCard = ({ name, accountId, backing, totalBalance, numberOfBackers, onProfile }) => {
 	return (
 		<div className="flex items-center justify-between rounded-lg border border-gray-300 py-2 px-10 my-2">
-			<div className="flex items-center">
+			<div className="flex items-center cursor-pointer" onClick={onProfile}>
 				<img src="http://placehold.it/255" className="rounded-full w-12 h-12 mr-10" />
 				<div className="flex flex-col">
 					<span className="">{name}</span>
@@ -27,6 +30,8 @@ const MemberCard = ({ name, accountId, backing, totalBalance, numberOfBackers })
 };
 
 const MembersTable = ({ members }) => {
+	const router = useRouter();
+
 	return (
 		<div className="mt-8">
 			<div className="table-container overflow-y-scroll">
@@ -38,6 +43,7 @@ const MembersTable = ({ members }) => {
 						accountId={member.accountId}
 						totalBalance={member.totalBalance}
 						numberOfBackers={member.numberOfBackers}
+						onProfile={() => router.push(`${Routes.GOVERNANCE}/${member.accountId}`)}
 					/>
 				))}
 			</div>
