@@ -4,6 +4,8 @@ import axios from "@lib/axios";
 import { Spinner } from "@chakra-ui/core";
 import CouncilMemberInfoHeader from "./CouncilMemberInfoHeader";
 import ProfileTabs from "@components/validator-profile/ProfileTabs";
+import { get } from "lodash";
+import CouncilMemberKeyStats from "./CouncilMemberKeyStats";
 
 const ProfileTabsConfig = {
 	// ACTIVITY: 'Activity',
@@ -60,6 +62,21 @@ const CouncilMemberProfile = () => {
 						tabs={ProfileTabsConfig}
 						selectedTab={selectedTab}
 						setSelectedTab={setSelectedTab}
+					/>
+				</div>
+			</div>
+
+			<div className="flex w-full">
+				<div className="w-2/3 mr-4">
+					{selectedTab === ProfileTabsConfig.VISUALISATION && (
+						<div></div>
+					)}
+				</div>
+				<div className="w-1/3 flex flex-col">
+					<CouncilMemberKeyStats
+						voters={get(memberInfo, 'backersInfo.length', 0)}
+						backingAmount={memberInfo.backing}
+						totalBalance={memberInfo.totalBalance}
 					/>
 				</div>
 			</div>
