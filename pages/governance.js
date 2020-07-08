@@ -6,14 +6,14 @@ const Page = dynamic(
   { ssr: false },
 );
 
-const GovernancePage = dynamic(
-  () => import('@components/governance').then(mod => mod.default),
+const CouncilMembersPage = dynamic(
+  () => import('@components/council-members').then(mod => mod.default),
   { ssr: false },
 );
 
 const Governance = () => (
   <Page title="Governance" layoutProvider={withDashboardLayout}>
-    {() => <GovernancePage />}
+    {() => <CouncilMembersPage />}
   </Page>
 );
 
