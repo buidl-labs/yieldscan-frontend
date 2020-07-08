@@ -34,7 +34,7 @@ const ValidatorProfile = () => {
 		onToggle: toggleEditProfileModal,
 	} = useDisclosure();
 
-	useEffect(() => {
+	const initData = () => {
 		axios.get(`validator/${validatorStashId}`).then(({ data }) => {
 			setValidatorData(data);
 			console.log(data);
@@ -43,6 +43,10 @@ const ValidatorProfile = () => {
 		}).finally(() => {
 			setLoading(false);
 		});
+	};
+
+	useEffect(() => {
+		initData();
 	}, []);
 
 	if (loading) {
@@ -70,6 +74,7 @@ const ValidatorProfile = () => {
 				socialInfo={validatorData.socialInfo}
 				vision={validatorData.additionalInfo.vision}
 				members={validatorData.additionalInfo.members}
+				onSuccess={initData}
 				isOpen={editProfileModalOpen}
 				onClose={closeEditProfileModal}
 			/>

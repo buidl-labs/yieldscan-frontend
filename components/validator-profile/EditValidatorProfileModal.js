@@ -84,6 +84,7 @@ const EditProfileModal = withSlideIn(({
 	socialInfo,
 	vision,
 	members,
+	onSuccess,
 	styles,
 	onClose,
 }) => {
@@ -121,16 +122,19 @@ const EditProfileModal = withSlideIn(({
 					title: 'Success',
 					description: 'Profile updated!',
 					duration: 2000,
-					status: 'success'
+					status: 'success',
+					position: 'top-right',
 				});
 				onClose();
+				onSuccess();
 			}
 		}).catch((error) => {
 			toast({
 				title: 'Error!',
 				description: 'Something went wrong!',
 				duration: 2000,
-				status: 'error'
+				status: 'error',
+				position: 'top-right',
 			});
 		}).finally(() => {
 			setUpdating(false);
