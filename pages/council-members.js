@@ -11,10 +11,10 @@ const CouncilMembersPage = dynamic(
   { ssr: false },
 );
 
-const Governance = () => (
-  <Page title="Governance" layoutProvider={withDashboardLayout}>
+const CouncilMembers = () => (
+  <Page title="Council Members" layoutProvider={withDashboardLayout}>
     {() => <CouncilMembersPage />}
   </Page>
 );
 
-export default Governance;
+export default CouncilMembers;
