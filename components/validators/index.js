@@ -1,6 +1,6 @@
 import { Filter, ChevronDown, ChevronUp } from "react-feather";
 import { useState, useEffect } from "react";
-import { useDisclosure, Select } from "@chakra-ui/core";
+import { useDisclosure, Select, Spinner } from "@chakra-ui/core";
 import { mapValues, keyBy, isNil, get, orderBy, filter, isNull, cloneDeep } from "lodash";
 import { useTransaction, useAccounts } from "@lib/store";
 import calculateReward from "@lib/calculate-reward";
@@ -10,6 +10,7 @@ import EditAmountModal from "./EditAmountModal";
 import FilterPanel from "./FilterPanel";
 import { useWalletConnect } from "@components/wallet-connect";
 import { useRouter } from "next/router";
+import axios from "@lib/axios";
 
 const DEFAULT_FILTER_OPTIONS = {
 	numOfNominators: { min: '', max: '' },
@@ -27,6 +28,7 @@ const Validators = () => {
 	const transactionState = useTransaction();
 	const { setTransactionState } = transactionState;
 	
+	const [loading, setLoading] = useState(true);
 	const [validators, setValidators] = useState(get(transactionState.validatorMap, 'total'));
 	const [filteredValidators, setFilteredValidators] = useState(validators);
 	const [amount, setAmount] = useState(transactionState.stakingAmount);
@@ -41,6 +43,18 @@ const Validators = () => {
 	const [sortOrder, setSortOrder] = useState('asc');
 	const [sortKey, setSortKey] = useState('estimatedPoolReward');
 	const [result, setResult] = useState({});
+
+	useEffect(() => {
+		if (!validators) {
+			axios.get('/rewards/risk-set').then(({ data }) => {	
+				setValidators(data.totalset);
+				setFilteredValidators(data.totalset);
+				setLoading(false);
+			});
+		} else {
+			setLoading(false);
+		}
+	}, []);
 
 	useEffect(() => {
 		const sorted = orderBy(filteredValidators, [sortKey], [sortOrder]);
@@ -130,6 +144,17 @@ const Validators = () => {
 		updateTransactionState();
 		router.push('/payment');
 	};
+
+	if (loading) {
+		return (
+			<div className="flex-center w-full h-full">
+				<div className="flex-center flex-col">
+					<Spinner size="xl" />
+					<span className="text-sm text-gray-600 mt-5">Fetching validators data...</span>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="px-10 py-5">
