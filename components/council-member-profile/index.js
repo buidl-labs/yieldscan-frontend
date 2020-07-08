@@ -6,6 +6,7 @@ import CouncilMemberInfoHeader from "./CouncilMemberInfoHeader";
 import ProfileTabs from "@components/validator-profile/ProfileTabs";
 import { get } from "lodash";
 import CouncilMemberKeyStats from "./CouncilMemberKeyStats";
+import EditCouncilMemberProfileModal from "./EditCouncilMemberProfileModal";
 
 const ProfileTabsConfig = {
 	// ACTIVITY: 'Activity',
@@ -24,6 +25,7 @@ const CouncilMemberProfile = () => {
 	useEffect(() => {
 		setError(false);
 		axios.get(`/council/member/${councilMemberAccountId}`).then(({ data }) => {
+			console.log(data);
 			setMemberInfo(data);
 		}).catch(() => {
 			setError(true);
@@ -52,6 +54,12 @@ const CouncilMemberProfile = () => {
 
 	return (
 		<div className="px-16 py-16">
+			<EditCouncilMemberProfileModal
+				isOpen={true}
+				onClose={() => {}}
+				accountId={councilMemberAccountId}
+			/>
+		
 			{false && <CouncilMemberInfoHeader
 				name={memberInfo.name}
 			/>}
