@@ -66,6 +66,9 @@ const ValidatorProfile = () => {
 	return (
 		<div className="px-16 py-16">
 			<EditValidatorProfileModal
+				stashId={validatorStashId}
+				socialInfo={validatorData.socialInfo}
+				vision={validatorData.additionalInfo.vision}
 				isOpen={editProfileModalOpen}
 				onClose={closeEditProfileModal}
 			/>
