@@ -1,7 +1,7 @@
 import { Avatar } from "@chakra-ui/core";
 
 const TopNominatorCard = () => (
-	<div className="px-6 py-8 flex-center flex-col rounded-lg border shadow-xl">
+	<div className="px-6 py-8 flex-center flex-col rounded-lg border shadow-lg">
 		<Avatar mb="1rem" />
 		<h3 className="text-xl text-gray-700 font-semibold mb-4">Nominator Name</h3>
 		<span className="text-gray-600 font-semibold text-sm">Daily Earning</span>

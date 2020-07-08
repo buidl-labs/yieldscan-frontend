@@ -1,5 +1,6 @@
 import { Avatar } from "@chakra-ui/core";
 import Top3Section from "./Top3Section";
+import NominationsTable from "./NominatorsTable";
 
 const Nominators = () => {
 	return (
@@ -12,6 +13,7 @@ const Nominators = () => {
 						<p className="text-gray-600 font-thin mb-2">TOP NOMINATORS</p>
 						<Top3Section />
 					</div>
+					<NominationsTable />
 				</div>
 				<div className="w-1/3 flex flex-col">
 					<h1>cards here</h1>
