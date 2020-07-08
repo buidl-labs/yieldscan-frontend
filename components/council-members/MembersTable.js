@@ -43,7 +43,7 @@ const MembersTable = ({ members }) => {
 						accountId={member.accountId}
 						totalBalance={member.totalBalance}
 						numberOfBackers={member.numberOfBackers}
-						onProfile={() => router.push(`${Routes.GOVERNANCE}/${member.accountId}`)}
+						onProfile={() => router.push(`${Routes.COUNCIL_MEMBER_PROFILE}/${member.accountId}`)}
 					/>
 				))}
 			</div>
