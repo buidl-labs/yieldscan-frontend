@@ -16,14 +16,22 @@ import {
 import withSlideIn from "@components/common/withSlideIn";
 import { Twitter, Feather } from "react-feather";
 import { useState, useEffect } from "react";
+import { cloneDeep } from "lodash";
+import axios from "@lib/axios";
 
-const MemberInput = ({ memberInfo = {}, onUpdate, newMember }) => {
-	const [name, setName] = useState(memberInfo.name);
-	const [twitter, setTwitter] = useState(memberInfo.twitter);
+const MemberInput = ({ memberInfo = {}, onAdd, onRemove, onUpdate, newMember }) => {
+	const [name, setName] = useState(memberInfo.name || '');
+	const [twitter, setTwitter] = useState(memberInfo.twitter || '');
 
 	useEffect(() => {
-		onUpdate({ name, twitter });
+		if (!newMember) onUpdate({ name, twitter });
 	}, [name, twitter]);
+
+	const onAddMember = () => {
+		onAdd({ name, twitter });
+		setName('');
+		setTwitter('');
+	};
 
 	return (
 		<div className="flex items-center justify-between px-5 py-2 border border-gray-200 rounded-lg">
@@ -47,11 +55,23 @@ const MemberInput = ({ memberInfo = {}, onUpdate, newMember }) => {
 				/>
 			</InputGroup>
 			{newMember ? (
-				<Button leftIcon="add" variantColor="teal" variant="outline" _focus={{outline:'none'}}>
+				<Button
+					leftIcon="add"
+					variantColor="teal"
+					variant="outline"
+					onClick={() => onAddMember()}
+					_focus={{outline:'none'}}
+				>
 					Add New
 				</Button>
 			) : (
-				<Button leftIcon="delete" variantColor="red" variant="outline" _focus={{outline:'none'}}>
+				<Button
+					leftIcon="delete"
+					variantColor="red"
+					variant="outline"
+					onClick={() => onRemove()}
+					_focus={{outline:'none'}}
+				>
 					Remove
 				</Button>
 			)}
@@ -69,11 +89,40 @@ const EditProfileModal = withSlideIn(({
 }) => {
 	const [newMembers, setMembers] = useState(members || []);
 	const [newVision, setVision] = useState(vision || '');
+	const [updating, setUpdating] = useState(false);
 
 	const updateMember = (memberIndex, memberInfo) => {
-		if (memberIndex === -1) newMembers.push(memberInfo);
-		else newMembers.splice(memberIndex, 1, memberInfo);
-		setMembers(newMembers);
+		const members = cloneDeep(newMembers);
+		members.splice(memberIndex, 1, memberInfo);
+		setMembers(members);
+	};
+
+	const addMember = (member) => {
+		const members = cloneDeep(newMembers);
+		members.push(member);
+		setMembers(members);
+	};
+
+	const removeMember = (memberIndex) => {
+		const members = cloneDeep(newMembers);
+		members.splice(memberIndex, 1);
+		setMembers(members);
+	};
+
+	const updateProfile = () => {
+		setUpdating(true);
+		axios.put(
+			`/validator/${stashId}/update`,
+			{ members: newMembers, vision: newVision },
+		).then(({ data }) => {
+			if (data.status === 200) {
+				onClose();
+			}
+		}).catch(() => {
+			// TODO: handle error properly
+		}).finally(() => {
+			setUpdating(false);
+		});
 	};
 
 	return (
@@ -106,16 +155,17 @@ const EditProfileModal = withSlideIn(({
 						<div className="mt-5">
 							<h5 className="text-gray-600 mb-2 font-bold text-lg">Team Members</h5>
 							{newMembers.map((member, index) => (
-								<div key={index} className="my-4">
+								<div key={member.name} className="my-4">
 									<MemberInput
 										memberInfo={member}
 										onUpdate={(newInfo) => updateMember(index, newInfo)}
+										onRemove={() => removeMember(index)}
 									/>
 								</div>
 							))}
 							<div className="my-4">
 								<MemberInput
-									onUpdate={(newInfo) => updateMember(-1, newInfo)}
+									onAdd={newMember => addMember(newMember)}
 									newMember
 								/>
 							</div>
@@ -128,8 +178,8 @@ const EditProfileModal = withSlideIn(({
 								rounded="0.5rem"
 								backgroundColor="teal.500"
 								color="white"
-								onClick={() => {}}
-								isLoading={false}
+								onClick={updateProfile}
+								isLoading={updating}
 							>
 								Update Profile
 							</Button>
