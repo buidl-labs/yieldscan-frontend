@@ -69,6 +69,7 @@ const ValidatorProfile = () => {
 				stashId={validatorStashId}
 				socialInfo={validatorData.socialInfo}
 				vision={validatorData.additionalInfo.vision}
+				members={validatorData.additionalInfo.members}
 				isOpen={editProfileModalOpen}
 				onClose={closeEditProfileModal}
 			/>

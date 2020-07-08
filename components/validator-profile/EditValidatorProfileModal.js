@@ -20,15 +20,15 @@ import { cloneDeep } from "lodash";
 import axios from "@lib/axios";
 
 const MemberInput = ({ memberInfo = {}, onAdd, onRemove, onUpdate, newMember }) => {
-	const [name, setName] = useState(memberInfo.name || '');
+	const [name, setName] = useState(memberInfo.member || '');
 	const [twitter, setTwitter] = useState(memberInfo.twitter || '');
 
 	useEffect(() => {
-		if (!newMember) onUpdate({ name, twitter });
+		if (!newMember) onUpdate({ member: name, twitter });
 	}, [name, twitter]);
 
 	const onAddMember = () => {
-		onAdd({ name, twitter });
+		onAdd({ member: name, twitter });
 		setName('');
 		setTwitter('');
 	};
@@ -167,11 +167,11 @@ const EditProfileModal = withSlideIn(({
 						<div className="mt-5">
 							<h5 className="text-gray-600 mb-2 font-bold text-lg">Team Members</h5>
 							{newMembers.map((member, index) => (
-								<div key={member.name} className="my-4">
+								<div key={member.name + member.twitter} className="my-4">
 									<MemberInput
 										memberInfo={member}
 										onUpdate={(newInfo) => updateMember(index, newInfo)}
-										onRemove={() => removeMember(index)}
+										onRemove={() => removeMember(member)}
 									/>
 								</div>
 							))}
