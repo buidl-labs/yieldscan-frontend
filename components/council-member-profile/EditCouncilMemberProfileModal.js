@@ -1,9 +1,10 @@
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Button } from "@chakra-ui/core";
 import { useState } from "react";
+import withSlideIn from "@components/common/withSlideIn";
 
-const EditCouncilMemberProfileModal = ({ styles, onClose, accountId }) => {
+const EditCouncilMemberProfileModal = withSlideIn(({ styles, onClose, name, accountId }) => {
 	const [newVision, setVision] = useState('');
-	
+
 	return (
 		<Modal isOpen={true} onClose={onClose} isCentered>
 			<ModalOverlay />
@@ -13,7 +14,7 @@ const EditCouncilMemberProfileModal = ({ styles, onClose, accountId }) => {
 					<div className="flex">
 					{false && <img src="http://placehold.it/300" className="w-16 h-16 mr-5 rounded-full" />}
 					<div className="flex flex-col">
-						<h3 className="text-2xl text-gray-700 font-semibold">Council Member Name</h3>
+						<h3 className="text-2xl text-gray-700 font-semibold">{name}</h3>
 						<p className="text-gray-600 text-sm">{accountId}</p>
 					</div>
 				</div>
@@ -48,6 +49,6 @@ const EditCouncilMemberProfileModal = ({ styles, onClose, accountId }) => {
 			</ModalContent>
 		</Modal>
 	);
-};
+});
 
 export default EditCouncilMemberProfileModal;

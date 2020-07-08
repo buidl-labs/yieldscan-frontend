@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import axios from "@lib/axios";
-import { Spinner } from "@chakra-ui/core";
+import { Spinner, useDisclosure } from "@chakra-ui/core";
 import CouncilMemberInfoHeader from "./CouncilMemberInfoHeader";
 import ProfileTabs from "@components/validator-profile/ProfileTabs";
 import { get } from "lodash";
@@ -21,6 +21,11 @@ const CouncilMemberProfile = () => {
 	const [loading, setLoading] = useState(true);
 	const [memberInfo, setMemberInfo] = useState();
 	const [selectedTab, setSelectedTab] = useState(ProfileTabsConfig.VISUALISATION);
+	const {
+		isOpen: editProfileModalOpen,
+		onClose: closeEditProfileModal,
+		onToggle: toggleEditProfileModal,
+	} = useDisclosure();
 
 	useEffect(() => {
 		setError(false);
@@ -55,9 +60,10 @@ const CouncilMemberProfile = () => {
 	return (
 		<div className="px-16 py-16">
 			<EditCouncilMemberProfileModal
-				isOpen={true}
-				onClose={() => {}}
+				name={memberInfo.socialInfo.name}
 				accountId={councilMemberAccountId}
+				isOpen={editProfileModalOpen}
+				onClose={closeEditProfileModal}
 			/>
 		
 			{false && <CouncilMemberInfoHeader
