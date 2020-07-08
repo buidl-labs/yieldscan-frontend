@@ -96,7 +96,7 @@ const ValidatorProfile = () => {
 			<div className="flex w-full">
 				<div className="w-2/3 mr-4">
 					{selectedTab === ProfileTabsConfig.TEAM && (
-						<TeamMembers members={validatorData.additionalInfo} />
+						<TeamMembers members={validatorData.additionalInfo.members} />
 					)}
 				</div>
 				<div className="w-1/3 flex flex-col">
