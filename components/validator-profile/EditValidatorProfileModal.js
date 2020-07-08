@@ -5,13 +5,13 @@ import {
 	ModalHeader,
 	ModalCloseButton,
 	ModalBody,
-	Textarea,
 	Avatar,
 	Input,
 	Button,
 	InputLeftElement,
 	InputGroup,
-	Icon
+	Icon,
+	useToast
 } from "@chakra-ui/core";
 import withSlideIn from "@components/common/withSlideIn";
 import { Twitter, Feather } from "react-feather";
@@ -87,6 +87,7 @@ const EditProfileModal = withSlideIn(({
 	styles,
 	onClose,
 }) => {
+	const toast = useToast();
 	const [newMembers, setMembers] = useState(members || []);
 	const [newVision, setVision] = useState(vision || '');
 	const [updating, setUpdating] = useState(false);
@@ -116,10 +117,21 @@ const EditProfileModal = withSlideIn(({
 			{ members: newMembers, vision: newVision },
 		).then(({ data }) => {
 			if (data.status === 200) {
+				toast({
+					title: 'Success',
+					description: 'Profile updated!',
+					duration: 2000,
+					status: 'success'
+				});
 				onClose();
 			}
-		}).catch(() => {
-			// TODO: handle error properly
+		}).catch((error) => {
+			toast({
+				title: 'Error!',
+				description: 'Something went wrong!',
+				duration: 2000,
+				status: 'error'
+			});
 		}).finally(() => {
 			setUpdating(false);
 		});
