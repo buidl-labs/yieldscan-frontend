@@ -7,6 +7,8 @@ import ProfileTabs from "@components/validator-profile/ProfileTabs";
 import { get } from "lodash";
 import CouncilMemberKeyStats from "./CouncilMemberKeyStats";
 import EditCouncilMemberProfileModal from "./EditCouncilMemberProfileModal";
+import { useAccounts } from "@lib/store";
+import { useWalletConnect } from "@components/wallet-connect";
 
 const ProfileTabsConfig = {
 	// ACTIVITY: 'Activity',
@@ -16,6 +18,8 @@ const ProfileTabsConfig = {
 const CouncilMemberProfile = () => {
 	const router = useRouter();
 	const { query: { id: councilMemberAccountId } } = router;
+	const { stashAccount } = useAccounts();
+	const { toggle: toggleWalletConnect } = useWalletConnect();
 
 	const [error, setError] = useState(false);
 	const [loading, setLoading] = useState(true);
@@ -66,9 +70,15 @@ const CouncilMemberProfile = () => {
 				onClose={closeEditProfileModal}
 			/>
 		
-			{false && <CouncilMemberInfoHeader
+			<CouncilMemberInfoHeader
 				name={memberInfo.name}
-			/>}
+				vision={memberInfo.vision}
+				stashAccount={stashAccount}
+				socialInfo={memberInfo.socialInfo}
+				accountId={councilMemberAccountId}
+				toggleWalletConnect={toggleWalletConnect}
+				openEditProfile={toggleEditProfileModal}
+			/>
 
 			<div className="my-5">
 				<div className="flex items-center justify-between">
