@@ -31,16 +31,19 @@ const CouncilMemberProfile = () => {
 		onToggle: toggleEditProfileModal,
 	} = useDisclosure();
 
-	useEffect(() => {
+	const initData = () => {
 		setError(false);
 		axios.get(`/council/member/${councilMemberAccountId}`).then(({ data }) => {
-			console.log(data);
 			setMemberInfo(data);
 		}).catch(() => {
 			setError(true);
 		}).finally(() => {
 			setLoading(false);
-		})
+		});
+	};
+
+	useEffect(() => {
+		initData();
 	}, []);
 
 	if (loading) {
@@ -68,6 +71,7 @@ const CouncilMemberProfile = () => {
 				accountId={councilMemberAccountId}
 				isOpen={editProfileModalOpen}
 				onClose={closeEditProfileModal}
+				onSuccess={initData}
 			/>
 		
 			<CouncilMemberInfoHeader

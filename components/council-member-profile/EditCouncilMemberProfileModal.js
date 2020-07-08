@@ -1,20 +1,49 @@
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Button } from "@chakra-ui/core";
+import {
+	Modal,
+	ModalOverlay,
+	ModalContent,
+	ModalHeader,
+	ModalCloseButton,
+	ModalBody,
+	Button,
+	useToast
+} from "@chakra-ui/core";
 import { useState } from "react";
 import withSlideIn from "@components/common/withSlideIn";
 import axios from "@lib/axios";
 
-const EditCouncilMemberProfileModal = withSlideIn(({ styles, onClose, name, accountId }) => {
+const EditCouncilMemberProfileModal = withSlideIn(({ styles, onClose, onSuccess, name, accountId }) => {
+	const toast = useToast();
 	const [newVision, setVision] = useState('');
+	const [updating, setUpdating] = useState(false);
 
 	const updateProfile = () => {
+		setUpdating(true);
 		axios.put(
 			`council/member/${accountId}/update`,
 			{ vision: newVision },
 		).then(({ data }) => {
-			console.log(data);
-			onClose();
+			if (data.status === 200) {
+				toast({
+					title: 'Success',
+					description: 'Profile updated!',
+					duration: 2000,
+					status: 'success',
+					position: 'top-right',
+				});
+				onClose();
+				onSuccess();
+			}
 		}).catch(() => {
-			
+			toast({
+				title: 'Error!',
+				description: 'Something went wrong!',
+				duration: 2000,
+				status: 'error',
+				position: 'top-right',
+			});
+		}).finally(() => {
+			setUpdating(false);
 		});
 	};
 
@@ -54,6 +83,8 @@ const EditCouncilMemberProfileModal = withSlideIn(({ styles, onClose, name, acco
 								backgroundColor="teal.500"
 								color="white"
 								onClick={updateProfile}
+								isLoading={updating}
+								loadingText="Updating profile"
 							>
 								Update Profile
 							</Button>
