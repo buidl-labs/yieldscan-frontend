@@ -91,7 +91,7 @@ const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidat
 						returnsPer100KSM={validator.rewardsPer100KSM}
 						selected={!isNil(selectedValidatorsMap[validator.stashId])}
 						toggleSelected={() => toggleSelected(validator)}
-						onProfile={() => router.push(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`)}
+						onProfile={() => window.open(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`, '_blank')}
 					/>
 				))}
 			</div>
