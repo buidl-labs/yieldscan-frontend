@@ -23,9 +23,9 @@ const MemberCard = () => {
 	);
 };
 
-const MembersTable = ({ members = new Array(500).fill(1) }) => {
+const MembersTable = ({ members }) => {
 	return (
-		<div className="mb-5 mt-10">
+		<div className="mt-8">
 			<div className="table-container overflow-y-scroll">
 				{members.map((member, index) => (
 					<MemberCard key={index} />
