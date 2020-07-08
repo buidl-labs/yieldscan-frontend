@@ -1,9 +1,22 @@
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Button } from "@chakra-ui/core";
 import { useState } from "react";
 import withSlideIn from "@components/common/withSlideIn";
+import axios from "@lib/axios";
 
 const EditCouncilMemberProfileModal = withSlideIn(({ styles, onClose, name, accountId }) => {
 	const [newVision, setVision] = useState('');
+
+	const updateProfile = () => {
+		axios.put(
+			`council/member/${accountId}/update`,
+			{ vision: newVision },
+		).then(({ data }) => {
+			console.log(data);
+			onClose();
+		}).catch(() => {
+			
+		});
+	};
 
 	return (
 		<Modal isOpen={true} onClose={onClose} isCentered>
@@ -40,6 +53,7 @@ const EditCouncilMemberProfileModal = withSlideIn(({ styles, onClose, name, acco
 								rounded="0.5rem"
 								backgroundColor="teal.500"
 								color="white"
+								onClick={updateProfile}
 							>
 								Update Profile
 							</Button>
