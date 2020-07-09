@@ -53,15 +53,15 @@ const Nominators = () => {
 				</div>
 				<div className="w-1/3 flex flex-col justify-around">
 					<div className="shadow-xl flex flex-col rounded-lg pt-16 pb-10 px-12 text-white" style={{ background: '#1F495B' }}>
-						<h1 className="text-4xl">1245</h1>
-						<h3 className="text-lg">Active Nominations</h3>
+						<h1 className="text-4xl">{nominatorsData.stats.nominatorsCount}</h1>
+						<h3 className="text-lg">Active Nominators</h3>
 					</div>
 					<div className="shadow-xl flex flex-col rounded-lg pt-16 pb-10 px-12 text-white" style={{ background: '#1F495B' }}>
-						<h1 className="text-4xl">1420 KSM</h1>
+						<h1 className="text-4xl">{Math.trunc(nominatorsData.stats.totalAmountStaked)} KSM</h1>
 						<h3 className="text-lg">Total Amount Staked</h3>
 					</div>
 					<div className="shadow-xl flex flex-col rounded-lg pt-16 pb-10 px-12 bg-teal-500 text-white">
-						<h1 className="text-4xl">1200 KSM</h1>
+						<h1 className="text-4xl">{Math.trunc(nominatorsData.stats.totalRewards)} KSM</h1>
 						<h3 className="text-lg">Total Rewards</h3>
 					</div>
 				</div>
