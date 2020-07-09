@@ -37,7 +37,7 @@ const ValidatorProfile = () => {
 	const initData = () => {
 		axios.get(`validator/${validatorStashId}`).then(({ data }) => {
 			setValidatorData(data);
-			console.log(data);
+			// console.log(data);
 		}).catch(() => {
 			setError(true);
 		}).finally(() => {

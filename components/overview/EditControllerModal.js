@@ -30,7 +30,7 @@ const EditControllerModal = withSlideIn(({ styles, close }) => {
 			const substrateAddress = encodeAddress(decodeAddress(address), 42);
 			setSelected(substrateAddress);
 		}).catch((error) => {
-			console.log(error);
+			// console.log(error);
 			alert('Something went wrong, please reload!');
 		}).finally(() => {
 			setLoading(false);

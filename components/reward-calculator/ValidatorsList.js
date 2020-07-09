@@ -2,8 +2,9 @@ import { Edit2, ChevronLeft, Settings, Check } from "react-feather";
 import { isNil, noop } from "lodash";
 import RiskTag from "./RiskTag";
 import { useState } from "react";
+import Routes from "@lib/routes";
 
-const ValidatorInfo = ({ name, riskScore, amountPerValidator, editMode, selected, toggleSelected }) => (
+const ValidatorInfo = ({ name, riskScore, amountPerValidator, editMode, selected, toggleSelected, onProfile = noop }) => (
 	<div
 		className={`
 			rounded-lg flex items-center px-4 py-2 mb-2 cursor-pointer transition duration-500 w-full overflow-x-hidden
@@ -24,7 +25,7 @@ const ValidatorInfo = ({ name, riskScore, amountPerValidator, editMode, selected
 			className={`flex items-center justify-between transition duration-200 ${selected && 'transform translate-x-4'}`}
 			style={{ width: '26rem' }}
 		>
-			<div className="flex items-center w-4/5">
+			<div className="flex items-center w-4/5" onClick={onProfile}>
 				<img src="http://placehold.it/255" className="rounded-full w-16 h-16 mr-4" />
 				<div className="flex flex-col items-start w-4/5">
 					<h3 className="text-gray-700 truncate w-4/5">{name}</h3>
@@ -150,6 +151,7 @@ const ValidatorsList = ({
 							currency: amountPerValidator,
 							subCurrency: amountPerValidator,
 						}}
+						onProfile={() => window.open(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`, '_blank')}
 					/>
 				))}
 				{!editMode && !validators.length && (
