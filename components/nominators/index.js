@@ -49,7 +49,7 @@ const Nominators = () => {
 						<p className="text-gray-600 font-thin mb-2">TOP NOMINATORS</p>
 						<Top3Section nominators={nominatorsData.top3.slice(0, 3)} />
 					</div>
-					<NominationsTable />
+					<NominationsTable nominators={nominatorsData.nominatorsInfo} />
 				</div>
 				<div className="w-1/3 flex flex-col justify-around">
 					<div className="shadow-xl flex flex-col rounded-lg pt-16 pb-10 px-12 text-white" style={{ background: '#1F495B' }}>
