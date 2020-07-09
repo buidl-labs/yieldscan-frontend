@@ -78,7 +78,7 @@ const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidat
 
 	return (
 		<div>
-			<div className="my-5 table-container border px-2 overflow-y-scroll">
+			<div className="mt-5 mb-2 table-container border px-2 overflow-y-scroll">
 				{validators.map(validator => (
 					<ValidatorCard
 						key={validator.stashId}
@@ -97,7 +97,7 @@ const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidat
 			</div>
 			<style jsx>{`
 				.table-container {
-					height: 62vh;
+					height: 58vh;
 				}
 			`}</style>
 		</div>

@@ -1,6 +1,6 @@
 import { Filter, ChevronDown, ChevronUp } from "react-feather";
 import { useState, useEffect } from "react";
-import { useDisclosure, Select, Spinner } from "@chakra-ui/core";
+import { useDisclosure, Select, Spinner, Button } from "@chakra-ui/core";
 import { mapValues, keyBy, isNil, get, orderBy, filter, isNull, cloneDeep } from "lodash";
 import { useTransaction, useAccounts } from "@lib/store";
 import calculateReward from "@lib/calculate-reward";
@@ -236,22 +236,32 @@ const Validators = () => {
 			/>
 			<div>
 				{stashAccount ? (
-					<div>
-						<button
-							className="rounded-lg bg-teal-500 text-white px-5 py-1"
+					<div className="flex-center">
+						<Button
+							px="8"
+							py="2"
+							mt="5"
+							rounded="0.5rem"
+							backgroundColor="teal.500"
+							color="white"
 							onClick={onPayment}
 						>
 							Stake Now
-						</button>
+						</Button>
 					</div>
 				) : (
 					<div className="flex-center">
-						<button
-							className="rounded-lg bg-teal-500 text-white px-5 py-1"
+						<Button
+							px="8"
+							py="2"
+							mt="5"
+							rounded="0.5rem"
+							backgroundColor="teal.500"
+							color="white"
 							onClick={toggleWalletConnect}
 						>
 							Connect Wallet to Stake
-						</button>
+						</Button>
 					</div>
 				)}
 			</div>
