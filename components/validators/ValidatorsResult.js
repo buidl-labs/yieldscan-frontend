@@ -24,7 +24,7 @@ const ValidatorsResult = ({
 		currency: Number((returns.currency + stakingAmount + get(bondedAmount, 'currency', 0)).toFixed(2)),
 		subCurrency: Number((returns.currency + stakingAmount + get(bondedAmount, 'subCurrency', 0)).toFixed(2)),
 	};
-
+	
 	return (
 		<div className="flex justify-around items-center">
 			<h1 className="text-3xl">Validators</h1>
@@ -53,12 +53,23 @@ const ValidatorsResult = ({
 						</h3>
 					)}
 					{timePeriodEditable && (
-						<TimePeriodInput
-							value={timePeriodValue}
-							unit={timePeriodUnit}
-							onChange={onTimePeriodValueChange}
-							onUnitChange={onTimePeriodUnitChange}
-						/>
+						<div>
+							<input
+								type="number"
+								placeholder="Duration"
+								className="w-20 outline-none text-lg"
+								value={timePeriodValue}
+								onChange={({ target: { value }}) => onTimePeriodValueChange(value === '' ? value : Number(value))}
+							/>
+							<select
+								value={timePeriodUnit}
+								onChange={({ target: { value }}) => onTimePeriodUnitChange(value === '' ? value : Number(value))}
+							>
+								<option value="months">months</option>
+								<option value="days">days</option>
+								<option value="eras">eras</option>
+							</select>
+						</div>
 					)}
 				</div>
 				<div className="flex flex-col px-3 py-1 border rounded-lg mr-2 h-16">
