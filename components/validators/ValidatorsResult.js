@@ -1,16 +1,19 @@
 import { useState } from "react";
-import { get, noop } from "lodash";
+import { noop } from "lodash";
 import { Edit2 } from "react-feather";
-import TimePeriodInput from "@components/reward-calculator/TimePeriodInput";
+import { Switch } from "@chakra-ui/core";
+import CompoundRewardSlider from "@components/reward-calculator/CompoundRewardSlider";
 
 const ValidatorsResult = ({
 	stakingAmount,
 	bondedAmount,
+	compounding,
 	timePeriodValue,
 	timePeriodUnit,
 	result = {},
 	onTimePeriodValueChange = noop,
 	onTimePeriodUnitChange = noop,
+	onCompoundingChange = noop,
 	onEditAmount = noop,
 }) => {
 	const [timePeriodEditable, setTimePeriodEditable] = useState(false);
@@ -19,11 +22,6 @@ const ValidatorsResult = ({
 		returns = {},
 		yieldPercentage,
 	} = result;
-
-	const estimatedPortfolio = {
-		currency: Number((returns.currency + stakingAmount + get(bondedAmount, 'currency', 0)).toFixed(2)),
-		subCurrency: Number((returns.currency + stakingAmount + get(bondedAmount, 'subCurrency', 0)).toFixed(2)),
-	};
 	
 	return (
 		<div className="flex justify-around items-center">
@@ -57,7 +55,7 @@ const ValidatorsResult = ({
 							<input
 								type="number"
 								placeholder="Duration"
-								className="w-20 outline-none text-lg"
+								className="w-24 outline-none text-lg"
 								value={timePeriodValue}
 								onChange={({ target: { value }}) => onTimePeriodValueChange(value === '' ? value : Number(value))}
 							/>
@@ -80,16 +78,11 @@ const ValidatorsResult = ({
 						</span>
 					</h3>
 				</div>
-				<div className="flex flex-col px-3 py-1 border rounded-lg mr-2 h-16">
-					<span className="text-sm text-teal-500">Estimated Portfolio Value</span>
-					<h3 className="flex items-center text-xl">
-						<span className="mr-2">
-							{Number.isNaN(estimatedPortfolio.currency) ? '-' : `${estimatedPortfolio.currency} KSM`}
-						</span>
-					</h3>
-					<span hidden className="text-gray-600 text-xs">
-						${estimatedPortfolio.subCurrency}
-					</span>
+				<div className="flex flex-col px-3 py-1 border rounded-lg mr-2 h-16 w-32">
+					<span className="text-sm text-teal-500">Compounding</span>
+					<div className="py-1">
+						<CompoundRewardSlider checked={compounding} setChecked={onCompoundingChange} />
+					</div>
 				</div>
 				<div className="flex flex-col px-3 py-1 bg-teal-500 text-white rounded-lg h-16">
 					<span className="text-sm">Expected Returns</span>

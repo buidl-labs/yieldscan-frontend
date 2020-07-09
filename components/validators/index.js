@@ -27,13 +27,14 @@ const Validators = () => {
 	const { isOpen, onClose, onToggle } = useDisclosure();
 	const transactionState = useTransaction();
 	const { setTransactionState } = transactionState;
-	
+
 	const [loading, setLoading] = useState(true);
 	const [validators, setValidators] = useState(get(transactionState.validatorMap, 'total'));
 	const [filteredValidators, setFilteredValidators] = useState(validators);
 	const [amount, setAmount] = useState(transactionState.stakingAmount);
 	const [timePeriodValue, setTimePeriod] = useState(transactionState.timePeriodValue);
 	const [timePeriodUnit, setTimePeriodUnit] = useState(transactionState.timePeriodUnit || 'months');
+	const [compounding, setCompounding] = useState(transactionState.compounding || false);
 	const [selectedValidatorsMap, setSelectedValidatorsMap] = useState(
 		mapValues(keyBy(transactionState.selectedValidators, 'stashId'))
 	);
@@ -114,14 +115,14 @@ const Validators = () => {
 				amount,
 				timePeriodValue,
 				timePeriodUnit,
-				true,
+				compounding,
 				bondedAmount,
 			).then(setResult).catch(error => {
 				// TODO: handle error gracefully with UI toast
 				alert(error);
 			});
 		}
-	}, [amount, timePeriodValue, timePeriodUnit, selectedValidatorsMap])
+	}, [amount, timePeriodValue, timePeriodUnit, selectedValidatorsMap, compounding])
 
 	const updateTransactionState = () => {
 		let _returns = get(result, 'returns'), _yieldPercentage = get(result, 'yieldPercentage');
@@ -168,8 +169,10 @@ const Validators = () => {
 			<ValidatorsResult
 				stakingAmount={amount}
 				bondedAmount={bondedAmount}
+				compounding={compounding}
 				timePeriodValue={timePeriodValue}
 				timePeriodUnit={timePeriodUnit}
+				onCompoundingChange={setCompounding}
 				onTimePeriodValueChange={setTimePeriod}
 				onTimePeriodUnitChange={setTimePeriodUnit}
 				onEditAmount={onToggle}
