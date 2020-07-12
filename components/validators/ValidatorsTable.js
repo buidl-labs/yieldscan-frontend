@@ -33,7 +33,7 @@ const ValidatorCard = ({
 			className="rounded-full w-10 h-10 mr-4"
 			onClick={onProfile}
 		/>
-		<h3 className="text-gray-700 text-xs w-48 truncate">{stashId}</h3>
+		<h3 className="text-gray-700 text-xs w-48 truncate" onClick={onProfile}>{stashId}</h3>
 		<div className="flex flex-col">
 			<span className="text-xs text-gray-500 font-semibold">Risk Score</span>
 			<div className="rounded-full font-semibold"><RiskTag risk={riskScore} /></div>
@@ -78,7 +78,7 @@ const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidat
 
 	return (
 		<div>
-			<div className="my-5 table-container border px-2 overflow-y-scroll">
+			<div className="mt-5 mb-2 table-container border px-2 overflow-y-scroll">
 				{validators.map(validator => (
 					<ValidatorCard
 						key={validator.stashId}
@@ -91,13 +91,13 @@ const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidat
 						returnsPer100KSM={validator.rewardsPer100KSM}
 						selected={!isNil(selectedValidatorsMap[validator.stashId])}
 						toggleSelected={() => toggleSelected(validator)}
-						onProfile={() => router.push(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`)}
+						onProfile={() => window.open(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`, '_blank')}
 					/>
 				))}
 			</div>
 			<style jsx>{`
 				.table-container {
-					height: 62vh;
+					height: 58vh;
 				}
 			`}</style>
 		</div>

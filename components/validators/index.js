@@ -1,6 +1,6 @@
 import { Filter, ChevronDown, ChevronUp } from "react-feather";
 import { useState, useEffect } from "react";
-import { useDisclosure, Select } from "@chakra-ui/core";
+import { useDisclosure, Select, Spinner, Button } from "@chakra-ui/core";
 import { mapValues, keyBy, isNil, get, orderBy, filter, isNull, cloneDeep } from "lodash";
 import { useTransaction, useAccounts } from "@lib/store";
 import calculateReward from "@lib/calculate-reward";
@@ -10,6 +10,7 @@ import EditAmountModal from "./EditAmountModal";
 import FilterPanel from "./FilterPanel";
 import { useWalletConnect } from "@components/wallet-connect";
 import { useRouter } from "next/router";
+import axios from "@lib/axios";
 
 const DEFAULT_FILTER_OPTIONS = {
 	numOfNominators: { min: '', max: '' },
@@ -26,12 +27,14 @@ const Validators = () => {
 	const { isOpen, onClose, onToggle } = useDisclosure();
 	const transactionState = useTransaction();
 	const { setTransactionState } = transactionState;
-	
+
+	const [loading, setLoading] = useState(true);
 	const [validators, setValidators] = useState(get(transactionState.validatorMap, 'total'));
 	const [filteredValidators, setFilteredValidators] = useState(validators);
 	const [amount, setAmount] = useState(transactionState.stakingAmount);
 	const [timePeriodValue, setTimePeriod] = useState(transactionState.timePeriodValue);
 	const [timePeriodUnit, setTimePeriodUnit] = useState(transactionState.timePeriodUnit || 'months');
+	const [compounding, setCompounding] = useState(transactionState.compounding || false);
 	const [selectedValidatorsMap, setSelectedValidatorsMap] = useState(
 		mapValues(keyBy(transactionState.selectedValidators, 'stashId'))
 	);
@@ -41,6 +44,18 @@ const Validators = () => {
 	const [sortOrder, setSortOrder] = useState('asc');
 	const [sortKey, setSortKey] = useState('estimatedPoolReward');
 	const [result, setResult] = useState({});
+
+	useEffect(() => {
+		if (!validators) {
+			axios.get('/rewards/risk-set').then(({ data }) => {	
+				setValidators(data.totalset);
+				setFilteredValidators(data.totalset);
+				setLoading(false);
+			});
+		} else {
+			setLoading(false);
+		}
+	}, []);
 
 	useEffect(() => {
 		const sorted = orderBy(filteredValidators, [sortKey], [sortOrder]);
@@ -100,14 +115,14 @@ const Validators = () => {
 				amount,
 				timePeriodValue,
 				timePeriodUnit,
-				true,
+				compounding,
 				bondedAmount,
 			).then(setResult).catch(error => {
 				// TODO: handle error gracefully with UI toast
 				alert(error);
 			});
 		}
-	}, [amount, timePeriodValue, timePeriodUnit, selectedValidatorsMap])
+	}, [amount, timePeriodValue, timePeriodUnit, selectedValidatorsMap, compounding])
 
 	const updateTransactionState = () => {
 		let _returns = get(result, 'returns'), _yieldPercentage = get(result, 'yieldPercentage');
@@ -131,6 +146,17 @@ const Validators = () => {
 		router.push('/payment');
 	};
 
+	if (loading) {
+		return (
+			<div className="flex-center w-full h-full">
+				<div className="flex-center flex-col">
+					<Spinner size="xl" />
+					<span className="text-sm text-gray-600 mt-5">Fetching validators data...</span>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="px-10 py-5">
 			<EditAmountModal
@@ -143,8 +169,10 @@ const Validators = () => {
 			<ValidatorsResult
 				stakingAmount={amount}
 				bondedAmount={bondedAmount}
+				compounding={compounding}
 				timePeriodValue={timePeriodValue}
 				timePeriodUnit={timePeriodUnit}
+				onCompoundingChange={setCompounding}
 				onTimePeriodValueChange={setTimePeriod}
 				onTimePeriodUnitChange={setTimePeriodUnit}
 				onEditAmount={onToggle}
@@ -211,22 +239,32 @@ const Validators = () => {
 			/>
 			<div>
 				{stashAccount ? (
-					<div>
-						<button
-							className="rounded-lg bg-teal-500 text-white px-5 py-1"
+					<div className="flex-center">
+						<Button
+							px="8"
+							py="2"
+							mt="5"
+							rounded="0.5rem"
+							backgroundColor="teal.500"
+							color="white"
 							onClick={onPayment}
 						>
 							Stake Now
-						</button>
+						</Button>
 					</div>
 				) : (
 					<div className="flex-center">
-						<button
-							className="rounded-lg bg-teal-500 text-white px-5 py-1"
+						<Button
+							px="8"
+							py="2"
+							mt="5"
+							rounded="0.5rem"
+							backgroundColor="teal.500"
+							color="white"
 							onClick={toggleWalletConnect}
 						>
 							Connect Wallet to Stake
-						</button>
+						</Button>
 					</div>
 				)}
 			</div>

@@ -1,8 +1,14 @@
-import { Twitter, Link, ChevronRight } from "react-feather";
+import { ChevronRight, Twitter, Link } from "react-feather";
 import { get, noop } from "lodash";
-import { encodeAddress, decodeAddress } from "@polkadot/util-crypto";
 
-const ValidatorInfoHeader = ({ stashId, vision = '', socialInfo, stashAccount, openEditProfile = noop, toggleWalletConnect = noop }) => {
+const CouncilMemberInfoHeader = ({
+	socialInfo,
+	accountId,
+	stashAccount,
+	vision,
+	toggleWalletConnect = noop,
+	openEditProfile = noop,
+}) => {
 	const userStashId = get(stashAccount, 'address');
 	let userStashKusamaId;
 	if (userStashId) {
@@ -12,13 +18,13 @@ const ValidatorInfoHeader = ({ stashId, vision = '', socialInfo, stashAccount, o
 	const openWindow = (url) => {
 		window.open(url, '_blank');
 	};
-	
+
 	return (
 		<div className="flex">
 			<img src="http://placehold.it/300" className="w-24 h-24 mr-5 rounded-full" />
 			<div className="flex flex-col w-full">
 				<div className="flex justify-between items-center mb-2">
-					<h3 className="text-2xl text-gray-700 font-semibold">{get(socialInfo, 'name', stashId)}</h3>
+					<h3 className="text-2xl text-gray-700 font-semibold">{socialInfo.name || accountId || ''}</h3>
 					<div className="flex items-center">
 						{socialInfo.twitter && (
 							<button
@@ -66,4 +72,4 @@ const ValidatorInfoHeader = ({ stashId, vision = '', socialInfo, stashAccount, o
 	);
 };
 
-export default ValidatorInfoHeader;
+export default CouncilMemberInfoHeader;

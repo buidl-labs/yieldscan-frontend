@@ -34,15 +34,19 @@ const ValidatorProfile = () => {
 		onToggle: toggleEditProfileModal,
 	} = useDisclosure();
 
-	useEffect(() => {
+	const initData = () => {
 		axios.get(`validator/${validatorStashId}`).then(({ data }) => {
 			setValidatorData(data);
-			console.log(data);
+			// console.log(data);
 		}).catch(() => {
 			setError(true);
 		}).finally(() => {
 			setLoading(false);
 		});
+	};
+
+	useEffect(() => {
+		initData();
 	}, []);
 
 	if (loading) {
@@ -66,6 +70,11 @@ const ValidatorProfile = () => {
 	return (
 		<div className="px-16 py-16">
 			<EditValidatorProfileModal
+				stashId={validatorStashId}
+				socialInfo={validatorData.socialInfo}
+				vision={validatorData.additionalInfo.vision}
+				members={validatorData.additionalInfo.members}
+				onSuccess={initData}
 				isOpen={editProfileModalOpen}
 				onClose={closeEditProfileModal}
 			/>
@@ -93,7 +102,7 @@ const ValidatorProfile = () => {
 			<div className="flex w-full">
 				<div className="w-2/3 mr-4">
 					{selectedTab === ProfileTabsConfig.TEAM && (
-						<TeamMembers members={validatorData.additionalInfo} />
+						<TeamMembers members={validatorData.additionalInfo.members} />
 					)}
 				</div>
 				<div className="w-1/3 flex flex-col">
