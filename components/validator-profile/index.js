@@ -11,6 +11,7 @@ import LinkedValidatorsGroup from "./LInkedValidatorsGroup";
 import { useWalletConnect } from "@components/wallet-connect";
 import EditValidatorProfileModal from "./EditValidatorProfileModal";
 import ValidatorReturnsCalculator from "./ValidatorReturnsCalculator";
+import { get } from "lodash";
 
 const ProfileTabsConfig = {
 	// ACTIVITY: 'Activity',
@@ -72,8 +73,8 @@ const ValidatorProfile = () => {
 			<EditValidatorProfileModal
 				stashId={validatorStashId}
 				socialInfo={validatorData.socialInfo}
-				vision={validatorData.additionalInfo.vision}
-				members={validatorData.additionalInfo.members}
+				vision={get(validatorData, 'additionalInfo.vision', '')}
+				members={get(validatorData, 'additionalInfo.members')}
 				onSuccess={initData}
 				isOpen={editProfileModalOpen}
 				onClose={closeEditProfileModal}
@@ -85,7 +86,7 @@ const ValidatorProfile = () => {
 				socialInfo={validatorData.socialInfo}
 				openEditProfile={toggleEditProfileModal}
 				toggleWalletConnect={toggleWalletConnect}
-				vision={validatorData.additionalInfo.vision}
+				vision={get(validatorData, 'additionalInfo.vision', '')}
 			/>
 
 			<div className="my-5">
