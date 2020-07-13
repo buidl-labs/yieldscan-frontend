@@ -55,7 +55,9 @@ const ValidatorCard = ({
 			<h3 className="text-lg">{commission}%</h3>
 		</div>
 		<div className="flex flex-col">
-			<span className="text-xs text-gray-500 font-semibold">Returns / 100 KSM</span>
+			<span className="text-xs text-gray-500 font-semibold">
+				Estimated Returns <sup>*</sup>
+			</span>
 			<h3 className="text-lg">{returnsPer100KSM.toFixed(4)} KSM</h3>
 		</div>
 	</div>
@@ -95,9 +97,10 @@ const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidat
 					/>
 				))}
 			</div>
+			<div className="text-xs text-gray-500 text-right">* Estimated Returns are calculated per month for 100 KSM</div>
 			<style jsx>{`
 				.table-container {
-					height: 58vh;
+					height: 56vh;
 				}
 			`}</style>
 		</div>
