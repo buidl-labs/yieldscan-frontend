@@ -31,9 +31,20 @@ const ValidatorCard = ({
 		<img
 			src="http://placehold.it/255"
 			className="rounded-full w-10 h-10 mr-4"
-			onClick={onProfile}
+			onClick={ev => {
+				ev.stopPropagation();
+				onProfile();
+			}}
 		/>
-		<h3 className="text-gray-700 text-xs w-48 truncate" onClick={onProfile}>{stashId}</h3>
+		<h3
+			className="text-gray-700 text-xs w-48 truncate"
+			onClick={ev => {
+				ev.stopPropagation();
+				onProfile();
+			}}
+		>
+			{stashId}
+		</h3>
 		<div className="flex flex-col">
 			<span className="text-xs text-gray-500 font-semibold">Risk Score</span>
 			<div className="rounded-full font-semibold"><RiskTag risk={riskScore} /></div>
