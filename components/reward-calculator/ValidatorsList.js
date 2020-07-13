@@ -85,6 +85,12 @@ const ValidatorsList = ({
 		);
 	}
 
+	const sortedValidators = validators.sort((v1, v2) => {
+		if (selectedValidators[v1.stashId]) return -1;
+		else if (selectedValidators[v2.stashId]) return 1;
+		else return 0;
+	});
+
 	return (
 		<div className="rounded-xl border border-gray-200 px-8 py-6 mt-4">
 			{!editMode ? (
@@ -128,7 +134,7 @@ const ValidatorsList = ({
 				</div>
 			)}
 			<div className="mt-4 overflow-auto h-64">
-				{editMode && validators.map(validator => (
+				{editMode && sortedValidators.map(validator => (
 					<ValidatorInfo
 						editMode
 						key={validator.stashId}
