@@ -1,10 +1,12 @@
-import { Check } from "react-feather";
+import { Check, ExternalLink } from "react-feather";
 import { isNil, noop } from "lodash";
 import RiskTag from "@components/reward-calculator/RiskTag";
 import { useRouter } from "next/router";
 import Routes from "@lib/routes";
+import Identicon from "@components/common/Identicon";
 
 const ValidatorCard = ({
+	name = '',
 	stashId,
 	selected,
 	riskScore,
@@ -28,23 +30,20 @@ const ValidatorCard = ({
 			className={`p-1 mr-2 rounded-full text-white ${selected ? 'bg-teal-500' : 'bg-gray-500'}`}
 			strokeWidth="4px"
 		/>
-		<img
-			src="http://placehold.it/255"
-			className="rounded-full w-10 h-10 mr-4"
-			onClick={ev => {
-				ev.stopPropagation();
-				onProfile();
-			}}
-		/>
-		<h3
+		<Identicon address={stashId} />
+		<div
 			className="text-gray-700 text-xs w-48 truncate"
 			onClick={ev => {
 				ev.stopPropagation();
 				onProfile();
 			}}
 		>
-			{stashId}
-		</h3>
+			<span className="font-semibold">{name || stashId.slice(0, 18) + '...' || '-' }</span>
+			<div className="flex items-center">
+				<span className="text-xs mr-2">View Profile</span>
+				<ExternalLink size="12px" />
+			</div>
+		</div>
 		<div className="flex flex-col">
 			<span className="text-xs text-gray-500 font-semibold">Risk Score</span>
 			<div className="rounded-full font-semibold"><RiskTag risk={riskScore} /></div>
@@ -95,6 +94,7 @@ const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidat
 				{validators.map(validator => (
 					<ValidatorCard
 						key={validator.stashId}
+						name={validator.name}
 						stashId={validator.stashId}
 						riskScore={Number(validator.riskScore.toFixed(2))}
 						ownStake={Number(validator.ownStake.toFixed(1))}
