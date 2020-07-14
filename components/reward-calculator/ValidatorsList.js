@@ -1,10 +1,11 @@
-import { Edit2, ChevronLeft, Settings, Check } from "react-feather";
+import { Edit2, ChevronLeft, Settings, Check, ExternalLink } from "react-feather";
 import { isNil, noop } from "lodash";
 import RiskTag from "./RiskTag";
 import { useState } from "react";
 import Routes from "@lib/routes";
+import Identicon from "@components/common/Identicon";
 
-const ValidatorInfo = ({ name, riskScore, amountPerValidator, editMode, selected, toggleSelected, onProfile = noop }) => (
+const ValidatorInfo = ({ name, stashId, riskScore, amountPerValidator, editMode, selected, toggleSelected, onProfile = noop }) => (
 	<div
 		className={`
 			rounded-lg flex items-center px-4 py-2 mb-2 cursor-pointer transition duration-500 w-full overflow-x-hidden
@@ -16,7 +17,7 @@ const ValidatorInfo = ({ name, riskScore, amountPerValidator, editMode, selected
 			<div className="w-1/5">
 				<Check
 					size="1.75rem"
-					className="p-1 bg-teal-500 text-white mr-2 rounded-full" 
+					className="p-1 bg-teal-500 text-white rounded-full" 
 					strokeWidth="4px"
 				/>
 			</div>
@@ -26,9 +27,12 @@ const ValidatorInfo = ({ name, riskScore, amountPerValidator, editMode, selected
 			style={{ width: '26rem' }}
 		>
 			<div className="flex items-center w-4/5" onClick={onProfile}>
-				<img src="http://placehold.it/255" className="rounded-full w-16 h-16 mr-4" />
+				<div className="mr-4"><Identicon address={stashId} size="3rem" /></div>
 				<div className="flex flex-col items-start w-4/5">
-					<h3 className="text-gray-700 truncate w-4/5">{name}</h3>
+					<div className="flex items-center text-gray-700 truncate w-4/5 font-semibold">
+						<span className="mr-2">{name || stashId.slice(0, 10) + '...' || '-' }</span>
+						<ExternalLink size="1rem" />
+					</div>
 					<span className="select-none flex text-gray-500 text-sm">
 						Risk Score
 						<RiskTag risk={riskScore} />
@@ -138,7 +142,8 @@ const ValidatorsList = ({
 					<ValidatorInfo
 						editMode
 						key={validator.stashId}
-						name={validator.stashId}
+						name={validator.name}
+						stashId={validator.stashId}
 						riskScore={Number(validator.riskScore).toFixed(2)}
 						amountPerValidator={{
 							currency: amountPerValidator,
@@ -151,7 +156,8 @@ const ValidatorsList = ({
 				{!editMode && selectedValidatorsList.map(validator => (
 					<ValidatorInfo
 						key={validator.stashId}
-						name={validator.stashId}
+						name={validator.name}
+						stashId={validator.stashId}
 						riskScore={Number(validator.riskScore).toFixed(2)}
 						amountPerValidator={{
 							currency: amountPerValidator,
