@@ -1,6 +1,6 @@
 import { Filter, ChevronDown, ChevronUp } from "react-feather";
 import { useState, useEffect } from "react";
-import { useDisclosure, Select, Spinner, Button } from "@chakra-ui/core";
+import { useDisclosure, Select, Spinner, Button, Checkbox, Switch } from "@chakra-ui/core";
 import { mapValues, keyBy, isNil, get, orderBy, filter, isNull, cloneDeep } from "lodash";
 import { useTransaction, useAccounts } from "@lib/store";
 import calculateReward from "@lib/calculate-reward";
@@ -39,6 +39,7 @@ const Validators = () => {
 		mapValues(keyBy(transactionState.selectedValidators, 'stashId'))
 	);
 
+	const [showSelected, setShowSelected] = useState(false);
 	const [filterPanelOpen, setFilterPanelOpen] = useState(false);
 	const [filterOptions, setFilterOptions] = useState(cloneDeep(DEFAULT_FILTER_OPTIONS));
 	const [sortOrder, setSortOrder] = useState('asc');
@@ -61,9 +62,14 @@ const Validators = () => {
 		const sorted = orderBy(filteredValidators, [sortKey], [sortOrder]);
 		setFilteredValidators(sorted);
 	}, [sortKey, sortOrder]);
-
+	
 	useEffect(() => {
-		if (!filterPanelOpen) return setFilteredValidators(validators);
+		const selectedValidatorsList = validators.filter(validator => {
+			return !isNil(selectedValidatorsMap[validator.stashId]);
+		});
+
+		if (!filterPanelOpen && !showSelected) return setFilteredValidators(validators);
+		if (!filterPanelOpen && showSelected) return setFilteredValidators(selectedValidatorsList);
 
 		const riskGroup = get(filterOptions, 'riskScore');
 		const commission = get(filterOptions, 'commission');
@@ -84,7 +90,9 @@ const Validators = () => {
 			totalStake.max
 		)) return setFilteredValidators(validators);
 
-		const filtered = validators.filter(validator => {
+		const validatorList = showSelected ? selectedValidatorsList : validators;
+
+		const filtered = validatorList.filter(validator => {
 			if (riskGroup === 'Low' && validator.riskScore > 0.32) return false;
 			if (riskGroup === 'Medium' && validator.riskScore > 0.66) return false;
 
@@ -105,7 +113,7 @@ const Validators = () => {
 		const filteredAndsorted = orderBy(filtered, [sortKey], [sortOrder]);
 
 		setFilteredValidators(filteredAndsorted);
-	}, [filterPanelOpen, filterOptions]);
+	}, [filterPanelOpen, filterOptions, showSelected]);
 
 	useEffect(() => {
 		if (amount && timePeriodValue && timePeriodUnit) {
@@ -205,6 +213,15 @@ const Validators = () => {
 					<div className="flex flex-col items-center justify-between items-center ml-2">
 						<ChevronUp size="20px" className="bg-gray-300 cursor-pointer" onClick={() => setSortOrder('asc')} />
 						<ChevronDown size="20px" className="bg-gray-300 cursor-pointer" onClick={() => setSortOrder('desc')} />
+					</div>
+					<div className="ml-4 flex items-center text-gray-700 border border-gray-300 rounded px-3 py-1">
+						<p>Show Selected</p>
+						<Switch
+							color="teal"
+							className="mt-1 ml-2"
+							isChecked={showSelected}
+							onChange={e => setShowSelected(e.target.checked)}
+						/>
 					</div>
 				</div>
 				<div className="flex items-center">
