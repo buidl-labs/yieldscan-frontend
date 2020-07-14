@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronRight } from "react-feather";
+import { ChevronRight, ChevronLeft } from "react-feather";
 import Confirmation from "./Confirmation";
 import RewardDestination from "./RewardDestination";
 import Transaction from "./Transaction";
@@ -61,7 +61,7 @@ const Payment = () => {
 				});
 				setStakingLoading(false);
 				
-				if (status === 0) router.replace('/reward-calculator');
+				if (status === 0) router.replace('/overview');
 			},
 		};
 
@@ -77,8 +77,19 @@ const Payment = () => {
 		});
 	};
 
+	const back = () => {
+		if (currentStep === 0) router.back();
+		else setCurrentStep(step => step - 1);
+	};
+
 	return (
-		<div className="mx-auto my-8" style={{ width: '45rem' }}>
+		<div className="mx-auto mb-8 mt-4" style={{ width: '45rem' }}>
+			<div className="mb-4">
+				<button className="flex items-center bg-teal-500 text-white rounded-lg px-2 py-1" onClick={back}>
+					<ChevronLeft className="text-white mr-2" />
+					Back
+				</button>
+			</div>
 			<Steps
 				steps={['Confirmation', 'Reward Destination', 'Payment']}
 				currentStep={currentStep}

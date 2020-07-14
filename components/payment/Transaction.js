@@ -50,7 +50,7 @@ const Transaction = ({
 			<div className="mt-10" hidden={!editController}>
 				<h3 className="text-lg text-gay-600">
 					Edit Controller
-					<button className="text-sm ml-4 font-semibold text-orange-500" onClick={resetController}>Reset</button>
+					<button className="text-sm ml-4 font-semibold text-orange-500" onClick={resetController}>Cancel</button>
 				</h3>
 				<div className="mt-1 overflow-y-scroll text-sm h-40 w-4/5">
 					{accounts.map(account => (
