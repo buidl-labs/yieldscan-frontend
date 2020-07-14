@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/core";
 import CompoundRewardSlider from "@components/reward-calculator/CompoundRewardSlider";
 import { useAccounts, usePolkadotApi } from "@lib/store";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Circle, CheckCircle } from "react-feather";
 import { web3FromAddress } from "@polkadot/extension-dapp";
 import updatePayee from "@lib/polkadot/update-payee";
@@ -26,6 +26,20 @@ const RewardDestinationModal = withSlideIn(({ close, styles, onEditController })
 
 	const accounts = ['Stash'];
 	if (!compounding) accounts.push('Controller');
+
+	useEffect(() => {
+		apiInstance.query.staking.payee(stashAccount.address).then((payee) => {
+			if (payee.isStaked) setCompounding(true);
+			else {
+				setCompounding(false);
+				if (payee.isController) {
+					setDestination('Controller');
+				} else {
+					setDestination('Stash');
+				}
+			}
+		});
+	}, []);
 
 	const onUpdatePayee = () => {
 		const payee = compounding ? 0 : destination === 'Stash' ? 1 : 2;
