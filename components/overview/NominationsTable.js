@@ -31,7 +31,7 @@ const ValidatorCard = ({
 	return (
 		<div className="flex items-center justify-around rounded-lg border border-gray-300 py-2">
 			<Identicon address={stashId} size="3rem" />
-			<div className="font-gray-700 cursor-pointer" onClick={onProfile}>
+			<div className="text-gray-700 cursor-pointer" onClick={onProfile}>
 				<span className="font-semibold">{name || stashId.slice(0, 18) + '...' || '-' }</span>
 				<div className="flex items-center">
 					<span className="text-xs mr-2">View Profile</span>

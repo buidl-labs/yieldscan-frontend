@@ -11,7 +11,7 @@ import {
 	Input,
 	Button
 } from "@chakra-ui/core";
-import { PlusCircle, MinusCircle } from "react-feather";
+import { PlusCircle, MinusCircle, ExternalLink } from "react-feather";
 import useHover from "@components/common/hooks/useHover";
 import { useState, useEffect } from "react";
 import axios from "@lib/axios";
@@ -20,8 +20,11 @@ import { noop, mapValues, keyBy, isNil, get } from "lodash";
 import calculateReward from "@lib/calculate-reward";
 import { useAccounts, usePolkadotApi } from "@lib/store";
 import nominate from "@lib/polkadot/nominate";
+import Identicon from "@components/common/Identicon";
+import Routes from "@lib/routes";
 
 const ValidatorCard = ({
+	name,
 	stashId,
 	riskScore,
 	stakedAmount,
@@ -29,6 +32,7 @@ const ValidatorCard = ({
 	isSelected = false,
 	type,
 	onClick = noop,
+	onProfile = noop,
 }) => {
 	const [ref, hovered] = useHover();
 
@@ -39,8 +43,14 @@ const ValidatorCard = ({
 
 	return (
 		<div ref={ref} className="relative bg-white flex justify-around items-center p-2 my-2 rounded-lg border border-gray-300">
-			<img src="http://placehold.it/255" className="rounded-full w-10 h-10 mr-4" />
-			<h3 className="text-gray-700 text-xs w-48 truncate">{stashId}</h3>
+			<div><Identicon address={stashId} size="2.5rem" /></div>
+			<div className="text-gray-700 w-48 truncate cursor-pointer" onClick={onProfile}>
+				<span className="font-semibold text-sm">{name || stashId.slice(0, 18) + '...' || '-' }</span>
+				<div className="flex items-center">
+					<span className="text-xs mr-2">View Profile</span>
+					<ExternalLink size="12px" />
+				</div>
+			</div>
 			<div className="flex flex-col">
 				<span className="text-xs text-gray-500 font-semibold">Risk Score</span>
 				<div className="rounded-full font-semibold"><RiskTag risk={Number(riskScore.toFixed(2))} /></div>
@@ -153,6 +163,10 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators, onChill 
 			});
 	};
 
+	const onProfile = (stashId) => {
+		window.open(`${Routes.VALIDATOR_PROFILE}/${stashId}`, '_blank')
+	};
+
 	return (
 		<Modal isOpen={true} onClose={close} isCentered>
 			<ModalOverlay />
@@ -178,6 +192,7 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators, onChill 
 										{validators.map(validator => (
 											<ValidatorCard
 												key={validator.stashId}
+												name={validator.name}
 												type="candidate"
 												stashId={validator.stashId}
 												riskScore={validator.riskScore}
@@ -185,6 +200,7 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators, onChill 
 												stakedAmount={validator.totalStake}
 												onClick={() => toggleSelected(validator)}
 												isSelected={!isNil(selectedValidatorsMap[validator.stashId])}
+												onProfile={() => onProfile(validator.stashId)}
 											/>
 										))}
 									</div>
@@ -208,12 +224,14 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators, onChill 
 										{selectedValidatorsList.map(validator => (
 											<ValidatorCard
 												key={validator.stashId}
+												name={validator.name}
 												type="selected"
 												stashId={validator.stashId}
 												riskScore={validator.riskScore}
 												estimatedReward={validator.estimatedPoolReward}
 												stakedAmount={validator.totalStake}
 												onClick={() => toggleSelected(validator)}
+												onProfile={() => onProfile(validator.stashId)}
 												isSelected
 											/>
 										))}
