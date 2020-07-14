@@ -23,7 +23,7 @@ const DEFAULT_FILTER_OPTIONS = {
 const Validators = () => {
 	const router = useRouter();
 	const { toggle: toggleWalletConnect } = useWalletConnect();
-	const { stashAccount, bondedAmount } = useAccounts();
+	const { stashAccount, bondedAmount, accountInfoLoading } = useAccounts();
 	const { isOpen, onClose, onToggle } = useDisclosure();
 	const transactionState = useTransaction();
 	const { setTransactionState } = transactionState;
@@ -64,9 +64,7 @@ const Validators = () => {
 	}, [sortKey, sortOrder]);
 	
 	useEffect(() => {
-		const selectedValidatorsList = validators.filter(validator => {
-			return !isNil(selectedValidatorsMap[validator.stashId]);
-		});
+		const selectedValidatorsList = Object.values(selectedValidatorsMap);
 
 		if (!filterPanelOpen && !showSelected) return setFilteredValidators(validators);
 		if (!filterPanelOpen && showSelected) return setFilteredValidators(selectedValidatorsList);
@@ -154,12 +152,12 @@ const Validators = () => {
 		router.push('/payment');
 	};
 
-	if (loading) {
+	if (loading || accountInfoLoading) {
 		return (
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">
 					<Spinner size="xl" />
-					<span className="text-sm text-gray-600 mt-5">Fetching validators data...</span>
+					<span className="text-sm text-gray-600 mt-5">Loading...</span>
 				</div>
 			</div>
 		);
