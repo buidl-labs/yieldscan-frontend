@@ -1,9 +1,11 @@
-import { Avatar } from "@chakra-ui/core";
+import Identicon from "@components/common/Identicon";
 
-const TopNominatorCard = ({ stashId, nominations, dailyEarnings }) => (
+const TopNominatorCard = ({ name, stashId, nominations, dailyEarnings }) => (
 	<div className="px-6 py-8 flex-center flex-col rounded-lg border shadow-lg">
-		<Avatar mb="1rem" />
-		<h3 className="select-all text-gray-700 font-semibold mb-4 text-xs truncate w-40">{stashId}</h3>
+		<Identicon address={stashId} size="3rem" />
+		<h3 className="select-all text-gray-700 font-semibold mb-4 text-xs truncate w-40">
+			{name || stashId || '-'}
+		</h3>
 		<span className="text-gray-600 font-semibold text-sm">Daily Earnings</span>
 		<h5 className="font-semibold">{dailyEarnings.toFixed(2)} KSM</h5>
 		<span className="text-gray-600 font-semibold text-sm">Nominations</span>
@@ -20,6 +22,7 @@ const Top3Section = ({ nominators = [] }) => {
 					className="mr-5"
 				>
 					<TopNominatorCard
+						name={nominator.name}
 						stashId={nominator.nomId}
 						nominations={nominator.nominations}
 						totalStake={nominator.nomtotalStake}

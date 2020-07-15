@@ -1,8 +1,12 @@
+import Identicon from "@components/common/Identicon";
+
 const MemberCard = ({ name, stashId, nominations, dailyEarnings, totalAmountStaked }) => {
 	return (
 		<div className="flex items-center justify-between rounded-lg border border-gray-300 py-2 px-5 my-2">
 			<div className="flex items-center">
-				<img src="http://placehold.it/255" className="rounded-full w-12 h-12 mr-10" />
+				<div className="mr-8">
+					<Identicon address={stashId} size="2.5rem" />
+				</div>
 				<div className="flex flex-col">
 					{false && <span className="">{name}</span>}
 					<span className="text-xs w-40 select-all truncate">{stashId}</span>
