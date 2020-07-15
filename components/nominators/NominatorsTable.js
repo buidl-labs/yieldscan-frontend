@@ -1,15 +1,19 @@
 import Identicon from "@components/common/Identicon";
+import { ExternalLink } from "react-feather";
 
-const MemberCard = ({ name, stashId, nominations, dailyEarnings, totalAmountStaked }) => {
+const MemberCard = ({ name, stashId, nominations, dailyEarnings, totalAmountStaked, onProfile }) => {
 	return (
 		<div className="flex items-center justify-between rounded-lg border border-gray-300 py-2 px-5 my-2">
 			<div className="flex items-center">
 				<div className="mr-8">
 					<Identicon address={stashId} size="2.5rem" />
 				</div>
-				<div className="flex flex-col">
-					{false && <span className="">{name}</span>}
+				<div className="flex flex-col cursor-pointer">
 					<span className="text-xs w-40 select-all truncate">{stashId}</span>
+					<div className="flex items-center text-gray-700" onClick={onProfile}>
+						<span className="text-xs mr-1">View on Polkascan</span>
+						<ExternalLink size="12px" />
+					</div>
 				</div>
 			</div>
 			<div className="flex items-center">
@@ -42,6 +46,7 @@ const NominatorsTable = ({ nominators = [] }) => {
 						nominations={member.nominations}
 						dailyEarnings={member.dailyEarnings}
 						totalAmountStaked={member.nomtotalStake}
+						onProfile={() => window.open(`https://polkascan.io/kusama/account/${member.nomId}`, '_blank')}
 					/>
 				))}
 			</div>
