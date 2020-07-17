@@ -26,7 +26,7 @@ const ValidatorInfo = ({ name, stashId, riskScore, amountPerValidator, editMode,
 			className={`flex items-center justify-between transition duration-200 ${selected && 'transform translate-x-4'}`}
 			style={{ width: '26rem' }}
 		>
-			<div className="flex items-center w-4/5" onClick={onProfile}>
+			<div className="flex items-center w-2/3" onClick={onProfile}>
 				<div className="mr-4"><Identicon address={stashId} size="3rem" /></div>
 				<div className="flex flex-col items-start w-4/5">
 					<div className="flex items-center text-gray-700 truncate w-4/5 font-semibold">
@@ -40,7 +40,7 @@ const ValidatorInfo = ({ name, stashId, riskScore, amountPerValidator, editMode,
 				</div>
 			</div>
 			{!editMode && (
-				<div className="flex flex-col ml-5 w-1/5">
+				<div className="flex flex-col ml-5 w-1/3">
 					<span className="text-red-400">Amount</span>
 					<h5 className="text-gray-700 text-lg truncate">{amountPerValidator.currency} KSM</h5>
 					<span className="text-gray-500 text-sm">${amountPerValidator.subCurrency}</span>
