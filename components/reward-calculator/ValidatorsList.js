@@ -1,7 +1,7 @@
 import { Edit2, ChevronLeft, Settings, Check, ExternalLink } from "react-feather";
-import { isNil, noop } from "lodash";
+import { isNil, noop, cloneDeep } from "lodash";
 import RiskTag from "./RiskTag";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Routes from "@lib/routes";
 import Identicon from "@components/common/Identicon";
 
@@ -60,19 +60,37 @@ const ValidatorsList = ({
 	onAdvancedSelection = noop,
 }) => {
 	const [editMode, setEditMode] = useState(false);
-	const amountPerValidator = Number((totalAmount / validators.length).toFixed(2));
-	const selectedValidatorsList = Object.values(selectedValidators).filter(v => !isNil(v));
+	const [tempSelectedValidators, setTempSelectedValidators] = useState({});
+
+	useEffect(() => {
+		setTempSelectedValidators(cloneDeep(selectedValidators));
+	}, [selectedValidators]);
 
 	const toggleSelected = (validator) => {
 		const { stashId } = validator;
 
-		if (selectedValidatorsList.length === 16 && !selectedValidators[stashId]) return;
+		if (tempSelectedValidatorsList.length === 16 && !tempSelectedValidators[stashId]) return;
 
-		setSelectedValidators({
-			...selectedValidators,
-			[stashId]: isNil(selectedValidators[stashId]) ? validator : null,
+		setTempSelectedValidators({
+			...tempSelectedValidators,
+			[stashId]: isNil(tempSelectedValidators[stashId]) ? validator : null,
 		});
 	};
+
+	const onConfirm = () => {
+		setSelectedValidators(cloneDeep(tempSelectedValidators));
+		setEditMode(false);
+	};
+
+	const sortedValidators = validators.sort((v1, v2) => {
+		if (tempSelectedValidators[v1.stashId]) return -1;
+		else if (tempSelectedValidators[v2.stashId]) return 1;
+		else return 0;
+	});
+
+	const amountPerValidator = Number((totalAmount / validators.length).toFixed(2));
+	const selectedValidatorsList = Object.values(selectedValidators).filter(v => !isNil(v));
+	const tempSelectedValidatorsList = Object.values(tempSelectedValidators).filter(v => !isNil(v));
 
 	if (disableList) {
 		return (
@@ -88,12 +106,6 @@ const ValidatorsList = ({
 			</div>
 		);
 	}
-
-	const sortedValidators = validators.sort((v1, v2) => {
-		if (selectedValidators[v1.stashId]) return -1;
-		else if (selectedValidators[v2.stashId]) return 1;
-		else return 0;
-	});
 
 	return (
 		<div className="rounded-xl border border-gray-200 px-8 py-6 mt-4">
@@ -124,7 +136,7 @@ const ValidatorsList = ({
 								Edit Validators
 							</h1>
 							<span className="text-gray-500">
-								{selectedValidatorsList.length} / 16 selections
+								{tempSelectedValidatorsList.length} / 16 selections
 							</span>
 						</div>
 					</div>
@@ -133,7 +145,13 @@ const ValidatorsList = ({
 						onClick={onAdvancedSelection}
 					>
 						<Settings className="mr-2 text-gray-700" size="1rem" />
-						<span>Advanced Selections</span>
+						<span>Advanced</span>
+					</button>
+					<button
+						className="p-2 px-4 text-sm flex-center rounded-full bg-teal-500 text-white font-semibold cursor-pointer"
+						onClick={onConfirm}
+					>
+						Confirm
 					</button>
 				</div>
 			)}
@@ -149,7 +167,7 @@ const ValidatorsList = ({
 							currency: amountPerValidator,
 							subCurrency: amountPerValidator,
 						}}
-						selected={selectedValidators[validator.stashId]}
+						selected={tempSelectedValidators[validator.stashId]}
 						toggleSelected={() => toggleSelected(validator)}
 					/>
 				))}
