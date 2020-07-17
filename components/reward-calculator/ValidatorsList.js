@@ -93,8 +93,8 @@ const ValidatorsList = ({
 		else return 0;
 	});
 
-	const amountPerValidator = Number((totalAmount / validators.length).toFixed(2));
 	const selectedValidatorsList = Object.values(selectedValidators).filter(v => !isNil(v));
+	const amountPerValidator = Number((totalAmount / selectedValidatorsList.length).toFixed(2));
 	const tempSelectedValidatorsList = Object.values(tempSelectedValidators).filter(v => !isNil(v));
 
 	if (disableList) {
