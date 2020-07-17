@@ -77,6 +77,11 @@ const ValidatorsList = ({
 		});
 	};
 
+	const toggleEditMode = () => {
+		setTempSelectedValidators(cloneDeep(selectedValidators));
+		setEditMode(!editMode);
+	};
+
 	const onConfirm = () => {
 		setSelectedValidators(cloneDeep(tempSelectedValidators));
 		setEditMode(false);
@@ -117,7 +122,7 @@ const ValidatorsList = ({
 					<Edit2
 						size="1.5rem"
 						className="cursor-pointer"
-						onClick={() => setEditMode(true)}
+						onClick={toggleEditMode}
 					/>
 				</div>
 			) : (
@@ -128,7 +133,7 @@ const ValidatorsList = ({
 								size="2rem"
 								strokeWidth="2px"
 								className="bg-gray-700 text-white rounded-full p-1 cursor-pointer"
-								onClick={() => setEditMode(false)}
+								onClick={toggleEditMode}
 							/>
 						</div>
 						<div>
