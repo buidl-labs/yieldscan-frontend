@@ -89,6 +89,7 @@ class CouncilViz extends React.Component {
                 y={height - 185 - validatorRectangleHeight / 2}
                 maxRadius={height / 2 - 50}
                 memberInfo={this.props.memberInfo}
+                width={width}
               />
               {/* Adding 6 to stating and ending y point and 24 to length of line
                     because the upper left corner of rectangle is at width/2,height/2

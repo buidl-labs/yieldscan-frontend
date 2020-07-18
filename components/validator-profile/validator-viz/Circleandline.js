@@ -26,6 +26,9 @@ class Circleandline extends React.Component {
   };
 
   render() {
+    const cardWidth = 159;
+    const cardHeight = 69;
+
     let nomaddress =
       this.props.nomId.toString().slice(0, 5) +
       '......' +
@@ -35,6 +38,11 @@ class Circleandline extends React.Component {
 
     let x1 = this.props.x + 15;
     let y1 = this.props.y - 8;
+
+    if (x1 > this.props.width - cardWidth) {
+      y1 = y1 + 20;
+      x1 = x1 - cardWidth / 2;
+    }
 
     return (
       <React.Fragment>
@@ -57,8 +65,8 @@ class Circleandline extends React.Component {
           <Rect
             x={x1}
             y={y1}
-            width={159}
-            height={69}
+            width={cardWidth}
+            height={cardHeight}
             cornerRadius={4.69457}
             fill="#48607C"
             shadowOffsetY={10}

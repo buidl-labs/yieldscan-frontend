@@ -32,6 +32,7 @@ class WhiteCircles extends React.Component {
           stake={element.stake}
           angle={angle}
           radius={this.props.r}
+          width={this.props.width}
         />
       );
     });
