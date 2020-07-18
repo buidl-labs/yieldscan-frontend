@@ -4,6 +4,7 @@ import { Spinner, useDisclosure } from "@chakra-ui/core";
 import { useState, useEffect } from "react";
 import { useAccounts } from "@lib/store";
 import TeamMembers from "./TeamMembers";
+import ValidatorViz from "./validator-viz/ValidatorViz"
 import ProfileTabs from "./ProfileTabs";
 import ValidatorKeyStats from "./ValidatorKeyStats";
 import ValidatorInfoHeader from "./ValidatorInfoHeader";
@@ -103,6 +104,9 @@ const ValidatorProfile = () => {
 				<div className="w-2/3 mr-4">
 					{selectedTab === ProfileTabsConfig.TEAM && (
 						<TeamMembers members={validatorData.additionalInfo.members} />
+					)}
+					{selectedTab === ProfileTabsConfig.VISUALISATION && (
+						<ValidatorViz validatorData={validatorData} />
 					)}
 				</div>
 				<div className="w-1/3 flex flex-col">
