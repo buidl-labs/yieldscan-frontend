@@ -3,7 +3,7 @@ import { Stage, Layer, Circle, Line, Rect, Text } from "react-konva";
 import WhiteCircles from "./WhiteCircles";
 import Network from "./Network";
 
-class ValidatorViz extends React.Component {
+class CouncilViz extends React.Component {
   constructor() {
     super();
     this.container = React.createRef();
@@ -30,11 +30,11 @@ class ValidatorViz extends React.Component {
         ? this.state.stageHeight
         : window.innerHeight;
     let valText = "";
-    if (this.props.validatorData !== undefined) {
+    if (this.props.memberInfo !== undefined) {
       valText =
-        this.props.validatorData.socialInfo.name !== null
-          ? this.props.validatorData.socialInfo.name
-          : this.props.validatorData.keyStats.stashId;
+        this.props.memberInfo.socialInfo.name !== null
+          ? this.props.memberInfo.socialInfo.name
+          : this.props.memberInfo.keyStats.stashId;
       if (valText.length > 11) {
         valText = valText.slice(0, 5) + "..." + valText.slice(-5);
       }
@@ -47,7 +47,7 @@ class ValidatorViz extends React.Component {
 
     let opacity = 0.3;
 
-    return this.props.validatorData === undefined ? (
+    return this.props.memberInfo === undefined ? (
       <React.Fragment>
         <div></div>
       </React.Fragment>
@@ -80,7 +80,7 @@ class ValidatorViz extends React.Component {
                 x={width / 2}
                 y={height - 185 - validatorRectangleHeight / 2}
                 maxRadius={height / 2 - 50}
-                valinfo={this.props.validatorData}
+                memberInfo={this.props.memberInfo}
               />
               {/* Adding 6 to stating and ending y point and 24 to length of line
                     because the upper left corner of rectangle is at width/2,height/2
@@ -141,4 +141,4 @@ class ValidatorViz extends React.Component {
   }
 }
 
-export default ValidatorViz;
+export default CouncilViz;
