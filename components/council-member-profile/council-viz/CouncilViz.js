@@ -70,6 +70,14 @@ class CouncilViz extends React.Component {
 
           <Stage width={width} height={height}>
             <Layer>
+              <Rect
+              x={0}
+              y={0}
+              width={width}
+              height={height}
+              cornerRadius={12}
+              fill="#212D3B"
+              />
               {/* Here n is number of white circles to draw
                         r is radius of the imaginary circle on which we have to draw white circles
                         x,y is center of imaginary circle 
