@@ -106,7 +106,7 @@ const ValidatorProfile = () => {
 						<TeamMembers members={validatorData.additionalInfo.members} />
 					)}
 					{selectedTab === ProfileTabsConfig.VISUALISATION && (
-						<ValidatorViz validatorData={validatorData} />
+						<ValidatorViz validatorData={validatorData} networkName="KUSAMA NETWORK" />
 					)}
 				</div>
 				<div className="w-1/3 flex flex-col">

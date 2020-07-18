@@ -24,13 +24,6 @@ class Circleandline extends React.Component {
     document.body.style.cursor = 'default';
     this.setState({ showNominatorAddress: false });
   };
-  handleClick = () => {
-    document.body.style.cursor = 'default';
-    this.props.history.push({
-      pathname: '/alexander/nominator/' + this.props.text,
-      state: { totalinfo: this.props.totalinfo, valinfo: this.props.valinfo },
-    });
-  };
 
   render() {
     let nomaddress =

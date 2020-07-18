@@ -28,7 +28,6 @@ class WhiteCircles extends React.Component {
           y2={this.props.y}
           nomId={element.nomId}
           stake={element.stake}
-          history={this.props.history}
           angle={angle}
           radius={this.props.r}
         />
