@@ -29,6 +29,7 @@
     "react-dom": "16.13.1",
     "react-feather": "^2.0.8",
     "styled-components": "^5.1.1",
+    "react-konva": "^16.13.0-3",
     "zustand": "^2.2.3"
   },
   "devDependencies": {

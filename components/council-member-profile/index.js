@@ -9,6 +9,7 @@ import CouncilMemberKeyStats from "./CouncilMemberKeyStats";
 import EditCouncilMemberProfileModal from "./EditCouncilMemberProfileModal";
 import { useAccounts } from "@lib/store";
 import { useWalletConnect } from "@components/wallet-connect";
+import CouncilViz from "./council-viz/CouncilViz";
 
 const ProfileTabsConfig = {
 	// ACTIVITY: 'Activity',
@@ -97,7 +98,7 @@ const CouncilMemberProfile = () => {
 			<div className="flex w-full">
 				<div className="w-2/3 mr-4">
 					{selectedTab === ProfileTabsConfig.VISUALISATION && (
-						<div></div>
+						<CouncilViz memberInfo={memberInfo} networkName="KUSAMA COUNCIL" />
 					)}
 				</div>
 				<div className="w-1/3 flex flex-col">
