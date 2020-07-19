@@ -1,4 +1,4 @@
-import { Filter, ChevronDown, ChevronUp } from "react-feather";
+import { Filter, ChevronDown, ChevronUp, ChevronLeft } from "react-feather";
 import { useState, useEffect } from "react";
 import { useDisclosure, Select, Spinner, Button, Checkbox, Switch } from "@chakra-ui/core";
 import { mapValues, keyBy, isNil, get, orderBy, filter, isNull, cloneDeep } from "lodash";
@@ -31,6 +31,7 @@ const Validators = () => {
 	const [loading, setLoading] = useState(true);
 	const [validators, setValidators] = useState(get(transactionState.validatorMap, 'total'));
 	const [filteredValidators, setFilteredValidators] = useState(validators);
+	const [advancedMode] = useState(router.query.advanced);
 	const [amount, setAmount] = useState(transactionState.stakingAmount);
 	const [timePeriodValue, setTimePeriod] = useState(transactionState.timePeriodValue);
 	const [timePeriodUnit, setTimePeriodUnit] = useState(transactionState.timePeriodUnit || 'months');
@@ -165,6 +166,14 @@ const Validators = () => {
 
 	return (
 		<div className="px-10 py-5">
+			{advancedMode && (
+				<div className="mb-4">
+					<button className="flex items-center bg-gray-200 text-gray-600 rounded-lg px-2 py-1" onClick={router.back}>
+						<ChevronLeft className="mr-2 text-gray-600" />
+						Reward Calculator
+					</button>
+				</div>
+			)}
 			<EditAmountModal
 				isOpen={isOpen}
 				onClose={onClose}
@@ -175,6 +184,7 @@ const Validators = () => {
 			<ValidatorsResult
 				stakingAmount={amount}
 				bondedAmount={bondedAmount}
+				advancedMode={advancedMode}
 				compounding={compounding}
 				timePeriodValue={timePeriodValue}
 				timePeriodUnit={timePeriodUnit}

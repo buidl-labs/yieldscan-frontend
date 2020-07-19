@@ -111,7 +111,7 @@ const RewardCalculatorPage = () => {
 
 	const onAdvancedSelection = () => {
 		updateTransactionState();
-		router.push(Routes.VALIDATORS);
+		router.push(`${Routes.VALIDATORS}?advanced=true`);
 	};
 
 	if (accountInfoLoading || loading) {

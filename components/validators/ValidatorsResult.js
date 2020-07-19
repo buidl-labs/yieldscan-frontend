@@ -11,6 +11,7 @@ const ValidatorsResult = ({
 	timePeriodValue,
 	timePeriodUnit,
 	result = {},
+	advancedMode = false,
 	onTimePeriodValueChange = noop,
 	onTimePeriodUnitChange = noop,
 	onCompoundingChange = noop,
@@ -24,8 +25,11 @@ const ValidatorsResult = ({
 	} = result;
 	
 	return (
-		<div className="flex justify-around items-center">
-			<h1 className="text-3xl">Validators</h1>
+		<div className="flex justify-between items-center">
+			<div className="flex flex-col">
+				{advancedMode && <span className="font-semibold text-sm text-gray-600">ADVANCED SELECTIONS</span>}
+				<span className="text-3xl font-bold">Validators</span>
+			</div>
 			<div className="flex">
 				<div className="flex flex-col px-3 py-1 border rounded-lg mr-2 h-16">
 					<span className="text-sm text-teal-500">Staking Amount</span>
