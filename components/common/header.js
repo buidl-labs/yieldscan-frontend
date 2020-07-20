@@ -1,6 +1,6 @@
 import { useAccounts } from "@lib/store";
 import { get, isNil } from "lodash";
-import { ChevronDown } from "react-feather";
+import { ChevronDown, Settings } from "react-feather";
 import { WalletConnectPopover, useWalletConnect } from "@components/wallet-connect";
 import { Popover, PopoverArrow, PopoverTrigger, PopoverContent } from "@chakra-ui/core";
 
@@ -64,8 +64,25 @@ const Header = () => {
 						<div className="text-gray-600 text-sm p-4">
 							<div className="flex items-center justify-between">
 								<p>Current Network: <b>Kusama</b></p>
-								<button className="text-blue-500 p-1">Change</button>
+								<button hidden className="text-blue-500 p-1">Change</button>
 							</div>
+						</div>
+					</PopoverContent>
+				</Popover>
+
+				<Popover trigger="hover">
+					<PopoverTrigger>
+						<button className="flex items-center ml-5 p-2 font-semibold text-gray-800">
+							<Settings size="20px" />
+						</button>
+					</PopoverTrigger>
+					<PopoverContent zIndex={50} width="12rem" backgroundColor="gray.900">
+							<div className="flex flex-col items-center justify-center my-2 bg-gray-900 text-white w-full">
+								<button
+									className="w-full rounded px-5 py-1 w-56 truncate hover:bg-gray-600 hover:text-gray-200"
+								>
+									Edit Controller
+								</button>
 						</div>
 					</PopoverContent>
 				</Popover>
