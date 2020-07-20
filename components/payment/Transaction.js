@@ -11,10 +11,11 @@ const Transaction = ({
 	onConfirm
 }) => {
 	const [editController, setEditController] = useState(false);
-	const [selectedController, setSelectedController] = useState(stashAccount.address);
+	const [selectedController, setSelectedController] = useState(stashAccount);
+	const [controllerEdited, setControllerEdited] = useState(false);
 
 	useEffect(() => {
-		setController(selectedController);
+		setController(selectedController.address);
 	}, [selectedController]);
 
 	// TODO: stakingAmount subCurrency version
@@ -34,8 +35,18 @@ const Transaction = ({
 					<span className="font-semibold">{get(stashAccount, 'meta.name')}</span>
 					<p className="text-sm">{get(stashAccount, 'address')}</p>
 				</div>
-				<span className="absolute right-0 top-0 m-2 p-1 px-2 font-bold bg-gray-300 text-gray-800 rounded">Stash</span>
+				<span className="text-sm absolute right-0 top-0 m-2 p-1 px-2 font-bold bg-gray-300 text-gray-800 rounded">Stash</span>
 			</div>
+			{controllerEdited && (
+				<div className="relative mt-10 w-4/5 flex items-center rounded-lg bg-gray-100 px-4 py-2">
+					<img src="http://placehold.it/255" className="w-12 h-12 rounded-full mr-5" />
+					<div className="flex flex-col text-gray-800">
+						<span className="font-semibold">{get(selectedController, 'meta.name')}</span>
+						<p className="text-sm">{get(selectedController, 'address')}</p>
+					</div>
+					<span className="text-sm absolute right-0 top-0 m-2 p-1 px-2 font-bold bg-gray-300 text-gray-800 rounded">Controller</span>
+				</div>
+			)}
 			<button
 				className={`
 					mt-4 px-3 py-px text-gray-700 font-semibold rounded text-sm
@@ -58,11 +69,15 @@ const Transaction = ({
 							key={account.address}
 							className={`
 								flex items-center rounded-lg border-2 border-teal-500 cursor-pointer px-3 py-2 mb-2
-								${selectedController === account.address ? 'text-white bg-teal-500' : 'text-gray-600'}
+								${get(selectedController, 'address') === account.address ? 'text-white bg-teal-500' : 'text-gray-600'}
 							`}
-							onClick={() => setSelectedController(account.address)}
+							onClick={() => {
+								setSelectedController(account); // update controller
+								setEditController(false); // close the edit inline modal
+								setControllerEdited(true); // show the card
+							}}
 						>
-							{selectedController === account.address ? (
+							{get(selectedController, 'address') === account.address ? (
 								<CheckCircle className="mr-2" />
 							) : (
 								<Circle className="mr-2" />
