@@ -1,10 +1,11 @@
-import { Edit2, ChevronLeft, Settings, Check } from "react-feather";
-import { isNil, noop } from "lodash";
+import { Edit2, ChevronLeft, Settings, Check, ExternalLink } from "react-feather";
+import { isNil, noop, cloneDeep } from "lodash";
 import RiskTag from "./RiskTag";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Routes from "@lib/routes";
+import Identicon from "@components/common/Identicon";
 
-const ValidatorInfo = ({ name, riskScore, amountPerValidator, editMode, selected, toggleSelected, onProfile = noop }) => (
+const ValidatorInfo = ({ name, stashId, riskScore, amountPerValidator, editMode, selected, toggleSelected, onProfile = noop }) => (
 	<div
 		className={`
 			rounded-lg flex items-center px-4 py-2 mb-2 cursor-pointer transition duration-500 w-full overflow-x-hidden
@@ -16,7 +17,7 @@ const ValidatorInfo = ({ name, riskScore, amountPerValidator, editMode, selected
 			<div className="w-1/5">
 				<Check
 					size="1.75rem"
-					className="p-1 bg-teal-500 text-white mr-2 rounded-full" 
+					className="p-1 bg-teal-500 text-white rounded-full" 
 					strokeWidth="4px"
 				/>
 			</div>
@@ -25,10 +26,13 @@ const ValidatorInfo = ({ name, riskScore, amountPerValidator, editMode, selected
 			className={`flex items-center justify-between transition duration-200 ${selected && 'transform translate-x-4'}`}
 			style={{ width: '26rem' }}
 		>
-			<div className="flex items-center w-4/5" onClick={onProfile}>
-				<img src="http://placehold.it/255" className="rounded-full w-16 h-16 mr-4" />
+			<div className="flex items-center w-2/3" onClick={onProfile}>
+				<div className="mr-4"><Identicon address={stashId} size="3rem" /></div>
 				<div className="flex flex-col items-start w-4/5">
-					<h3 className="text-gray-700 truncate w-4/5">{name}</h3>
+					<div className="flex items-center text-gray-700 truncate w-4/5 font-semibold">
+						<span className="mr-2">{name || stashId.slice(0, 10) + '...' || '-' }</span>
+						<ExternalLink size="1rem" />
+					</div>
 					<span className="select-none flex text-gray-500 text-sm">
 						Risk Score
 						<RiskTag risk={riskScore} />
@@ -36,7 +40,7 @@ const ValidatorInfo = ({ name, riskScore, amountPerValidator, editMode, selected
 				</div>
 			</div>
 			{!editMode && (
-				<div className="flex flex-col ml-5 w-1/5">
+				<div className="flex flex-col ml-5 w-1/3">
 					<span className="text-red-400">Amount</span>
 					<h5 className="text-gray-700 text-lg truncate">{amountPerValidator.currency} KSM</h5>
 					<span className="text-gray-500 text-sm">${amountPerValidator.subCurrency}</span>
@@ -56,19 +60,42 @@ const ValidatorsList = ({
 	onAdvancedSelection = noop,
 }) => {
 	const [editMode, setEditMode] = useState(false);
-	const amountPerValidator = Number((totalAmount / validators.length).toFixed(2));
-	const selectedValidatorsList = Object.values(selectedValidators).filter(v => !isNil(v));
+	const [tempSelectedValidators, setTempSelectedValidators] = useState({});
+
+	useEffect(() => {
+		setTempSelectedValidators(cloneDeep(selectedValidators));
+	}, [selectedValidators]);
 
 	const toggleSelected = (validator) => {
 		const { stashId } = validator;
 
-		if (selectedValidatorsList.length === 16 && !selectedValidators[stashId]) return;
+		if (tempSelectedValidatorsList.length === 16 && !tempSelectedValidators[stashId]) return;
 
-		setSelectedValidators({
-			...selectedValidators,
-			[stashId]: isNil(selectedValidators[stashId]) ? validator : null,
+		setTempSelectedValidators({
+			...tempSelectedValidators,
+			[stashId]: isNil(tempSelectedValidators[stashId]) ? validator : null,
 		});
 	};
+
+	const toggleEditMode = () => {
+		setTempSelectedValidators(cloneDeep(selectedValidators));
+		setEditMode(!editMode);
+	};
+
+	const onConfirm = () => {
+		setSelectedValidators(cloneDeep(tempSelectedValidators));
+		setEditMode(false);
+	};
+
+	const sortedValidators = validators.sort((v1, v2) => {
+		if (tempSelectedValidators[v1.stashId]) return -1;
+		else if (tempSelectedValidators[v2.stashId]) return 1;
+		else return 0;
+	});
+
+	const selectedValidatorsList = Object.values(selectedValidators).filter(v => !isNil(v));
+	const amountPerValidator = Number((totalAmount / selectedValidatorsList.length).toFixed(2));
+	const tempSelectedValidatorsList = Object.values(tempSelectedValidators).filter(v => !isNil(v));
 
 	if (disableList) {
 		return (
@@ -95,7 +122,7 @@ const ValidatorsList = ({
 					<Edit2
 						size="1.5rem"
 						className="cursor-pointer"
-						onClick={() => setEditMode(true)}
+						onClick={toggleEditMode}
 					/>
 				</div>
 			) : (
@@ -106,7 +133,7 @@ const ValidatorsList = ({
 								size="2rem"
 								strokeWidth="2px"
 								className="bg-gray-700 text-white rounded-full p-1 cursor-pointer"
-								onClick={() => setEditMode(false)}
+								onClick={toggleEditMode}
 							/>
 						</div>
 						<div>
@@ -114,7 +141,7 @@ const ValidatorsList = ({
 								Edit Validators
 							</h1>
 							<span className="text-gray-500">
-								{selectedValidatorsList.length} / 16 selections
+								{tempSelectedValidatorsList.length} / 16 selections
 							</span>
 						</div>
 					</div>
@@ -123,29 +150,37 @@ const ValidatorsList = ({
 						onClick={onAdvancedSelection}
 					>
 						<Settings className="mr-2 text-gray-700" size="1rem" />
-						<span>Advanced Selections</span>
+						<span>Advanced</span>
+					</button>
+					<button
+						className="p-2 px-4 text-sm flex-center rounded-full bg-teal-500 text-white font-semibold cursor-pointer"
+						onClick={onConfirm}
+					>
+						Confirm
 					</button>
 				</div>
 			)}
 			<div className="mt-4 overflow-auto h-64">
-				{editMode && validators.map(validator => (
+				{editMode && sortedValidators.map(validator => (
 					<ValidatorInfo
 						editMode
 						key={validator.stashId}
-						name={validator.stashId}
+						name={validator.name}
+						stashId={validator.stashId}
 						riskScore={Number(validator.riskScore).toFixed(2)}
 						amountPerValidator={{
 							currency: amountPerValidator,
 							subCurrency: amountPerValidator,
 						}}
-						selected={selectedValidators[validator.stashId]}
+						selected={tempSelectedValidators[validator.stashId]}
 						toggleSelected={() => toggleSelected(validator)}
 					/>
 				))}
 				{!editMode && selectedValidatorsList.map(validator => (
 					<ValidatorInfo
 						key={validator.stashId}
-						name={validator.stashId}
+						name={validator.name}
+						stashId={validator.stashId}
 						riskScore={Number(validator.riskScore).toFixed(2)}
 						amountPerValidator={{
 							currency: amountPerValidator,

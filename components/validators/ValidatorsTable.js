@@ -1,10 +1,12 @@
-import { Check } from "react-feather";
+import { Check, ExternalLink } from "react-feather";
 import { isNil, noop } from "lodash";
 import RiskTag from "@components/reward-calculator/RiskTag";
 import { useRouter } from "next/router";
 import Routes from "@lib/routes";
+import Identicon from "@components/common/Identicon";
 
 const ValidatorCard = ({
+	name = '',
 	stashId,
 	selected,
 	riskScore,
@@ -28,12 +30,20 @@ const ValidatorCard = ({
 			className={`p-1 mr-2 rounded-full text-white ${selected ? 'bg-teal-500' : 'bg-gray-500'}`}
 			strokeWidth="4px"
 		/>
-		<img
-			src="http://placehold.it/255"
-			className="rounded-full w-10 h-10 mr-4"
-			onClick={onProfile}
-		/>
-		<h3 className="text-gray-700 text-xs w-48 truncate" onClick={onProfile}>{stashId}</h3>
+		<Identicon address={stashId} />
+		<div
+			className="text-gray-700 text-xs w-48 truncate"
+			onClick={ev => {
+				ev.stopPropagation();
+				onProfile();
+			}}
+		>
+			<span className="font-semibold">{name || stashId.slice(0, 18) + '...' || '-' }</span>
+			<div className="flex items-center">
+				<span className="text-xs mr-2">View Profile</span>
+				<ExternalLink size="12px" />
+			</div>
+		</div>
 		<div className="flex flex-col">
 			<span className="text-xs text-gray-500 font-semibold">Risk Score</span>
 			<div className="rounded-full font-semibold"><RiskTag risk={riskScore} /></div>
@@ -55,7 +65,9 @@ const ValidatorCard = ({
 			<h3 className="text-lg">{commission}%</h3>
 		</div>
 		<div className="flex flex-col">
-			<span className="text-xs text-gray-500 font-semibold">Returns / 100 KSM</span>
+			<span className="text-xs text-gray-500 font-semibold">
+				Estimated Returns <sup>*</sup>
+			</span>
 			<h3 className="text-lg">{returnsPer100KSM.toFixed(4)} KSM</h3>
 		</div>
 	</div>
@@ -82,10 +94,11 @@ const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidat
 				{validators.map(validator => (
 					<ValidatorCard
 						key={validator.stashId}
+						name={validator.name}
 						stashId={validator.stashId}
-						riskScore={Number(validator.riskScore.toFixed(2))}
-						ownStake={Number(validator.ownStake.toFixed(1))}
-						otherStake={Number(validator.totalStake.toFixed(1))}
+						riskScore={Number((validator.riskScore || 0).toFixed(2))}
+						ownStake={Number((validator.ownStake || 0).toFixed(1))}
+						otherStake={Number((validator.totalStake || 0).toFixed(1))}
 						commission={validator.commission}
 						nominators={validator.numOfNominators}
 						returnsPer100KSM={validator.rewardsPer100KSM}
@@ -94,10 +107,21 @@ const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidat
 						onProfile={() => window.open(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`, '_blank')}
 					/>
 				))}
+				{!validators.length && (
+					<div className="flex-center font-thin py-5">No validators, try updating your filters</div>
+				)}
 			</div>
+			<div className="text-xs text-gray-500 text-right">* Estimated Returns are calculated per era for 100 KSM</div>
 			<style jsx>{`
-				.table-container {
-					height: 58vh;
+				@media screen and (max-height: 712px) {
+					.table-container {
+						height: 44vh;
+					}
+				}
+				@media screen and (min-height: 713px) {
+					.table-container {
+						height: 56vh;
+					}
 				}
 			`}</style>
 		</div>

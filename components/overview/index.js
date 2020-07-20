@@ -13,8 +13,11 @@ import EditControllerModal from "./EditControllerModal";
 import FundsUpdate from "./FundsUpdate";
 import EditValidators from "./EditValidators";
 import ChillAlert from "./ChillAlert";
+import Routes from "@lib/routes";
+import { useRouter } from "next/router";
 
 const Overview = () => {
+	const router = useRouter();
 	const { toggle } = useWalletConnect();
 	const { stashAccount, bondedAmount, unlockingBalances, accountInfoLoading } = useAccounts();
 	const [loading, setLoading] = useState(true);
@@ -97,8 +100,13 @@ const Overview = () => {
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">
 					<AlertTriangle size="2rem" className="text-orange-500" />
-					<span className="font-semibold text-red-600 text-lg mb-10">Sorry, no data for your account! :(</span>
-					<span className="text-sm text-gray-600 mt-5">Try changing the stash account.</span>
+					<span className="font-semibold text-red-600 text-lg mb-10">Sorry, no data for your account since you don't have active nominations! :(</span>
+					<span
+						onClick={() => router.replace(Routes.CALCULATOR)}
+						className="text-sm text-gray-600 mt-5 hover:underline cursor-pointer"
+					>
+						Use Reward Calculator to bond more funds and nominate.
+					</span>
 				</div>
 			</div>
 		);

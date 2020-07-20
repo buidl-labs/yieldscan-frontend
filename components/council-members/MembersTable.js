@@ -1,14 +1,19 @@
 import { useRouter } from "next/router";
 import Routes from "@lib/routes";
+import Identicon from "@components/common/Identicon";
+import { ExternalLink } from "react-feather";
 
 const MemberCard = ({ name, accountId, backing, totalBalance, numberOfBackers, onProfile }) => {
 	return (
 		<div className="flex items-center justify-between rounded-lg border border-gray-300 py-2 px-10 my-2">
 			<div className="flex items-center cursor-pointer" onClick={onProfile}>
-				<img src="http://placehold.it/255" className="rounded-full w-12 h-12 mr-10" />
-				<div className="flex flex-col">
-					<span className="">{name}</span>
-					<span className="text-xs">{accountId}</span>
+				<div className="mr-8"><Identicon address={accountId} size="3rem" /></div>
+				<div className="text-gray-700 cursor-pointer" onClick={onProfile}>
+					<span className="font-semibold">{name || stashId.slice(0, 18) + '...' || '-' }</span>
+					<div className="flex items-center">
+						<span className="text-xs mr-2">View Profile</span>
+						<ExternalLink size="12px" />
+					</div>
 				</div>
 			</div>
 			<div className="flex items-center">
@@ -18,11 +23,11 @@ const MemberCard = ({ name, accountId, backing, totalBalance, numberOfBackers, o
 				</div>
 				<div className="flex flex-col w-48 mr-10">
 					<span className="text-xs text-gray-500 font-semibold">Backing</span>
-					<h3 className="text-lg">{backing.toFixed(2)} KSM</h3>
+					<h3 className="text-lg">{(backing || 0).toFixed(2)} KSM</h3>
 				</div>
 				<div className="flex flex-col w-48 mr-10">
 					<span className="text-xs text-gray-500 font-semibold">Balance</span>
-					<h3 className="text-lg">{totalBalance.toFixed(2)} KSM</h3>
+					<h3 className="text-lg">{(totalBalance || 0).toFixed(2)} KSM</h3>
 				</div>
 			</div>
 		</div>

@@ -1,6 +1,8 @@
-import { upperCase } from "lodash";
-import { Star } from "react-feather";
+import { upperCase, noop } from "lodash";
+import { Star, ExternalLink } from "react-feather";
 import RiskTag from "@components/reward-calculator/RiskTag";
+import Identicon from "@components/common/Identicon";
+import Routes from "@lib/routes";
 
 const StatusTag = ({ status }) => {
 	const getColor = () => {
@@ -19,15 +21,23 @@ const StatusTag = ({ status }) => {
 };
 
 const ValidatorCard = ({
+	name,
 	stashId,
 	riskScore,
 	stakedAmount,
 	estimatedReward,
+	onProfile = noop,
 }) => {
 	return (
 		<div className="flex items-center justify-around rounded-lg border border-gray-300 py-2">
-			<img src="http://placehold.it/255" className="rounded-full w-12 h-12 mr-4" />
-			<span className="text-xs">{stashId}</span>
+			<Identicon address={stashId} size="3rem" />
+			<div className="text-gray-700 cursor-pointer" onClick={onProfile}>
+				<span className="font-semibold">{name || stashId.slice(0, 18) + '...' || '-' }</span>
+				<div className="flex items-center">
+					<span className="text-xs mr-2">View Profile</span>
+					<ExternalLink size="12px" />
+				</div>
+			</div>
 			<StatusTag status="active" />
 			<div className="flex flex-col">
 				<span className="text-xs text-gray-500 font-semibold">Risk Score</span>
@@ -38,7 +48,7 @@ const ValidatorCard = ({
 				<h3 className="text-lg">{stakedAmount} KSM</h3>
 			</div>
 			<div className="flex flex-col">
-				<span className="text-xs text-gray-500 font-semibold">Estimated Reward</span>
+				<span className="text-xs text-gray-500 font-semibold">Estimated Reward <sup>*</sup></span>
 				<h3 className="text-lg">{estimatedReward} KSM</h3>
 			</div>
 			{false && (
@@ -58,15 +68,18 @@ const NominationsTable = ({ validators }) => {
 	return (
 		<div>
 			<div className="table-container overflow-y-scroll mt-5 py-4">
-				{validators.map(validator => (
+				{validators.filter(validator => validator.isElected).map(validator => (
 					<ValidatorCard
 						key={validator.stashId}
+						name={validator.name}
 						stashId={validator.stashId}
-						riskScore={Number(validator.riskScore.toFixed(2))}
-						stakedAmount={Number(validator.nomStake.toFixed(2))}
-						estimatedReward={Number(validator.estimatedPoolReward.toFixed(2))}
+						riskScore={Number((validator.riskScore || 0).toFixed(2))}
+						stakedAmount={Number((validator.nomStake || 0).toFixed(2))}
+						estimatedReward={Number((validator.estimatedReward || 0).toFixed(2))}
+						onProfile={() => window.open(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`, '_blank')}
 					/>
 				))}
+				<div className="text-xs text-gray-500 text-right mt-2">* Estimated Returns are calculated per era for 100 KSM</div>
 			</div>
 			<style jsx>{`
 				.table-container {

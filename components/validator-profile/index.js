@@ -4,6 +4,7 @@ import { Spinner, useDisclosure } from "@chakra-ui/core";
 import { useState, useEffect } from "react";
 import { useAccounts } from "@lib/store";
 import TeamMembers from "./TeamMembers";
+import ValidatorViz from "./validator-viz/ValidatorViz"
 import ProfileTabs from "./ProfileTabs";
 import ValidatorKeyStats from "./ValidatorKeyStats";
 import ValidatorInfoHeader from "./ValidatorInfoHeader";
@@ -11,6 +12,7 @@ import LinkedValidatorsGroup from "./LInkedValidatorsGroup";
 import { useWalletConnect } from "@components/wallet-connect";
 import EditValidatorProfileModal from "./EditValidatorProfileModal";
 import ValidatorReturnsCalculator from "./ValidatorReturnsCalculator";
+import { get } from "lodash";
 
 const ProfileTabsConfig = {
 	// ACTIVITY: 'Activity',
@@ -72,8 +74,8 @@ const ValidatorProfile = () => {
 			<EditValidatorProfileModal
 				stashId={validatorStashId}
 				socialInfo={validatorData.socialInfo}
-				vision={validatorData.additionalInfo.vision}
-				members={validatorData.additionalInfo.members}
+				vision={get(validatorData, 'additionalInfo.vision', '')}
+				members={get(validatorData, 'additionalInfo.members')}
 				onSuccess={initData}
 				isOpen={editProfileModalOpen}
 				onClose={closeEditProfileModal}
@@ -85,7 +87,7 @@ const ValidatorProfile = () => {
 				socialInfo={validatorData.socialInfo}
 				openEditProfile={toggleEditProfileModal}
 				toggleWalletConnect={toggleWalletConnect}
-				vision={validatorData.additionalInfo.vision}
+				vision={get(validatorData, 'additionalInfo.vision', '')}
 			/>
 
 			<div className="my-5">
@@ -102,7 +104,10 @@ const ValidatorProfile = () => {
 			<div className="flex w-full">
 				<div className="w-2/3 mr-4">
 					{selectedTab === ProfileTabsConfig.TEAM && (
-						<TeamMembers members={validatorData.additionalInfo.members} />
+						<TeamMembers members={get(validatorData, 'additionalInfo.members', [])} />
+					)}
+					{selectedTab === ProfileTabsConfig.VISUALISATION && (
+						<ValidatorViz validatorData={validatorData} networkName="KUSAMA NETWORK" />
 					)}
 				</div>
 				<div className="w-1/3 flex flex-col">

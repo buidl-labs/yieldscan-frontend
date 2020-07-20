@@ -1,6 +1,6 @@
-import { Filter, ChevronDown, ChevronUp } from "react-feather";
+import { Filter, ChevronDown, ChevronUp, ChevronLeft } from "react-feather";
 import { useState, useEffect } from "react";
-import { useDisclosure, Select, Spinner, Button } from "@chakra-ui/core";
+import { useDisclosure, Select, Spinner, Button, Checkbox, Switch } from "@chakra-ui/core";
 import { mapValues, keyBy, isNil, get, orderBy, filter, isNull, cloneDeep } from "lodash";
 import { useTransaction, useAccounts } from "@lib/store";
 import calculateReward from "@lib/calculate-reward";
@@ -23,7 +23,7 @@ const DEFAULT_FILTER_OPTIONS = {
 const Validators = () => {
 	const router = useRouter();
 	const { toggle: toggleWalletConnect } = useWalletConnect();
-	const { stashAccount, bondedAmount } = useAccounts();
+	const { stashAccount, bondedAmount, freeAmount, accountInfoLoading } = useAccounts();
 	const { isOpen, onClose, onToggle } = useDisclosure();
 	const transactionState = useTransaction();
 	const { setTransactionState } = transactionState;
@@ -31,6 +31,7 @@ const Validators = () => {
 	const [loading, setLoading] = useState(true);
 	const [validators, setValidators] = useState(get(transactionState.validatorMap, 'total'));
 	const [filteredValidators, setFilteredValidators] = useState(validators);
+	const [advancedMode] = useState(router.query.advanced);
 	const [amount, setAmount] = useState(transactionState.stakingAmount);
 	const [timePeriodValue, setTimePeriod] = useState(transactionState.timePeriodValue);
 	const [timePeriodUnit, setTimePeriodUnit] = useState(transactionState.timePeriodUnit || 'months');
@@ -39,10 +40,11 @@ const Validators = () => {
 		mapValues(keyBy(transactionState.selectedValidators, 'stashId'))
 	);
 
+	const [showSelected, setShowSelected] = useState(false);
 	const [filterPanelOpen, setFilterPanelOpen] = useState(false);
 	const [filterOptions, setFilterOptions] = useState(cloneDeep(DEFAULT_FILTER_OPTIONS));
 	const [sortOrder, setSortOrder] = useState('asc');
-	const [sortKey, setSortKey] = useState('estimatedPoolReward');
+	const [sortKey, setSortKey] = useState('rewardsPer100KSM');
 	const [result, setResult] = useState({});
 
 	useEffect(() => {
@@ -61,9 +63,12 @@ const Validators = () => {
 		const sorted = orderBy(filteredValidators, [sortKey], [sortOrder]);
 		setFilteredValidators(sorted);
 	}, [sortKey, sortOrder]);
-
+	
 	useEffect(() => {
-		if (!filterPanelOpen) return setFilteredValidators(validators);
+		const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(v => !isNil(v));
+
+		if (!filterPanelOpen && !showSelected) return setFilteredValidators(validators);
+		if (!filterPanelOpen && showSelected) return setFilteredValidators(selectedValidatorsList);
 
 		const riskGroup = get(filterOptions, 'riskScore');
 		const commission = get(filterOptions, 'commission');
@@ -84,7 +89,9 @@ const Validators = () => {
 			totalStake.max
 		)) return setFilteredValidators(validators);
 
-		const filtered = validators.filter(validator => {
+		const validatorList = showSelected ? selectedValidatorsList : validators;
+
+		const filtered = validatorList.filter(validator => {
 			if (riskGroup === 'Low' && validator.riskScore > 0.32) return false;
 			if (riskGroup === 'Medium' && validator.riskScore > 0.66) return false;
 
@@ -105,7 +112,7 @@ const Validators = () => {
 		const filteredAndsorted = orderBy(filtered, [sortKey], [sortOrder]);
 
 		setFilteredValidators(filteredAndsorted);
-	}, [filterPanelOpen, filterOptions]);
+	}, [filterPanelOpen, filterOptions, showSelected]);
 
 	useEffect(() => {
 		if (amount && timePeriodValue && timePeriodUnit) {
@@ -146,29 +153,40 @@ const Validators = () => {
 		router.push('/payment');
 	};
 
-	if (loading) {
+	if (loading || accountInfoLoading) {
 		return (
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">
 					<Spinner size="xl" />
-					<span className="text-sm text-gray-600 mt-5">Fetching validators data...</span>
+					<span className="text-sm text-gray-600 mt-5">Loading...</span>
 				</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="px-10 py-5">
+		<div className="relative h-full px-10 py-5">
+			{advancedMode && (
+				<div className="mb-4">
+					<button className="flex items-center bg-gray-200 text-gray-600 rounded-lg px-2 py-1" onClick={router.back}>
+						<ChevronLeft className="mr-2 text-gray-600" />
+						Reward Calculator
+					</button>
+				</div>
+			)}
 			<EditAmountModal
 				isOpen={isOpen}
 				onClose={onClose}
 				amount={amount}
 				setAmount={setAmount}
+				freeAmount={freeAmount}
 				bondedAmount={bondedAmount}
+				stashAccount={stashAccount}
 			/>
 			<ValidatorsResult
 				stakingAmount={amount}
 				bondedAmount={bondedAmount}
+				advancedMode={advancedMode}
 				compounding={compounding}
 				timePeriodValue={timePeriodValue}
 				timePeriodUnit={timePeriodUnit}
@@ -192,11 +210,11 @@ const Validators = () => {
 						fontSize="xs"
 						cursor="pointer"
 						height="2rem"
-						defaultValue="estimatedPoolReward"
+						defaultValue="rewardsPer100KSM"
 						value={sortKey}
 						onChange={ev => setSortKey(ev.target.value)}
 					>
-						<option value="estimatedPoolReward">Estimated Rewards</option>
+						<option value="rewardsPer100KSM">Estimated Rewards</option>
 						<option value="riskScore">Risk Score</option>
 						<option value="commission">Commission</option>
 						<option value="numOfNominators">Nominators</option>
@@ -205,6 +223,15 @@ const Validators = () => {
 					<div className="flex flex-col items-center justify-between items-center ml-2">
 						<ChevronUp size="20px" className="bg-gray-300 cursor-pointer" onClick={() => setSortOrder('asc')} />
 						<ChevronDown size="20px" className="bg-gray-300 cursor-pointer" onClick={() => setSortOrder('desc')} />
+					</div>
+					<div className="ml-4 flex items-center text-gray-700 border border-gray-300 rounded px-3 py-1">
+						<p>Show Selected</p>
+						<Switch
+							color="teal"
+							className="mt-1 ml-2"
+							isChecked={showSelected}
+							onChange={e => setShowSelected(e.target.checked)}
+						/>
 					</div>
 				</div>
 				<div className="flex items-center">
@@ -237,7 +264,7 @@ const Validators = () => {
 				selectedValidatorsMap={selectedValidatorsMap}
 				setSelectedValidators={setSelectedValidatorsMap}
 			/>
-			<div>
+			<div className="absolute bottom-0 flex-center w-full mb-4">
 				{stashAccount ? (
 					<div className="flex-center">
 						<Button
