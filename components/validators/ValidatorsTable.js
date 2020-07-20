@@ -111,7 +111,7 @@ const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidat
 					<div className="flex-center font-thin py-5">No validators, try updating your filters</div>
 				)}
 			</div>
-			<div className="text-xs text-gray-500 text-right">* Estimated Returns are calculated per month for 100 KSM</div>
+			<div className="text-xs text-gray-500 text-right">* Estimated Returns are calculated per era for 100 KSM</div>
 			<style jsx>{`
 				@media screen and (max-height: 712px) {
 					.table-container {

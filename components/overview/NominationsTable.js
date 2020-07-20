@@ -48,7 +48,7 @@ const ValidatorCard = ({
 				<h3 className="text-lg">{stakedAmount} KSM</h3>
 			</div>
 			<div className="flex flex-col">
-				<span className="text-xs text-gray-500 font-semibold">Estimated Reward</span>
+				<span className="text-xs text-gray-500 font-semibold">Estimated Reward <sup>*</sup></span>
 				<h3 className="text-lg">{estimatedReward} KSM</h3>
 			</div>
 			{false && (
@@ -79,6 +79,7 @@ const NominationsTable = ({ validators }) => {
 						onProfile={() => window.open(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`, '_blank')}
 					/>
 				))}
+				<div className="text-xs text-gray-500 text-right mt-2">* Estimated Returns are calculated per era for 100 KSM</div>
 			</div>
 			<style jsx>{`
 				.table-container {

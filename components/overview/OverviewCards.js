@@ -76,7 +76,7 @@ const OverviewCards = ({
 					${Number((stats.estimatedRewards || 0).toFixed(3)) * 2}
 				</h3>
 				<div className="mt-8 flex justify-between items-center">
-					<h5 className="text-gray-800">Estimated Returns</h5>
+					<h5 className="text-gray-800">Estimated Returns<sup>*</sup></h5>
 				</div>
 			</div>
 			<div className="shadow-lg px-4 py-6 bg-teal-500 text-white rounded-xl" style={{ width: '30%' }}>
