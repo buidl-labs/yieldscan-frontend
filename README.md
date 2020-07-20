@@ -3,6 +3,16 @@
 ## Codebase Guide:
 
 ### Getting Started
+- Clone the repository:
+	```bash
+	git clone https://github.com/buidl-labs/yieldscan-frontend
+	```
+- Install the dependencies:
+	```bash
+	npm install
+	# or
+	yarn
+	```
 - Run the development server:
 
 	```bash
