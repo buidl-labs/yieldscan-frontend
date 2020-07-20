@@ -73,9 +73,9 @@ const NominationsTable = ({ validators }) => {
 						key={validator.stashId}
 						name={validator.name}
 						stashId={validator.stashId}
-						riskScore={Number(validator.riskScore.toFixed(2))}
-						stakedAmount={Number(validator.nomStake.toFixed(2))}
-						estimatedReward={Number(validator.estimatedPoolReward.toFixed(2))}
+						riskScore={Number((validator.riskScore || 0).toFixed(2))}
+						stakedAmount={Number((validator.nomStake || 0).toFixed(2))}
+						estimatedReward={Number((validator.estimatedPoolReward || 0).toFixed(2))}
 						onProfile={() => window.open(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`, '_blank')}
 					/>
 				))}
