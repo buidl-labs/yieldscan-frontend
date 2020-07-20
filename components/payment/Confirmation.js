@@ -1,9 +1,10 @@
 import { get } from 'lodash';
 import RiskTag from "@components/reward-calculator/RiskTag";
+import Identicon from '@components/common/Identicon';
 
-const ValidatorInfo = ({ name, riskScore, amountPerValidator }) => (
+const ValidatorInfo = ({ name, stashId, riskScore, amountPerValidator }) => (
 	<div className="rounded-lg flex items-center border border-gray-200 px-4 mb-2">
-		<img src="http://placehold.it/255" className="rounded-full w-12 h-12 mr-4" />
+		<div className="mr-4"><Identicon address={stashId} /></div>
 		<div className="flex flex-col items-start">
 			<h3 className="text-gray-700 text-sm">{name}</h3>
 			<span className="flex text-gray-500 text-sm">
@@ -54,7 +55,8 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 					{selectedValidators.map(validator => (
 						<ValidatorInfo
 							key={validator.stashId}
-							name={validator.stashId}
+							name={validator.name || validator.stashId}
+							stashId={validator.stashId}
 							riskScore={validator.riskScore}
 							amountPerValidator={Number((stakingAmount / selectedValidators.length).toFixed(2))}
 						/>
