@@ -23,7 +23,7 @@ const DEFAULT_FILTER_OPTIONS = {
 const Validators = () => {
 	const router = useRouter();
 	const { toggle: toggleWalletConnect } = useWalletConnect();
-	const { stashAccount, bondedAmount, accountInfoLoading } = useAccounts();
+	const { stashAccount, bondedAmount, freeAmount, accountInfoLoading } = useAccounts();
 	const { isOpen, onClose, onToggle } = useDisclosure();
 	const transactionState = useTransaction();
 	const { setTransactionState } = transactionState;
@@ -179,7 +179,9 @@ const Validators = () => {
 				onClose={onClose}
 				amount={amount}
 				setAmount={setAmount}
+				freeAmount={freeAmount}
 				bondedAmount={bondedAmount}
+				stashAccount={stashAccount}
 			/>
 			<ValidatorsResult
 				stakingAmount={amount}
