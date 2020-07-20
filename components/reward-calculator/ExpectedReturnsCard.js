@@ -12,7 +12,7 @@ const ResultCardInsight = ({ label, value, supportValue, emptyState }) => (
 		) : (
 			<>
 				<h3 className="text-2xl">{value}</h3>
-				<span className="text-sm">{supportValue}</span>
+				<span hidden className="text-sm">{supportValue}</span>
 			</>
 		)}
 	</div>

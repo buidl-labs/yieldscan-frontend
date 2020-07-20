@@ -22,7 +22,7 @@ const OverviewCards = ({
 						<h1 className="text-3xl text-teal-500 font-semibold">
 							{Number((stats.totalAmountStaked || 0).toFixed(3))} KSM
 						</h1>
-						<h3 className="text-lg text-gray-500">
+						<h3 hidden className="text-lg text-gray-500">
 							${Number((stats.totalAmountStaked || 0).toFixed(3)) * 2}
 						</h3>
 					</div>
@@ -72,7 +72,7 @@ const OverviewCards = ({
 				<h1 className="text-3xl text-teal-500 font-semibold">
 					{Number((stats.estimatedRewards || 0).toFixed(3))} KSM
 				</h1>
-				<h3 className="text-lg text-gray-500">
+				<h3 hidden className="text-lg text-gray-500">
 					${Number((stats.estimatedRewards || 0).toFixed(3)) * 2}
 				</h3>
 				<div className="mt-8 flex justify-between items-center">
@@ -83,7 +83,7 @@ const OverviewCards = ({
 				<h1 className="text-3xl font-semibold">
 					{Number((stats.earnings || 0).toFixed(3))} KSM
 				</h1>
-				<h3 className="text-lg text-gray-100">
+				<h3 hidden className="text-lg text-gray-100">
 					${Number((stats.earnings || 0).toFixed(3)) * 2}
 				</h3>
 				<div className="mt-8 flex justify-between items-center">

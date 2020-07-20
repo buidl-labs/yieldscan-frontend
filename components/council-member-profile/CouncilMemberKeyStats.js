@@ -9,12 +9,12 @@ const CouncilMemberKeyStats = ({ voters = 0, backingAmount = 0, totalBalance = 0
 			<div className="flex flex-col px-5 py-3 border-b border-gray-300">
 				<span className="font-semibold text-sm text-gray-600">Amount of Backing</span>
 				<h3 className="text-2xl text-black">{(backingAmount || 0).toFixed(2)} KSM</h3>
-				<span className="text-xs text-gray-600">$500</span>
+				<span hidden className="text-xs text-gray-600">$500</span>
 			</div>
 			<div className="flex flex-col px-5 py-3 border-b border-gray-300">
 				<span className="font-semibold text-sm text-gray-600">Total Account Balance</span>
 				<h3 className="text-2xl text-black">{(totalBalance || 0).toFixed(2)} KSM</h3>
-				<span className="text-xs text-gray-600">$6000</span>
+				<span hidden className="text-xs text-gray-600">$6000</span>
 			</div>
 		</div>
 	);

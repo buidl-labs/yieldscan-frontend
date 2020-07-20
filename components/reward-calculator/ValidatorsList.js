@@ -43,7 +43,7 @@ const ValidatorInfo = ({ name, stashId, riskScore, amountPerValidator, editMode,
 				<div className="flex flex-col ml-5 w-1/3">
 					<span className="text-red-400">Amount</span>
 					<h5 className="text-gray-700 text-lg truncate">{amountPerValidator.currency} KSM</h5>
-					<span className="text-gray-500 text-sm">${amountPerValidator.subCurrency}</span>
+					<span hidden className="text-gray-500 text-sm">${amountPerValidator.subCurrency}</span>
 				</div>
 			)}
 		</div>

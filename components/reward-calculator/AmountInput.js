@@ -37,7 +37,7 @@ const AmountInputAlreadyBonded = ({ value, bonded, total, onChange }) => (
 			<div className="flex flex-col ml-4 rounded-lg py-1">
 				<span className="text-gray-700 text-sm">Currently Bonded</span>
 				<h3 className="text-xl">{bonded.currency} KSM</h3>
-				<span className="text-gray-500 text-xs">${bonded.subCurrency}</span>
+				<span hidden className="text-gray-500 text-xs">${bonded.subCurrency}</span>
 			</div>
 			<div className="flex flex-col bg-white px-6 rounded-lg py-1">
 				<span className="text-gray-700 text-sm">Bond Additional Funds</span>
@@ -51,13 +51,13 @@ const AmountInputAlreadyBonded = ({ value, bonded, total, onChange }) => (
 					/>
 					<h3 hidden className="text-xl">KSM</h3>
 				</div>
-				<span className="text-gray-500 text-xs">${value.subCurrency}</span>
+				<span hidden className="text-gray-500 text-xs">${value.subCurrency}</span>
 			</div>
 		</div>
 		<div className="bg-gray-800 mt-2 p-3 px-6 flex flex-col rounded-xl">
 			<span className="text-teal-500 text-sm">Total Staking Amount</span>
 			<h3 className="text-xl text-white">{total.currency} KSM</h3>
-			<span className="text-gray-500 text-xs">${total.subCurrency}</span>
+			<span hidden className="text-gray-500 text-xs">${total.subCurrency}</span>
 		</div>
 		<style jsx>{`
 			/* hides number input controls */

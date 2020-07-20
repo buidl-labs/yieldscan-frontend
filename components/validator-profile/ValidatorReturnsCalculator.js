@@ -40,9 +40,9 @@ const ValidatorReturnsCalculator = ({ validatorInfo }) => {
 			</div>
 			<h5 className="px-3 text-xs text-teal-500">ANNUAL EXPECTED RETURNS</h5>
 			{get(returns, 'currency') && (
-				<div className="flex flex-col px-5 py-3">
+				<div className="flex flex-col px-5 pt-3">
 					<h3 className="text-2xl text-black">{get(returns, 'currency')} KSM</h3>
-					<span className="text-xs text-gray-600">${get(returns, 'subCurrency')}</span>
+					<span hidden className="text-xs text-gray-600">${get(returns, 'subCurrency')}</span>
 				</div>
 			)}
 		</div>
