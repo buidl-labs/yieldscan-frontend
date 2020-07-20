@@ -44,7 +44,7 @@ const Validators = () => {
 	const [filterPanelOpen, setFilterPanelOpen] = useState(false);
 	const [filterOptions, setFilterOptions] = useState(cloneDeep(DEFAULT_FILTER_OPTIONS));
 	const [sortOrder, setSortOrder] = useState('asc');
-	const [sortKey, setSortKey] = useState('estimatedPoolReward');
+	const [sortKey, setSortKey] = useState('rewardsPer100KSM');
 	const [result, setResult] = useState({});
 
 	useEffect(() => {
@@ -60,6 +60,7 @@ const Validators = () => {
 	}, []);
 
 	useEffect(() => {
+		console.log(filteredValidators, sortKey, sortOrder);
 		const sorted = orderBy(filteredValidators, [sortKey], [sortOrder]);
 		setFilteredValidators(sorted);
 	}, [sortKey, sortOrder]);
@@ -210,11 +211,11 @@ const Validators = () => {
 						fontSize="xs"
 						cursor="pointer"
 						height="2rem"
-						defaultValue="estimatedPoolReward"
+						defaultValue="rewardsPer100KSM"
 						value={sortKey}
 						onChange={ev => setSortKey(ev.target.value)}
 					>
-						<option value="estimatedPoolReward">Estimated Rewards</option>
+						<option value="rewardsPer100KSM">Estimated Rewards</option>
 						<option value="riskScore">Risk Score</option>
 						<option value="commission">Commission</option>
 						<option value="numOfNominators">Nominators</option>
