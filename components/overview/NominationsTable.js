@@ -68,14 +68,14 @@ const NominationsTable = ({ validators }) => {
 	return (
 		<div>
 			<div className="table-container overflow-y-scroll mt-5 py-4">
-				{validators.map(validator => (
+				{validators.filter(validator => validator.isElected).map(validator => (
 					<ValidatorCard
 						key={validator.stashId}
 						name={validator.name}
 						stashId={validator.stashId}
 						riskScore={Number((validator.riskScore || 0).toFixed(2))}
 						stakedAmount={Number((validator.nomStake || 0).toFixed(2))}
-						estimatedReward={Number((validator.estimatedPoolReward || 0).toFixed(2))}
+						estimatedReward={Number((validator.estimatedReward || 0).toFixed(2))}
 						onProfile={() => window.open(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`, '_blank')}
 					/>
 				))}
