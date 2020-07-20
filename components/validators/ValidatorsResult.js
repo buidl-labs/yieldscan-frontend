@@ -65,7 +65,7 @@ const ValidatorsResult = ({
 							/>
 							<select
 								value={timePeriodUnit}
-								onChange={({ target: { value }}) => onTimePeriodUnitChange(value === '' ? value : Number(value))}
+								onChange={({ target: { value }}) => onTimePeriodUnitChange(value)}
 							>
 								<option value="months">months</option>
 								<option value="days">days</option>
