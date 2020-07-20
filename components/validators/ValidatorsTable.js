@@ -107,6 +107,9 @@ const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidat
 						onProfile={() => window.open(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`, '_blank')}
 					/>
 				))}
+				{!validators.length && (
+					<div className="flex-center font-thin py-5">No validators, try updating your filters</div>
+				)}
 			</div>
 			<div className="text-xs text-gray-500 text-right">* Estimated Returns are calculated per month for 100 KSM</div>
 			<style jsx>{`
