@@ -165,7 +165,7 @@ const Validators = () => {
 	}
 
 	return (
-		<div className="px-10 py-5">
+		<div className="relative h-full px-10 py-5">
 			{advancedMode && (
 				<div className="mb-4">
 					<button className="flex items-center bg-gray-200 text-gray-600 rounded-lg px-2 py-1" onClick={router.back}>
@@ -262,7 +262,7 @@ const Validators = () => {
 				selectedValidatorsMap={selectedValidatorsMap}
 				setSelectedValidators={setSelectedValidatorsMap}
 			/>
-			<div>
+			<div className="absolute bottom-0 flex-center w-full mb-4">
 				{stashAccount ? (
 					<div className="flex-center">
 						<Button

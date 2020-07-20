@@ -110,8 +110,15 @@ const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidat
 			</div>
 			<div className="text-xs text-gray-500 text-right">* Estimated Returns are calculated per month for 100 KSM</div>
 			<style jsx>{`
-				.table-container {
-					height: 56vh;
+				@media screen and (max-height: 712px) {
+					.table-container {
+						height: 44vh;
+					}
+				}
+				@media screen and (min-height: 713px) {
+					.table-container {
+						height: 56vh;
+					}
 				}
 			`}</style>
 		</div>
