@@ -2,11 +2,17 @@ import { useAccounts } from "@lib/store";
 import { get, isNil } from "lodash";
 import { ChevronDown, Settings } from "react-feather";
 import { WalletConnectPopover, useWalletConnect } from "@components/wallet-connect";
-import { Popover, PopoverArrow, PopoverTrigger, PopoverContent } from "@chakra-ui/core";
+import { Popover, PopoverArrow, PopoverTrigger, PopoverContent, useDisclosure } from "@chakra-ui/core";
+import EditControllerModal from "@components/overview/EditControllerModal";
 
 const Header = () => {
 	const { isOpen, toggle } = useWalletConnect();
 	const { accounts, stashAccount, freeAmount, setStashAccount } = useAccounts();
+	const {
+		isOpen: editControllerModalOpen,
+		onClose: closeEditControllerModal,
+		onToggle: toggleEditControllerModal,
+	} = useDisclosure();
 
 	const stashAddress = get(stashAccount, 'address');
 	const accountsWithoutCurrent = accounts.filter(account => stashAddress && account.address !== stashAddress);
@@ -14,6 +20,7 @@ const Header = () => {
 	return (
 		<div className="flex items-center justify-between border border-bottom border-gray-200 bg-white p-8 h-12">
 			<WalletConnectPopover isOpen={isOpen} />
+			<EditControllerModal isOpen={editControllerModalOpen} close={closeEditControllerModal} />
 			<div>
 				<span className="text-lg text-black">YieldScan</span>
 			</div>
@@ -70,22 +77,25 @@ const Header = () => {
 					</PopoverContent>
 				</Popover>
 
-				<Popover trigger="hover">
-					<PopoverTrigger>
-						<button className="flex items-center ml-5 p-2 font-semibold text-gray-800">
-							<Settings size="20px" />
-						</button>
-					</PopoverTrigger>
-					<PopoverContent zIndex={50} width="12rem" backgroundColor="gray.900">
-							<div className="flex flex-col items-center justify-center my-2 bg-gray-900 text-white w-full">
-								<button
-									className="w-full rounded px-5 py-1 w-56 truncate hover:bg-gray-600 hover:text-gray-200"
-								>
-									Edit Controller
-								</button>
-						</div>
-					</PopoverContent>
-				</Popover>
+				{!isNil(stashAccount) && (
+					<Popover trigger="hover">
+						<PopoverTrigger>
+							<button className="flex items-center ml-5 p-2 font-semibold text-gray-800">
+								<Settings size="20px" />
+							</button>
+						</PopoverTrigger>
+						<PopoverContent zIndex={50} width="12rem" backgroundColor="gray.900">
+								<div className="flex flex-col items-center justify-center my-2 bg-gray-900 text-white w-full">
+									<button
+										className="w-full rounded px-5 py-1 w-56 truncate hover:bg-gray-600 hover:text-gray-200"
+										onClick={toggleEditControllerModal}
+									>
+										Edit Controller
+									</button>
+							</div>
+						</PopoverContent>
+					</Popover>
+				)}
 			</div>
 		</div>
 	);
