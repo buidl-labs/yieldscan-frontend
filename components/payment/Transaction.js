@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { get } from 'lodash';
 import { Circle, CheckCircle } from 'react-feather';
+import Identicon from '@components/common/Identicon';
 
 const Transaction = ({
 	accounts,
@@ -21,16 +22,11 @@ const Transaction = ({
 	// TODO: stakingAmount subCurrency version
 	const stakingAmount = get(transactionState, 'stakingAmount', 0);
 
-	const resetController = () => {
-		setEditController(false);
-		setSelectedController(stashAccount.address);
-	};
-
 	return (
 		<div className="mt-10">
 			<div className="text-2xl">Transaction</div>
 			<div className="relative mt-10 w-4/5 flex items-center rounded-lg bg-gray-100 px-4 py-2">
-				<img src="http://placehold.it/255" className="w-12 h-12 rounded-full mr-5" />
+				<div className="mr-5"><Identicon address={get(stashAccount, 'address')} /></div>
 				<div className="flex flex-col text-gray-800">
 					<span className="font-semibold">{get(stashAccount, 'meta.name')}</span>
 					<p className="text-sm">{get(stashAccount, 'address')}</p>
@@ -39,7 +35,7 @@ const Transaction = ({
 			</div>
 			{controllerEdited && (
 				<div className="relative mt-10 w-4/5 flex items-center rounded-lg bg-gray-100 px-4 py-2">
-					<img src="http://placehold.it/255" className="w-12 h-12 rounded-full mr-5" />
+					<div className="mr-5"><Identicon address={get(selectedController, 'address')} /></div>
 					<div className="flex flex-col text-gray-800">
 						<span className="font-semibold">{get(selectedController, 'meta.name')}</span>
 						<p className="text-sm">{get(selectedController, 'address')}</p>
@@ -61,7 +57,9 @@ const Transaction = ({
 			<div className="mt-10" hidden={!editController}>
 				<h3 className="text-lg text-gay-600">
 					Edit Controller
-					<button className="text-sm ml-4 font-semibold text-orange-500" onClick={resetController}>Cancel</button>
+					<button className="text-sm ml-4 font-semibold text-orange-500" onClick={() => setEditController(false)}>
+						Cancel
+					</button>
 				</h3>
 				<div className="mt-1 overflow-y-scroll text-sm h-40 w-4/5">
 					{accounts.map(account => (
