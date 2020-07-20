@@ -60,13 +60,12 @@ const Validators = () => {
 	}, []);
 
 	useEffect(() => {
-		console.log(filteredValidators, sortKey, sortOrder);
 		const sorted = orderBy(filteredValidators, [sortKey], [sortOrder]);
 		setFilteredValidators(sorted);
 	}, [sortKey, sortOrder]);
 	
 	useEffect(() => {
-		const selectedValidatorsList = Object.values(selectedValidatorsMap);
+		const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(v => !isNil(v));
 
 		if (!filterPanelOpen && !showSelected) return setFilteredValidators(validators);
 		if (!filterPanelOpen && showSelected) return setFilteredValidators(selectedValidatorsList);
