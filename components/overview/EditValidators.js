@@ -53,15 +53,15 @@ const ValidatorCard = ({
 			</div>
 			<div className="flex flex-col">
 				<span className="text-xs text-gray-500 font-semibold">Risk Score</span>
-				<div className="rounded-full font-semibold"><RiskTag risk={Number(riskScore.toFixed(2))} /></div>
+				<div className="rounded-full font-semibold"><RiskTag risk={Number((riskScore || 0).toFixed(2))} /></div>
 			</div>
 			<div className="flex flex-col">
 				<span className="text-xs text-gray-500 font-semibold">Staked Amount</span>
-				<h3 className="text-lg">{stakedAmount.toFixed(1)} KSM</h3>
+				<h3 className="text-lg">{(stakedAmount || 0).toFixed(1)} KSM</h3>
 			</div>
 			<div className="flex flex-col">
 				<span className="text-xs text-gray-500 font-semibold">Estimated Reward</span>
-				<h3 className="text-lg">{estimatedReward.toFixed(4)} KSM</h3>
+				<h3 className="text-lg">{(estimatedReward || 0).toFixed(4)} KSM</h3>
 			</div>
 			<div hidden={!hovered} className="absolute bg-white bg-opacity-25 cursor-pointer right-0 px-4 py-2" onClick={onClick}>
 				{type === 'candidate' && <PlusCircle size="2rem" fill="#2BCACA" className="text-white" />}

@@ -23,11 +23,11 @@ const MemberCard = ({ name, accountId, backing, totalBalance, numberOfBackers, o
 				</div>
 				<div className="flex flex-col w-48 mr-10">
 					<span className="text-xs text-gray-500 font-semibold">Backing</span>
-					<h3 className="text-lg">{backing.toFixed(2)} KSM</h3>
+					<h3 className="text-lg">{(backing || 0).toFixed(2)} KSM</h3>
 				</div>
 				<div className="flex flex-col w-48 mr-10">
 					<span className="text-xs text-gray-500 font-semibold">Balance</span>
-					<h3 className="text-lg">{totalBalance.toFixed(2)} KSM</h3>
+					<h3 className="text-lg">{(totalBalance || 0).toFixed(2)} KSM</h3>
 				</div>
 			</div>
 		</div>

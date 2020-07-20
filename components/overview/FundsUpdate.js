@@ -170,8 +170,8 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 									</div>
 									<div className="mt-10">
 										<h3 className="text-xl">Total Staking Amount</h3>
-										<h1 className="text-3xl">{totalStakingAmount.toFixed(4)} KSM</h1>
-										<span className="text-lg text-gray-600">${(totalStakingAmount * 2).toFixed(4)}</span>
+										<h1 className="text-3xl">{(totalStakingAmount || 0).toFixed(4)} KSM</h1>
+										<span className="text-lg text-gray-600">${((totalStakingAmount || 0) * 2).toFixed(4)}</span>
 									</div>
 								</div>
 								

@@ -15,7 +15,7 @@ const TopNominatorCard = ({ name, stashId, nominations, dailyEarnings, onProfile
 			</div>
 		</div>
 		<span className="text-gray-600 font-semibold text-sm">Daily Earnings</span>
-		<h5 className="font-semibold">{dailyEarnings.toFixed(2)} KSM</h5>
+		<h5 className="font-semibold">{(dailyEarnings || 0).toFixed(2)} KSM</h5>
 		<span className="text-gray-600 font-semibold text-sm">Nominations</span>
 		<h5 className="font-semibold">{nominations}</h5>
 	</div>

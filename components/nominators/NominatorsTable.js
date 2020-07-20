@@ -23,11 +23,11 @@ const MemberCard = ({ name, stashId, nominations, dailyEarnings, totalAmountStak
 				</div>
 				<div className="flex flex-col w-40 mr-1">
 					<span className="text-xs text-gray-500 font-semibold">Daily Earnings</span>
-					<h3 className="text-lg">{dailyEarnings.toFixed(2)} KSM</h3>
+					<h3 className="text-lg">{(dailyEarnings || 0).toFixed(2)} KSM</h3>
 				</div>
 				<div className="flex flex-col w-40">
 					<span className="text-xs text-gray-500 font-semibold">Total Amount Staked</span>
-					<h3 className="text-lg">{totalAmountStaked.toFixed(2)} KSM</h3>
+					<h3 className="text-lg">{(totalAmountStaked || 0).toFixed(2)} KSM</h3>
 				</div>
 			</div>
 		</div>
