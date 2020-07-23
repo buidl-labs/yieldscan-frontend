@@ -6,8 +6,11 @@ const AmountInputDefault = ({ value, onChange }) => (
 			<input
 				type="number"
 				placeholder="0"
-				defaultValue={value.currency === 0 ? null : value.currency}
-				onChange={e => onChange(Number(e.target.value))}
+				defaultValue={value.currency === 0 ? '' : value.currency}
+				onChange={e => {
+					const { value } = e.target;
+					onChange(value === '' ? 0 : Number(value));
+				}}
 				className="w-24 text-2xl p-0 outline-none"
 			/>
 			<h6 className="text-gray-600 text-sm">${value.subCurrency}</h6>
@@ -47,7 +50,10 @@ const AmountInputAlreadyBonded = ({ value, bonded, total, onChange }) => (
 						placeholder="0"
 						defaultValue={value.currency === 0 ? '' : value.currency}
 						className="text-xl outline-none w-24 mr-2"
-						onChange={e => onChange(Number(e.target.value))}
+						onChange={e => {
+							const { value } = e.target;
+							onChange(value === '' ? 0 : Number(value));
+						}}
 					/>
 					<h3 hidden className="text-xl">KSM</h3>
 				</div>
