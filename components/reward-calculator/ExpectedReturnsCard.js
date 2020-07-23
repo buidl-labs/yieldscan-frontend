@@ -1,11 +1,22 @@
 import { get, isNil } from 'lodash';
 import { HelpCircle } from "react-feather";
+import { Popover, PopoverTrigger, PopoverBody, PopoverContent, PopoverArrow } from '@chakra-ui/core';
 
-const ResultCardInsight = ({ label, value, supportValue, emptyState }) => (
+const ResultCardInsight = ({ label, popoverContent = '', value, supportValue, emptyState }) => (
 	<div className="mt-2 mr-10">
 		<div className="flex items-center">
 			<span className="opacity-75 mr-1">{label}</span>
-			<HelpCircle size="1rem" cursor="pointer" strokeOpacity="0.75" />
+			<Popover trigger="hover">
+				<PopoverTrigger>
+					<HelpCircle size="1rem" cursor="pointer" strokeOpacity="0.75" />
+				</PopoverTrigger>
+				<PopoverContent zIndex={50} _focus={{ outline: 'none' }} border="none">
+					<PopoverArrow />
+					<PopoverBody>
+						{popoverContent}
+					</PopoverBody>
+				</PopoverContent>
+			</Popover>
 		</div>
 		{emptyState ? (
 			<h3 className="text-center text-2xl">-</h3>
@@ -44,17 +55,32 @@ const ExpectedReturnsCard = ({
 					value={`${returns.currency} KSM`}
 					supportValue={`$${returns.subCurrency}`}
 					emptyState={!result.returns}
+					popoverContent={(
+						<span className="text-sm text-gray-600">
+							These returns are calculated for your entered stake amount, time period and risk preference. To learn about how we calculate these returns click <a href="https://github.com/buidl-labs/yieldscan-frontend/wiki/%5BWIP%5D-Returns-Calculation-Mechanism" target="_blank" className="text-blue-500">here</a>.
+						</span>
+					)}
 				/>
 				<ResultCardInsight
 					label="Estimated Portfolio Value"
 					value={`${portfolio.curency} KSM`}
 					supportValue={`$${portfolio.subCurrency}`}
 					emptyState={!result.returns}
+					popoverContent={(
+						<span className="text-sm text-gray-600">
+							This is the estimated value of your staking portfolio based on your inputs. Learn <a href="https://github.com/buidl-labs/yieldscan-frontend/wiki/%5BWIP%5D-Returns-Calculation-Mechanism" target="_blank" className="text-blue-500">more</a>.
+						</span>
+					)}
 				/>
 				<ResultCardInsight
 					label="Estimated Yield"
 					value={`${result.yieldPercentage}%`}
 					emptyState={isNil(result.yieldPercentage)}
+					popoverContent={(
+						<span className="text-sm text-gray-600">
+							This is the expected percentage return for your time period input. Learn <a href="https://github.com/buidl-labs/yieldscan-frontend/wiki/%5BWIP%5D-Returns-Calculation-Mechanism" target="_blank" className="text-blue-500">more</a>.
+						</span>
+					)}
 				/>
 			</div>
 			<div className="flex justify-end">
