@@ -71,11 +71,11 @@ const RewardCalculatorPage = () => {
 	}, []);
 
 	useEffect(() => {
-		if (risk && timePeriodValue && amount) {
+		if (risk && timePeriodValue) {
 			const selectedValidatorsList = Object.values(selectedValidators).filter(v => !isNil(v));
 			calculateReward(
 				selectedValidatorsList,
-				amount,
+				amount || 0,
 				timePeriodValue,
 				timePeriodUnit,
 				compounding,
