@@ -125,6 +125,8 @@ const RewardCalculatorPage = () => {
 		);
 	}
 
+	const totalAmount = get(bondedAmount, 'currency', 0) + (amount || 0);
+
 	return (
 		<div className="flex px-24 pt-12">
 			<WalletConnectPopover isOpen={isOpen} />
@@ -186,8 +188,8 @@ const RewardCalculatorPage = () => {
 					onPayment={onPayment}
 				/>
 				<ValidatorsList
-					disableList={!amount || !timePeriodValue || !risk}
-					totalAmount={amount}
+					disableList={!totalAmount || !timePeriodValue || !risk}
+					totalAmount={totalAmount}
 					validators={get(validatorMap, 'total', [])}
 					selectedValidators={selectedValidators}
 					setSelectedValidators={setSelectedValidators}
