@@ -183,7 +183,7 @@ const RewardCalculatorPage = () => {
 				<ExpectedReturnsCard
 					result={result}
 					stashAccount={stashAccount}
-					calculationDisabled={!amount || !timePeriodValue || amount > get(freeAmount, 'currency', -Infinity)}
+					calculationDisabled={!totalAmount || !timePeriodValue || (amount || 0) > get(freeAmount, 'currency', 0)}
 					onWalletConnectClick={toggle}
 					onPayment={onPayment}
 				/>

@@ -7,6 +7,7 @@ import { useAccounts, useTransaction, usePolkadotApi } from "@lib/store";
 import stake from "@lib/stake";
 import { useToast, Spinner } from "@chakra-ui/core";
 import { useRouter } from "next/router";
+import nominate from "@lib/polkadot/nominate";
 
 const Steps = ({ steps, currentStep }) => (
 	<>
@@ -65,16 +66,23 @@ const Payment = () => {
 			},
 		};
 
-		stake(
-			stashAccount.address,
-			transactionState.controller,
-			transactionState.stakingAmount,
-			transactionState.selectedValidators.map(v => v.stashId),
-			apiInstance,
-			handlers
-		).catch(error => {
-			handlers.onFinish(1, error.message);
-		});
+		if (transactionState.stakingAmount) {
+			stake(
+				stashAccount.address,
+				transactionState.controller,
+				transactionState.stakingAmount,
+				transactionState.selectedValidators.map(v => v.stashId),
+				apiInstance,
+				handlers
+			).catch(error => {
+				handlers.onFinish(1, error.message);
+			});
+		} else {
+			const nominations = transactionState.selectedValidators.map(v => v.stashId);
+			nominate(stashAccount.address, nominations, apiInstance, handlers).catch(error => {
+				handlers.onFinish(1, error.message);
+			});
+		}
 	};
 
 	const back = () => {
