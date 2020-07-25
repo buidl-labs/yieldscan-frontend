@@ -68,7 +68,7 @@ const ExpectedReturnsCard = ({
 					emptyState={!result.returns}
 					popoverContent={(
 						<span className="text-sm text-gray-600">
-							This is the estimated value of your staking portfolio based on your inputs. Learn <a href="https://github.com/buidl-labs/yieldscan-frontend/wiki/%5BWIP%5D-Returns-Calculation-Mechanism" target="_blank" className="text-blue-500">more</a>.
+							This is the estimated value of your staking portfolio based on your inputs. This is the sum of your staking amount and your expected returns.
 						</span>
 					)}
 				/>
@@ -78,7 +78,7 @@ const ExpectedReturnsCard = ({
 					emptyState={isNil(result.yieldPercentage)}
 					popoverContent={(
 						<span className="text-sm text-gray-600">
-							This is the expected percentage return for your time period input. Learn <a href="https://github.com/buidl-labs/yieldscan-frontend/wiki/%5BWIP%5D-Returns-Calculation-Mechanism" target="_blank" className="text-blue-500">more</a>.
+							This is the expected percentage return for the time period you input.
 						</span>
 					)}
 				/>
