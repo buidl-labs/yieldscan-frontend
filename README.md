@@ -15,7 +15,7 @@
 	```
 - Add environment variables in `.env.local`
 	```
-		NEXT_PUBLIC_API_BASE_URL=<base-url-of-deployed/local-api>
+	NEXT_PUBLIC_API_BASE_URL=<base-url-of-deployed/local-api>
 	```
 	Note: You can checkout the backend codebase [here](https://github.com/buidl-labs/yieldscan-backend-ts).
 
