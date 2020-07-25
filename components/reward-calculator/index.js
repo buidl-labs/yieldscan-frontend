@@ -71,11 +71,11 @@ const RewardCalculatorPage = () => {
 	}, []);
 
 	useEffect(() => {
-		if (risk && timePeriodValue && amount) {
+		if (risk && timePeriodValue) {
 			const selectedValidatorsList = Object.values(selectedValidators).filter(v => !isNil(v));
 			calculateReward(
 				selectedValidatorsList,
-				amount,
+				amount || 0,
 				timePeriodValue,
 				timePeriodUnit,
 				compounding,
@@ -124,6 +124,8 @@ const RewardCalculatorPage = () => {
 			</div>
 		);
 	}
+
+	const totalAmount = get(bondedAmount, 'currency', 0) + (amount || 0);
 
 	return (
 		<div className="flex px-24 pt-12">
@@ -186,8 +188,8 @@ const RewardCalculatorPage = () => {
 					onPayment={onPayment}
 				/>
 				<ValidatorsList
-					disableList={!amount || !timePeriodValue || !risk}
-					totalAmount={amount}
+					disableList={!totalAmount || !timePeriodValue || !risk}
+					totalAmount={totalAmount}
 					validators={get(validatorMap, 'total', [])}
 					selectedValidators={selectedValidators}
 					setSelectedValidators={setSelectedValidators}
