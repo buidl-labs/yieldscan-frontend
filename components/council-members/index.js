@@ -55,13 +55,13 @@ const CouncilMembers = () => {
 				<h1 className="text-2xl text-gray-600 font-semibold">Council Members</h1>
 				<div className="flex items-center rounded-xl border border-gray-400">
 					<span
-						className={`px-3 py-2 cursor-pointer rounded-xl ${selectedTab === Tabs.COUNCIL_MEMBERS && 'text-white bg-teal-500'}`}
+						className={`px-3 py-2 cursor-pointer rounded-xl ${selectedTab === Tabs.COUNCIL_MEMBERS ? 'text-white bg-teal-500' : 'text-gray-600'}`}
 						onClick={() => setSelectedTab(Tabs.COUNCIL_MEMBERS)}
 					>
 						Council Members
 					</span>
 					<span
-						className={`px-3 py-2 cursor-pointer  rounded-xl ${selectedTab === Tabs.RUNNER_UPS && 'text-white bg-teal-500'}`}
+						className={`px-3 py-2 cursor-pointer  rounded-xl ${selectedTab === Tabs.RUNNER_UPS ? 'text-white bg-teal-500' : 'text-gray-600'}`}
 						onClick={() => setSelectedTab(Tabs.RUNNER_UPS)}
 					>
 						Runner Ups
