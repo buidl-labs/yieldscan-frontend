@@ -4,15 +4,21 @@ import { useState, useEffect } from "react";
 import { AlertTriangle } from "react-feather";
 import MembersTable from "./MembersTable";
 
+const Tabs = {
+	COUNCIL_MEMBERS: 'council-members',
+	RUNNER_UPS: 'runner-ups',
+};
+
 const CouncilMembers = () => {
 	const [error, setError] = useState(false);
 	const [loading, setLoading] = useState(true);
-	const [members, setMembers] = useState([]);
+	const [membersData, setMembers] = useState([]);
+	const [selectedTab, setSelectedTab] = useState(Tabs.COUNCIL_MEMBERS);
 
 	useEffect(() => {
 		setError(false);
 		axios.get('/council/members').then(({ data }) => {
-			setMembers(data.members);
+			setMembers(data);
 		}).catch(() => {
 			setError(true);
 		}).finally(() => {
@@ -45,8 +51,24 @@ const CouncilMembers = () => {
 
 	return (
 		<div  className="px-10 py-10">
-			<h1 className="text-2xl text-gray-600 font-semibold">Council Members</h1>
-			<MembersTable members={members} />
+			<div className="flex justify-between">
+				<h1 className="text-2xl text-gray-600 font-semibold">Council Members</h1>
+				<div className="flex items-center rounded-xl border border-gray-400">
+					<span
+						className={`px-3 py-2 cursor-pointer rounded-xl ${selectedTab === Tabs.COUNCIL_MEMBERS && 'text-white bg-teal-500'}`}
+						onClick={() => setSelectedTab(Tabs.COUNCIL_MEMBERS)}
+					>
+						Council Members
+					</span>
+					<span
+						className={`px-3 py-2 cursor-pointer  rounded-xl ${selectedTab === Tabs.RUNNER_UPS && 'text-white bg-teal-500'}`}
+						onClick={() => setSelectedTab(Tabs.RUNNER_UPS)}
+					>
+						Runner Ups
+					</span>
+				</div>
+			</div>
+			<MembersTable members={selectedTab === Tabs.COUNCIL_MEMBERS ? membersData.members : membersData.runnersUp} />
 		</div>
 	);
 };
