@@ -20,6 +20,7 @@ import { usePolkadotApi, useAccounts } from "@lib/store";
 import { ExternalLink } from "react-feather";
 import Routes from "@lib/routes";
 import Identicon from "@components/common/Identicon";
+import axios from "@lib/axios";
 
 const ValidatorCard = ({
 	stashId,
@@ -52,11 +53,12 @@ const ValidatorCard = ({
 	</div>
 );
 
-const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount }) => {
+const FundsUpdate = withSlideIn(({ styles, type, close, nominations, bondedAmount }) => {
 	const toast = useToast();
 	const { stashAccount, freeAmount } = useAccounts();
 	const { apiInstance } = usePolkadotApi();
 	const [amount, _setAmount] = useState('');
+	const [validators, setValidators] = useState([]);
 	const [updatingFunds, setUpdatingFunds] = useState(false);
 	const [estimatedReturns, setEstimatedReturns] = useState();
 	const [totalStakingAmount, setTotalStakingAmount] = useState(0);
@@ -64,10 +66,13 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 	const title = `${type === 'bond' ? 'Bond Additional' : 'Unbond'} Funds`;
 
 	useEffect(() => {
-		setTimeout(() => {
+		setValidatorsLoading(true);
+		axios.get('/rewards/risk-set').then(({ data }) => {
+			const totalValidators = data.totalset;
+			setValidators(totalValidators.filter(validator => nominations.includes(validator.stashId)));
 			setValidatorsLoading(false);
-		}, random(1000, 3000));
-	}, []);
+		});
+	}, [nominations]);
 
 	useEffect(() => {
 		let amountByType = amount * (type === 'bond' ? 1 : -1);

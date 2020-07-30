@@ -159,7 +159,7 @@ const Overview = () => {
 				isOpen={fundsUpdateModalOpen}
 				close={closeFundsUpdateModal}
 				type={fundsUpdateModalType}
-				validators={userData.validatorsInfo}
+				nominations={allNominationsData}
 				bondedAmount={bondedAmount}
 			/>
 			<EditValidators
