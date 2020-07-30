@@ -13,20 +13,30 @@ import {
 } from "@chakra-ui/core";
 import withSlideIn from "@components/common/withSlideIn";
 import RiskTag from "@components/reward-calculator/RiskTag";
-import { random, get } from "lodash";
+import { random, get, noop } from "lodash";
 import calculateReward from "@lib/calculate-reward";
 import updateFunds from "@lib/polkadot/update-funds";
 import { usePolkadotApi, useAccounts } from "@lib/store";
+import { ExternalLink } from "react-feather";
+import Routes from "@lib/routes";
+import Identicon from "@components/common/Identicon";
 
 const ValidatorCard = ({
 	stashId,
 	riskScore,
 	stakedAmount,
 	estimatedReward,
+	onProfile = noop,
 }) => (
 	<div className="flex justify-around items-center py-2 my-2 rounded-lg cursor-pointer border border-gray-300">
-		<img src="http://placehold.it/255" className="rounded-full w-10 h-10 mr-4" />
-		<h3 className="text-gray-700 text-xs w-48 truncate">{stashId}</h3>
+		<div><Identicon address={stashId} size="2.5rem" /></div>
+		<div className="text-gray-700 w-48 truncate cursor-pointer" onClick={onProfile}>
+			<span className="font-semibold text-sm">{stashId.slice(0, 18) + '...' || '-' }</span>
+			<div className="flex items-center">
+				<span className="text-xs mr-2">View Profile</span>
+				<ExternalLink size="12px" />
+			</div>
+		</div>
 		<div className="flex flex-col">
 			<span className="text-xs text-gray-500 font-semibold">Risk Score</span>
 			<div className="rounded-full font-semibold"><RiskTag risk={Number(riskScore.toFixed(2))} /></div>
@@ -194,6 +204,7 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 												riskScore={validator.riskScore}
 												stakedAmount={validator.totalStake}
 												estimatedReward={validator.estimatedPoolReward}
+												onProfile={() => window.open(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`, '_blank')}
 											/>
 										))}
 									</div>
