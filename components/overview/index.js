@@ -4,9 +4,9 @@ import OverviewCards from "./OverviewCards";
 import NominationsTable from "./NominationsTable";
 import { Spinner, useDisclosure } from "@chakra-ui/core";
 import axios from "@lib/axios";
-import { useAccounts } from "@lib/store";
+import { useAccounts, usePolkadotApi } from "@lib/store";
 import { useWalletConnect } from "@components/wallet-connect";
-import { get } from "lodash";
+import { get, noop } from "lodash";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 import RewardDestinationModal from "./RewardDestinationModal";
 import EditControllerModal from "./EditControllerModal";
@@ -15,15 +15,24 @@ import EditValidators from "./EditValidators";
 import ChillAlert from "./ChillAlert";
 import Routes from "@lib/routes";
 import { useRouter } from "next/router";
+import AllNominations from "./AllNominations";
+
+const Tabs = {
+	ACTIVE_VALIDATORS: 'validators',
+	NOMINATIONS: 'nominations',
+};
 
 const Overview = () => {
 	const router = useRouter();
 	const { toggle } = useWalletConnect();
+	const { apiInstance } = usePolkadotApi();
 	const { stashAccount, bondedAmount, unlockingBalances, accountInfoLoading } = useAccounts();
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 	const [userData, setUserData] = useState();
+	const [allNominationsData, setAllNominations] = useState([]);
 	const [fundsUpdateModalType, setFundsUpdateModalType] = useState();
+	const [selectedTab, setSelectedTab] = useState(Tabs.ACTIVE_VALIDATORS);
 	const {
 		isOpen: isRewardDestinationModalOpen,
 		onToggle: toggleRewardDestinationModal,
@@ -55,6 +64,7 @@ const Overview = () => {
 		setLoading(true);
 		setError(false);
 		if (get(stashAccount, 'address')) {
+
 			const kusamaAddress = encodeAddress(decodeAddress(stashAccount.address), 2);
 			axios.get(`user/${kusamaAddress}`).then(({ data }) => {
 				if (data.message === 'No data found!') setError(true);
@@ -64,6 +74,18 @@ const Overview = () => {
 			}).finally(() => {
 				setLoading(false);
 			});
+
+			let unsubscribe = noop;
+			apiInstance.query.staking.nominators(stashAccount.address, ({ value: { targets: nominations }}) => {
+				const readableNominations = nominations.map(nomination => nomination.toString());
+				setAllNominations(readableNominations);
+			}).then(_unsubscribe => {
+				unsubscribe = _unsubscribe;
+			});
+
+			return () => {
+				unsubscribe();
+			};
 		}
 	}, [stashAccount]);
 
@@ -162,7 +184,20 @@ const Overview = () => {
 			/>
 			<div className="mt-10">
 				<div className="flex justify-between items-center">
-					<h3 className="text-2xl">My Validators</h3>
+					<div className="flex items-center rounded-xl border border-gray-400">
+						<span
+							className={`px-3 py-2 cursor-pointer rounded-xl ${selectedTab === Tabs.ACTIVE_VALIDATORS ? 'text-white bg-teal-500' : 'text-gray-600'}`}
+							onClick={() => setSelectedTab(Tabs.ACTIVE_VALIDATORS)}
+						>
+							My Validators
+						</span>
+						<span
+							className={`px-3 py-2 cursor-pointer  rounded-xl ${selectedTab === Tabs.NOMINATIONS ? 'text-white bg-teal-500' : 'text-gray-600'}`}
+							onClick={() => setSelectedTab(Tabs.NOMINATIONS)}
+						>
+							Nominations
+						</span>
+					</div>
 					<div className="flex items-center">
 						<button className="flex items-center text-gray-500 mr-5 p-1" onClick={toggleEditValidatorsModal}>
 							<Edit2 size="20px" className="mr-2" />
@@ -171,7 +206,11 @@ const Overview = () => {
 						<button hidden className="text-teal-500 p-1">Claim All Rewards</button>
 					</div>
 				</div>
-				<NominationsTable validators={userData.validatorsInfo} />
+				{selectedTab === Tabs.ACTIVE_VALIDATORS ? (
+					<NominationsTable validators={userData.validatorsInfo} />
+				) : (
+					<AllNominations nominations={allNominationsData} />
+				)}
 			</div>
 		</div>
 	);
