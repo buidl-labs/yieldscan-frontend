@@ -41,7 +41,7 @@ const withDashboardLayout = (children) => {
 
 					let bondedAmount = 0, bondedAmountInSubCurrency = 0, freeAmount = 0, freeAmountInSubCurrency = 0;
 					if (isBonded && !lockedBalance.isEmpty) {
-						bondedAmount = Number((lockedBalance.toNumber() / (10 ** 12)).toFixed(4));
+						bondedAmount = Number((parseInt(lockedBalance) / (10 ** 12)).toFixed(4));
 						bondedAmountInSubCurrency = await convertCurrency(bondedAmount);
 					}
 	
@@ -50,7 +50,7 @@ const withDashboardLayout = (children) => {
 						 * `freeBalance` here includes `locked` balance also - that's how polkadot API is currently working
 						 *  so we need to subtract the `bondedBalance``
 						 */
-						freeAmount = Number(((freeBalance.toNumber() / (10 ** 12))  - bondedAmount).toFixed(4));
+						freeAmount = Number(((parseInt(freeBalance) / (10 ** 12))  - bondedAmount).toFixed(4));
 						freeAmountInSubCurrency = await convertCurrency(freeAmount);
 					}
 
