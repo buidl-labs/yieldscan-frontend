@@ -79,14 +79,16 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators, onChill 
 	const [editLoading, setEditLoading] = useState(false);
 	const [estimatedReward, setEstimatedReward] = useState();
 	const [validatorsLoading, setValidatorsLoading] = useState(true);
-	const [selectedValidatorsMap, setSelectedValidatorsMap] = useState(
-		mapValues(keyBy(currentValidators, 'stashId'))
-	);
+	const [selectedValidatorsMap, setSelectedValidatorsMap] = useState({});
 
 	useEffect(() => {
 		axios.get('/rewards/risk-set').then(({ data }) => {
 			const validators = data.totalset;
 			setValidators(validators);
+
+			const selectedValidatorsList = validators.filter(validator => currentValidators.includes(validator.stashId));
+			setSelectedValidatorsMap(mapValues(keyBy(selectedValidatorsList, 'stashId')));
+
 			setValidatorsLoading(false);
 		});
 	}, []);

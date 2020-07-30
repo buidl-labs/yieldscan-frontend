@@ -165,7 +165,7 @@ const Overview = () => {
 			<EditValidators
 				isOpen={editValidatorModalOpen}
 				close={closeEditValidatorsModal}
-				currentValidators={userData.validatorsInfo.filter(validator => validator.isElected)}
+				currentValidators={allNominationsData}
 				onChill={() => {
 					closeEditValidatorsModal();
 					setTimeout(() => toggleChillAlert(), 500);
