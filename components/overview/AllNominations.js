@@ -1,7 +1,10 @@
-import Identicon from '@components/common/Identicon';
 import { ExternalLink } from 'react-feather';
+import Identicon from '@components/common/Identicon';
+import Routes from '@lib/routes';
 
-const AllNominations = ({ nominations, onProfile }) => {
+const AllNominations = ({ nominations, }) => {
+	const onProfile = (validatorId) => window.open(`${Routes.VALIDATOR_PROFILE}/${validatorId}`, '_blank');
+
 	return (
 		<div className="py-2 flex items-center flex-wrap">
 			{nominations.map(nomination => (
@@ -11,7 +14,7 @@ const AllNominations = ({ nominations, onProfile }) => {
 					</div>
 					<div className="text-gray-700 cursor-pointer">
 						<span className="font-semibold select-all">{nomination.slice(0, 15) + '...'}</span>
-						<div className="flex items-center">
+						<div className="flex items-center" onClick={() => onProfile(nomination)}>
 							<span className="text-xs mr-2">View Profile</span>
 							<ExternalLink size="12px" />
 						</div>
