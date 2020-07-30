@@ -63,7 +63,7 @@ const Overview = () => {
 	useEffect(() => {
 		setLoading(true);
 		setError(false);
-		if (get(stashAccount, 'address')) {
+		if (get(stashAccount, 'address') && apiInstance) {
 
 			const kusamaAddress = encodeAddress(decodeAddress(stashAccount.address), 2);
 			axios.get(`user/${kusamaAddress}`).then(({ data }) => {
@@ -87,7 +87,7 @@ const Overview = () => {
 				unsubscribe();
 			};
 		}
-	}, [stashAccount]);
+	}, [stashAccount, apiInstance]);
 
 	if (!stashAccount) {
 		return (
