@@ -189,13 +189,13 @@ const Overview = () => {
 							className={`px-3 py-2 cursor-pointer rounded-xl ${selectedTab === Tabs.ACTIVE_VALIDATORS ? 'text-white bg-teal-500' : 'text-gray-600'}`}
 							onClick={() => setSelectedTab(Tabs.ACTIVE_VALIDATORS)}
 						>
-							My Validators
+							Active Nominations
 						</span>
 						<span
 							className={`px-3 py-2 cursor-pointer  rounded-xl ${selectedTab === Tabs.NOMINATIONS ? 'text-white bg-teal-500' : 'text-gray-600'}`}
 							onClick={() => setSelectedTab(Tabs.NOMINATIONS)}
 						>
-							Nominations
+							All Nominations
 						</span>
 					</div>
 					<div className="flex items-center">
