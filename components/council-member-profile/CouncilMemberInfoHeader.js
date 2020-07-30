@@ -1,4 +1,5 @@
 import { ChevronRight, Twitter, Link } from "react-feather";
+import { encodeAddress, decodeAddress } from "@polkadot/util-crypto";
 import { get, noop } from "lodash";
 import Identicon from "@components/common/Identicon";
 
@@ -63,7 +64,7 @@ const CouncilMemberInfoHeader = ({
 							<ChevronRight size="1rem" className="text-gray-700" />
 						</button>
 					)}
-					{(userStashKusamaId || userStashKusamaId === get(stashAccount, 'address', '')) && (
+					{(userStashKusamaId === accountId) && (
 						<button className="flex items-center text-xs text-gray-700 hover:underline" onClick={openEditProfile}>
 							<span>Edit Profile</span>
 							<ChevronRight size="1rem" className="text-gray-700" />
