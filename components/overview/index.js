@@ -76,7 +76,7 @@ const Overview = () => {
 			});
 
 			let unsubscribe = noop;
-			apiInstance.query.staking.nominators(stashAccount.address, ({ value: { targets: nominations }}) => {
+			unsubscribe = apiInstance.query.staking.nominators(stashAccount.address, ({ value: { targets: nominations }}) => {
 				const readableNominations = nominations.map(nomination => nomination.toString());
 				setAllNominations(readableNominations);
 			}).then(_unsubscribe => {
