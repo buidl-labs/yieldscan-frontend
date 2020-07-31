@@ -3,7 +3,6 @@ import Identicon from '@components/common/Identicon';
 import Routes from '@lib/routes';
 
 const AllNominations = ({ nominations = [], }) => {
-	nominations = [];
 	const onProfile = (validatorId) => window.open(`${Routes.VALIDATOR_PROFILE}/${validatorId}`, '_blank');
 
 	return (
