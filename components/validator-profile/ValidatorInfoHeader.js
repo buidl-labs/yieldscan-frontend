@@ -57,7 +57,7 @@ const ValidatorInfoHeader = ({ stashId, vision = '', socialInfo, stashAccount, o
 							<ChevronRight size="1rem" className="text-gray-700" />
 						</button>
 					)}
-					{(userStashKusamaId === stashId) && (
+					{(true || userStashKusamaId === stashId) && (
 						<button className="flex items-center text-xs text-gray-700 hover:underline" onClick={openEditProfile}>
 							<span>Edit Profile</span>
 							<ChevronRight size="1rem" className="text-gray-700" />

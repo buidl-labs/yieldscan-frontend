@@ -64,7 +64,7 @@ const CouncilMemberInfoHeader = ({
 							<ChevronRight size="1rem" className="text-gray-700" />
 						</button>
 					)}
-					{(userStashKusamaId === accountId) && (
+					{(true || userStashKusamaId === accountId) && (
 						<button className="flex items-center text-xs text-gray-700 hover:underline" onClick={openEditProfile}>
 							<span>Edit Profile</span>
 							<ChevronRight size="1rem" className="text-gray-700" />
