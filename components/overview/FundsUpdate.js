@@ -47,7 +47,7 @@ const ValidatorCard = ({
 			<h3 className="text-lg">{stakedAmount.toFixed(1)} KSM</h3>
 		</div>
 		<div className="flex flex-col">
-			<span className="text-xs text-gray-500 font-semibold">Estimated Reward</span>
+			<span className="text-xs text-gray-500 font-semibold">Estimated Pool Reward</span>
 			<h3 className="text-lg">{estimatedReward.toFixed(4)} KSM</h3>
 		</div>
 	</div>
