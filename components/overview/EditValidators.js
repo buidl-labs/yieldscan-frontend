@@ -82,16 +82,28 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators, onChill 
 	const [selectedValidatorsMap, setSelectedValidatorsMap] = useState({});
 
 	useEffect(() => {
-		axios.get('/rewards/risk-set').then(({ data }) => {
-			const validators = data.totalset;
-			setValidators(validators);
-
-			const selectedValidatorsList = validators.filter(validator => currentValidators.includes(validator.stashId));
-			setSelectedValidatorsMap(mapValues(keyBy(selectedValidatorsList, 'stashId')));
-
-			setValidatorsLoading(false);
-		});
-	}, []);
+		if (currentValidators) {
+			Promise.all([
+				axios.get('/rewards/risk-set'),
+				axios.get(`/validator/multi?stashIds=${currentValidators.join(',')}`),
+			]).then(([{ data: data1  }, { data: data2 }]) => {
+				const validators = data1.totalset;
+				setValidators(validators);
+				setSelectedValidatorsMap(mapValues(keyBy(data2, 'stashId')));
+			}).catch(() => {
+				toast({
+					title: 'Error',
+					description: 'Something went wrong!',
+					position: 'top-right',
+					duration: 3000,
+					status: 'error',
+				});
+				close();
+			}).finally(() => {
+				setValidatorsLoading(false);
+			});
+		}
+	}, [currentValidators]);
 
 	useEffect(() => {
 		const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(v => !isNil(v));

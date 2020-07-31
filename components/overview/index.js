@@ -28,6 +28,7 @@ const Overview = () => {
 	const { apiInstance } = usePolkadotApi();
 	const { stashAccount, bondedAmount, unlockingBalances, accountInfoLoading } = useAccounts();
 	const [loading, setLoading] = useState(true);
+	const [nominationsLoading, setNominationsLoading] = useState(true); // work-around :(
 	const [error, setError] = useState(false);
 	const [userData, setUserData] = useState();
 	const [allNominationsData, setAllNominations] = useState([]);
@@ -79,6 +80,7 @@ const Overview = () => {
 			unsubscribe = apiInstance.query.staking.nominators(stashAccount.address, ({ value: { targets: nominations }}) => {
 				const readableNominations = nominations.map(nomination => nomination.toString());
 				setAllNominations(readableNominations);
+				setNominationsLoading(false);
 			}).then(_unsubscribe => {
 				unsubscribe = _unsubscribe;
 			});
@@ -106,7 +108,7 @@ const Overview = () => {
 		);
 	}
 
-	if (loading || accountInfoLoading) {
+	if (loading || accountInfoLoading || nominationsLoading) {
 		return (
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">

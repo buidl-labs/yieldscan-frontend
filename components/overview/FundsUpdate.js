@@ -67,9 +67,18 @@ const FundsUpdate = withSlideIn(({ styles, type, close, nominations, bondedAmoun
 
 	useEffect(() => {
 		setValidatorsLoading(true);
-		axios.get('/rewards/risk-set').then(({ data }) => {
-			const totalValidators = data.totalset;
-			setValidators(totalValidators.filter(validator => nominations.includes(validator.stashId)));
+		axios.get(`/validator/multi?stashIds=${nominations.join(',')}`).then(({ data }) => {
+			setValidators(data);
+		}).catch(() => {
+			toast({
+				title: 'Error',
+				description: 'Something went wrong!',
+				position: 'top-right',
+				duration: 3000,
+				status: 'error',
+			});
+			close();
+		}).finally(() => {
 			setValidatorsLoading(false);
 		});
 	}, [nominations]);

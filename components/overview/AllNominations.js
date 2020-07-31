@@ -2,7 +2,8 @@ import { ExternalLink } from 'react-feather';
 import Identicon from '@components/common/Identicon';
 import Routes from '@lib/routes';
 
-const AllNominations = ({ nominations, }) => {
+const AllNominations = ({ nominations = [], }) => {
+	nominations = [];
 	const onProfile = (validatorId) => window.open(`${Routes.VALIDATOR_PROFILE}/${validatorId}`, '_blank');
 
 	return (
@@ -21,6 +22,11 @@ const AllNominations = ({ nominations, }) => {
 					</div>
 				</div>
 			))}
+			{!nominations.length && (
+				<div className="mt-5">
+					<span className="text-xl font-thin text-gray-700">No Nominations!</span>
+				</div>
+			)}
 		</div>
 	);
 };
