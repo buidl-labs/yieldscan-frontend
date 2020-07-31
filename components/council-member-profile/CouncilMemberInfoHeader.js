@@ -7,7 +7,7 @@ const CouncilMemberInfoHeader = ({
 	socialInfo,
 	accountId,
 	stashAccount,
-	vision,
+	vision = '',
 	toggleWalletConnect = noop,
 	openEditProfile = noop,
 }) => {
