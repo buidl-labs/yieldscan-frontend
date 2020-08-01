@@ -28,50 +28,58 @@ const withDashboardLayout = (children) => {
 			createPolkadotAPIInstance().then(async api => {
 				setApiInstance(api);
 
-				// check if `stashAccount` already has bonded on some controller
-				const { isSome: isBonded } = await api.query.staking.bonded(stashAccount.address);
-				const { data: { free: freeBalance, miscFrozen: lockedBalance } } = await api.query.system.account(stashAccount.address);
-				const { value: { unlocking } } =  await api.query.staking.ledger(stashAccount.address);
+				const { address } = stashAccount;
 
-				const unlockingBalances = [];
+				api.queryMulti([
+					[api.query.staking.bonded, address], // check if `stashAccount` already has bonded on some controller
+					[api.query.system.account, address],
+					[api.query.staking.ledger, address],
+				], async ([bondedQueryResult, accountQueryResult, ledgerQueryResult]) => {
+					const { isSome: isBonded } = bondedQueryResult;
+					const { data: { free: freeBalance, miscFrozen: lockedBalance } } = accountQueryResult;
+					const { value: { unlocking } } = ledgerQueryResult;
 
-				if (unlocking && !unlocking.isEmpty && unlocking.length > 0) {
-					unlocking.forEach(unlockingBalance => {
-						const { era, value } = unlockingBalance;
-						unlockingBalances.push({
-							era: Number(era.toString()),
-							value: Number(value.toString()),
+					let bondedAmount = 0, bondedAmountInSubCurrency = 0, freeAmount = 0, freeAmountInSubCurrency = 0;
+					if (isBonded && !lockedBalance.isEmpty) {
+						bondedAmount = Number((parseInt(lockedBalance) / (10 ** 12)).toFixed(4));
+						bondedAmountInSubCurrency = await convertCurrency(bondedAmount);
+					}
+	
+					if (freeBalance) {
+						/**
+						 * `freeBalance` here includes `locked` balance also - that's how polkadot API is currently working
+						 *  so we need to subtract the `bondedBalance``
+						 */
+						freeAmount = Number(((parseInt(freeBalance) / (10 ** 12))  - bondedAmount).toFixed(4));
+						freeAmountInSubCurrency = await convertCurrency(freeAmount);
+					}
+
+					const unlockingBalances = [];
+
+					if (unlocking && !unlocking.isEmpty && unlocking.length > 0) {
+						unlocking.forEach(unlockingBalance => {
+							const { era, value } = unlockingBalance;
+							unlockingBalances.push({
+								era: Number(era.toString()),
+								value: Number(value.toString()),
+							});
 						});
+					}
+
+					setAccountState({
+						ledgerExists: isBonded,
+						bondedAmount: {
+							currency: bondedAmount,
+							subCurrency: bondedAmountInSubCurrency,
+						},
+						freeAmount: {
+							currency: freeAmount,
+							subCurrency: freeAmountInSubCurrency,
+						},
+						unlockingBalances,
+						accountInfoLoading: false,
 					});
-				}
 
-				let bondedAmount = 0, bondedAmountInSubCurrency = 0, freeAmount = 0, freeAmountInSubCurrency = 0;
-				if (isBonded && !lockedBalance.isEmpty) {
-					bondedAmount = Number((lockedBalance.toNumber() / (10 ** 12)).toFixed(4));
-					bondedAmountInSubCurrency = await convertCurrency(bondedAmount);
-				}
-
-				if (freeBalance) {
-					/**
-					 * `freeBalance` here includes `locked` balance also - that's how polkadot API is currently working
-					 *  so we need to subtract the `bondedBalance``
-					 */
-					freeAmount = Number(((freeBalance.toNumber() / (10 ** 12))  - bondedAmount).toFixed(4));
-					freeAmountInSubCurrency = await convertCurrency(freeAmount);
-				}
-
-				setAccountState({
-					ledgerExists: isBonded,
-					bondedAmount: {
-						currency: bondedAmount,
-						subCurrency: bondedAmountInSubCurrency,
-					},
-					freeAmount: {
-						currency: freeAmount,
-						subCurrency: freeAmountInSubCurrency,
-					},
-					unlockingBalances,
-					accountInfoLoading: false,
 				});
 			});
 		}

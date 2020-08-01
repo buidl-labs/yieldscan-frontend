@@ -60,7 +60,7 @@ const ValidatorCard = ({
 				<h3 className="text-lg">{(stakedAmount || 0).toFixed(1)} KSM</h3>
 			</div>
 			<div className="flex flex-col">
-				<span className="text-xs text-gray-500 font-semibold">Estimated Reward</span>
+				<span className="text-xs text-gray-500 font-semibold">Estimated Pool Reward</span>
 				<h3 className="text-lg">{(estimatedReward || 0).toFixed(4)} KSM</h3>
 			</div>
 			<div hidden={!hovered} className="absolute bg-white bg-opacity-25 cursor-pointer right-0 px-4 py-2" onClick={onClick}>
@@ -79,27 +79,40 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators, onChill 
 	const [editLoading, setEditLoading] = useState(false);
 	const [estimatedReward, setEstimatedReward] = useState();
 	const [validatorsLoading, setValidatorsLoading] = useState(true);
-	const [selectedValidatorsMap, setSelectedValidatorsMap] = useState(
-		mapValues(keyBy(currentValidators, 'stashId'))
-	);
+	const [selectedValidatorsMap, setSelectedValidatorsMap] = useState({});
 
 	useEffect(() => {
-		axios.get('/rewards/risk-set').then(({ data }) => {
-			const validators = data.totalset;
-			setValidators(validators);
-			setValidatorsLoading(false);
-		});
-	}, []);
+		if (currentValidators) {
+			Promise.all([
+				axios.get('/rewards/risk-set'),
+				axios.get(`/validator/multi?stashIds=${currentValidators.join(',')}`),
+			]).then(([{ data: data1  }, { data: data2 }]) => {
+				const validators = data1.totalset;
+				setValidators(validators);
+				setSelectedValidatorsMap(mapValues(keyBy(data2, 'stashId')));
+			}).catch(() => {
+				toast({
+					title: 'Error',
+					description: 'Something went wrong!',
+					position: 'top-right',
+					duration: 3000,
+					status: 'error',
+				});
+				close();
+			}).finally(() => {
+				setValidatorsLoading(false);
+			});
+		}
+	}, [currentValidators]);
 
 	useEffect(() => {
 		const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(v => !isNil(v));
 		calculateReward(
 			selectedValidatorsList,
-			get(freeAmount, 'currency', 0),
+			get(bondedAmount, 'currency', 0),
 			1,
 			'months',
 			false,
-			bondedAmount
 		).then(result => {
 			setEstimatedReward(result.returns.currency);
 		});

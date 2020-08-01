@@ -13,20 +13,31 @@ import {
 } from "@chakra-ui/core";
 import withSlideIn from "@components/common/withSlideIn";
 import RiskTag from "@components/reward-calculator/RiskTag";
-import { random, get } from "lodash";
+import { random, get, noop } from "lodash";
 import calculateReward from "@lib/calculate-reward";
 import updateFunds from "@lib/polkadot/update-funds";
 import { usePolkadotApi, useAccounts } from "@lib/store";
+import { ExternalLink } from "react-feather";
+import Routes from "@lib/routes";
+import Identicon from "@components/common/Identicon";
+import axios from "@lib/axios";
 
 const ValidatorCard = ({
 	stashId,
 	riskScore,
 	stakedAmount,
 	estimatedReward,
+	onProfile = noop,
 }) => (
 	<div className="flex justify-around items-center py-2 my-2 rounded-lg cursor-pointer border border-gray-300">
-		<img src="http://placehold.it/255" className="rounded-full w-10 h-10 mr-4" />
-		<h3 className="text-gray-700 text-xs w-48 truncate">{stashId}</h3>
+		<div><Identicon address={stashId} size="2.5rem" /></div>
+		<div className="text-gray-700 w-48 truncate cursor-pointer" onClick={onProfile}>
+			<span className="font-semibold text-sm">{stashId.slice(0, 18) + '...' || '-' }</span>
+			<div className="flex items-center">
+				<span className="text-xs mr-2">View Profile</span>
+				<ExternalLink size="12px" />
+			</div>
+		</div>
 		<div className="flex flex-col">
 			<span className="text-xs text-gray-500 font-semibold">Risk Score</span>
 			<div className="rounded-full font-semibold"><RiskTag risk={Number(riskScore.toFixed(2))} /></div>
@@ -36,17 +47,18 @@ const ValidatorCard = ({
 			<h3 className="text-lg">{stakedAmount.toFixed(1)} KSM</h3>
 		</div>
 		<div className="flex flex-col">
-			<span className="text-xs text-gray-500 font-semibold">Estimated Reward</span>
+			<span className="text-xs text-gray-500 font-semibold">Estimated Pool Reward</span>
 			<h3 className="text-lg">{estimatedReward.toFixed(4)} KSM</h3>
 		</div>
 	</div>
 );
 
-const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount }) => {
+const FundsUpdate = withSlideIn(({ styles, type, close, nominations, bondedAmount }) => {
 	const toast = useToast();
 	const { stashAccount, freeAmount } = useAccounts();
 	const { apiInstance } = usePolkadotApi();
 	const [amount, _setAmount] = useState('');
+	const [validators, setValidators] = useState([]);
 	const [updatingFunds, setUpdatingFunds] = useState(false);
 	const [estimatedReturns, setEstimatedReturns] = useState();
 	const [totalStakingAmount, setTotalStakingAmount] = useState(0);
@@ -54,10 +66,22 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 	const title = `${type === 'bond' ? 'Bond Additional' : 'Unbond'} Funds`;
 
 	useEffect(() => {
-		setTimeout(() => {
+		setValidatorsLoading(true);
+		axios.get(`/validator/multi?stashIds=${nominations.join(',')}`).then(({ data }) => {
+			setValidators(data);
+		}).catch(() => {
+			toast({
+				title: 'Error',
+				description: 'Something went wrong!',
+				position: 'top-right',
+				duration: 3000,
+				status: 'error',
+			});
+			close();
+		}).finally(() => {
 			setValidatorsLoading(false);
-		}, random(1000, 3000));
-	}, []);
+		});
+	}, [nominations]);
 
 	useEffect(() => {
 		let amountByType = amount * (type === 'bond' ? 1 : -1);
@@ -70,7 +94,7 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 			timePeriodValue,
 			timePeriodUnit,
 			compounding,
-			bondedAmount
+			{ currency: 0 },
 		).then(result => {
 			setTotalStakingAmount(totalStakingAmount);
 			setEstimatedReturns(get(result, 'returns.currency', 0));
@@ -142,7 +166,7 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 									<div>
 										<h3 className="text-xl">Currently Bonded</h3>
 										<h1 className="text-3xl">{get(bondedAmount, 'currency', 0)} KSM</h1>
-										<span className="text-lg text-gray-600">${get(bondedAmount, 'currency', 0) * 2}</span>
+										<span hidden className="text-lg text-gray-600">${get(bondedAmount, 'currency', 0) * 2}</span>
 									</div>
 									<div className="mt-10">
 										<h3>{title}</h3>
@@ -171,7 +195,7 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 									<div className="mt-10">
 										<h3 className="text-xl">Total Staking Amount</h3>
 										<h1 className="text-3xl">{(totalStakingAmount || 0).toFixed(4)} KSM</h1>
-										<span className="text-lg text-gray-600">${((totalStakingAmount || 0) * 2).toFixed(4)}</span>
+										<span hidden className="text-lg text-gray-600">${((totalStakingAmount || 0) * 2).toFixed(4)}</span>
 									</div>
 								</div>
 								
@@ -194,6 +218,7 @@ const FundsUpdate = withSlideIn(({ styles, type, close, validators, bondedAmount
 												riskScore={validator.riskScore}
 												stakedAmount={validator.totalStake}
 												estimatedReward={validator.estimatedPoolReward}
+												onProfile={() => window.open(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`, '_blank')}
 											/>
 										))}
 									</div>

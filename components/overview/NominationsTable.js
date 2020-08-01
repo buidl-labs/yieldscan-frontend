@@ -79,7 +79,7 @@ const NominationsTable = ({ validators }) => {
 						onProfile={() => window.open(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`, '_blank')}
 					/>
 				))}
-				<div className="text-xs text-gray-500 text-right mt-2">* Estimated Returns are calculated per era for 100 KSM</div>
+				<div className="text-xs text-gray-500 text-right mt-2">* Estimated Returns are calculated per era</div>
 			</div>
 			<style jsx>{`
 				.table-container {
