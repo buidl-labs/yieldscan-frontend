@@ -166,7 +166,7 @@ const FundsUpdate = withSlideIn(({ styles, type, close, nominations, bondedAmoun
 									<div>
 										<h3 className="text-xl">Currently Bonded</h3>
 										<h1 className="text-3xl">{get(bondedAmount, 'currency', 0)} KSM</h1>
-										<span className="text-lg text-gray-600">${get(bondedAmount, 'currency', 0) * 2}</span>
+										<span hidden className="text-lg text-gray-600">${get(bondedAmount, 'currency', 0) * 2}</span>
 									</div>
 									<div className="mt-10">
 										<h3>{title}</h3>
@@ -195,7 +195,7 @@ const FundsUpdate = withSlideIn(({ styles, type, close, nominations, bondedAmoun
 									<div className="mt-10">
 										<h3 className="text-xl">Total Staking Amount</h3>
 										<h1 className="text-3xl">{(totalStakingAmount || 0).toFixed(4)} KSM</h1>
-										<span className="text-lg text-gray-600">${((totalStakingAmount || 0) * 2).toFixed(4)}</span>
+										<span hidden className="text-lg text-gray-600">${((totalStakingAmount || 0) * 2).toFixed(4)}</span>
 									</div>
 								</div>
 								
