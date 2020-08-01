@@ -109,11 +109,10 @@ const EditValidators = withSlideIn(({ styles, close, currentValidators, onChill 
 		const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(v => !isNil(v));
 		calculateReward(
 			selectedValidatorsList,
-			get(freeAmount, 'currency', 0),
+			get(bondedAmount, 'currency', 0),
 			1,
 			'months',
 			false,
-			bondedAmount
 		).then(result => {
 			setEstimatedReward(result.returns.currency);
 		});

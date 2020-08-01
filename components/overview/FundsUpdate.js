@@ -94,7 +94,7 @@ const FundsUpdate = withSlideIn(({ styles, type, close, nominations, bondedAmoun
 			timePeriodValue,
 			timePeriodUnit,
 			compounding,
-			bondedAmount
+			{ currency: 0 },
 		).then(result => {
 			setTotalStakingAmount(totalStakingAmount);
 			setEstimatedReturns(get(result, 'returns.currency', 0));
