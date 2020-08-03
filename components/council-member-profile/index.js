@@ -77,7 +77,7 @@ const CouncilMemberProfile = () => {
 		
 			<CouncilMemberInfoHeader
 				name={memberInfo.name}
-				vision={memberInfo.vision}
+				vision={get(memberInfo, 'additionalInfo.vision', '')}
 				stashAccount={stashAccount}
 				socialInfo={memberInfo.socialInfo}
 				accountId={councilMemberAccountId}
