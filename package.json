@@ -17,7 +17,7 @@
     "@polkadot/extension-dapp": "^0.31.1",
     "@polkadot/react-identicon": "^0.55.1",
     "@polkadot/ui-keyring": "^0.55.1",
-    "@polkadot/util-crypto": "^2.16.1",
+    "@polkadot/util-crypto": "^2.18.1",
     "axios": "^0.19.2",
     "date-fns": "^2.14.0",
     "emotion-theming": "^10.0.27",
