@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { isMobile, isTablet } from 'react-device-detect';
-import amplitude from '@lib/amplitude';
+import { trackEvent } from '@lib/analytics';
 import { useEffect } from 'react';
 
 const Page = ({ title, children, layoutProvider }) => {
@@ -18,7 +18,7 @@ const Page = ({ title, children, layoutProvider }) => {
 	}
 
 	useEffect(() => {
-		amplitude.logEvent('PAGE_VIEW', { path: window.location.pathname });
+		trackEvent('PAGE_VIEW', { path: window.location.pathname });
 	}, []);
 
 	return (

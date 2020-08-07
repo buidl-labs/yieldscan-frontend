@@ -13,6 +13,7 @@ import getPolkadotExtensionInfo from '@lib/polkadot-extension';
 import { useAccounts, usePolkadotApi } from '@lib/store';
 import createPolkadotAPIInstance from '@lib/polkadot-api';
 import convertCurrency from '@lib/convert-currency';
+import { trackEvent } from '@lib/analytics';
 
 const [useWalletConnect] = create(set => ({
 	isOpen: false,
@@ -43,6 +44,11 @@ const WalletConnectPopover = withSlideIn(({ styles }) => {
 
 			setState(WalletConnectStates.CONNECTED);
 			setAccounts(accounts);
+
+			trackEvent('WALLET_CONNECTED', {
+				userAccounts: accounts.map(account => account.address),
+			});
+
 		}).catch(error => {
 			// TODO: handle error properly using UI toast
 			alert(error);
