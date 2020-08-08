@@ -19,7 +19,7 @@
     "@polkadot/ui-keyring": "^0.55.1",
     "@polkadot/util-crypto": "^2.16.1",
     "axios": "^0.19.2",
-    "date-fns": "^2.14.0",
+    "date-fns": "^2.15.0",
     "emotion-theming": "^10.0.27",
     "konva": "^7.0.3",
     "lodash": "^4.17.19",
