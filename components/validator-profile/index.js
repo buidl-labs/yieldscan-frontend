@@ -13,6 +13,7 @@ import { useWalletConnect } from "@components/wallet-connect";
 import EditValidatorProfileModal from "./EditValidatorProfileModal";
 import ValidatorReturnsCalculator from "./ValidatorReturnsCalculator";
 import { get } from "lodash";
+import TransparencyScoreModal from "./TransparencyScoreModal";
 
 const ProfileTabsConfig = {
 	// ACTIVITY: 'Activity',
@@ -71,6 +72,8 @@ const ValidatorProfile = () => {
 
 	return (
 		<div className="px-16 py-16">
+			<TransparencyScoreModal isOpen={true} />
+			
 			<EditValidatorProfileModal
 				stashId={validatorStashId}
 				socialInfo={validatorData.socialInfo}
