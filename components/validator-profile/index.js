@@ -13,6 +13,7 @@ import { useWalletConnect } from "@components/wallet-connect";
 import EditValidatorProfileModal from "./EditValidatorProfileModal";
 import ValidatorReturnsCalculator from "./ValidatorReturnsCalculator";
 import { get } from "lodash";
+import TransparencyScoreModal from "./TransparencyScoreModal";
 
 const ProfileTabsConfig = {
 	// ACTIVITY: 'Activity',
@@ -34,6 +35,11 @@ const ValidatorProfile = () => {
 		isOpen: editProfileModalOpen,
 		onClose: closeEditProfileModal,
 		onToggle: toggleEditProfileModal,
+	} = useDisclosure();
+	const {
+		isOpen: scoreModalOpen,
+		onClose: closeScoreModal,
+		onToggle: toggleScoreModal,
 	} = useDisclosure();
 
 	const initData = () => {
@@ -71,6 +77,11 @@ const ValidatorProfile = () => {
 
 	return (
 		<div className="px-16 py-16">
+			<TransparencyScoreModal
+				isOpen={scoreModalOpen}
+				onClose={closeScoreModal}
+			/>
+			
 			<EditValidatorProfileModal
 				stashId={validatorStashId}
 				socialInfo={validatorData.socialInfo}

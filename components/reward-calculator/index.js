@@ -9,10 +9,15 @@ import ExpectedReturnsCard from "./ExpectedReturnsCard";
 import CompoundRewardSlider from "./CompoundRewardSlider";
 import { WalletConnectPopover, useWalletConnect } from "@components/wallet-connect";
 import { useAccounts, useTransaction } from "@lib/store";
-import { get, isNil, mapValues, keyBy, cloneDeep } from "lodash";
+import { get, isNil, mapValues, keyBy, cloneDeep, debounce } from "lodash";
 import calculateReward from "@lib/calculate-reward";
 import { Spinner } from "@chakra-ui/core";
 import Routes from "@lib/routes";
+import { trackEvent, Events } from "@lib/analytics";
+
+const trackRewardCalculatedEvent = debounce((eventData) => {
+	trackEvent(Events.REWARD_CALCULATED, eventData);
+}, 1000);
 
 const RewardCalculatorPage = () => {
 	const router = useRouter();
@@ -80,16 +85,46 @@ const RewardCalculatorPage = () => {
 				timePeriodUnit,
 				compounding,
 				bondedAmount,
-			).then(setResult).catch(error => {
+			).then(result => {
+				setResult(result);
+
+				trackRewardCalculatedEvent({
+					userInputs: {
+						selectedValidatorsList,
+						amount,
+						timePeriodValue,
+						timePeriodUnit,
+						compounding,
+						bondedAmount,
+					},
+					result,
+				});
+			}).catch(error => {
 				// TODO: handle error gracefully with UI toast
 				alert(error);
 			});
 		}
 	}, [amount, timePeriodValue, timePeriodUnit, compounding, bondedAmount, selectedValidators]);
 
-	const updateTransactionState = () => {
+	const updateTransactionState = (eventType = '') => {
 		let _returns = get(result, 'returns'), _yieldPercentage = get(result, 'yieldPercentage');
 		const selectedValidatorsList = Object.values(selectedValidators).filter(v => !isNil(v));
+
+		if (eventType) {
+			trackEvent(eventType, {
+				appState: {
+					stakingAmount: amount,
+					riskPreference: risk,
+					timePeriodValue,
+					timePeriodUnit,
+					compounding,
+					returns: _returns,
+					yieldPercentage: _yieldPercentage,
+					selectedValidators: selectedValidatorsList,
+					validatorMap
+				},
+			});
+		}
 
 		setTransactionState({
 			stakingAmount: amount,
@@ -105,12 +140,12 @@ const RewardCalculatorPage = () => {
 	};
 
 	const onPayment = async () => {
-		updateTransactionState();
+		updateTransactionState(Events.INTENT_STAKING);
 		router.push('/payment');
 	};
 
 	const onAdvancedSelection = () => {
-		updateTransactionState();
+		updateTransactionState(Events.INTENT_ADVANCED_SELECTION);
 		router.push(`${Routes.VALIDATORS}?advanced=true`);
 	};
 

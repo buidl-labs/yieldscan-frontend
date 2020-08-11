@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronRight, ChevronLeft } from "react-feather";
 import Confirmation from "./Confirmation";
 import RewardDestination from "./RewardDestination";
@@ -8,6 +8,7 @@ import stake from "@lib/stake";
 import { useToast, Spinner } from "@chakra-ui/core";
 import { useRouter } from "next/router";
 import nominate from "@lib/polkadot/nominate";
+import { trackEvent, Events } from "@lib/analytics";
 
 const Steps = ({ steps, currentStep }) => (
 	<>
@@ -44,14 +45,26 @@ const Payment = () => {
 	const [stakingEvent, setStakingEvent] = useState();
 	const [stakingLoading, setStakingLoading] = useState(false);
 
+	useEffect(() => {
+		trackEvent(Events.PAYMENT_STEP_UPDATED, {
+			step: currentStep,
+			transactionState,
+		});
+	}, [currentStep]);
+
 	const transact = () => {
 		setStakingLoading(true);
+
+		trackEvent(Events.INTENT_TRANSACTON, {
+			transactionType: !!transactionState.stakingAmount ? 'STAKE' : 'NOMINATE',
+			transactionState,
+		});
 
 		const handlers = {
 			onEvent: (eventInfo) => {
 				setStakingEvent(eventInfo.message);
 			},
-			onFinish: (status, message) => { // status = 0 for success, anything else for error code
+			onFinish: (status, message, eventLogs) => { // status = 0 for success, anything else for error code
 				toast({
 					title: status === 0 ? 'Successful!' : 'Error!',
 					status: status === 0 ? 'success' : 'error',
@@ -62,6 +75,19 @@ const Payment = () => {
 				});
 				setStakingLoading(false);
 				
+				if (status === 0) {
+					trackEvent(Events.TRANSACTION_SUCCESS, {
+						transactionState,
+						successMessage: message,
+					});
+				} else {
+					trackEvent(Events.TRANSACTION_FAILED, {
+						transactionState,
+						successMessage: message,
+						eventLogs
+					});
+				}
+
 				if (status === 0) router.replace('/overview');
 			},
 		};

@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { create } from 'zustand';
-import { get } from 'lodash';
 import { ChevronLeft } from 'react-feather';
 import { Modal, ModalBody, ModalOverlay, ModalContent, ModalCloseButton, ModalHeader } from '@chakra-ui/core';
 import withSlideIn from '@components/common/withSlideIn';
@@ -11,8 +10,7 @@ import WalletConnected from './WalletConnected';
 import WalletDisclaimer from './WalletDisclaimer';
 import getPolkadotExtensionInfo from '@lib/polkadot-extension';
 import { useAccounts, usePolkadotApi } from '@lib/store';
-import createPolkadotAPIInstance from '@lib/polkadot-api';
-import convertCurrency from '@lib/convert-currency';
+import { trackEvent, Events } from '@lib/analytics';
 
 const [useWalletConnect] = create(set => ({
 	isOpen: false,
@@ -36,6 +34,10 @@ const WalletConnectPopover = withSlideIn(({ styles }) => {
 	const { accounts, setAccounts, setStashAccount, setAccountState } = useAccounts();
 	const [state, setState] = useState(WalletConnectStates.INTRO);
 
+	useEffect(() => {
+		trackEvent(Events.INTENT_CONNECT_WALLET);
+	}, []);
+
 	const onConnected = () => {
 		getPolkadotExtensionInfo().then(({ isExtensionAvailable, accounts = [] }) => {
 			if (!isExtensionAvailable) throw new Error('Extension not available.');
@@ -43,6 +45,11 @@ const WalletConnectPopover = withSlideIn(({ styles }) => {
 
 			setState(WalletConnectStates.CONNECTED);
 			setAccounts(accounts);
+
+			trackEvent(Events.WALLET_CONNECTED, {
+				userAccounts: accounts.map(account => account.address),
+			});
+
 		}).catch(error => {
 			// TODO: handle error properly using UI toast
 			alert(error);
