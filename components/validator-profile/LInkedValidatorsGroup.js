@@ -44,6 +44,8 @@ const LinkedValidatorsModal = withSlideIn(({ validators, styles, onClose, onProf
 const LinkedValidatorsGroup = ({ validators = [] }) => {
 	const { onToggle, isOpen, onClose } = useDisclosure()
 	
+	const onProfile = (validatorId) => window.open(`${Routes.VALIDATOR_PROFILE}/${validatorId}`, '_blank');
+	
 	const limitedValidators = validators.length > 5 ? validators.slice(0, 5) : validators;
 
 	return (
@@ -53,14 +55,16 @@ const LinkedValidatorsGroup = ({ validators = [] }) => {
 				isOpen={isOpen}
 				onClose={onClose}
 				validators={validators.slice(10)}
-				onProfile={(validatorId) => window.open(`${Routes.VALIDATOR_PROFILE}/${validatorId}`, '_blank')}
+				onProfile={onProfile}
 			/>
 			<div className="flex items-center max-w-xs">
 				{limitedValidators.map(validator => (
-					<div style={{ marginLeft: -12 }}>
+					<div style={{ marginLeft: -12 }} className="cursor-pointer">
 						<Identicon
 							key={validator.stashId}
 							address={validator.stashId}
+							onClick={onProfile}
+							showToast={false}
 							size="2.5rem"
 						/>
 					</div>

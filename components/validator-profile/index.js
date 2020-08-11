@@ -36,6 +36,11 @@ const ValidatorProfile = () => {
 		onClose: closeEditProfileModal,
 		onToggle: toggleEditProfileModal,
 	} = useDisclosure();
+	const {
+		isOpen: scoreModalOpen,
+		onClose: closeScoreModal,
+		onToggle: toggleScoreModal,
+	} = useDisclosure();
 
 	const initData = () => {
 		axios.get(`validator/${validatorStashId}`).then(({ data }) => {
@@ -72,7 +77,10 @@ const ValidatorProfile = () => {
 
 	return (
 		<div className="px-16 py-16">
-			<TransparencyScoreModal isOpen={true} />
+			<TransparencyScoreModal
+				isOpen={scoreModalOpen}
+				onClose={closeScoreModal}
+			/>
 			
 			<EditValidatorProfileModal
 				stashId={validatorStashId}
