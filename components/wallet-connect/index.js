@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { create } from 'zustand';
-import { get } from 'lodash';
 import { ChevronLeft } from 'react-feather';
 import { Modal, ModalBody, ModalOverlay, ModalContent, ModalCloseButton, ModalHeader } from '@chakra-ui/core';
 import withSlideIn from '@components/common/withSlideIn';
@@ -11,8 +10,6 @@ import WalletConnected from './WalletConnected';
 import WalletDisclaimer from './WalletDisclaimer';
 import getPolkadotExtensionInfo from '@lib/polkadot-extension';
 import { useAccounts, usePolkadotApi } from '@lib/store';
-import createPolkadotAPIInstance from '@lib/polkadot-api';
-import convertCurrency from '@lib/convert-currency';
 import { trackEvent } from '@lib/analytics';
 
 const [useWalletConnect] = create(set => ({
@@ -36,6 +33,10 @@ const WalletConnectPopover = withSlideIn(({ styles }) => {
 	const setApiInstance = usePolkadotApi(state => state.setApiInstance);
 	const { accounts, setAccounts, setStashAccount, setAccountState } = useAccounts();
 	const [state, setState] = useState(WalletConnectStates.INTRO);
+
+	useEffect(() => {
+		trackEvent('INTENT_CONNECT_WALLET');
+	}, []);
 
 	const onConnected = () => {
 		getPolkadotExtensionInfo().then(({ isExtensionAvailable, accounts = [] }) => {
