@@ -9,11 +9,15 @@ import ExpectedReturnsCard from "./ExpectedReturnsCard";
 import CompoundRewardSlider from "./CompoundRewardSlider";
 import { WalletConnectPopover, useWalletConnect } from "@components/wallet-connect";
 import { useAccounts, useTransaction } from "@lib/store";
-import { get, isNil, mapValues, keyBy, cloneDeep } from "lodash";
+import { get, isNil, mapValues, keyBy, cloneDeep, debounce } from "lodash";
 import calculateReward from "@lib/calculate-reward";
 import { Spinner } from "@chakra-ui/core";
 import Routes from "@lib/routes";
 import { trackEvent } from "@lib/analytics";
+
+const trackRewardCalculatedEvent = debounce((eventData) => {
+	trackEvent('REWARD_CALCULATED', eventData);
+}, 1000);
 
 const RewardCalculatorPage = () => {
 	const router = useRouter();
@@ -84,7 +88,7 @@ const RewardCalculatorPage = () => {
 			).then(result => {
 				setResult(result);
 
-				trackEvent('REWARD_CALCULATED', {
+				trackRewardCalculatedEvent({
 					userInputs: {
 						selectedValidatorsList,
 						amount,
