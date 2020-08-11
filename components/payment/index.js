@@ -64,7 +64,7 @@ const Payment = () => {
 			onEvent: (eventInfo) => {
 				setStakingEvent(eventInfo.message);
 			},
-			onFinish: (status, message) => { // status = 0 for success, anything else for error code
+			onFinish: (status, message, eventLogs) => { // status = 0 for success, anything else for error code
 				toast({
 					title: status === 0 ? 'Successful!' : 'Error!',
 					status: status === 0 ? 'success' : 'error',
@@ -83,7 +83,8 @@ const Payment = () => {
 				} else {
 					trackEvent('TRANSACTION_FAILED', {
 						transactionState,
-						failureMessage: message,
+						successMessage: message,
+						eventLogs
 					});
 				}
 
