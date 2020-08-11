@@ -10,7 +10,7 @@ import WalletConnected from './WalletConnected';
 import WalletDisclaimer from './WalletDisclaimer';
 import getPolkadotExtensionInfo from '@lib/polkadot-extension';
 import { useAccounts, usePolkadotApi } from '@lib/store';
-import { trackEvent } from '@lib/analytics';
+import { trackEvent, Events } from '@lib/analytics';
 
 const [useWalletConnect] = create(set => ({
 	isOpen: false,
@@ -35,7 +35,7 @@ const WalletConnectPopover = withSlideIn(({ styles }) => {
 	const [state, setState] = useState(WalletConnectStates.INTRO);
 
 	useEffect(() => {
-		trackEvent('INTENT_CONNECT_WALLET');
+		trackEvent(Events.INTENT_CONNECT_WALLET);
 	}, []);
 
 	const onConnected = () => {
@@ -46,7 +46,7 @@ const WalletConnectPopover = withSlideIn(({ styles }) => {
 			setState(WalletConnectStates.CONNECTED);
 			setAccounts(accounts);
 
-			trackEvent('WALLET_CONNECTED', {
+			trackEvent(Events.WALLET_CONNECTED, {
 				userAccounts: accounts.map(account => account.address),
 			});
 

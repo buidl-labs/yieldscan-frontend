@@ -8,7 +8,7 @@ import stake from "@lib/stake";
 import { useToast, Spinner } from "@chakra-ui/core";
 import { useRouter } from "next/router";
 import nominate from "@lib/polkadot/nominate";
-import { trackEvent } from "@lib/analytics";
+import { trackEvent, Events } from "@lib/analytics";
 
 const Steps = ({ steps, currentStep }) => (
 	<>
@@ -46,7 +46,7 @@ const Payment = () => {
 	const [stakingLoading, setStakingLoading] = useState(false);
 
 	useEffect(() => {
-		trackEvent('PAYMENT_STEP_UPDATED', {
+		trackEvent(Events.PAYMENT_STEP_UPDATED, {
 			step: currentStep,
 			transactionState,
 		});
@@ -55,7 +55,7 @@ const Payment = () => {
 	const transact = () => {
 		setStakingLoading(true);
 
-		trackEvent('INTENT_TRANSACTON', {
+		trackEvent(Events.INTENT_TRANSACTON, {
 			transactionType: !!transactionState.stakingAmount ? 'STAKE' : 'NOMINATE',
 			transactionState,
 		});
@@ -76,12 +76,12 @@ const Payment = () => {
 				setStakingLoading(false);
 				
 				if (status === 0) {
-					trackEvent('TRANSACTION_SUCCESS', {
+					trackEvent(Events.TRANSACTION_SUCCESS, {
 						transactionState,
 						successMessage: message,
 					});
 				} else {
-					trackEvent('TRANSACTION_FAILED', {
+					trackEvent(Events.TRANSACTION_FAILED, {
 						transactionState,
 						successMessage: message,
 						eventLogs

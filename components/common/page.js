@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { isMobile, isTablet } from 'react-device-detect';
-import { trackEvent } from '@lib/analytics';
+import { trackEvent, Events } from '@lib/analytics';
 import { useEffect } from 'react';
 
 const Page = ({ title, children, layoutProvider }) => {
@@ -18,7 +18,7 @@ const Page = ({ title, children, layoutProvider }) => {
 	}
 
 	useEffect(() => {
-		trackEvent('PAGE_VIEW', { path: window.location.pathname });
+		trackEvent(Events.PAGE_VIEW, { path: window.location.pathname });
 	}, []);
 
 	return (

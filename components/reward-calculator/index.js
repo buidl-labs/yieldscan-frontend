@@ -13,10 +13,10 @@ import { get, isNil, mapValues, keyBy, cloneDeep, debounce } from "lodash";
 import calculateReward from "@lib/calculate-reward";
 import { Spinner } from "@chakra-ui/core";
 import Routes from "@lib/routes";
-import { trackEvent } from "@lib/analytics";
+import { trackEvent, Events } from "@lib/analytics";
 
 const trackRewardCalculatedEvent = debounce((eventData) => {
-	trackEvent('REWARD_CALCULATED', eventData);
+	trackEvent(Events.REWARD_CALCULATED, eventData);
 }, 1000);
 
 const RewardCalculatorPage = () => {
@@ -140,12 +140,12 @@ const RewardCalculatorPage = () => {
 	};
 
 	const onPayment = async () => {
-		updateTransactionState('INTENT_STAKING');
+		updateTransactionState(Events.INTENT_STAKING);
 		router.push('/payment');
 	};
 
 	const onAdvancedSelection = () => {
-		updateTransactionState('INTENT_ADVANCED_SELECTION');
+		updateTransactionState(Events.INTENT_ADVANCED_SELECTION);
 		router.push(`${Routes.VALIDATORS}?advanced=true`);
 	};
 

@@ -5,7 +5,7 @@ import createPolkadotAPIInstance from '@lib/polkadot-api';
 import convertCurrency from '@lib/convert-currency';
 import { pick } from 'lodash';
 import { useEffect } from 'react';
-import { trackEvent } from '@lib/analytics';
+import { trackEvent, Events } from '@lib/analytics';
 
 const Header = dynamic(
 	() => import('@components/common/header').then(mod => mod.default),
@@ -68,7 +68,7 @@ const withDashboardLayout = (children) => {
 					}
 
 					const setStateAndTrack = (details) => {
-						trackEvent('USER_ACCOUNT_SELECTION', {
+						trackEvent(Events.USER_ACCOUNT_SELECTION, {
 							user: {
 								...details,
 								stashId: address,
