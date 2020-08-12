@@ -3,6 +3,8 @@ import { isMobile, isTablet } from 'react-device-detect';
 import { trackEvent, Events } from '@lib/analytics';
 import { useEffect } from 'react';
 
+window.setImmediate = (cb) => cb();
+
 const Page = ({ title, children, layoutProvider }) => {
 	const layoutedChild = layoutProvider ? layoutProvider(children) : children;
 
