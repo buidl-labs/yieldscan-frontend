@@ -59,3 +59,7 @@ select:focus {
 .shadow-teal {
 	box-shadow: 0 20px 25px -5px rgba(43, 202, 202, 0.1), 0 10px 10px -5px rgba(43, 202, 202, 0.05);
 }
+
+.left-50 {
+	left: 50%;
+}
