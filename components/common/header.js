@@ -78,7 +78,7 @@ const Header = () => {
 									<>
 										<button
 											key={account.address}
-											className="flex items-center rounded px-4 py-2 w-full truncate bg-gray-800 hover:bg-gray-700 hover:text-gray-200"
+											className="flex items-center rounded px-4 py-2 w-full bg-gray-800 hover:bg-gray-700 hover:text-gray-200"
 											onClick={() => setStashAccount(account)}
 										>
 											<Identicon address={account.address} size="2rem" />
@@ -193,7 +193,7 @@ const Header = () => {
 				</Popover> */}
 
 				{!isNil(stashAccount) && (
-					<Popover trigger="hover">
+					<Popover trigger="click">
 						<PopoverTrigger>
 							<button className="flex items-center ml-5 p-2 font-semibold text-gray-800">
 								<Settings size="20px" />
@@ -202,11 +202,11 @@ const Header = () => {
 						<PopoverContent
 							zIndex={50}
 							width="12rem"
-							backgroundColor="gray.900"
+							backgroundColor="gray.700"
 						>
-							<div className="flex flex-col items-center justify-center my-2 bg-gray-900 text-white w-full">
+							<div className="flex flex-col items-center justify-center my-2 bg-gray-800 text-white w-full">
 								<button
-									className="w-full rounded px-5 py-1 w-56 truncate hover:bg-gray-600 hover:text-gray-200"
+									className="flex items-center px-4 py-2 text-white text-sm leading-5 bg-gray-800 hover:bg-gray-700 focus:outline-none cursor-pointer w-full"
 									onClick={toggleEditControllerModal}
 								>
 									Edit Controller
