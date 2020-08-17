@@ -39,13 +39,13 @@ const ValidatorCard = ({
 			/>
 			<Identicon address={stashId} />
 			<div
-				className="ml-2 text-gray-700 text-xs truncate"
+				className="ml-2 text-gray-900 truncate"
 				onClick={(ev) => {
 					ev.stopPropagation();
 					onProfile();
 				}}
 			>
-				<span className="font-semibold">
+				<span className="font-semibold text-sm">
 					{name || stashId.slice(0, 6) + "..." + stashId.slice(-6) || "-"}
 				</span>
 				<div className="flex items-center">
@@ -57,7 +57,7 @@ const ValidatorCard = ({
 		<div className="ml-2 mr-4 flex items-center justify-between min-w-40-rem">
 			<div className="flex flex-col">
 				<span className="text-xs text-gray-500 font-semibold">Nominators</span>
-				<h3 className="text-lg">{nominators}</h3>
+				<h3 className="text-base">{nominators}</h3>
 			</div>
 			<div className="flex flex-col">
 				<span className="text-xs text-gray-500 font-semibold">Risk Score</span>
@@ -67,21 +67,21 @@ const ValidatorCard = ({
 			</div>
 			<div className="flex flex-col">
 				<span className="text-xs text-gray-500 font-semibold">Own Stake</span>
-				<h3 className="text-lg">{ownStake} KSM</h3>
+				<h3 className="text-base">{ownStake} KSM</h3>
 			</div>
 			<div className="flex flex-col">
 				<span className="text-xs text-gray-500 font-semibold">Other Stake</span>
-				<h3 className="text-lg">{otherStake} KSM</h3>
+				<h3 className="text-base">{otherStake} KSM</h3>
 			</div>
 			<div className="flex flex-col">
 				<span className="text-xs text-gray-500 font-semibold">Commission</span>
-				<h3 className="text-lg">{commission}%</h3>
+				<h3 className="text-base">{commission}%</h3>
 			</div>
 			<div className="flex flex-col">
 				<span className="text-xs text-gray-500 font-semibold">
 					Estimated Returns <sup>*</sup>
 				</span>
-				<h3 className="text-lg">{returnsPer100KSM.toFixed(4)} KSM</h3>
+				<h3 className="text-base">{returnsPer100KSM.toFixed(4)} KSM</h3>
 			</div>
 		</div>
 	</div>

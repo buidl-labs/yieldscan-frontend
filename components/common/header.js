@@ -3,6 +3,7 @@ import { get, isNil } from "lodash";
 import { ChevronDown, Settings, Menu } from "react-feather";
 import { WalletConnectPopover, useWalletConnect } from "@components/wallet-connect";
 import { Popover, PopoverArrow, PopoverTrigger, PopoverContent, useDisclosure, Avatar } from "@chakra-ui/core";
+import Identicon from "@components/common/Identicon";
 import EditControllerModal from "@components/overview/EditControllerModal";
 import { useState, useEffect } from "react";
 
@@ -50,14 +51,17 @@ const Header = () => {
 				) : (
 					<Popover trigger="hover">
 						<PopoverTrigger>
-							<div className="cursor-pointer">
-								<h3 className="flex items-center text-gray-800">
-									{get(stashAccount, "meta.name", "")}
-									<ChevronDown size="20px" className="ml-1" />
-								</h3>
-								<span className="text-gray-500 text-xs">
-									Balance: {get(freeAmount, "currency", 0)} KSM
-								</span>
+							<div className="flex items-center mr-8">
+								<Identicon address={get(stashAccount, "address")} />
+								<div className="cursor-pointer ml-2">
+									<h3 className="flex items-center text-gray-800 -mb-1">
+										{get(stashAccount, "meta.name", "")}
+									</h3>
+									<span className="text-gray-500 text-xs">
+										Balance: {get(freeAmount, "currency", 0)} KSM
+									</span>
+								</div>
+								<ChevronDown size="20px" className="ml-1" />
 							</div>
 						</PopoverTrigger>
 						<PopoverContent
@@ -66,14 +70,15 @@ const Header = () => {
 							backgroundColor="gray.900"
 						>
 							<PopoverArrow />
-							<div className="flex flex-col items-center justify-center my-2 bg-gray-900 text-white w-full">
+							<div className="flex flex-col justify-center my-2 bg-gray-900 text-white w-full">
 								{accountsWithoutCurrent.map((account) => (
 									<button
 										key={account.address}
-										className="rounded px-5 py-1 w-56 truncate hover:bg-gray-600 hover:text-gray-200"
+										className="flex items-center rounded px-4 py-1 w-full truncate hover:bg-gray-600 hover:text-gray-200"
 										onClick={() => setStashAccount(account)}
 									>
-										{account.meta.name}
+										<Identicon address={account.address} size="2rem" />
+										<span className="ml-2">{account.meta.name}</span>
 									</button>
 								))}
 							</div>
@@ -120,7 +125,9 @@ const Header = () => {
 								<button
 									href="#"
 									className={`flex items-center px-4 py-2 text-white text-sm leading-5 ${
-										currentNetwork === "Kusama" ? "cursor-default bg-gray-600" : "hover:bg-gray-700 focus:bg-gray-700"
+										currentNetwork === "Kusama"
+											? "cursor-default bg-gray-600"
+											: "hover:bg-gray-700 focus:bg-gray-700"
 									}  focus:outline-none w-full`}
 									role="menuitem"
 								>
