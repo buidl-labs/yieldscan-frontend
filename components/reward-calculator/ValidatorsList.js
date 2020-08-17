@@ -106,7 +106,7 @@ const ValidatorsList = ({
 						alt="empty-state"
 						className="w-64 h-64"
 					/>
-					<span className="text-sm text-gray-500">Fill all inputs to see favourable validators...</span>
+					<span className="text-sm text-gray-500">Fill all inputs to see the most rewarding validators...</span>
 				</div>
 			</div>
 		);

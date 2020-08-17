@@ -1,6 +1,6 @@
 import { useAccounts } from "@lib/store";
 import { get, isNil } from "lodash";
-import { ChevronDown, Settings } from "react-feather";
+import { ChevronDown, Settings, Menu } from "react-feather";
 import { WalletConnectPopover, useWalletConnect } from "@components/wallet-connect";
 import { Popover, PopoverArrow, PopoverTrigger, PopoverContent, useDisclosure } from "@chakra-ui/core";
 import EditControllerModal from "@components/overview/EditControllerModal";

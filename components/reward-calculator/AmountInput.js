@@ -1,7 +1,7 @@
 import { get } from "lodash";
 
 const AmountInputDefault = ({ value, onChange }) => (
-	<div className="flex items-center justify-between p-2 py-1 rounded-full border border-gray-300 w-2/3">
+	<div className="flex items-center justify-between rounded-full border border-gray-200 w-2/3">
 		<div className="flex flex-col ml-6">
 			<input
 				type="number"
@@ -13,11 +13,11 @@ const AmountInputDefault = ({ value, onChange }) => (
 				}}
 				className="w-24 text-2xl p-0 outline-none"
 			/>
-			<h6 className="text-gray-600 text-sm">${value.subCurrency}</h6>
+			{/* <h6 className="text-gray-600 text-sm">${value.subCurrency}</h6> */}
 		</div>
 		<div className="flex-center">
-			<div className="bg-gray-800 px-10 py-3 text-white rounded-full">
-				<div className="flex items-center relative">
+			<div className="px-5 py-4 rounded-r-full border-l border-gray-200">
+				<div className="flex items-center relative text-xl">
 					<span>KSM</span>
 				</div>
 			</div>
@@ -79,7 +79,7 @@ const AmountInputAlreadyBonded = ({ value, bonded, total, onChange }) => (
 const AmountInput = ({ value, bonded, onChange }) => {
 	return (
 		<div className="w-4/5">
-			{get(bonded, 'currency') ? (
+			{/* {get(bonded, 'currency') ? (
 				<AmountInputAlreadyBonded
 					value={value}
 					bonded={bonded}
@@ -89,12 +89,12 @@ const AmountInput = ({ value, bonded, onChange }) => {
 					}}
 					onChange={onChange}
 				/>
-			): (
+			): ( */}
 				<AmountInputDefault
 					value={value}
 					onChange={onChange}
 				/>
-			)}
+			{/* )} */}
 		</div>
 	);
 };
