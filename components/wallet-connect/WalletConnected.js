@@ -17,12 +17,12 @@ const WalletConnected = ({ accounts, onStashSelected, ledgerLoading }) => {
 									selectedAccount === account
 										? "border-teal-500 border-2"
 										: "border-2 transform hover:scale-105"
-								} cursor-pointer px-3 py-2 mb-2 text-gray-600
+								} cursor-pointer px-3 py-3 mb-2 text-gray-600
 								transition-all duration-300 ease-in-out
 							`}
 							onClick={() => setSelected(account)}
 						>
-							<Identicon address={get(account, "address")} />
+							<Identicon address={get(account, "address")} size="3rem" />
 							{selectedAccount === account &&
 								console.log(get(account, "address"))}
 							<div className="ml-2 flex flex-col">
