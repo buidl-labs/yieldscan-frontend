@@ -1,5 +1,5 @@
 import { get, isNil } from "lodash";
-import { HelpCircle } from "react-feather";
+import { HelpCircle, ChevronDown } from "react-feather";
 import {
 	Popover,
 	PopoverTrigger,
@@ -21,7 +21,7 @@ const ResultCardInsight = ({
 			<span className="opacity-75 mr-1">{label}</span>
 			<Popover trigger="hover">
 				<PopoverTrigger>
-					<HelpCircle size="1rem" cursor="pointer" strokeOpacity="0.75" />
+					<HelpCircle size="1rem" cursor="help" strokeOpacity="0.75" />
 				</PopoverTrigger>
 				<PopoverContent zIndex={50} _focus={{ outline: "none" }} bg="gray.700" border="none">
 					<PopoverArrow />
@@ -60,96 +60,108 @@ const ExpectedReturnsCard = ({
 	};
 
 	return (
-		<div className="rounded-xl bg-teal-500 text-white px-8 py-6">
-			<h1 className="font-semibold text-2xl">Expected Returns</h1>
-			<div className="flex flex-wrap mt-2">
-				<ResultCardInsight
-					label="Estimated Returns"
-					value={
-						<CountUp
-							end={returns.currency}
-							duration={0.5}
-							decimals={3}
-							suffix={" KSM"}
-							preserveValue
-						/>
-					}
-					supportValue={`$${returns.subCurrency}`}
-					emptyState={!result.returns}
-					popoverContent={
-						<span className="text-sm text-white bg-gray-800">
-							These returns are calculated for your entered stake amount, time
-							period and risk preference. To learn about how we calculate these
-							returns{" "}
-							<a
-								href="https://github.com/buidl-labs/yieldscan-frontend/wiki/Returns-Calculation-Mechanism"
-								target="_blank"
-								className="underline"
-							>
-								click here
-							</a>
-							.
-						</span>
-					}
-				/>
-				<ResultCardInsight
-					label="Estimated Portfolio Value"
-					value={
-						<CountUp
-							end={portfolio.currency}
-							duration={0.5}
-							decimals={3}
-							suffix={" KSM"}
-							preserveValue
-						/>
-					}
-					supportValue={`$${portfolio.subCurrency}`}
-					emptyState={!result.returns}
-					popoverContent={
-						<span className="text-sm text-white">
-							This is the estimated value of your staking portfolio based on
-							your inputs. This is the sum of your staking amount and your
-							expected returns.
-						</span>
-					}
-				/>
-				<ResultCardInsight
-					label="Estimated Yield"
-					value={
-						<CountUp
-							end={result.yieldPercentage}
-							duration={0.5}
-							decimals={3}
-							suffix={"%"}
-							preserveValue
-						/>
-					}
-					emptyState={isNil(result.yieldPercentage)}
-					popoverContent={
-						<span className="text-sm text-white">
-							This is the expected percentage return for the time period you
-							input.
-						</span>
-					}
-				/>
-			</div>
-			<div className="flex">
-				<button
-					className={`
-						rounded-full font-semibold text-lg mt-5 px-8 py-3
+		<>
+			<div className="relative rounded-xl bg-teal-500 shadow-teal text-white p-8">
+				<h1 className="font-semibold text-2xl">Expected Returns</h1>
+				<div className="flex flex-wrap mt-2">
+					<ResultCardInsight
+						label="Estimated Returns"
+						value={
+							<CountUp
+								end={returns.currency}
+								duration={0.5}
+								decimals={3}
+								suffix={" KSM"}
+								preserveValue
+							/>
+						}
+						supportValue={`$${returns.subCurrency}`}
+						emptyState={!result.returns}
+						popoverContent={
+							<span className="text-sm text-white bg-gray-800">
+								These returns are calculated for your entered stake amount, time
+								period and risk preference. To learn about how we calculate
+								these returns{" "}
+								<a
+									href="https://github.com/buidl-labs/yieldscan-frontend/wiki/Returns-Calculation-Mechanism"
+									target="_blank"
+									className="underline"
+								>
+									click here
+								</a>
+								.
+							</span>
+						}
+					/>
+					<ResultCardInsight
+						label="Estimated Portfolio Value"
+						value={
+							<CountUp
+								end={portfolio.currency}
+								duration={0.5}
+								decimals={3}
+								suffix={" KSM"}
+								preserveValue
+							/>
+						}
+						supportValue={`$${portfolio.subCurrency}`}
+						emptyState={!result.returns}
+						popoverContent={
+							<span className="text-sm text-white">
+								This is the estimated value of your staking portfolio based on
+								your inputs. This is the sum of your staking amount and your
+								expected returns.
+							</span>
+						}
+					/>
+					<ResultCardInsight
+						label="Estimated Yield"
+						value={
+							<CountUp
+								end={result.yieldPercentage}
+								duration={0.5}
+								decimals={3}
+								suffix={"%"}
+								preserveValue
+							/>
+						}
+						emptyState={isNil(result.yieldPercentage)}
+						popoverContent={
+							<span className="text-sm text-white">
+								This is the expected percentage return for the time period you
+								input.
+							</span>
+						}
+					/>
+				</div>
+				<div className="flex mt-4">
+					<button
+						className={`
+						rounded-full font-semibold text-lg mt-5 px-8 py-3 bg-white text-teal-500
 						${
 							stashAccount && calculationDisabled
-								? "opacity-75 cursor-not-allowed bg-gray-400 text-white"
-								: "bg-white text-teal-500"
+								? "opacity-75 cursor-not-allowed"
+								: "opacity-100"
 						}
 					`}
-					disabled={stashAccount && calculationDisabled}
-					onClick={() => (stashAccount ? onPayment() : onWalletConnectClick())}
-				>
-					{stashAccount ? "Stake" : "Connect Wallet to Stake"}
-				</button>
+						disabled={stashAccount && calculationDisabled}
+						onClick={() =>
+							stashAccount ? onPayment() : onWalletConnectClick()
+						}
+					>
+						{stashAccount ? "Stake" : "Connect Wallet to Stake"}
+					</button>
+				</div>
+				<div className="absolute bg-white h-16 w-16 -ml-8 mt-4 rounded-full text-gray-900 flex items-center justify-center shadow-teal connector">
+					<ChevronDown />
+				</div>
 			</div>
-		</div>
+			<style jsx>{`
+				.connector: {
+					left: 50%;
+				}
+			`}</style>
+		</>
 	);
 };
 

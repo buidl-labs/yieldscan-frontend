@@ -149,7 +149,7 @@ const ValidatorsList = ({
 
 	if (disableList) {
 		return (
-			<div className="rounded-xl border border-gray-200 px-8 py-6 mt-4">
+			<div className="rounded-xl border border-gray-200 px-8 py-6 mt-8">
 				<div className="flex-center">
 					<img
 						src="/images/empty-state.svg"
@@ -165,7 +165,7 @@ const ValidatorsList = ({
 	}
 
 	return (
-		<div className="rounded-xl border border-gray-200 px-8 py-6 mt-4">
+		<div className="rounded-xl border border-gray-200 px-8 py-6 mt-8">
 			{!editMode ? (
 				<div className="select-none flex flex-col justify-center">
 					<h1 className="font-semibold text-gray-700 text-2xl">
