@@ -3,6 +3,7 @@ import { noop } from "lodash";
 import { Edit2 } from "react-feather";
 import { Switch, Select } from "@chakra-ui/core";
 import CompoundRewardSlider from "@components/reward-calculator/CompoundRewardSlider";
+import CountUp from "react-countup";
 
 const ValidatorsResult = ({
 	stakingAmount,
@@ -18,12 +19,9 @@ const ValidatorsResult = ({
 	onEditAmount = noop,
 }) => {
 	const [timePeriodEditable, setTimePeriodEditable] = useState(false);
-	
-	const {
-		returns = {},
-		yieldPercentage,
-	} = result;
-	
+
+	const { returns = {}, yieldPercentage } = result;
+
 	return (
 		<div className="flex justify-between items-center">
 			<div className="flex flex-col">
@@ -112,7 +110,13 @@ const ValidatorsResult = ({
 					</span>
 					<h3 className="flex items-center text-xl">
 						<span className="mr-2">
-							{yieldPercentage ? `${yieldPercentage} %` : "-"}
+							<CountUp
+								end={yieldPercentage && yieldPercentage}
+								duration={0.5}
+								decimals={2}
+								suffix={"%"}
+								preserveValue
+							/>
 						</span>
 					</h3>
 				</div>
@@ -127,11 +131,17 @@ const ValidatorsResult = ({
 						/>
 					</div>
 				</div>
-				<div className="flex flex-col px-3 py-1 bg-teal-500 shadow-teal text-white rounded-lg h-20">
+				<div className="flex flex-col px-3 py-1 bg-teal-500 shadow-teal text-white rounded-lg h-20 w-48">
 					<span className="text-sm font-semibold mb-2">Expected Returns</span>
 					<h3 className="flex items-center text-xl">
 						<span className="mr-2">
-							{!returns.currency ? "-" : `${returns.currency} KSM`}
+							<CountUp
+								end={returns.currency && returns.currency}
+								duration={0.5}
+								decimals={3}
+								suffix={" KSM"}
+								preserveValue
+							/>
 						</span>
 					</h3>
 					<span hidden className="text-gray-600 text-xs">

@@ -133,7 +133,7 @@ const ExpectedReturnsCard = ({
 					}
 				/>
 			</div>
-			<div className="flex justify-end">
+			<div className="flex">
 				<button
 					className={`
 						rounded-full font-semibold text-lg mt-5 px-8 py-3

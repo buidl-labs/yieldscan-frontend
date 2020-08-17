@@ -1,15 +1,31 @@
-import { Edit2, ChevronLeft, Settings, Check, ExternalLink } from "react-feather";
+import {
+	Edit2,
+	ChevronLeft,
+	Settings,
+	Check,
+	ExternalLink,
+} from "react-feather";
 import { isNil, noop, cloneDeep } from "lodash";
 import RiskTag from "./RiskTag";
 import { useState, useEffect } from "react";
 import Routes from "@lib/routes";
 import Identicon from "@components/common/Identicon";
+import CountUp from "react-countup";
 
-const ValidatorInfo = ({ name, stashId, riskScore, amountPerValidator, editMode, selected, toggleSelected, onProfile = noop }) => (
+const ValidatorInfo = ({
+	name,
+	stashId,
+	riskScore,
+	amountPerValidator,
+	editMode,
+	selected,
+	toggleSelected,
+	onProfile = noop,
+}) => (
 	<div
 		className={`
 			rounded-lg flex items-center px-4 py-2 mb-2 cursor-pointer transition duration-500 w-full overflow-x-hidden
-			${selected ? 'border-2 border-teal-500' : 'border border-gray-200'}
+			${selected ? "border-2 border-teal-500" : "border border-gray-200"}
 		`}
 		onClick={toggleSelected}
 	>
@@ -17,21 +33,29 @@ const ValidatorInfo = ({ name, stashId, riskScore, amountPerValidator, editMode,
 			<div className="w-1/5">
 				<Check
 					size="1.75rem"
-					className="p-1 bg-teal-500 text-white rounded-full" 
+					className="p-1 bg-teal-500 text-white rounded-full"
 					strokeWidth="4px"
 				/>
 			</div>
 		)}
 		<div
-			className={`flex items-center justify-between transition duration-200 ${selected && 'transform translate-x-4'}`}
-			style={{ width: '26rem' }}
+			className={`flex items-center justify-between transition duration-200 ${
+				selected && "transform translate-x-4"
+			}`}
+			style={{ width: "26rem" }}
 		>
 			<div className="flex items-center w-2/3" onClick={onProfile}>
-				<div className="mr-4"><Identicon address={stashId} size="3rem" /></div>
+				<div className="mr-4">
+					<Identicon address={stashId} size="3rem" />
+				</div>
 				<div className="flex flex-col items-start w-4/5">
-					<div className="flex items-center text-gray-700 truncate w-4/5 font-semibold">
-						<span className="mr-2">{name || stashId.slice(0, 10) + '...' || '-' }</span>
-						<ExternalLink size="1rem" />
+					<div className="flex items-center text-gray-700 truncate w-4/5">
+						<span className="mr-2 text-base">
+							{name
+								? name.length > 16 && name.slice(0, 6) + "..." + name.slice(-6)
+								: stashId.slice(0, 6) + "..." + stashId.slice(-6) || "-"}
+						</span>
+						{/* <ExternalLink size="1rem" /> */}
 					</div>
 					<span className="select-none flex text-gray-500 text-sm">
 						Risk Score
@@ -40,10 +64,26 @@ const ValidatorInfo = ({ name, stashId, riskScore, amountPerValidator, editMode,
 				</div>
 			</div>
 			{!editMode && (
-				<div className="flex flex-col ml-5 w-1/3">
-					<span className="text-red-400">Amount</span>
-					<h5 className="text-gray-700 text-lg truncate">{amountPerValidator.currency} KSM</h5>
-					<span hidden className="text-gray-500 text-sm">${amountPerValidator.subCurrency}</span>
+				<div className="flex flex-col ml-5">
+					<span className="text-teal-500 text-sm">Stake</span>
+					<h5 className="text-gray-700 text-lg truncate">
+						<CountUp
+							end={amountPerValidator.currency}
+							duration={0.5}
+							decimals={3}
+							suffix={" KSM"}
+							preserveValue
+						/>
+					</h5>
+					<span hidden className="text-gray-500 text-sm">
+						<CountUp
+							end={amountPerValidator.subCurrency}
+							duration={0.5}
+							decimals={2}
+							prefix={"$"}
+							preserveValue
+						/>
+					</span>
 				</div>
 			)}
 		</div>
@@ -69,7 +109,11 @@ const ValidatorsList = ({
 	const toggleSelected = (validator) => {
 		const { stashId } = validator;
 
-		if (tempSelectedValidatorsList.length === 16 && !tempSelectedValidators[stashId]) return;
+		if (
+			tempSelectedValidatorsList.length === 16 &&
+			!tempSelectedValidators[stashId]
+		)
+			return;
 
 		setTempSelectedValidators({
 			...tempSelectedValidators,
@@ -93,9 +137,15 @@ const ValidatorsList = ({
 		else return 0;
 	});
 
-	const selectedValidatorsList = Object.values(selectedValidators).filter(v => !isNil(v));
-	const amountPerValidator = Number((totalAmount / selectedValidatorsList.length).toFixed(2));
-	const tempSelectedValidatorsList = Object.values(tempSelectedValidators).filter(v => !isNil(v));
+	const selectedValidatorsList = Object.values(selectedValidators).filter(
+		(v) => !isNil(v)
+	);
+	const amountPerValidator = Number(
+		(totalAmount / selectedValidatorsList.length).toFixed(2)
+	);
+	const tempSelectedValidatorsList = Object.values(
+		tempSelectedValidators
+	).filter((v) => !isNil(v));
 
 	if (disableList) {
 		return (
@@ -106,7 +156,9 @@ const ValidatorsList = ({
 						alt="empty-state"
 						className="w-64 h-64"
 					/>
-					<span className="text-sm text-gray-500">Fill all inputs to see the most rewarding validators...</span>
+					<span className="text-sm text-gray-500">
+						Fill all inputs to see the most rewarding validators...
+					</span>
 				</div>
 			</div>
 		);
@@ -115,15 +167,16 @@ const ValidatorsList = ({
 	return (
 		<div className="rounded-xl border border-gray-200 px-8 py-6 mt-4">
 			{!editMode ? (
-				<div className="select-none flex items-center justify-between">
+				<div className="select-none flex flex-col justify-center">
 					<h1 className="font-semibold text-gray-700 text-2xl">
-						Suggested Validators ({ selectedValidatorsList.length })
+						Suggested Validators
 					</h1>
-					<Edit2
+					<p className="text-gray-600 text-sm">Found {selectedValidatorsList.length} suggestions</p>
+					{/* <Edit2
 						size="1.5rem"
 						className="cursor-pointer"
 						onClick={toggleEditMode}
-					/>
+					/> */}
 				</div>
 			) : (
 				<div className="select-none flex items-center justify-between">
@@ -137,9 +190,7 @@ const ValidatorsList = ({
 							/>
 						</div>
 						<div>
-							<h1 className="text-gray-700 text-xl">
-								Edit Validators
-							</h1>
+							<h1 className="text-gray-700 text-xl">Edit Validators</h1>
 							<span className="text-gray-500">
 								{tempSelectedValidatorsList.length} / 16 selections
 							</span>
@@ -161,34 +212,41 @@ const ValidatorsList = ({
 				</div>
 			)}
 			<div className="mt-4 overflow-auto h-64">
-				{editMode && sortedValidators.map(validator => (
-					<ValidatorInfo
-						editMode
-						key={validator.stashId}
-						name={validator.name}
-						stashId={validator.stashId}
-						riskScore={Number(validator.riskScore).toFixed(2)}
-						amountPerValidator={{
-							currency: amountPerValidator,
-							subCurrency: amountPerValidator,
-						}}
-						selected={tempSelectedValidators[validator.stashId]}
-						toggleSelected={() => toggleSelected(validator)}
-					/>
-				))}
-				{!editMode && selectedValidatorsList.map(validator => (
-					<ValidatorInfo
-						key={validator.stashId}
-						name={validator.name}
-						stashId={validator.stashId}
-						riskScore={Number(validator.riskScore).toFixed(2)}
-						amountPerValidator={{
-							currency: amountPerValidator,
-							subCurrency: amountPerValidator,
-						}}
-						onProfile={() => window.open(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`, '_blank')}
-					/>
-				))}
+				{editMode &&
+					sortedValidators.map((validator) => (
+						<ValidatorInfo
+							editMode
+							key={validator.stashId}
+							name={validator.name}
+							stashId={validator.stashId}
+							riskScore={Number(validator.riskScore).toFixed(2)}
+							amountPerValidator={{
+								currency: amountPerValidator,
+								subCurrency: amountPerValidator,
+							}}
+							selected={tempSelectedValidators[validator.stashId]}
+							toggleSelected={() => toggleSelected(validator)}
+						/>
+					))}
+				{!editMode &&
+					selectedValidatorsList.map((validator) => (
+						<ValidatorInfo
+							key={validator.stashId}
+							name={validator.name}
+							stashId={validator.stashId}
+							riskScore={Number(validator.riskScore).toFixed(2)}
+							amountPerValidator={{
+								currency: amountPerValidator,
+								subCurrency: amountPerValidator,
+							}}
+							onProfile={() =>
+								window.open(
+									`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`,
+									"_blank"
+								)
+							}
+						/>
+					))}
 				{!editMode && !validators.length && (
 					<div className="flex-center">
 						<img
@@ -196,7 +254,9 @@ const ValidatorsList = ({
 							alt="empty-state"
 							className="w-64 h-64"
 						/>
-						<span className="text-sm text-gray-500">Select risk for suggestions...</span>
+						<span className="text-sm text-gray-500">
+							Select risk for suggestions...
+						</span>
 					</div>
 				)}
 			</div>
