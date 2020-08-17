@@ -23,7 +23,7 @@ const ResultCardInsight = ({
 				<PopoverTrigger>
 					<HelpCircle size="1rem" cursor="pointer" strokeOpacity="0.75" />
 				</PopoverTrigger>
-				<PopoverContent zIndex={50} _focus={{ outline: "none" }} border="none">
+				<PopoverContent zIndex={50} _focus={{ outline: "none" }} bg="gray.700" border="none">
 					<PopoverArrow />
 					<PopoverBody>{popoverContent}</PopoverBody>
 				</PopoverContent>
@@ -77,16 +77,16 @@ const ExpectedReturnsCard = ({
 					supportValue={`$${returns.subCurrency}`}
 					emptyState={!result.returns}
 					popoverContent={
-						<span className="text-sm text-gray-600">
+						<span className="text-sm text-white bg-gray-800">
 							These returns are calculated for your entered stake amount, time
 							period and risk preference. To learn about how we calculate these
-							returns click{" "}
+							returns{" "}
 							<a
-								href="https://github.com/buidl-labs/yieldscan-frontend/wiki/%5BWIP%5D-Returns-Calculation-Mechanism"
+								href="https://github.com/buidl-labs/yieldscan-frontend/wiki/Returns-Calculation-Mechanism"
 								target="_blank"
-								className="text-blue-500"
+								className="underline"
 							>
-								here
+								click here
 							</a>
 							.
 						</span>
@@ -106,7 +106,7 @@ const ExpectedReturnsCard = ({
 					supportValue={`$${portfolio.subCurrency}`}
 					emptyState={!result.returns}
 					popoverContent={
-						<span className="text-sm text-gray-600">
+						<span className="text-sm text-white">
 							This is the estimated value of your staking portfolio based on
 							your inputs. This is the sum of your staking amount and your
 							expected returns.
@@ -126,7 +126,7 @@ const ExpectedReturnsCard = ({
 					}
 					emptyState={isNil(result.yieldPercentage)}
 					popoverContent={
-						<span className="text-sm text-gray-600">
+						<span className="text-sm text-white">
 							This is the expected percentage return for the time period you
 							input.
 						</span>
