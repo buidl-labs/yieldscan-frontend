@@ -49,12 +49,12 @@ const Header = () => {
 						Connect Wallet
 					</button>
 				) : (
-					<Popover trigger="hover">
+					<Popover trigger="click">
 						<PopoverTrigger>
 							<div className="flex items-center mr-8">
 								<Identicon address={get(stashAccount, "address")} />
 								<div className="cursor-pointer ml-2">
-									<h3 className="flex items-center text-gray-800 -mb-1">
+									<h3 className="flex items-center text-gray-900 -mb-1">
 										{get(stashAccount, "meta.name", "")}
 									</h3>
 									<span className="text-gray-500 text-xs">
@@ -66,20 +66,29 @@ const Header = () => {
 						</PopoverTrigger>
 						<PopoverContent
 							zIndex={50}
-							width="16rem"
-							backgroundColor="gray.900"
+							maxWidth="20rem"
+							backgroundColor="gray.700"
+							border="none"
 						>
-							<PopoverArrow />
-							<div className="flex flex-col justify-center my-2 bg-gray-900 text-white w-full">
+							<p className="text-white text-xxs tracking-widest pt-2 pl-2">
+								ACCOUNTS
+							</p>
+							<div className="flex flex-col justify-center my-2 text-white w-full">
 								{accountsWithoutCurrent.map((account) => (
-									<button
-										key={account.address}
-										className="flex items-center rounded px-4 py-1 w-full truncate hover:bg-gray-600 hover:text-gray-200"
-										onClick={() => setStashAccount(account)}
-									>
-										<Identicon address={account.address} size="2rem" />
-										<span className="ml-2">{account.meta.name}</span>
-									</button>
+									<>
+										<button
+											key={account.address}
+											className="flex items-center rounded px-4 py-2 w-full truncate bg-gray-800 hover:bg-gray-700 hover:text-gray-200"
+											onClick={() => setStashAccount(account)}
+										>
+											<Identicon address={account.address} size="2rem" />
+											<span className="flex flex-col items-start ml-2">
+												<span>{account.meta.name}</span>
+												<span className="text-xs text-gray-500">{account.address.slice(0, 6) + "..." + account.address.slice(-6)}</span>
+											</span>
+										</button>
+										{accountsWithoutCurrent[accountsWithoutCurrent.length - 1] !== account && <hr className="border-gray-700" />}
+									</>
 								))}
 							</div>
 						</PopoverContent>
