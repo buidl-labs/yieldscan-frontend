@@ -40,14 +40,16 @@ const RewardCalculatorPage = () => {
 
 	const [loading, setLoading] = useState(false);
 	const [amount, setAmount] = useState(transactionState.stakingAmount || 1000);
-	const [risk, setRisk] = useState(transactionState.riskPreference || 'Medium');
+	const [risk, setRisk] = useState(transactionState.riskPreference || "Medium");
 	const [timePeriodValue, setTimePeriod] = useState(
 		transactionState.timePeriodValue || 12
 	);
 	const [timePeriodUnit, setTimePeriodUnit] = useState(
 		transactionState.timePeriodUnit || "months"
 	);
-	const [compounding, setCompounding] = useState(transactionState.compounding || true);
+	const [compounding, setCompounding] = useState(
+		transactionState.compounding || true
+	);
 	const [selectedValidators, setSelectedValidators] = useState({});
 
 	const [validatorMap, setValidatorMap] = useState(
@@ -182,8 +184,7 @@ const RewardCalculatorPage = () => {
 		router.push(`${Routes.VALIDATORS}?advanced=true`);
 	};
 
-	if (false) {
-		// accountInfoLoading || loading) {
+	if (accountInfoLoading || loading) {
 		return (
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">
