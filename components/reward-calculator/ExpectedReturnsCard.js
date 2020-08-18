@@ -34,7 +34,7 @@ const ResultCardInsight = ({
 		) : (
 			<>
 				<h3 className="text-2xl">{value}</h3>
-				<span hidden className="text-sm">
+				<span className="text-sm">
 					{supportValue}
 				</span>
 			</>
@@ -75,7 +75,16 @@ const ExpectedReturnsCard = ({
 								preserveValue
 							/>
 						}
-						supportValue={`$${returns.subCurrency}`}
+						supportValue={
+							<CountUp
+								end={returns.subCurrency}
+								duration={0.5}
+								decimals={2}
+								prefix={"$"}
+								suffix={" USD"}
+								preserveValue
+							/>
+						}
 						emptyState={!result.returns}
 						popoverContent={
 							<span className="text-sm text-white bg-gray-800">
@@ -104,7 +113,16 @@ const ExpectedReturnsCard = ({
 								preserveValue
 							/>
 						}
-						supportValue={`$${portfolio.subCurrency}`}
+						supportValue={
+							<CountUp
+								end={portfolio.subCurrency}
+								duration={0.5}
+								decimals={2}
+								prefix={"$"}
+								suffix={" USD"}
+								preserveValue
+							/>
+						}
 						emptyState={!result.returns}
 						popoverContent={
 							<span className="text-sm text-white">
