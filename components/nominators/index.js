@@ -44,7 +44,7 @@ const Nominators = () => {
 			<h1 className="text-2xl text-gray-800 font-semibold">Nominators</h1>
 
 			<div className="flex w-full">
-				<div className="w-2/3">
+				<div className="w-3/4">
 					<div className="mt-6">
 						<p className="text-gray-600 text-xs mb-2 tracking-widest">
 							TOP NOMINATORS
@@ -55,26 +55,28 @@ const Nominators = () => {
 				</div>
 				<div className="sticky top-0 self-start pt-8 ml-8">
 					<div
-						className="shadow-xl flex flex-col rounded-lg pt-16 pb-10 px-12 text-white"
+						className="shadow-xl flex flex-col rounded-lg pt-16 pb-10 pl-10 pr-16 text-white min-w-max-content"
 						style={{ background: "#1F495B" }}
 					>
 						<h1 className="text-4xl">{nominatorsData.stats.nominatorsCount}</h1>
-						<h3 className="text-lg">Active Nominators</h3>
+						<h3 className="text-base">Active Nominators</h3>
 					</div>
 					<div
-						className="shadow-xl flex flex-col rounded-lg my-10 pt-16 pb-10 px-12 text-white"
+						className="shadow-xl flex flex-col rounded-lg my-10 pt-16 pb-10 pl-10 pr-16 text-white min-w-max-content"
 						style={{ background: "#1F495B" }}
 					>
 						<h1 className="text-4xl">
-							{Math.trunc(nominatorsData.stats.totalAmountStaked)} KSM
+							{Math.trunc(nominatorsData.stats.totalAmountStaked)}{" "}
+							<span className="text-xl">KSM</span>
 						</h1>
-						<h3 className="text-lg">Total Amount Staked</h3>
+						<h3 className="text-base">Total Amount Staked</h3>
 					</div>
-					<div className="shadow-xl flex flex-col rounded-lg pt-16 pb-10 px-12 bg-teal-500 text-white">
+					<div className="shadow-xl flex flex-col rounded-lg pt-16 pb-10 pl-10 pr-16 bg-teal-500 text-white min-w-max-content">
 						<h1 className="text-4xl">
-							{Math.trunc(nominatorsData.stats.totalRewards)} KSM
+							{Math.trunc(nominatorsData.stats.totalRewards)}{" "}
+							<span className="text-xl">KSM</span>
 						</h1>
-						<h3 className="text-lg">Total Rewards</h3>
+						<h3 className="text-base">Total Rewards</h3>
 					</div>
 				</div>
 			</div>
