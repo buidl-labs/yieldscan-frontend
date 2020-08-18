@@ -5,10 +5,10 @@ import { ExternalLink } from "react-feather";
 
 const MemberCard = ({ name, accountId, backing, totalBalance, numberOfBackers, onProfile }) => {
 	return (
-		<div className="flex items-center justify-between rounded-lg border border-gray-300 py-2 px-10 my-2">
+		<div className="flex items-center justify-between rounded-lg border border-gray-200 py-3 px-10 my-2">
 			<div className="flex items-center cursor-pointer" onClick={onProfile}>
 				<div className="mr-8"><Identicon address={accountId} size="3rem" /></div>
-				<div className="text-gray-700 cursor-pointer" onClick={onProfile}>
+				<div className="text-gray-900 cursor-pointer" onClick={onProfile}>
 					<span className="font-semibold">{name || stashId.slice(0, 18) + '...' || '-' }</span>
 					<div className="flex items-center">
 						<span className="text-xs mr-2">View Profile</span>
