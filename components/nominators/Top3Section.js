@@ -35,7 +35,7 @@ const TopNominatorCard = ({
 		<span className="text-gray-600 font-semibold text-xs mt-4">
 			Total Amount Staked
 		</span>
-		<h5 className="text-base">{totalStake}</h5>
+		<h5 className="text-base">{totalStake.toFixed(3)}</h5>
 		<span className="text-gray-600 font-semibold text-xs mt-4">
 			Nominations
 		</span>
