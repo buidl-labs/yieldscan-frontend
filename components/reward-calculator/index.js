@@ -29,22 +29,7 @@ const RewardCalculatorPage = () => {
 	const setTransactionState = useTransaction(
 		(state) => state.setTransactionState
 	);
-	const transactionState = useTransaction((state) => {
-		let _returns = get(result, "returns"),
-			_yieldPercentage = get(result, "yieldPercentage");
-		return {
-			...state,
-			stakingAmount: 1000,
-			riskPreference: "Medium",
-			timePeriodValue: "12",
-			timePeriodUnit: "months",
-			compounding: true,
-			returns: _returns,
-			yieldPercentage: _yieldPercentage,
-			validatorMap:
-				get(validatorMap, "Medium") && cloneDeep(validatorMap["Medium"]),
-		};
-	});
+	const transactionState = useTransaction();
 	const previousValidatorMap = useTransaction((state) => state.validatorMap);
 	const {
 		stashAccount,
@@ -54,15 +39,15 @@ const RewardCalculatorPage = () => {
 	} = useAccounts();
 
 	const [loading, setLoading] = useState(false);
-	const [amount, setAmount] = useState(transactionState.stakingAmount);
-	const [risk, setRisk] = useState(transactionState.riskPreference);
+	const [amount, setAmount] = useState(transactionState.stakingAmount || 1000);
+	const [risk, setRisk] = useState(transactionState.riskPreference || 'Medium');
 	const [timePeriodValue, setTimePeriod] = useState(
-		transactionState.timePeriodValue
+		transactionState.timePeriodValue || 12
 	);
 	const [timePeriodUnit, setTimePeriodUnit] = useState(
 		transactionState.timePeriodUnit || "months"
 	);
-	const [compounding, setCompounding] = useState(transactionState.compounding);
+	const [compounding, setCompounding] = useState(transactionState.compounding || true);
 	const [selectedValidators, setSelectedValidators] = useState({});
 
 	const [validatorMap, setValidatorMap] = useState(
@@ -70,13 +55,13 @@ const RewardCalculatorPage = () => {
 	); // map with low/med/high risk sets
 	const [result, setResult] = useState({});
 
-	useEffect(() => {
-		if (get(bondedAmount, "currency")) {
-			setAmount(
-				Number(Math.max((amount || 0) - bondedAmount.currency, 0).toFixed(4))
-			);
-		}
-	}, [bondedAmount]);
+	// useEffect(() => {
+	// 	if (get(bondedAmount, "currency")) {
+	// 		setAmount(
+	// 			Number(Math.max((amount || 0) - bondedAmount.currency, 0).toFixed(4))
+	// 		);
+	// 	}
+	// }, [bondedAmount]);
 
 	useEffect(() => {
 		if (get(validatorMap, risk)) {
@@ -197,7 +182,8 @@ const RewardCalculatorPage = () => {
 		router.push(`${Routes.VALIDATORS}?advanced=true`);
 	};
 
-	if (accountInfoLoading || loading) {
+	if (false) {
+		// accountInfoLoading || loading) {
 		return (
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">
@@ -241,8 +227,8 @@ const RewardCalculatorPage = () => {
 							{/* <a href="#" className="text-blue-500">Learn More?</a> */}
 						</div>
 						<AmountInput
+							bonded={get(bondedAmount, "currency")}
 							value={{ currency: amount, subCurrency: (amount || 0) * 2 }}
-							bonded={bondedAmount}
 							onChange={setAmount}
 						/>
 					</div>

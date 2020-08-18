@@ -120,7 +120,7 @@ const ExpectedReturnsCard = ({
 							<CountUp
 								end={result.yieldPercentage}
 								duration={0.5}
-								decimals={3}
+								decimals={2}
 								suffix={"%"}
 								preserveValue
 							/>
