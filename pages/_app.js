@@ -1,3 +1,5 @@
+import { ConsentGate, MetomicProvider } from "@metomic/react";
+
 import { ThemeProvider, theme } from "@chakra-ui/core";
 import '../styles/index.css';
 
@@ -26,8 +28,10 @@ const customTheme = {
 
 export default function YieldScanApp({ Component, pageProps }) {
   return (
-    <ThemeProvider theme={customTheme}>
-      <Component {...pageProps} />
-    </ThemeProvider>
-  );
+		<ThemeProvider theme={customTheme}>
+			<MetomicProvider projectId={process.env.NEXT_PUBLIC_METOMIC_PROJECT_ID}>
+				<Component {...pageProps} />
+			</MetomicProvider>
+		</ThemeProvider>
+	);
 };
