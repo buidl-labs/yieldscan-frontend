@@ -1,5 +1,6 @@
 import Identicon from "@components/common/Identicon";
 import { ExternalLink } from "react-feather";
+import formatCurrency from "@lib/format-currency";
 
 const MemberCard = ({
 	name,
@@ -37,7 +38,10 @@ const MemberCard = ({
 						Total Amount Staked
 					</span>
 					<h3 className="text-base">
-						{(totalAmountStaked || 0).toFixed(3)} KSM
+						{formatCurrency.methods.formatNumber(
+							(totalAmountStaked || 0).toFixed(3)
+						)}{" "}
+						KSM
 					</h3>
 				</div>
 				<div className="flex flex-col w-20">

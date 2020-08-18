@@ -1,5 +1,6 @@
 import Identicon from "@components/common/Identicon";
 import { ExternalLink } from "react-feather";
+import formatCurrency from "@lib/format-currency";
 
 const TopNominatorCard = ({
 	name,
@@ -29,13 +30,13 @@ const TopNominatorCard = ({
 		<span className="text-gray-600 font-semibold text-xs mt-6">
 			Daily Earnings
 		</span>
-		<h5 className="text-base">
-			{(dailyEarnings || 0).toFixed(2)} KSM
-		</h5>
+		<h5 className="text-base">{(dailyEarnings || 0).toFixed(2)} KSM</h5>
 		<span className="text-gray-600 font-semibold text-xs mt-4">
 			Total Amount Staked
 		</span>
-		<h5 className="text-base">{totalStake.toFixed(3)}</h5>
+		<h5 className="text-base">
+			{formatCurrency.methods.formatNumber(totalStake.toFixed(3))}
+		</h5>
 		<span className="text-gray-600 font-semibold text-xs mt-4">
 			Nominations
 		</span>
