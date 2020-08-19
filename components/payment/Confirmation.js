@@ -5,16 +5,23 @@ import { ArrowRight } from "react-feather";
 import formatCurrency from "@lib/format-currency";
 
 const ValidatorInfo = ({ name, stashId, riskScore, amountPerValidator }) => (
-	<div className="rounded-lg flex items-center border border-gray-200 px-4 mb-2">
+	<div className="rounded-lg flex items-center border border-gray-200 px-4 py-3 my-1">
 		<div className="mr-4">
 			<Identicon address={stashId} />
 		</div>
 		<div className="flex flex-col items-start">
-			<h3 className="text-gray-700 text-sm">{name}</h3>
-			<span className="flex text-gray-500 text-sm">
-				Risk Score
-				<RiskTag risk={Number(riskScore).toFixed(2)} />
-			</span>
+			<h3 className="text-gray-900 text-base">
+				{name
+					? name.length > 16 && name.slice(0, 6) + "..." + name.slice(-6)
+					: stashId.slice(0, 6) + "..." + stashId.slice(-6) || "-"}
+			</h3>
+			{/* <span className="flex items-center text-gray-500 text-sm rounded-full border border-gray-200 mt-1 pl-4">
+				<span className="text-xs">Risk Score</span>
+				<RiskTag
+					risk={Number(riskScore).toFixed(2)}
+					classes="ml-2 px-4 py-1 rounded-full text-xs"
+				/>
+			</span> */}
 		</div>
 		<div className="flex flex-col ml-auto">
 			<span className="text-teal-500">Stake</span>
@@ -45,11 +52,11 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 			</span>
 
 			<div className="mt-6 rounded-xl border border-gray-200 px-8 py-3 mt-4">
-				{false && (
+				{/* {false && (
 					<h1 className="text-gray-700 text-2xl">Selected Validators</h1>
-				)}
+				)} */}
 				<div className="flex justify-between items-center">
-					<div className="flex justify-between items-center rounded-full px-4 py-2 border border-gray-200">
+					<div className="flex justify-between items-center rounded-full pl-4 border border-gray-200">
 						<span>Estimated Returns</span>
 						<div className="ml-2 px-3 py-2 bg-teal-500 text-white rounded-full">
 							{formatCurrency.methods.formatAmount(
@@ -59,9 +66,18 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 							)}
 						</div>
 					</div>
-					<div className="flex justify-between items-center rounded-full px-4 py-2 border border-gray-200">
+					<div className="flex justify-between items-center rounded-full pl-4 border border-gray-200">
 						<span>Risk Preference</span>
-						<div className="ml-2 px-3 py-2 bg-orange-500 text-white rounded-full">
+						<div
+							className={`ml-2 px-4 py-2 text-white rounded-full ${
+								get(transactionState, "riskPreference") === "Low"
+									? "bg-green-400"
+									: get(transactionState, "riskPreference") === "Medium"
+									? "bg-orange-500"
+									: get(transactionState, "riskPreference") === "High" &&
+									  "bg-red-500"
+							}`}
+						>
 							{get(transactionState, "riskPreference")}
 						</div>
 					</div>
@@ -84,7 +100,7 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 			<div
 				className={`
 					mt-8 mb-12 rounded text-gray-900 flex items-center justify-between
-					${!bonded.currency && "w-1/3"}
+					${!bonded.currency && "w-5/12"}
 				`}
 			>
 				{!!bonded.currency && (

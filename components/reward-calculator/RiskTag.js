@@ -14,10 +14,10 @@ const getStyleByRisk = (risk) => {
 	}
 };
 
-const RiskTag = ({ risk }) => {
+const RiskTag = ({ risk, classes }) => {
 	const riskCategory = getRiskCategory(risk);
 	return (
-		<span className={`ml-2 px-2 rounded ${getStyleByRisk(riskCategory)}`}>{risk}</span>
+		<span className={`${classes ? classes : "ml-2 px-2 rounded"} ${getStyleByRisk(riskCategory)}`}>{risk}</span>
 	);
 };
 

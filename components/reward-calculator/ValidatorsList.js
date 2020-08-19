@@ -58,9 +58,12 @@ const ValidatorInfo = ({
 						</span>
 						{/* <ExternalLink size="1rem" /> */}
 					</div>
-					<span className="select-none flex text-gray-500 text-sm">
-						Risk Score
-						<RiskTag risk={riskScore} />
+					<span className="select-none flex text-gray-500 items-center text-gray-500 text-sm rounded-full border border-gray-200 mt-1 pl-4">
+						<span className="text-xs">Risk Score</span>
+						<RiskTag
+							risk={Number(riskScore).toFixed(2)}
+							classes="ml-2 px-4 py-1 rounded-full text-xs"
+						/>
 					</span>
 				</div>
 			</div>
