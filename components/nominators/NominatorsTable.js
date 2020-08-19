@@ -31,17 +31,20 @@ const MemberCard = ({
 					<span className="text-xs text-gray-500 font-semibold">
 						Daily Earnings
 					</span>
-					<h3 className="text-base">{(dailyEarnings || 0).toFixed(2)} KSM</h3>
+					<h3 className="text-base">
+						{formatCurrency.methods.formatAmount(
+							Math.trunc((dailyEarnings || 0) * 10 ** 12)
+						)}
+					</h3>
 				</div>
 				<div className="flex flex-col mx-8 w-40">
 					<span className="text-xs text-gray-500 font-semibold">
 						Total Amount Staked
 					</span>
 					<h3 className="text-base">
-						{formatCurrency.methods.formatNumber(
-							(totalAmountStaked || 0).toFixed(3)
-						)}{" "}
-						KSM
+						{formatCurrency.methods.formatAmount(
+							Math.trunc((totalAmountStaked || 0) * 10 ** 12)
+						)}
 					</h3>
 				</div>
 				<div className="flex flex-col w-20">

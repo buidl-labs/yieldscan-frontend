@@ -4,6 +4,7 @@ import {
 	Input,
 	InputRightElement,
 } from "@chakra-ui/core";
+import formatCurrency from "@lib/format-currency";
 
 const AmountInputDefault = ({ bonded, value, onChange }) => {
 	const [isEditable, setIsEditable] = React.useState(true);
@@ -37,7 +38,7 @@ const AmountInputDefault = ({ bonded, value, onChange }) => {
 						backgroundColor={!isEditable && "gray.200"}
 					/>
 					<h6 className="absolute z-20 bottom-0 left-0 ml-8 mb-3 text-gray-600 text-sm">
-						${value.subCurrency.toFixed(2)}
+						${formatCurrency.methods.formatNumber(value.subCurrency.toFixed(2))}
 					</h6>
 				</InputGroup>
 				{/* <div className="flex flex-col ml-6">

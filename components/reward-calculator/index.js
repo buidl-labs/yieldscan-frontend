@@ -69,7 +69,6 @@ const RewardCalculatorPage = () => {
 
 	useEffect(() => {
 		convertCurrency(amount || 0).then((convertedAmount) => {
-			console.log(convertedAmount);
 			setSubCurrency(convertedAmount);
 		});
 	}, [amount]);
@@ -281,7 +280,7 @@ const RewardCalculatorPage = () => {
 					onPayment={onPayment}
 				/>
 				<ValidatorsList
-					disableList={!totalAmount || !timePeriodValue || !risk}
+					// disableList={!totalAmount || !timePeriodValue || !risk}
 					totalAmount={totalAmount}
 					validators={get(validatorMap, "total", [])}
 					selectedValidators={selectedValidators}

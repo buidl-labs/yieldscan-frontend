@@ -80,7 +80,7 @@ const Nominators = () => {
 				</div>
 				<div className="sticky top-0 self-start pt-8 ml-8">
 					<div
-						className="shadow-xl flex flex-col rounded-lg pt-16 pb-10 pl-10 pr-16 text-white min-w-max-content"
+						className="shadow-xl flex flex-col rounded-lg pb-10 h-48 w-64 justify-end pl-10 text-white min-w-max-content"
 						style={{ background: "#1F495B" }}
 					>
 						<h1 className="text-4xl">
@@ -91,17 +91,21 @@ const Nominators = () => {
 						<h3 className="text-base">Active Nominators</h3>
 					</div>
 					<div
-						className="shadow-xl flex flex-col rounded-lg my-10 pt-16 pb-10 pl-10 pr-16 text-white min-w-max-content"
+						className="shadow-xl flex flex-col rounded-lg my-10 pb-10 h-48 w-64 justify-end pl-10 text-white min-w-max-content"
 						style={{ background: "#1F495B" }}
 					>
 						<h1 className="text-4xl">
-							{formatCurrency.methods.formatNumber(
-								Math.trunc(nominatorsData.stats.totalAmountStaked)
-							)}{" "}
+							{formatCurrency.methods
+								.formatAmount(
+									Math.trunc(
+										nominatorsData.stats.totalAmountStaked * 10 ** 12
+									).toString()
+								)
+								.slice(0, -4)}{" "}
 							<span className="text-xl">KSM</span>
 						</h1>
 						{totalAmountStakedSubCurrency && (
-							<p>
+							<p className="-mt-2 opacity-50">
 								${" "}
 								{formatCurrency.methods.formatNumber(
 									totalAmountStakedSubCurrency.toFixed(2)
@@ -109,17 +113,21 @@ const Nominators = () => {
 								USD
 							</p>
 						)}
-						<h3 className="text-base">Total Amount Staked</h3>
+						<h3 className="text-base mt-3">Total Amount Staked</h3>
 					</div>
-					<div className="shadow-xl flex flex-col rounded-lg pt-16 pb-10 pl-10 pr-16 bg-teal-500 text-white min-w-max-content">
+					<div className="shadow-xl flex flex-col rounded-lg pb-10 h-48 w-64 justify-end pl-10 bg-teal-500 text-white min-w-max-content">
 						<h1 className="text-4xl">
-							{formatCurrency.methods.formatNumber(
-								nominatorsData.stats.totalRewards.toFixed(3)
-							)}{" "}
+							{formatCurrency.methods
+								.formatAmount(
+									Math.trunc(
+										nominatorsData.stats.totalRewards * 10 ** 12
+									).toString()
+								)
+								.slice(0, -4)}{" "}
 							<span className="text-xl">KSM</span>
 						</h1>
 						{totalRewardsSubCurrency && (
-							<p>
+							<p className="-mt-2 opacity-75">
 								${" "}
 								{formatCurrency.methods.formatNumber(
 									totalRewardsSubCurrency.toFixed(2)
@@ -127,7 +135,7 @@ const Nominators = () => {
 								USD
 							</p>
 						)}
-						<h3 className="text-base">Total Rewards</h3>
+						<h3 className="text-base mt-3">Total Rewards</h3>
 					</div>
 				</div>
 			</div>

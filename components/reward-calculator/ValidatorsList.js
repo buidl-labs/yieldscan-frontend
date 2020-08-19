@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import Routes from "@lib/routes";
 import Identicon from "@components/common/Identicon";
 import CountUp from "react-countup";
+import formatCurrency from "@lib/format-currency";
 
 const ValidatorInfo = ({
 	name,
@@ -67,13 +68,16 @@ const ValidatorInfo = ({
 				<div className="flex flex-col ml-5">
 					<span className="text-teal-500 text-sm">Stake</span>
 					<h5 className="text-gray-700 text-lg truncate">
-						<CountUp
+						{formatCurrency.methods.formatAmount(
+							Math.trunc(amountPerValidator.currency * 10 ** 12)
+						)}
+						{/* <CountUp
 							end={amountPerValidator.currency}
 							duration={0.5}
 							decimals={3}
 							suffix={" KSM"}
 							preserveValue
-						/>
+						/> */}
 					</h5>
 					<span hidden className="text-gray-500 text-sm">
 						<CountUp
@@ -141,7 +145,7 @@ const ValidatorsList = ({
 		(v) => !isNil(v)
 	);
 	const amountPerValidator = Number(
-		(totalAmount / selectedValidatorsList.length).toFixed(2)
+		totalAmount / selectedValidatorsList.length
 	);
 	const tempSelectedValidatorsList = Object.values(
 		tempSelectedValidators
@@ -171,7 +175,9 @@ const ValidatorsList = ({
 					<h1 className="font-semibold text-gray-700 text-2xl">
 						Suggested Validators
 					</h1>
-					<p className="text-gray-600 text-sm">Found {selectedValidatorsList.length} suggestions</p>
+					<p className="text-gray-600 text-sm">
+						Found {selectedValidatorsList.length} suggestions
+					</p>
 					{/* <Edit2
 						size="1.5rem"
 						className="cursor-pointer"

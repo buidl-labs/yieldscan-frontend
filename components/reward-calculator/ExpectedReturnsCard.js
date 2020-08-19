@@ -71,7 +71,8 @@ const ExpectedReturnsCard = ({
 								end={returns.currency}
 								duration={0.5}
 								decimals={3}
-								suffix={" KSM"}
+								separator=","
+								suffix=" KSM"
 								preserveValue
 							/>
 						}
@@ -80,8 +81,9 @@ const ExpectedReturnsCard = ({
 								end={returns.subCurrency}
 								duration={0.5}
 								decimals={2}
-								prefix={"$"}
-								suffix={" USD"}
+								separator=","
+								prefix="$"
+								suffix=" USD"
 								preserveValue
 							/>
 						}
@@ -109,7 +111,8 @@ const ExpectedReturnsCard = ({
 								end={portfolio.currency}
 								duration={0.5}
 								decimals={3}
-								suffix={" KSM"}
+								separator=","
+								suffix=" KSM"
 								preserveValue
 							/>
 						}
@@ -118,8 +121,9 @@ const ExpectedReturnsCard = ({
 								end={portfolio.subCurrency}
 								duration={0.5}
 								decimals={2}
-								prefix={"$"}
-								suffix={" USD"}
+								separator=","
+								prefix="$"
+								suffix=" USD"
 								preserveValue
 							/>
 						}
@@ -139,7 +143,7 @@ const ExpectedReturnsCard = ({
 								end={result.yieldPercentage}
 								duration={0.5}
 								decimals={2}
-								suffix={"%"}
+								suffix="%"
 								preserveValue
 							/>
 						}

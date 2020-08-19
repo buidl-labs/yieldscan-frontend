@@ -30,12 +30,18 @@ const TopNominatorCard = ({
 		<span className="text-gray-600 font-semibold text-xs mt-6">
 			Daily Earnings
 		</span>
-		<h5 className="text-base">{(dailyEarnings || 0).toFixed(2)} KSM</h5>
+		<h5 className="text-base">
+			{formatCurrency.methods.formatAmount(
+				Math.trunc((dailyEarnings || 0) * 10 ** 12)
+			)}
+		</h5>
 		<span className="text-gray-600 font-semibold text-xs mt-4">
 			Total Amount Staked
 		</span>
 		<h5 className="text-base">
-			{formatCurrency.methods.formatNumber(totalStake.toFixed(3))}
+			{formatCurrency.methods.formatAmount(
+				Math.trunc((totalStake || 0) * 10 ** 12)
+			)}
 		</h5>
 		<span className="text-gray-600 font-semibold text-xs mt-4">
 			Nominations

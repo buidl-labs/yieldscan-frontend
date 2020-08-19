@@ -21,7 +21,7 @@ const ValidatorCard = ({
 }) => (
 	<div
 		className={`
-			flex justify-between items-center py-3 my-1 rounded-lg cursor-pointer transition-all duration-300
+			flex justify-between items-center py-3 my-1 w-full min-w-65-rem rounded-lg cursor-pointer transition-all duration-300
 			${
 				selected
 					? "border-teal-500 border-4 shadow-teal"
@@ -56,39 +56,47 @@ const ValidatorCard = ({
 			</div>
 		</div>
 		<div className="ml-2 mr-4 flex items-center justify-between min-w-40-rem">
-			<div className="flex flex-col">
+			<div className="flex flex-col w-20">
 				<span className="text-xs text-gray-500 font-semibold">Nominators</span>
 				<h3 className="text-base">
 					{formatCurrency.methods.formatNumber(nominators)}
 				</h3>
 			</div>
-			<div className="flex flex-col">
+			<div className="flex flex-col w-20">
 				<span className="text-xs text-gray-500 font-semibold">Risk Score</span>
 				<div className="rounded-full font-semibold">
 					<RiskTag risk={riskScore} />
 				</div>
 			</div>
-			<div className="flex flex-col">
+			<div className="flex flex-col w-32">
 				<span className="text-xs text-gray-500 font-semibold">Own Stake</span>
 				<h3 className="text-base">
-					{formatCurrency.methods.formatNumber(ownStake)} KSM
+					{formatCurrency.methods.formatAmount(
+						Math.trunc((ownStake || 0) * 10 ** 12)
+					)}
 				</h3>
 			</div>
-			<div className="flex flex-col">
+			<div className="flex flex-col w-32">
 				<span className="text-xs text-gray-500 font-semibold">Other Stake</span>
 				<h3 className="text-base">
-					{formatCurrency.methods.formatNumber(otherStake)} KSM
+					{formatCurrency.methods.formatAmount(
+						Math.trunc((otherStake || 0) * 10 ** 12)
+					)}
 				</h3>
 			</div>
-			<div className="flex flex-col">
+			<div className="flex flex-col w-20">
 				<span className="text-xs text-gray-500 font-semibold">Commission</span>
 				<h3 className="text-base">{commission}%</h3>
 			</div>
-			<div className="flex flex-col">
+			<div className="flex flex-col w-32">
 				<span className="text-xs text-gray-500 font-semibold">
 					Estimated Returns <sup>*</sup>
 				</span>
-				<h3 className="text-base">{returnsPer100KSM.toFixed(4)} KSM</h3>
+				<h3 className="text-base">
+					{formatCurrency.methods.formatAmount(
+						Math.trunc((returnsPer100KSM || 0) * 10 ** 12)
+					)}
+				</h3>
 			</div>
 		</div>
 	</div>
