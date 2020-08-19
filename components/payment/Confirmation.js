@@ -127,7 +127,14 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 					</span>
 					<h3 className="text-2xl">
 						{formatCurrency.methods.formatAmount(
-							Math.trunc(Number(bonded.currency + stakingAmount) * 10 ** 12)
+							Math.trunc(
+								Number(
+									!!bonded.currency
+										? bonded.currency + stakingAmount
+										: stakingAmount
+								) *
+									10 ** 12
+							)
 						)}
 					</h3>
 					{/* <span className="text-gray-500 text-sm">

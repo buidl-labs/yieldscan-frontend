@@ -18,7 +18,7 @@ const EditControllerModal = ({
 	accounts,
 	selectedController,
 	setSelectedController,
-	setControllerEdited
+	setControllerEdited,
 }) => {
 	return (
 		<React.Fragment>
@@ -192,8 +192,8 @@ const Transaction = ({
 				<span className="text-teal-500">Amount</span>
 				<span className="text-black text-xl">
 					{formatCurrency.methods.formatAmount(
-						Math.trunc(stakingAmount) * 10 ** 12)
-					}
+						Math.trunc(stakingAmount * 10 ** 12)
+					)}
 				</span>
 				{/* <span className="text-gray-600 text-sm">${stakingAmount}</span> */}
 			</div>
