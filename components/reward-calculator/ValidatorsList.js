@@ -62,7 +62,7 @@ const ValidatorInfo = ({
 						<span className="text-xs">Risk Score</span>
 						<RiskTag
 							risk={Number(riskScore).toFixed(2)}
-							classes="ml-2 px-4 py-1 rounded-full text-xs"
+							classes="ml-2 px-4 rounded-full text-xs font-bold"
 						/>
 					</span>
 				</div>

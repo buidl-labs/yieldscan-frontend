@@ -17,7 +17,13 @@ const getStyleByRisk = (risk) => {
 const RiskTag = ({ risk, classes }) => {
 	const riskCategory = getRiskCategory(risk);
 	return (
-		<span className={`${classes ? classes : "ml-2 px-2 rounded"} ${getStyleByRisk(riskCategory)}`}>{risk}</span>
+		<span
+			className={`${
+				classes ? classes : "ml-2 px-2 rounded font-bold"
+			} ${getStyleByRisk(riskCategory)}`}
+		>
+			{risk}
+		</span>
 	);
 };
 
