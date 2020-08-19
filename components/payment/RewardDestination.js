@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { get } from 'lodash';
 import { CheckCircle, Circle } from "react-feather";
+import Identicon from '@components/common/Identicon';
 
 const RewardDestination = ({
 	stashAccount,
@@ -34,19 +35,19 @@ const RewardDestination = ({
 			>
 				Feel free to ignore this selection if you don't have knowledge about 2-account system.
 			</p>
-			<p
+			{/* <p
 				hidden={!compounding}
 				className="mt-10 text-orange-500 font-semibold"
 			>
 				When compounding is enabled, reward destination can only be stash account.
-			</p>
+			</p> */}
 			<div className="flex justify-between mt-4">
 				{accounts.length > 1 ? accounts.map(accountType => (
 					<div
 						key={accountType}
 						className={`
-							w-1/2 mr-2 flex items-center rounded-lg border-2 border-teal-500 cursor-pointer px-3 py-2 mb-2
-							${accountType === destination ? 'text-white bg-teal-500' : 'text-gray-600'}
+							w-1/2 mr-2 flex items-center rounded-lg border-gray-500 cursor-pointer px-3 py-2 mb-2
+							${accountType === destination ? 'border-2 border-teal-500' : 'text-gray-600 border'}
 						`}
 						onClick={() => setDestination(accountType)}
 					>
@@ -60,18 +61,18 @@ const RewardDestination = ({
 						</div>
 					</div>
 				)) : (
-					<div className="w-2/3 mr-2 flex items-center rounded-lg text-white bg-teal-500 cursor-pointer px-3 py-2 mb-2">
-						<CheckCircle className="mr-2" />
-						<div className="flex flex-col">
-							<h3>{stashAccount.meta.name}</h3>
-							<span className="text-sm">{stashAccount.address}</span>
+					<div className="mr-2 flex items-center rounded-lg bg-gray-100 border border-gray-200 px-3 py-4 mb-2 w-full mt-4">
+						<Identicon address={stashAccount.address} size="3.25rem" />
+						<div className="ml-2 flex flex-col">
+							<h3 className="text-lg">{stashAccount.meta.name}</h3>
+							<span className="text-xs text-gray-600">{stashAccount.address}</span>
 						</div>
 					</div>
 				)}
 			</div>
 
 			<button
-				className="mt-24 px-6 py-2 shadow-lg rounded-lg text-white bg-teal-500"
+				className="mt-10 px-6 py-2 shadow-teal rounded-lg text-white bg-teal-500"
 				onClick={onConfirm}
 			>
 				Proceed

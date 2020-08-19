@@ -100,7 +100,7 @@ const withDashboardLayout = (children) => {
 		<div>
 			<Header />
 			<div className="dashboard-content fixed flex">
-				<div className="h-full relative sidemenu-container py-10">
+				<div className="h-full relative sidemenu-container py-8">
 					<SideMenu />
 				</div>
 				<div className="h-full core-content overflow-y-scroll">
@@ -114,6 +114,7 @@ const withDashboardLayout = (children) => {
 				.sidemenu-container {
 					width: 13rem;
 					background: #F7FBFF;
+					z-index: 10;
 				}
 				.core-content {
 					width: calc(100vw - 13rem);

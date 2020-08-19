@@ -1,6 +1,7 @@
 import { get } from 'lodash';
 import RiskTag from "@components/reward-calculator/RiskTag";
 import Identicon from '@components/common/Identicon';
+import { ArrowRight } from 'react-feather';
 
 const ValidatorInfo = ({ name, stashId, riskScore, amountPerValidator }) => (
 	<div className="rounded-lg flex items-center border border-gray-200 px-4 mb-2">
@@ -29,36 +30,41 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 	};
 
 	return (
-		<div className="mt-10">
+		<div className="mt-16">
 			<h1 className="text-2xl">Confirmation</h1>
 			<span className="text-gray-600">
-				You are about to stake your KSM on the following validators. Please make sure you understand the risks before proceeding. Read the <a href="google.com" className="text-blue-500 underline">Terms of Service.</a>
+				You are about to stake your KSM on the following validators. Please make
+				sure you understand the risks before proceeding.
 			</span>
 
 			<div className="mt-6 rounded-xl border border-gray-200 px-8 py-3 mt-4">
-				{false && <h1 className="text-gray-700 text-2xl">Selected Validators</h1>}
+				{false && (
+					<h1 className="text-gray-700 text-2xl">Selected Validators</h1>
+				)}
 				<div className="flex justify-between items-center">
 					<div className="flex justify-between items-center rounded-full px-4 py-2 border border-gray-200">
 						<span>Estimated Returns</span>
 						<div className="ml-2 px-3 py-2 bg-teal-500 text-white rounded-full">
-							{get(transactionState, 'returns.currency')} KSM
+							{get(transactionState, "returns.currency")} KSM
 						</div>
 					</div>
 					<div className="flex justify-between items-center rounded-full px-4 py-2 border border-gray-200">
 						<span>Risk Preference</span>
 						<div className="ml-2 px-3 py-2 bg-orange-500 text-white rounded-full">
-							{get(transactionState, 'riskPreference')}
+							{get(transactionState, "riskPreference")}
 						</div>
 					</div>
 				</div>
-				<div className="mt-4 overflow-auto" style={{ height: '12rem' }}>
-					{selectedValidators.map(validator => (
+				<div className="mt-4 overflow-auto" style={{ height: "12rem" }}>
+					{selectedValidators.map((validator) => (
 						<ValidatorInfo
 							key={validator.stashId}
 							name={validator.name || validator.stashId}
 							stashId={validator.stashId}
 							riskScore={validator.riskScore}
-							amountPerValidator={Number((stakingAmount / selectedValidators.length).toFixed(2))}
+							amountPerValidator={Number(
+								(stakingAmount / selectedValidators.length).toFixed(2)
+							)}
 						/>
 					))}
 				</div>
@@ -66,32 +72,43 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 
 			<div
 				className={`
-					my-5 rounded p-4 bg-gray-900 text-white flex items-center justify-around
-					${!bonded.currency && 'w-1/3'}
+					mt-8 mb-12 rounded text-gray-900 flex items-center justify-between
+					${!bonded.currency && "w-1/3"}
 				`}
 			>
 				{!!bonded.currency && (
 					<>
-						<div className="rounded p-3 flex flex-col justify-center">
-							<span className="text-teal-500 text-sm font-semibold">Additional Funds to Bond</span>
-							<h3 className="text-lg font-semibold">{stakingAmount} KSM</h3>
-							<span className="text-gray-200 text-sm">${stakingAmount}</span>
+						<div className="rounded p-3 flex flex-col justify-center border-2 border-teal-500">
+							<span className="text-teal-500 text-sm">
+								Additional Funds to Bond
+							</span>
+							<h3 className="text-2xl">{stakingAmount} KSM</h3>
+							{/* <span className="text-gray-500 text-sm">${stakingAmount}</span> */}
 						</div>
-						<div className="rounded-lg p-2 flex flex-col text-white justify-center">
-							<span className="text-teal-500 text-sm font-semibold">Currently Bonded</span>
-							<h3 className="text-lg font-semibold">{bonded.currency} KSM</h3>
-							<span className="text-gray-200 text-sm">${bonded.subCurrency}</span>
+						<div className="rounded-lg p-2 flex flex-col justify-center">
+							<span className="text-gray-600 text-sm">Currently Bonded</span>
+							<h3 className="text-2xl">{bonded.currency} KSM</h3>
+							{/* <span className="text-gray-500 text-sm">${bonded.subCurrency}</span> */}
 						</div>
+						<ArrowRight />
 					</>
 				)}
-				<div className="rounded-lg p-2 flex flex-col text-white justify-center">
-					<span className="text-teal-500 text-sm font-semibold">Total Staking Amount</span>
-					<h3 className="text-lg font-semibold">
+				<div
+					className={`rounded-lg p-2 flex flex-col justify-center ${
+						!bonded.currency && "bg-gray-100 py-4 pl-6 pr-16 border border-gray-300"
+					}`}
+				>
+					<span
+						className={`text-sm ${!bonded.currency ? "text-teal-500" : "text-gray-600 "}`}
+					>
+						{!!bonded.currency ? "Total" : ""} Staking Amount
+					</span>
+					<h3 className="text-2xl">
 						{Number(bonded.currency + stakingAmount).toFixed(4)} KSM
 					</h3>
-					<span className="text-gray-200 text-sm">
+					{/* <span className="text-gray-500 text-sm">
 						${Number(bonded.subCurrency + stakingAmount).toFixed(4)} KSM
-					</span>
+				</span>*/}
 				</div>
 			</div>
 
