@@ -10,6 +10,7 @@ import {
 	ModalCloseButton,
 	ModalHeader,
 } from "@chakra-ui/core";
+import formatCurrency from "@lib/format-currency";
 
 const EditControllerModal = ({
 	isOpen,
