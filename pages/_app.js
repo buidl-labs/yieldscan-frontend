@@ -1,4 +1,5 @@
 import { ConsentGate, MetomicProvider } from "@metomic/react";
+import * as Sentry from "@sentry/node";
 
 import { ThemeProvider, theme } from "@chakra-ui/core";
 import '../styles/index.css';
@@ -26,11 +27,18 @@ const customTheme = {
   },
 };
 
-export default function YieldScanApp({ Component, pageProps }) {
+if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
+	Sentry.init({
+		enabled: process.env.NODE_ENV === "production",
+		dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+	});
+}
+
+export default function YieldScanApp({ Component, pageProps, err }) {
   return (
 		<ThemeProvider theme={customTheme}>
 			<MetomicProvider projectId={process.env.NEXT_PUBLIC_METOMIC_PROJECT_ID}>
-				<Component {...pageProps} />
+				<Component {...pageProps} err={err} />
 			</MetomicProvider>
 		</ThemeProvider>
 	);
