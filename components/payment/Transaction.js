@@ -189,8 +189,12 @@ const Transaction = ({
 
 			<div className="flex flex-col w-48 border-2 border-gray-300 rounded-lg mt-12 px-4 py-2">
 				<span className="text-teal-500">Amount</span>
-				<span className="text-black text-xl">{stakingAmount} KSM</span>
-				<span className="text-gray-600 text-sm">${stakingAmount * 2}</span>
+				<span className="text-black text-xl">
+					{formatCurrency.methods.formatAmount(
+						Math.trunc(stakingAmount) * 10 ** 12)
+					}
+				</span>
+				{/* <span className="text-gray-600 text-sm">${stakingAmount}</span> */}
 			</div>
 
 			<button

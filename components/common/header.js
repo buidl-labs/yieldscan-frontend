@@ -37,14 +37,6 @@ const Header = () => {
 	const [isStashPopoverOpen, setIsStashPopoverOpen] = useState(false);
 	const [isNetworkOpen, setIsNetworkOpen] = useState(false);
 
-	const [isNetworkOpen, setIsNetworkOpen] = useState(false);
-
-	const handleEscape = e => {
-		if (e.key === 'Esc' || e.key === 'Escape') {
-			setIsNetworkOpen(false);
-		}
-	}
-
 	return (
 		<div className="flex items-center justify-between border border-bottom border-gray-200 bg-white p-8 h-12">
 			<WalletConnectPopover isOpen={isOpen} />
