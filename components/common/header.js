@@ -7,7 +7,6 @@ import {
 } from "@components/wallet-connect";
 import {
 	Popover,
-	PopoverArrow,
 	PopoverTrigger,
 	PopoverContent,
 	useDisclosure,
@@ -15,7 +14,7 @@ import {
 } from "@chakra-ui/core";
 import Identicon from "@components/common/Identicon";
 import EditControllerModal from "@components/overview/EditControllerModal";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import formatCurrency from "@lib/format-currency";
 
 // TODO: replace this with actual global state
@@ -133,6 +132,8 @@ const Header = () => {
 						/>
 						<ChevronDown size="20px" />
 					</button>
+
+					{/* TODO: Use Chakra's popover instead of custom implementation here */}
 					<button
 						onClick={() => {
 							setIsNetworkOpen(false);
@@ -156,13 +157,15 @@ const Header = () => {
 								aria-labelledby="options-menu"
 							>
 								<button
-									href="#"
 									className={`flex items-center px-4 py-2 text-white text-sm leading-5 ${
 										currentNetwork === "Kusama"
 											? "cursor-default bg-gray-600"
 											: "hover:bg-gray-700 focus:bg-gray-700"
 									}  focus:outline-none w-full`}
 									role="menuitem"
+									onClick={() => {
+										setIsNetworkOpen(!isNetworkOpen);
+									}}
 								>
 									<Avatar
 										name="Kusama"
@@ -183,7 +186,6 @@ const Header = () => {
 								aria-labelledby="options-menu"
 							>
 								<button
-									href="#"
 									className="flex items-center px-4 py-2 text-white text-sm leading-5 bg-gray-900 focus:outline-none cursor-default w-full"
 									role="menuitem"
 								>
