@@ -5,6 +5,7 @@ import createPolkadotAPIInstance from '@lib/polkadot-api';
 import convertCurrency from '@lib/convert-currency';
 import { pick } from 'lodash';
 import { useEffect } from 'react';
+import { trackEvent, Events } from '@lib/analytics';
 
 const Header = dynamic(
 	() => import('@components/common/header').then(mod => mod.default),
@@ -66,7 +67,17 @@ const withDashboardLayout = (children) => {
 						});
 					}
 
-					setAccountState({
+					const setStateAndTrack = (details) => {
+						trackEvent(Events.USER_ACCOUNT_SELECTION, {
+							user: {
+								...details,
+								stashId: address,
+							},
+						});
+						setAccountState(details);
+					};
+
+					setStateAndTrack({
 						ledgerExists: isBonded,
 						bondedAmount: {
 							currency: bondedAmount,
@@ -88,11 +99,12 @@ const withDashboardLayout = (children) => {
 	return () => (
 		<div>
 			<Header />
-			<div className="dashboard-content fixed flex">
-				<div className="h-full relative sidemenu-container py-10">
+			<div className="dashboard-content fixed flex w-full">
+				<div className="h-full hidden xl:block relative sidemenu-container xl:w-2/12 py-8">
 					<SideMenu />
 				</div>
-				<div className="h-full core-content overflow-y-scroll">
+				
+				<div className="h-full xl:w-10/12 overflow-y-scroll">
 					{children()}
 				</div>
 			</div>
@@ -101,8 +113,8 @@ const withDashboardLayout = (children) => {
 					height: calc(100vh - 4rem);
 				}
 				.sidemenu-container {
-					width: 13rem;
 					background: #F7FBFF;
+					z-index: 10;
 				}
 				.core-content {
 					width: calc(100vw - 13rem);

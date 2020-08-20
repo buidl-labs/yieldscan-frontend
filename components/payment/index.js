@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronRight, ChevronLeft } from "react-feather";
 import Confirmation from "./Confirmation";
 import RewardDestination from "./RewardDestination";
@@ -8,6 +8,7 @@ import stake from "@lib/stake";
 import { useToast, Spinner } from "@chakra-ui/core";
 import { useRouter } from "next/router";
 import nominate from "@lib/polkadot/nominate";
+import { trackEvent, Events } from "@lib/analytics";
 
 const Steps = ({ steps, currentStep }) => (
 	<>
@@ -16,16 +17,24 @@ const Steps = ({ steps, currentStep }) => (
 				<React.Fragment key={index}>
 					<div className="flex items-center">
 						<div
-							className={`
-								px-3 py-1 rounded-full text-white mr-4
-								${index > currentStep ? 'bg-gray-500' : 'bg-teal-500'}
+							className={`flex items-center justify-center
+								w-10 h-10 rounded-full text-white text-lg mr-4
+								${index > currentStep ? "bg-gray-500" : "bg-teal-500"}
 							`}
 						>
-							{index + 1}
+							<span>{index + 1}</span>
 						</div>
-						<div className={index > currentStep ? 'text-gray-500' : 'text-teal-500'}>{step}</div>
+						<div
+							className={
+								index > currentStep ? "text-gray-500" : "text-teal-500"
+							}
+						>
+							{step}
+						</div>
 					</div>
-					{index !== steps.length - 1 && <ChevronRight className="text-gray-600 mx-5" />}
+					{index !== steps.length - 1 && (
+						<ChevronRight className="text-gray-600 mx-5" />
+					)}
 				</React.Fragment>
 			))}
 		</div>
@@ -44,25 +53,51 @@ const Payment = () => {
 	const [stakingEvent, setStakingEvent] = useState();
 	const [stakingLoading, setStakingLoading] = useState(false);
 
+	useEffect(() => {
+		trackEvent(Events.PAYMENT_STEP_UPDATED, {
+			step: currentStep,
+			transactionState,
+		});
+	}, [currentStep]);
+
 	const transact = () => {
 		setStakingLoading(true);
+
+		trackEvent(Events.INTENT_TRANSACTON, {
+			transactionType: !!transactionState.stakingAmount ? "STAKE" : "NOMINATE",
+			transactionState,
+		});
 
 		const handlers = {
 			onEvent: (eventInfo) => {
 				setStakingEvent(eventInfo.message);
 			},
-			onFinish: (status, message) => { // status = 0 for success, anything else for error code
+			onFinish: (status, message, eventLogs) => {
+				// status = 0 for success, anything else for error code
 				toast({
-					title: status === 0 ? 'Successful!' : 'Error!',
-					status: status === 0 ? 'success' : 'error',
+					title: status === 0 ? "Successful!" : "Error!",
+					status: status === 0 ? "success" : "error",
 					description: message,
-					position: 'top-right',
+					position: "top-right",
 					isClosable: true,
 					duration: 3000,
 				});
 				setStakingLoading(false);
-				
-				if (status === 0) router.replace('/overview');
+
+				if (status === 0) {
+					trackEvent(Events.TRANSACTION_SUCCESS, {
+						transactionState,
+						successMessage: message,
+					});
+				} else {
+					trackEvent(Events.TRANSACTION_FAILED, {
+						transactionState,
+						successMessage: message,
+						eventLogs,
+					});
+				}
+
+				if (status === 0) router.replace("/overview");
 			},
 		};
 
@@ -71,42 +106,49 @@ const Payment = () => {
 				stashAccount.address,
 				transactionState.controller,
 				transactionState.stakingAmount,
-				transactionState.selectedValidators.map(v => v.stashId),
+				transactionState.selectedValidators.map((v) => v.stashId),
 				apiInstance,
 				handlers
-			).catch(error => {
+			).catch((error) => {
 				handlers.onFinish(1, error.message);
 			});
 		} else {
-			const nominations = transactionState.selectedValidators.map(v => v.stashId);
-			nominate(stashAccount.address, nominations, apiInstance, handlers).catch(error => {
-				handlers.onFinish(1, error.message);
-			});
+			const nominations = transactionState.selectedValidators.map(
+				(v) => v.stashId
+			);
+			nominate(stashAccount.address, nominations, apiInstance, handlers).catch(
+				(error) => {
+					handlers.onFinish(1, error.message);
+				}
+			);
 		}
 	};
 
 	const back = () => {
 		if (currentStep === 0) router.back();
-		else setCurrentStep(step => step - 1);
+		else setCurrentStep((step) => step - 1);
 	};
 
 	return (
-		<div className="mx-auto mb-8 mt-4" style={{ width: '45rem' }}>
-			<div className="mb-4">
-				<button className="flex items-center bg-teal-500 text-white rounded-lg px-2 py-1" onClick={back}>
-					<ChevronLeft className="text-white mr-2" />
-					Back
+		<div className="mx-auto mb-8 mt-4" style={{ width: "45rem" }}>
+			<div className="mb-10">
+				<button
+					className="flex items-center bg-gray-200 text-gray-900 rounded-full px-2 py-1"
+					onClick={back}
+				>
+					<ChevronLeft className="text-gray-900" />
+					<span className="mr-2">Back</span>
 				</button>
 			</div>
 			<Steps
-				steps={['Confirmation', 'Reward Destination', 'Payment']}
+				steps={["Confirmation", "Reward Destination", "Payment"]}
 				currentStep={currentStep}
 			/>
 			{currentStep === 0 && (
 				<Confirmation
 					bondedAmount={bondedAmount}
 					transactionState={transactionState}
-					onConfirm={() => setCurrentStep(step => step + 1)}
+					onConfirm={() => setCurrentStep((step) => step + 1)}
 				/>
 			)}
 			{currentStep === 1 && (
@@ -114,7 +156,7 @@ const Payment = () => {
 					stashAccount={stashAccount}
 					transactionState={transactionState}
 					setTransactionState={setTransactionState}
-					onConfirm={() => setCurrentStep(step => step + 1)}
+					onConfirm={() => setCurrentStep((step) => step + 1)}
 				/>
 			)}
 			{currentStep === 2 && (
@@ -123,7 +165,7 @@ const Payment = () => {
 					stashAccount={stashAccount}
 					stakingLoading={stakingLoading}
 					transactionState={transactionState}
-					setController={controller => setTransactionState({ controller })}
+					setController={(controller) => setTransactionState({ controller })}
 					onConfirm={transact}
 				/>
 			)}
