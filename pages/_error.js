@@ -1,5 +1,6 @@
 import NextErrorComponent from "next/error";
 import * as Sentry from "@sentry/node";
+import Link from "next/link";
 
 const MyError = ({ statusCode, hasGetInitialPropsRun, err }) => {
 	if (!hasGetInitialPropsRun && err) {
@@ -9,7 +10,27 @@ const MyError = ({ statusCode, hasGetInitialPropsRun, err }) => {
 		Sentry.captureException(err);
 	}
 
-	return <NextErrorComponent statusCode={statusCode} />;
+	return (
+		<div className="w-full relative h-screen flex items-center justify-center px-8">
+			<div className="flex flex-col justify-center max-w-md relative -mt-16">
+				<h1 className="text-6xl font-bold">
+					{statusCode ? statusCode : "Oops!"}
+				</h1>
+				<h3 className="text-xl font-semibold">
+					Woah! This is embarrasing...
+				</h3>
+				<p className="text-gray-600">
+					Either the internet has broken or you found a bug.
+				</p>
+				<Link href="/overview">
+					<a className="rounded-full bg-teal-500 text-white px-10 py-2 mt-8 shadow-teal self-start">
+						Take me back
+					</a>
+				</Link>
+			</div>
+			<img src="images/404.svg" className="-ml-16 w-5/12 opacity-50"></img>
+		</div>
+	);
 };
 
 MyError.getInitialProps = async ({ res, err, asPath }) => {
