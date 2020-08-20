@@ -4,9 +4,9 @@ import {
 	Input,
 	InputRightElement,
 } from "@chakra-ui/core";
+import formatCurrency from "@lib/format-currency";
 
 const AmountInputDefault = ({ bonded, value, onChange }) => {
-	console.log(bonded);
 	const [isEditable, setIsEditable] = React.useState(true);
 	return (
 		<div>
@@ -16,14 +16,15 @@ const AmountInputDefault = ({ bonded, value, onChange }) => {
 						opacity={isEditable ? "1" : "0.4"}
 						children="KSM"
 						rounded="full"
-						py={8}
+						pt={8}
 						px={12}
 						fontSize="xl"
 					/>
 					<Input
 						type="number"
 						rounded="full"
-						py={8}
+						pt={8}
+						pb={12}
 						px={8}
 						placeholder="0"
 						defaultValue={value.currency === 0 ? "" : value.currency}
@@ -36,6 +37,9 @@ const AmountInputDefault = ({ bonded, value, onChange }) => {
 						isDisabled={!isEditable}
 						backgroundColor={!isEditable && "gray.200"}
 					/>
+					<h6 className="absolute z-20 bottom-0 left-0 ml-8 mb-3 text-gray-600 text-sm">
+						${formatCurrency.methods.formatNumber(value.subCurrency.toFixed(2))}
+					</h6>
 				</InputGroup>
 				{/* <div className="flex flex-col ml-6">
 			<input

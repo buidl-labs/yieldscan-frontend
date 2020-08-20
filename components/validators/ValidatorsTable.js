@@ -4,6 +4,7 @@ import RiskTag from "@components/reward-calculator/RiskTag";
 import { useRouter } from "next/router";
 import Routes from "@lib/routes";
 import Identicon from "@components/common/Identicon";
+import formatCurrency from "@lib/format-currency";
 
 const ValidatorCard = ({
 	name = "",
@@ -20,7 +21,7 @@ const ValidatorCard = ({
 }) => (
 	<div
 		className={`
-			flex justify-between items-center py-3 my-1 rounded-lg cursor-pointer transition-all duration-300
+			flex justify-between items-center py-3 my-1 w-full min-w-65-rem rounded-lg cursor-pointer transition-all duration-300
 			${
 				selected
 					? "border-teal-500 border-4 shadow-teal"
@@ -55,46 +56,67 @@ const ValidatorCard = ({
 			</div>
 		</div>
 		<div className="ml-2 mr-4 flex items-center justify-between min-w-40-rem">
-			<div className="flex flex-col">
+			<div className="flex flex-col w-20">
 				<span className="text-xs text-gray-500 font-semibold">Nominators</span>
-				<h3 className="text-base">{nominators}</h3>
+				<h3 className="text-base">
+					{formatCurrency.methods.formatNumber(nominators)}
+				</h3>
 			</div>
-			<div className="flex flex-col">
+			<div className="flex flex-col w-20">
 				<span className="text-xs text-gray-500 font-semibold">Risk Score</span>
 				<div className="rounded-full font-semibold">
 					<RiskTag risk={riskScore} />
 				</div>
 			</div>
-			<div className="flex flex-col">
+			<div className="flex flex-col w-32">
 				<span className="text-xs text-gray-500 font-semibold">Own Stake</span>
-				<h3 className="text-base">{ownStake} KSM</h3>
+				<h3 className="text-base">
+					{formatCurrency.methods.formatAmount(
+						Math.trunc((ownStake || 0) * 10 ** 12)
+					)}
+				</h3>
 			</div>
-			<div className="flex flex-col">
+			<div className="flex flex-col w-32">
 				<span className="text-xs text-gray-500 font-semibold">Other Stake</span>
-				<h3 className="text-base">{otherStake} KSM</h3>
+				<h3 className="text-base">
+					{formatCurrency.methods.formatAmount(
+						Math.trunc((otherStake || 0) * 10 ** 12)
+					)}
+				</h3>
 			</div>
-			<div className="flex flex-col">
+			<div className="flex flex-col w-20">
 				<span className="text-xs text-gray-500 font-semibold">Commission</span>
 				<h3 className="text-base">{commission}%</h3>
 			</div>
-			<div className="flex flex-col">
+			<div className="flex flex-col w-32">
 				<span className="text-xs text-gray-500 font-semibold">
 					Estimated Returns <sup>*</sup>
 				</span>
-				<h3 className="text-base">{returnsPer100KSM.toFixed(4)} KSM</h3>
+				<h3 className="text-base">
+					{formatCurrency.methods.formatAmount(
+						Math.trunc((returnsPer100KSM || 0) * 10 ** 12)
+					)}
+				</h3>
 			</div>
 		</div>
 	</div>
 );
 
-const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidators }) => {
+const ValidatorsTable = ({
+	validators,
+	selectedValidatorsMap,
+	setSelectedValidators,
+}) => {
 	const router = useRouter();
-	const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(v => !isNil(v));
+	const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(
+		(v) => !isNil(v)
+	);
 
 	const toggleSelected = (validator) => {
 		const { stashId } = validator;
 
-		if (selectedValidatorsList.length === 16 && !selectedValidatorsMap[stashId]) return;
+		if (selectedValidatorsList.length === 16 && !selectedValidatorsMap[stashId])
+			return;
 
 		setSelectedValidators({
 			...selectedValidatorsMap,
@@ -105,24 +127,37 @@ const ValidatorsTable = ({ validators, selectedValidatorsMap, setSelectedValidat
 	return (
 		<div>
 			<div className="mt-5 mb-2 table-container px-6 pb-16 overflow-y-scroll">
-				{validators.map(validator => (
+				{validators.map((validator) => (
 					<ValidatorCard
 						key={validator.stashId}
 						name={validator.name}
 						stashId={validator.stashId}
 						riskScore={Number((validator.riskScore || 0).toFixed(2))}
-						ownStake={validator.ownStake ? Number(validator.ownStake).toFixed(1) : '-'}
-						otherStake={validator.othersStake ? Number(validator.othersStake).toFixed(1) : '-'}
+						ownStake={
+							validator.ownStake ? Number(validator.ownStake).toFixed(1) : "-"
+						}
+						otherStake={
+							validator.othersStake
+								? Number(validator.othersStake).toFixed(1)
+								: "-"
+						}
 						commission={validator.commission}
 						nominators={validator.numOfNominators}
 						returnsPer100KSM={validator.rewardsPer100KSM}
 						selected={!isNil(selectedValidatorsMap[validator.stashId])}
 						toggleSelected={() => toggleSelected(validator)}
-						onProfile={() => window.open(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`, '_blank')}
+						onProfile={() =>
+							window.open(
+								`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`,
+								"_blank"
+							)
+						}
 					/>
 				))}
 				{!validators.length && (
-					<div className="flex-center font-thin py-5">No validators, try updating your filters</div>
+					<div className="flex-center font-thin py-5">
+						No validators, try updating your filters
+					</div>
 				)}
 			</div>
 			<style jsx>{`
