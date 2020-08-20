@@ -1340,16 +1340,6 @@
   resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-5.21.0.tgz#19629222e44b4d312e232c2dfbe0d067ecc12830"
   integrity sha512-eyPXrKfQ+HSLcITB5MdSWhXlImE2qKWTLT2u6l+a9wiCZl5yimSqn0uC5evxaP0McKOW0wSntgfj+gOoKv+Paw==
 
-"@metomic/react@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@metomic/react/-/react-0.1.2.tgz#54d2c333c9b3db3401a16cb4c5d4c2eb2bc8f779"
-  integrity sha512-CHRoI8c4N0zhw0Fj58G/1bTG392trLFgAL/Wx7VF+fArxefkxoxStB6h/vEh4cHyTdSArU7LV2K8I6N+TAfgVA==
-  dependencies:
-    prop-types "^15.7.2"
-    react "^16.13.1"
-    react-dom "^16.13.1"
-    react-intercom "^1.0.15"
-
 "@next/react-dev-overlay@9.4.4":
   version "9.4.4"
   resolved "https://registry.yarnpkg.com/@next/react-dev-overlay/-/react-dev-overlay-9.4.4.tgz#4ae03ac839ff022b3ce5c695bd24b179d4ef459d"
