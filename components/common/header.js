@@ -1,14 +1,24 @@
 import { useAccounts } from "@lib/store";
 import { get, isNil } from "lodash";
 import { ChevronDown, Settings, Menu } from "react-feather";
-import { WalletConnectPopover, useWalletConnect } from "@components/wallet-connect";
-import { Popover, PopoverArrow, PopoverTrigger, PopoverContent, useDisclosure, Avatar } from "@chakra-ui/core";
+import {
+	WalletConnectPopover,
+	useWalletConnect,
+} from "@components/wallet-connect";
+import {
+	Popover,
+	PopoverTrigger,
+	PopoverContent,
+	useDisclosure,
+	Avatar,
+} from "@chakra-ui/core";
 import Identicon from "@components/common/Identicon";
 import EditControllerModal from "@components/overview/EditControllerModal";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import formatCurrency from "@lib/format-currency";
 
 // TODO: replace this with actual global state
-const currentNetwork = "Not Kusama"
+const currentNetwork = "Not Kusama";
 
 const Header = () => {
 	const { isOpen, toggle } = useWalletConnect();
@@ -19,16 +29,13 @@ const Header = () => {
 		onToggle: toggleEditControllerModal,
 	} = useDisclosure();
 
-	const stashAddress = get(stashAccount, 'address');
-	const accountsWithoutCurrent = accounts.filter(account => stashAddress && account.address !== stashAddress);
+	const stashAddress = get(stashAccount, "address");
+	const accountsWithoutCurrent = accounts.filter(
+		(account) => stashAddress && account.address !== stashAddress
+	);
 
+	const [isStashPopoverOpen, setIsStashPopoverOpen] = useState(false);
 	const [isNetworkOpen, setIsNetworkOpen] = useState(false);
-
-	const handleEscape = e => {
-		if (e.key === 'Esc' || e.key === 'Escape') {
-			setIsNetworkOpen(false);
-		}
-	}
 
 	return (
 		<div className="flex items-center justify-between border border-bottom border-gray-200 bg-white p-8 h-12">
@@ -49,20 +56,27 @@ const Header = () => {
 						Connect Wallet
 					</button>
 				) : (
-					<Popover trigger="click">
+					<Popover
+						isOpen={isStashPopoverOpen}
+						onClose={() => setIsStashPopoverOpen(false)}
+						onOpen={() => setIsStashPopoverOpen(true)}
+					>
 						<PopoverTrigger>
-							<div className="flex items-center mr-8">
+							<button className="flex items-center mr-8">
 								<Identicon address={get(stashAccount, "address")} />
-								<div className="cursor-pointer ml-2">
+								<div className="cursor-pointer ml-2 text-left">
 									<h3 className="flex items-center text-gray-900 -mb-1">
 										{get(stashAccount, "meta.name", "")}
 									</h3>
 									<span className="text-gray-500 text-xs">
-										Balance: {get(freeAmount, "currency", 0)} KSM
+										Balance:{" "}
+										{formatCurrency.methods.formatAmount(
+											Math.trunc(get(freeAmount, "currency", 0) * 10 ** 12)
+										)}
 									</span>
 								</div>
-								<ChevronDown size="20px" className="ml-1" />
-							</div>
+								<ChevronDown size="20px" className="ml-4" />
+							</button>
 						</PopoverTrigger>
 						<PopoverContent
 							zIndex={50}
@@ -79,15 +93,24 @@ const Header = () => {
 										<button
 											key={account.address}
 											className="flex items-center rounded px-4 py-2 w-full bg-gray-800 hover:bg-gray-700 hover:text-gray-200"
-											onClick={() => setStashAccount(account)}
+											onClick={() => {
+												setStashAccount(account);
+												setIsStashPopoverOpen(false);
+											}}
 										>
 											<Identicon address={account.address} size="2rem" />
 											<span className="flex flex-col items-start ml-2">
 												<span>{account.meta.name}</span>
-												<span className="text-xs text-gray-500">{account.address.slice(0, 6) + "..." + account.address.slice(-6)}</span>
+												<span className="text-xs text-gray-500">
+													{account.address.slice(0, 6) +
+														"..." +
+														account.address.slice(-6)}
+												</span>
 											</span>
 										</button>
-										{accountsWithoutCurrent[accountsWithoutCurrent.length - 1] !== account && <hr className="border-gray-700" />}
+										{accountsWithoutCurrent[
+											accountsWithoutCurrent.length - 1
+										] !== account && <hr className="border-gray-700" />}
 									</>
 								))}
 							</div>
@@ -109,6 +132,8 @@ const Header = () => {
 						/>
 						<ChevronDown size="20px" />
 					</button>
+
+					{/* TODO: Use Chakra's popover instead of custom implementation here */}
 					<button
 						onClick={() => {
 							setIsNetworkOpen(false);
@@ -132,13 +157,15 @@ const Header = () => {
 								aria-labelledby="options-menu"
 							>
 								<button
-									href="#"
 									className={`flex items-center px-4 py-2 text-white text-sm leading-5 ${
 										currentNetwork === "Kusama"
 											? "cursor-default bg-gray-600"
 											: "hover:bg-gray-700 focus:bg-gray-700"
 									}  focus:outline-none w-full`}
 									role="menuitem"
+									onClick={() => {
+										setIsNetworkOpen(!isNetworkOpen);
+									}}
 								>
 									<Avatar
 										name="Kusama"
@@ -159,7 +186,6 @@ const Header = () => {
 								aria-labelledby="options-menu"
 							>
 								<button
-									href="#"
 									className="flex items-center px-4 py-2 text-white text-sm leading-5 bg-gray-900 focus:outline-none cursor-default w-full"
 									role="menuitem"
 								>

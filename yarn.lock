@@ -1340,16 +1340,6 @@
   resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-5.21.0.tgz#19629222e44b4d312e232c2dfbe0d067ecc12830"
   integrity sha512-eyPXrKfQ+HSLcITB5MdSWhXlImE2qKWTLT2u6l+a9wiCZl5yimSqn0uC5evxaP0McKOW0wSntgfj+gOoKv+Paw==
 
-"@metomic/react@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@metomic/react/-/react-0.1.2.tgz#54d2c333c9b3db3401a16cb4c5d4c2eb2bc8f779"
-  integrity sha512-CHRoI8c4N0zhw0Fj58G/1bTG392trLFgAL/Wx7VF+fArxefkxoxStB6h/vEh4cHyTdSArU7LV2K8I6N+TAfgVA==
-  dependencies:
-    prop-types "^15.7.2"
-    react "^16.13.1"
-    react-dom "^16.13.1"
-    react-intercom "^1.0.15"
-
 "@next/react-dev-overlay@9.4.4":
   version "9.4.4"
   resolved "https://registry.yarnpkg.com/@next/react-dev-overlay/-/react-dev-overlay-9.4.4.tgz#4ae03ac839ff022b3ce5c695bd24b179d4ef459d"
@@ -1801,6 +1791,11 @@
   version "11.11.6"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-11.11.6.tgz#df929d1bb2eee5afdda598a41930fe50b43eaa6a"
   integrity sha512-Exw4yUWMBXM3X+8oqzJNRqZSwUAaS4+7NdvHqQuFi/d+synz++xmX3QIf+BFqneW8N31R8Ky+sikfZUXq07ggQ==
+
+"@types/node@^10.12.12":
+  version "10.17.28"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.17.28.tgz#0e36d718a29355ee51cec83b42d921299200f6d9"
+  integrity sha512-dzjES1Egb4c1a89C7lKwQh8pwjYmlOAG9dW1pBgxEk57tMrLnssOfEthz8kdkNaBd7lIqQx7APm5+mZ619IiCQ==
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"
@@ -2424,6 +2419,13 @@ blueimp-md5@^2.10.0:
   resolved "https://registry.yarnpkg.com/blueimp-md5/-/blueimp-md5-2.17.0.tgz#f4fcac088b115f7b4045f19f5da59e9d01b1bb96"
   integrity sha512-x5PKJHY5rHQYaADj6NwPUR2QRCUVSggPzrUKkeENpj871o9l9IefJbO2jkT5UvYykeOK9dx0VmkIo6dZ+vThYw==
 
+bn.js-typings@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/bn.js-typings/-/bn.js-typings-1.0.1.tgz#00faef56401850b763cee041c0728a9aaf091e7e"
+  integrity sha512-PdV3AEpI5A8mHCt3KgBobIJ+3rhoxxkRl8b0dCGDgGtJNYmN4KTPLHYq7xOSmKF1Kv06aZ5k8QhXbyG73IyhdQ==
+  dependencies:
+    "@types/node" "^10.12.12"
+
 bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.4.0:
   version "4.11.9"
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.9.tgz#26d556829458f9d1e81fc48952493d0ba3507828"
@@ -2433,6 +2435,11 @@ bn.js@^5.1.1, bn.js@^5.1.2:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.1.2.tgz#c9686902d3c9a27729f43ab10f9d79c2004da7b0"
   integrity sha512-40rZaf3bUNKTVYu9sIeeEGOg7g14Yvnj9kH7b50EiwX0Q7A6umbvfI5tvHaOERH0XigqKkfLkFQxzb4e6CIXnA==
+
+bn.js@^5.1.3:
+  version "5.1.3"
+  resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.1.3.tgz#beca005408f642ebebea80b042b4d18d2ac0ee6b"
+  integrity sha512-GkTiFpjFtUzU9CbMeJ5iazkCzGL3jrhzerzZIuqLABjbwRaFt33I9tUdSNryIptM+RxDet6OKm2WnLXzW51KsQ==
 
 body-scroll-lock@^3.0.1:
   version "3.0.3"

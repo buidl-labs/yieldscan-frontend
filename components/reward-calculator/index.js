@@ -17,6 +17,7 @@ import calculateReward from "@lib/calculate-reward";
 import { Spinner } from "@chakra-ui/core";
 import Routes from "@lib/routes";
 import { trackEvent, Events } from "@lib/analytics";
+import convertCurrency from "@lib/convert-currency";
 
 const trackRewardCalculatedEvent = debounce((eventData) => {
 	trackEvent(Events.REWARD_CALCULATED, eventData);
@@ -40,6 +41,7 @@ const RewardCalculatorPage = () => {
 
 	const [loading, setLoading] = useState(false);
 	const [amount, setAmount] = useState(transactionState.stakingAmount || 1000);
+	const [subCurrency, setSubCurrency] = useState(0);
 	const [risk, setRisk] = useState(transactionState.riskPreference || "Medium");
 	const [timePeriodValue, setTimePeriod] = useState(
 		transactionState.timePeriodValue || 12
@@ -60,10 +62,16 @@ const RewardCalculatorPage = () => {
 	// useEffect(() => {
 	// 	if (get(bondedAmount, "currency")) {
 	// 		setAmount(
-	// 			Number(Math.max((amount || 0) - bondedAmount.currency, 0).toFixed(4))
+	// 			Number(Math.max(bondedAmount.currency, 0).toFixed(4))
 	// 		);
 	// 	}
 	// }, [bondedAmount]);
+
+	useEffect(() => {
+		convertCurrency(amount || 0).then((convertedAmount) => {
+			setSubCurrency(convertedAmount);
+		});
+	}, [amount]);
 
 	useEffect(() => {
 		if (get(validatorMap, risk)) {
@@ -229,7 +237,7 @@ const RewardCalculatorPage = () => {
 						</div>
 						<AmountInput
 							bonded={get(bondedAmount, "currency")}
-							value={{ currency: amount, subCurrency: (amount || 0) * 2 }}
+							value={{ currency: amount, subCurrency: subCurrency }}
 							onChange={setAmount}
 						/>
 					</div>
@@ -272,7 +280,7 @@ const RewardCalculatorPage = () => {
 					onPayment={onPayment}
 				/>
 				<ValidatorsList
-					disableList={!totalAmount || !timePeriodValue || !risk}
+					// disableList={!totalAmount || !timePeriodValue || !risk}
 					totalAmount={totalAmount}
 					validators={get(validatorMap, "total", [])}
 					selectedValidators={selectedValidators}

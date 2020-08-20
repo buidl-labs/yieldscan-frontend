@@ -1,15 +1,25 @@
 import Identicon from "@components/common/Identicon";
 import { ExternalLink } from "react-feather";
+import formatCurrency from "@lib/format-currency";
 
-const MemberCard = ({ name, stashId, nominations, dailyEarnings, totalAmountStaked, onProfile }) => {
+const MemberCard = ({
+	name,
+	stashId,
+	nominations,
+	dailyEarnings,
+	totalAmountStaked,
+	onProfile,
+}) => {
 	return (
-		<div className="flex items-center justify-between rounded-lg border border-gray-300 py-2 px-5 my-2">
+		<div className="flex rounded-lg justify-between border border-gray-200 py-3 px-5 my-1">
 			<div className="flex items-center">
 				<div className="mr-8">
-					<Identicon address={stashId} size="2.5rem" />
+					<Identicon address={stashId} />
 				</div>
 				<div className="flex flex-col cursor-pointer">
-					<span className="text-xs w-40 select-all truncate">{stashId}</span>
+					<span className="text-xs w-40 select-all text-sm text-gray-900 font-bold truncate">
+						{stashId.slice(0, 6) + "..." + stashId.slice(-6)}
+					</span>
 					<div className="flex items-center text-gray-700" onClick={onProfile}>
 						<span className="text-xs mr-1">View on Polkascan</span>
 						<ExternalLink size="12px" />
@@ -17,17 +27,31 @@ const MemberCard = ({ name, stashId, nominations, dailyEarnings, totalAmountStak
 				</div>
 			</div>
 			<div className="flex items-center">
-				<div className="flex flex-col mr-8">
-					<span className="text-xs text-gray-500 font-semibold">Nominations</span>
-					<h3 className="text-lg">{nominations}</h3>
+				<div className="flex flex-col">
+					<span className="text-xs text-gray-500 font-semibold">
+						Daily Earnings
+					</span>
+					<h3 className="text-base">
+						{formatCurrency.methods.formatAmount(
+							Math.trunc((dailyEarnings || 0) * 10 ** 12)
+						)}
+					</h3>
 				</div>
-				<div className="flex flex-col w-40 mr-1">
-					<span className="text-xs text-gray-500 font-semibold">Daily Earnings</span>
-					<h3 className="text-lg">{(dailyEarnings || 0).toFixed(2)} KSM</h3>
+				<div className="flex flex-col mx-8 w-40">
+					<span className="text-xs text-gray-500 font-semibold">
+						Total Amount Staked
+					</span>
+					<h3 className="text-base">
+						{formatCurrency.methods.formatAmount(
+							Math.trunc((totalAmountStaked || 0) * 10 ** 12)
+						)}
+					</h3>
 				</div>
-				<div className="flex flex-col w-40">
-					<span className="text-xs text-gray-500 font-semibold">Total Amount Staked</span>
-					<h3 className="text-lg">{(totalAmountStaked || 0).toFixed(2)} KSM</h3>
+				<div className="flex flex-col w-20">
+					<span className="text-xs text-gray-500 font-semibold">
+						Nominations
+					</span>
+					<h3 className="text-base">{nominations}</h3>
 				</div>
 			</div>
 		</div>
@@ -37,7 +61,7 @@ const MemberCard = ({ name, stashId, nominations, dailyEarnings, totalAmountStak
 const NominatorsTable = ({ nominators = [] }) => {
 	return (
 		<div className="mt-8">
-			<div className="table-container overflow-y-scroll">
+			<div>
 				{nominators.map((member, index) => (
 					<MemberCard
 						key={index}
@@ -46,15 +70,15 @@ const NominatorsTable = ({ nominators = [] }) => {
 						nominations={member.nominations}
 						dailyEarnings={member.dailyEarnings}
 						totalAmountStaked={member.nomtotalStake}
-						onProfile={() => window.open(`https://polkascan.io/kusama/account/${member.nomId}`, '_blank')}
+						onProfile={() =>
+							window.open(
+								`https://polkascan.io/kusama/account/${member.nomId}`,
+								"_blank"
+							)
+						}
 					/>
 				))}
 			</div>
-			<style jsx>{`
-				.table-container {
-					height: 36vh;
-				}
-			`}</style>
 		</div>
 	);
 };
