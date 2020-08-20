@@ -3,7 +3,12 @@ import { ChevronRight, ChevronLeft } from "react-feather";
 import Confirmation from "./Confirmation";
 import RewardDestination from "./RewardDestination";
 import Transaction from "./Transaction";
-import { useAccounts, useTransaction, usePolkadotApi } from "@lib/store";
+import {
+	useAccounts,
+	useTransaction,
+	usePolkadotApi,
+	useHeaderLoading,
+} from "@lib/store";
 import stake from "@lib/stake";
 import { useToast, Spinner } from "@chakra-ui/core";
 import { useRouter } from "next/router";
@@ -49,6 +54,7 @@ const Payment = () => {
 	const [currentStep, setCurrentStep] = useState(0);
 	const { accounts, stashAccount, bondedAmount } = useAccounts();
 	const { setTransactionState, ...transactionState } = useTransaction();
+	const { setHeaderLoading } = useHeaderLoading();
 
 	const [stakingEvent, setStakingEvent] = useState();
 	const [stakingLoading, setStakingLoading] = useState(false);
@@ -59,6 +65,11 @@ const Payment = () => {
 			transactionState,
 		});
 	}, [currentStep]);
+
+	useEffect(() => {
+		// To prevent the user from switching accounts or networks while in the middle of the payment process
+		setHeaderLoading(true);
+	}, []);
 
 	const transact = () => {
 		setStakingLoading(true);
@@ -80,7 +91,7 @@ const Payment = () => {
 					description: message,
 					position: "top-right",
 					isClosable: true,
-					duration: 3000,
+					duration: 7000,
 				});
 				setStakingLoading(false);
 
@@ -97,7 +108,11 @@ const Payment = () => {
 					});
 				}
 
-				if (status === 0) router.replace("/overview");
+				if (status === 0) {
+					// To allow the user to switch accounts and networks after the payment process is complete
+					setHeaderLoading(false);
+					router.replace("/overview");
+				}
 			},
 		};
 
