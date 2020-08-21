@@ -28,7 +28,7 @@ const MyError = ({ statusCode, hasGetInitialPropsRun, err }) => {
 					</a>
 				</Link>
 			</div>
-			<img src="images/404.svg" className="-ml-16 w-5/12 opacity-50"></img>
+			<img src="images/404.svg" alt="404 - Lost Astronaut" className="-ml-16 w-5/12 opacity-50"></img>
 		</div>
 	);
 };
