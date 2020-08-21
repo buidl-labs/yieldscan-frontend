@@ -16,9 +16,7 @@ const MyError = ({ statusCode, hasGetInitialPropsRun, err }) => {
 				<h1 className="text-6xl font-bold">
 					{statusCode ? statusCode : "Oops!"}
 				</h1>
-				<h3 className="text-xl font-semibold">
-					Woah! This is embarrasing...
-				</h3>
+				<h3 className="text-xl font-semibold">Woah! This is embarrasing...</h3>
 				<p className="text-gray-600">
 					Either the internet has broken or you found a bug.
 				</p>
@@ -27,6 +25,20 @@ const MyError = ({ statusCode, hasGetInitialPropsRun, err }) => {
 						Take me back
 					</a>
 				</Link>
+				{/* {!hasGetInitialPropsRun && err ? ( */}
+					<button
+						className="border border-teal-500 bg-white rounded-full px-10 py-2 mt-2 text-teal-500 self-start"
+						onClick={() =>
+							Sentry.showReportDialog({
+								eventId: Sentry.captureException(err),
+							})
+						}
+					>
+						Report feedback
+					</button>
+				{/* ) : (
+					""
+				)} */}
 			</div>
 			<img src="images/404.svg" alt="404 - Lost Astronaut" className="-ml-16 w-5/12 opacity-50"></img>
 		</div>
