@@ -196,7 +196,7 @@ const RewardCalculatorPage = () => {
 		return (
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">
-					<Spinner size="xl" />
+					<Spinner size="xl" color="teal.500" thickness="4px" />
 					<span className="text-sm text-gray-600 mt-5">
 						Instantiating API and fetching data...
 					</span>

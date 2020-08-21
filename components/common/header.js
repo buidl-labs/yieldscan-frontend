@@ -89,9 +89,8 @@ const Header = () => {
 							</p>
 							<div className="flex flex-col justify-center my-2 text-white w-full">
 								{accountsWithoutCurrent.map((account) => (
-									<>
+									<React.Fragment key={account.address}>
 										<button
-											key={account.address}
 											className="flex items-center rounded px-4 py-2 w-full bg-gray-800 hover:bg-gray-700 hover:text-gray-200"
 											onClick={() => {
 												setStashAccount(account);
@@ -111,7 +110,7 @@ const Header = () => {
 										{accountsWithoutCurrent[
 											accountsWithoutCurrent.length - 1
 										] !== account && <hr className="border-gray-700" />}
-									</>
+									</React.Fragment>
 								))}
 							</div>
 						</PopoverContent>

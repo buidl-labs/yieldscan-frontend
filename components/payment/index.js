@@ -50,6 +50,7 @@ const Payment = () => {
 	const { accounts, stashAccount, bondedAmount } = useAccounts();
 	const { setTransactionState, ...transactionState } = useTransaction();
 
+	const [loading, setLoading] = useState(true);
 	const [stakingEvent, setStakingEvent] = useState();
 	const [stakingLoading, setStakingLoading] = useState(false);
 
@@ -59,6 +60,10 @@ const Payment = () => {
 			transactionState,
 		});
 	}, [currentStep]);
+
+	useEffect(() => {
+		setLoading(false);
+	});
 
 	const transact = () => {
 		setStakingLoading(true);
@@ -128,6 +133,19 @@ const Payment = () => {
 		if (currentStep === 0) router.back();
 		else setCurrentStep((step) => step - 1);
 	};
+
+	if (loading) {
+		return (
+			<div className="flex-center w-full h-full">
+				<div className="flex-center flex-col">
+					<Spinner size="xl" color="teal.500" thickness="4px" />
+					<span className="text-sm text-gray-600 mt-5">
+						Loading payment page...
+					</span>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="mx-auto mb-8 mt-4" style={{ width: "45rem" }}>

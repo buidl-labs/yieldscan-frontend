@@ -98,7 +98,7 @@ const Overview = () => {
 					<AlertTriangle size="2rem" className="text-orange-500" />
 					<span className="text-gray-600 text-lg mb-10">No account connected!</span>
 					<button
-						className="border border-teal-500 text-teal-500 text-2xl px-3 py-2 rounded-xl"
+						className="border border-teal-500 text-teal-500 px-3 py-2 rounded-full"
 						onClick={toggle}
 					>
 						Connect Wallet
@@ -112,8 +112,10 @@ const Overview = () => {
 		return (
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">
-					<Spinner size="xl" />
-					<span className="text-sm text-gray-600 mt-5">Fetching your data...</span>
+					<Spinner size="xl" color="teal.500" thickness="4px" />
+					<span className="text-sm text-gray-600 mt-5">
+						Fetching your data...
+					</span>
 				</div>
 			</div>
 		);

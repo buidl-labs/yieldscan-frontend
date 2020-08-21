@@ -42,8 +42,10 @@ const CouncilMembers = () => {
 		return (
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">
-					<Spinner size="xl" />
-					<span className="text-sm text-gray-600 mt-5">Fetching council members...</span>
+					<Spinner size="xl" color="teal.500" thickness="4px" />
+					<span className="text-sm text-gray-600 mt-5">
+						Fetching council members...
+					</span>
 				</div>
 			</div>
 		);
