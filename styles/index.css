@@ -57,6 +57,14 @@ input[type=number] {
 	min-width: max-content;
 }
 
+.min-h-12-rem {
+	min-height: 12rem;
+}
+
+.max-h-25-rem {
+	max-height: 25rem;
+}
+
 .fade-top {
 	background-image: linear-gradient(
 		to bottom,
