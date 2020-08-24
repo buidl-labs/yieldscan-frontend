@@ -45,48 +45,54 @@ const ValidatorCard = ({
 	return (
 		<div
 			ref={ref}
-			className="relative bg-white flex justify-around items-center p-2 my-2 rounded-lg border border-gray-200"
+			className="relative bg-white flex justify-around items-center p-2 my-2 rounded-lg border border-gray-200 w-fit-content"
 		>
-			<div>
-				<Identicon address={stashId} size="2.5rem" />
-			</div>
-			<div
-				className="text-gray-700 w-48 truncate cursor-pointer ml-2"
-				onClick={onProfile}
-			>
-				<span className="font-semibold text-sm">
-					{name
-						? name.length > 16
-							? name.slice(0, 6) + "..." + name.slice(-6)
-							: name
-						: stashId.slice(0, 6) + "..." + stashId.slice(-6) || "-"}
-				</span>
-				<div className="flex items-center">
-					<span className="text-xs mr-2">View Profile</span>
-					<ExternalLink size="12px" />
+			<div className="flex">
+				<div>
+					<Identicon address={stashId} size="2.5rem" />
+				</div>
+				<div
+					className="text-gray-700 w-48 truncate cursor-pointer ml-2"
+					onClick={onProfile}
+				>
+					<span className="font-semibold text-sm">
+						{name
+							? name.length > 16
+								? name.slice(0, 6) + "..." + name.slice(-6)
+								: name
+							: stashId.slice(0, 6) + "..." + stashId.slice(-6) || "-"}
+					</span>
+					<div className="flex items-center">
+						<span className="text-xs mr-2">View Profile</span>
+						<ExternalLink size="12px" />
+					</div>
 				</div>
 			</div>
-			<div className="flex flex-col">
-				<span className="text-xs text-gray-500">Risk Score</span>
-				<div className="rounded-full">
-					<RiskTag risk={Number((riskScore || 0).toFixed(2))} />
+			<div className="flex items-center justify-between min-w-20-rem">
+				<div className="flex flex-col">
+					<span className="text-xs text-gray-500">Risk Score</span>
+					<div className="rounded-full">
+						<RiskTag risk={Number((riskScore || 0).toFixed(2))} />
+					</div>
 				</div>
-			</div>
-			<div className="flex flex-col mx-4">
-				<span className="text-xs text-gray-500">Total Stake</span>
-				<h3 className="text-lg">
-					{formatCurrency.methods.formatAmount(
-						Math.trunc(Number(totalStake || 0) * 10 ** 12)
-					)}
-				</h3>
-			</div>
-			<div className="flex flex-col">
-				<span className="text-xs text-gray-500">Est. Pool Reward</span>
-				<h3 className="text-lg">
-					{formatCurrency.methods.formatAmount(
-						Math.trunc(Number(estimatedReward || 0) * 10 ** 12)
-					)}
-				</h3>
+				{totalStake && (
+					<div className="flex flex-col">
+						<span className="text-xs text-gray-500">Total Stake</span>
+						<h3 className="text-lg">
+							{formatCurrency.methods.formatAmount(
+								Math.trunc(Number(totalStake || 0) * 10 ** 12)
+							)}
+						</h3>
+					</div>
+				)}
+				<div className="flex flex-col">
+					<span className="text-xs text-gray-500">Est. Pool Reward</span>
+					<h3 className="text-lg">
+						{formatCurrency.methods.formatAmount(
+							Math.trunc(Number(estimatedReward || 0) * 10 ** 12)
+						)}
+					</h3>
+				</div>
 			</div>
 			<div
 				hidden={!hovered}
@@ -287,7 +293,7 @@ const EditValidators = withSlideIn(
 									</div>
 									<div className="w-1/2 border border-gray-200 p-2 rounded-lg">
 										<div className="flex mx-2 justify-between items-center">
-											<div className="flex items-center justify-start">
+											<div className="h-12 mt-1 flex items-center justify-start">
 												<h3 className="text-xs tracking-widest">
 													SELECTED VALIDATORS
 												</h3>
@@ -296,7 +302,7 @@ const EditValidators = withSlideIn(
 												</div>
 											</div>
 											<div className="flex items-center text-sm">
-												<span className="mr-2">Est. Annual Returns</span>
+												{/* <span className="mr-2">Est. Annual Returns</span>
 												{estimatedReward && (
 													<div className="w-32 border border-teal-500 p-1 rounded-lg flex flex-col">
 														<span className="text-teal-500 text-base">
@@ -315,7 +321,7 @@ const EditValidators = withSlideIn(
 															) || 0.0}
 														</span>
 													</div>
-												)}
+												)} */}
 											</div>
 										</div>
 										<div className="my-2 overflow-y-scroll validators-table">

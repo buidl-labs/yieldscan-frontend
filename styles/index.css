@@ -45,6 +45,14 @@ input[type=number] {
 	background: none;
 }
 
+.w-fit-content {
+	width: fit-content;
+}
+
+.min-w-20-rem {
+	min-width: 20rem;
+}
+
 .min-w-40-rem {
 	min-width: 40rem;
 }

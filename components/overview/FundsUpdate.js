@@ -284,7 +284,7 @@ const FundsUpdate = withSlideIn(
 									<div className="border border-gray-200 rounded-lg w-2/3">
 										<div className="flex justify-between items-center px-4 py-2 text-gray-700">
 											<h3 className="tracking-widest">VALIDATORS</h3>
-											{estimatedReturns && (
+											{/* {estimatedReturns && (
 												<div className="flex items-center">
 													<span className="mr-2 text-sm">
 														Estimated Annual Returns
@@ -306,7 +306,7 @@ const FundsUpdate = withSlideIn(
 														</span>
 													</div>
 												</div>
-											)}
+											)} */}
 										</div>
 										<div className="validator-table overflow-y-scroll px-4">
 											{validators.map((validator) => (
