@@ -1,4 +1,4 @@
-import { noop } from "lodash";
+import { noop, get } from "lodash";
 import { Plus, Minus, Clock } from "react-feather";
 import { Popover, PopoverTrigger, PopoverContent } from "@chakra-ui/core";
 import formatCurrency from "@lib/format-currency";
@@ -8,6 +8,7 @@ import calculateReward from "@lib/calculate-reward";
 
 const OverviewCards = ({
 	stats,
+	bondedAmount,
 	validators,
 	unlockingBalances = [],
 	openRewardDestinationModal = noop,
@@ -75,9 +76,17 @@ const OverviewCards = ({
 			>
 				<div className="flex items-center justify-between">
 					<div>
+						{stats.totalAmountStaked !== get(bondedAmount, "currency", 0) && (
+							<span className="text-sm bg-gray-200 text-gray-700 px-4 py-1 rounded-lg">
+								Active stake:{" "}
+								{formatCurrency.methods.formatAmount(
+									Math.trunc(Number((stats.totalAmountStaked || 0) * 10 ** 12))
+								)}
+							</span>
+						)}
 						<h1 className="text-3xl text-teal-500 font-semibold">
 							{formatCurrency.methods.formatAmount(
-								Math.trunc(Number((stats.totalAmountStaked || 0) * 10 ** 12))
+								Math.trunc(Number(get(bondedAmount, "currency", 0) * 10 ** 12))
 							)}
 						</h1>
 						{totalAmountStakedFiat && (
@@ -105,7 +114,7 @@ const OverviewCards = ({
 					</div>
 				</div>
 				<div className="mt-8 flex justify-between items-center">
-					<h5 className="text-gray-800">Staked</h5>
+					<h5 className="text-gray-800">Bonded</h5>
 					<div className="flex items-center">
 						<Popover trigger="hover">
 							<PopoverTrigger>

@@ -230,6 +230,7 @@ const Overview = () => {
 			<ChillAlert isOpen={chillAlertOpen} close={closeChillAlert} />
 			<OverviewCards
 				stats={userData.stats}
+				bondedAmount={bondedAmount}
 				validators={userData.validatorsInfo}
 				unlockingBalances={unlockingBalances}
 				bondFunds={() => openFundsUpdateModal("bond")}
