@@ -93,35 +93,43 @@ const Overview = () => {
 				.nominators(
 					stashAccount.address,
 					({ value: { targets: nominations } }) => {
-						const readableNominations = nominations.map((nomination) =>
-							nomination.toString()
-						);
-						const multiQueryString = readableNominations.reduce(
-							(acc, curr) => acc + `,${curr}`,
-							""
-						);
-						axios
-							.get(`/validator/multi?stashIds=${multiQueryString}`)
-							.then(({ data }) => {
-								setAllNominations(data);
-							})
-							.catch((err) => {
-								toast({
-									title: "Error",
-									description: "Something went wrong!",
-									position: "top-right",
-									duration: 3000,
-									status: "error",
+						if (nominations) {
+							const readableNominations = nominations.map((nomination) =>
+								nomination.toString()
+							);
+							const multiQueryString = readableNominations.reduce(
+								(acc, curr) => acc + `,${curr}`,
+								""
+							);
+							axios
+								.get(`/validator/multi?stashIds=${multiQueryString}`)
+								.then(({ data }) => {
+									setAllNominations(data);
+								})
+								.catch((err) => {
+									toast({
+										title: "Error",
+										description: "Something went wrong!",
+										position: "top-right",
+										duration: 3000,
+										status: "error",
+									});
+									close();
+								})
+								.finally(() => {
+									setNominationsLoading(false);
 								});
-								close();
-							})
-							.finally(() => {
-								setNominationsLoading(false);
-							});
+						} else {
+							setError(true);
+							setNominationsLoading(false);
+						}
 					}
 				)
 				.then((_unsubscribe) => {
 					unsubscribe = _unsubscribe;
+				})
+				.finally(() => {
+					setLoading(false);
 				});
 
 			return () => {
