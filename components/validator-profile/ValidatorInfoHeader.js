@@ -102,7 +102,7 @@ const ValidatorInfoHeader = ({
 						) : (
 							<Popover trigger="hover">
 								<PopoverTrigger>
-									<span className="text-gray-900 text-xs flex items-center cursor-default w-fit-content">
+									<span className="text-gray-900 text-xs flex items-center cursor-help w-fit-content">
 										<Eye size="0.75rem" />{" "}
 										<span className="ml-1">View Only</span>
 									</span>

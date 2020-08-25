@@ -31,6 +31,11 @@ const ValidatorProfile = () => {
 	const [loading, setLoading] = useState(true);
 	const [validatorData, setValidatorData] = useState();
 	const [selectedTab, setSelectedTab] = useState(ProfileTabsConfig.VISUALISATION);
+
+	const {
+		accountInfoLoading,
+	} = useAccounts();
+
 	const {
 		isOpen: editProfileModalOpen,
 		onClose: closeEditProfileModal,
@@ -57,13 +62,13 @@ const ValidatorProfile = () => {
 		initData();
 	}, []);
 
-	if (loading) {
+	if (loading || accountInfoLoading) {
 		return (
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">
 					<Spinner size="xl" color="teal.500" thickness="4px" />
 					<span className="text-sm text-gray-600 mt-5">
-						Fetching validator profile...
+						Fetching profile...
 					</span>
 				</div>
 			</div>
