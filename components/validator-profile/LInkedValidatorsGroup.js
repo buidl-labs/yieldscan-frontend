@@ -48,7 +48,7 @@ const LinkedValidatorsGroup = ({ validators = [] }) => {
 	
 	const limitedValidators = validators.length > 5 ? validators.slice(0, 5) : validators;
 
-	return (
+	return validators.length ? (
 		<div className="flex items-center">
 			<span className="text-gray-700 text-xs mr-5 font-semibold">LINKED VALIDATORS</span>
 			<LinkedValidatorsModal
@@ -78,9 +78,8 @@ const LinkedValidatorsGroup = ({ validators = [] }) => {
 					</div>
 				)}
 			</div>
-			{!validators.length && <span className="text-gray-700 text-xs mr-2 font-semibold">: 0</span>}
 		</div>
-	);
+	) : "";
 };
 
 export default LinkedValidatorsGroup;

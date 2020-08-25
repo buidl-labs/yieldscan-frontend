@@ -8,7 +8,7 @@ import ValidatorViz from "./validator-viz/ValidatorViz"
 import ProfileTabs from "./ProfileTabs";
 import ValidatorKeyStats from "./ValidatorKeyStats";
 import ValidatorInfoHeader from "./ValidatorInfoHeader";
-import LinkedValidatorsGroup from "./LInkedValidatorsGroup";
+import LinkedValidatorsGroup from "./LinkedValidatorsGroup";
 import { useWalletConnect } from "@components/wallet-connect";
 import EditValidatorProfileModal from "./EditValidatorProfileModal";
 import ValidatorReturnsCalculator from "./ValidatorReturnsCalculator";
@@ -59,9 +59,13 @@ const ValidatorProfile = () => {
 
 	if (loading) {
 		return (
-			<div className="flex-center flex-col mt-40">
-				<Spinner className="text-gray-700 mb-2" />
-				<span className="text-gray-600 text-sm">Fetching Validator Profile...</span>
+			<div className="flex-center w-full h-full">
+				<div className="flex-center flex-col">
+					<Spinner size="xl" color="teal.500" thickness="4px" />
+					<span className="text-sm text-gray-600 mt-5">
+						Fetching validator profile...
+					</span>
+				</div>
 			</div>
 		);
 	}
@@ -96,6 +100,7 @@ const ValidatorProfile = () => {
 				stashId={validatorStashId}
 				stashAccount={stashAccount}
 				socialInfo={validatorData.socialInfo}
+				transparencyScore={validatorData.transparencyScores}
 				openEditProfile={toggleEditProfileModal}
 				toggleWalletConnect={toggleWalletConnect}
 				vision={get(validatorData, 'additionalInfo.vision', '')}
