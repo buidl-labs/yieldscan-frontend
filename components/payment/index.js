@@ -142,8 +142,10 @@ const Payment = () => {
 	};
 
 	const back = () => {
-		if (currentStep === 0) router.back();
-		else setCurrentStep((step) => step - 1);
+		if (currentStep === 0) {
+			setHeaderLoading(false);
+			router.back();
+		} else setCurrentStep((step) => step - 1);
 	};
 
 	if (loading) {
