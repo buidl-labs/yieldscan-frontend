@@ -11,7 +11,7 @@ import {
 	WalletConnectPopover,
 	useWalletConnect,
 } from "@components/wallet-connect";
-import { useAccounts, useTransaction } from "@lib/store";
+import { useAccounts, useTransaction, useHeaderLoading } from "@lib/store";
 import { get, isNil, mapValues, keyBy, cloneDeep, debounce } from "lodash";
 import calculateReward from "@lib/calculate-reward";
 import { Spinner } from "@chakra-ui/core";
@@ -38,6 +38,7 @@ const RewardCalculatorPage = () => {
 		bondedAmount,
 		accountInfoLoading,
 	} = useAccounts();
+	const { setHeaderLoading } = useHeaderLoading();
 
 	const [loading, setLoading] = useState(false);
 	const [amount, setAmount] = useState(transactionState.stakingAmount || 1000);
@@ -83,6 +84,7 @@ const RewardCalculatorPage = () => {
 	useEffect(() => {
 		if (!validatorMap) {
 			setLoading(true);
+			setHeaderLoading(true);
 			axios.get("/rewards/risk-set").then(({ data }) => {
 				/**
 				 * `mapValues(keyBy(array), 'value-key')`:
@@ -98,6 +100,7 @@ const RewardCalculatorPage = () => {
 				setValidatorMap(validatorMap);
 				setSelectedValidators(validatorMap["Medium"]);
 				setLoading(false);
+				setHeaderLoading(false);
 			});
 		} else {
 			console.info("Using previous validator map.");
@@ -184,7 +187,7 @@ const RewardCalculatorPage = () => {
 
 	const onPayment = async () => {
 		updateTransactionState(Events.INTENT_STAKING);
-		router.push("/payment");
+		router.push("/payment", "/payment", "shallow");
 	};
 
 	const onAdvancedSelection = () => {
@@ -196,7 +199,7 @@ const RewardCalculatorPage = () => {
 		return (
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">
-					<Spinner size="xl" />
+					<Spinner size="xl" color="teal.500" thickness="4px" />
 					<span className="text-sm text-gray-600 mt-5">
 						Instantiating API and fetching data...
 					</span>

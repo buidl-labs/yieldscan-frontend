@@ -27,7 +27,7 @@ const RewardDestination = ({
 		<div className="mt-10">
 			<div className="text-2xl">Reward Destination</div>
 			<span className="text-gray-600">
-				To compound your rewards, the rewards will be locked for staking in your stash account over the specified time period.
+				To compound your rewards, the rewards will be locked for staking in your stash account over the unbonding time period.
 			</span>
 			<p
 				hidden={compounding}

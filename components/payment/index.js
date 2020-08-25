@@ -3,7 +3,12 @@ import { ChevronRight, ChevronLeft } from "react-feather";
 import Confirmation from "./Confirmation";
 import RewardDestination from "./RewardDestination";
 import Transaction from "./Transaction";
-import { useAccounts, useTransaction, usePolkadotApi } from "@lib/store";
+import {
+	useAccounts,
+	useTransaction,
+	usePolkadotApi,
+	useHeaderLoading,
+} from "@lib/store";
 import stake from "@lib/stake";
 import { useToast, Spinner } from "@chakra-ui/core";
 import { useRouter } from "next/router";
@@ -49,7 +54,9 @@ const Payment = () => {
 	const [currentStep, setCurrentStep] = useState(0);
 	const { accounts, stashAccount, bondedAmount } = useAccounts();
 	const { setTransactionState, ...transactionState } = useTransaction();
+	const { setHeaderLoading } = useHeaderLoading();
 
+	const [loading, setLoading] = useState(true);
 	const [stakingEvent, setStakingEvent] = useState();
 	const [stakingLoading, setStakingLoading] = useState(false);
 
@@ -59,6 +66,12 @@ const Payment = () => {
 			transactionState,
 		});
 	}, [currentStep]);
+
+	useEffect(() => {
+		setLoading(false);
+		// To prevent the user from switching accounts or networks while in the middle of the payment process
+		setHeaderLoading(true);
+	}, []);
 
 	const transact = () => {
 		setStakingLoading(true);
@@ -80,7 +93,7 @@ const Payment = () => {
 					description: message,
 					position: "top-right",
 					isClosable: true,
-					duration: 3000,
+					duration: 7000,
 				});
 				setStakingLoading(false);
 
@@ -97,7 +110,11 @@ const Payment = () => {
 					});
 				}
 
-				if (status === 0) router.replace("/overview");
+				if (status === 0) {
+					// To allow the user to switch accounts and networks after the payment process is complete
+					setHeaderLoading(false);
+					router.replace("/overview");
+				}
 			},
 		};
 
@@ -125,9 +142,24 @@ const Payment = () => {
 	};
 
 	const back = () => {
-		if (currentStep === 0) router.back();
-		else setCurrentStep((step) => step - 1);
+		if (currentStep === 0) {
+			setHeaderLoading(false);
+			router.back();
+		} else setCurrentStep((step) => step - 1);
 	};
+
+	if (loading) {
+		return (
+			<div className="flex-center w-full h-full">
+				<div className="flex-center flex-col">
+					<Spinner size="xl" color="teal.500" thickness="4px" />
+					<span className="text-sm text-gray-600 mt-5">
+						Loading payment page...
+					</span>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="mx-auto mb-8 mt-4" style={{ width: "45rem" }}>
