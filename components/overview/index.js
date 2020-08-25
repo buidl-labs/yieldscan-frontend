@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Edit2, AlertTriangle } from "react-feather";
 import OverviewCards from "./OverviewCards";
 import NominationsTable from "./NominationsTable";
+import ExpectedReturns from "./ExpectedReturns";
 import { Spinner, useDisclosure } from "@chakra-ui/core";
 import axios from "@lib/axios";
 import { useAccounts, usePolkadotApi } from "@lib/store";
@@ -16,24 +17,30 @@ import ChillAlert from "./ChillAlert";
 import Routes from "@lib/routes";
 import { useRouter } from "next/router";
 import AllNominations from "./AllNominations";
+import formatCurrency from "@lib/format-currency";
 
 const Tabs = {
-	ACTIVE_VALIDATORS: 'validators',
-	NOMINATIONS: 'nominations',
+	ACTIVE_VALIDATORS: "validators",
+	NOMINATIONS: "nominations",
 };
 
 const Overview = () => {
 	const router = useRouter();
 	const { toggle } = useWalletConnect();
 	const { apiInstance } = usePolkadotApi();
-	const { stashAccount, bondedAmount, unlockingBalances, accountInfoLoading } = useAccounts();
+	const {
+		stashAccount,
+		bondedAmount,
+		unlockingBalances,
+		accountInfoLoading,
+	} = useAccounts();
 	const [loading, setLoading] = useState(true);
 	const [nominationsLoading, setNominationsLoading] = useState(true); // work-around :(
 	const [error, setError] = useState(false);
 	const [userData, setUserData] = useState();
 	const [allNominationsData, setAllNominations] = useState([]);
 	const [fundsUpdateModalType, setFundsUpdateModalType] = useState();
-	const [selectedTab, setSelectedTab] = useState(Tabs.ACTIVE_VALIDATORS);
+	const [selectedTab, setSelectedTab] = useState(Tabs.NOMINATIONS);
 	const {
 		isOpen: isRewardDestinationModalOpen,
 		onToggle: toggleRewardDestinationModal,
@@ -59,31 +66,71 @@ const Overview = () => {
 		onToggle: toggleChillAlert,
 		onClose: closeChillAlert,
 	} = useDisclosure();
-	
 
 	useEffect(() => {
 		setLoading(true);
 		setError(false);
-		if (get(stashAccount, 'address') && apiInstance) {
-
-			const kusamaAddress = encodeAddress(decodeAddress(stashAccount.address), 2);
-			axios.get(`user/${kusamaAddress}`).then(({ data }) => {
-				if (data.message === 'No data found!') setError(true);
-				setUserData(data);
-			}).catch(() => {
-				setError(true);
-			}).finally(() => {
-				setLoading(false);
-			});
+		if (get(stashAccount, "address") && apiInstance) {
+			const kusamaAddress = encodeAddress(
+				decodeAddress(stashAccount.address),
+				2
+			);
+			axios
+				.get(`user/${kusamaAddress}`)
+				.then(({ data }) => {
+					if (data.message === "No data found!") setError(true);
+					setUserData(data);
+				})
+				.catch(() => {
+					setError(true);
+				})
+				.finally(() => {
+					setLoading(false);
+				});
 
 			let unsubscribe = noop;
-			unsubscribe = apiInstance.query.staking.nominators(stashAccount.address, ({ value: { targets: nominations }}) => {
-				const readableNominations = nominations.map(nomination => nomination.toString());
-				setAllNominations(readableNominations);
-				setNominationsLoading(false);
-			}).then(_unsubscribe => {
-				unsubscribe = _unsubscribe;
-			});
+			unsubscribe = apiInstance.query.staking
+				.nominators(
+					stashAccount.address,
+					({ value: { targets: nominations } }) => {
+						if (nominations) {
+							const readableNominations = nominations.map((nomination) =>
+								nomination.toString()
+							);
+							const multiQueryString = readableNominations.reduce(
+								(acc, curr) => acc + `,${curr}`,
+								""
+							);
+							axios
+								.get(`/validator/multi?stashIds=${multiQueryString}`)
+								.then(({ data }) => {
+									setAllNominations(data);
+								})
+								.catch((err) => {
+									toast({
+										title: "Error",
+										description: "Something went wrong!",
+										position: "top-right",
+										duration: 3000,
+										status: "error",
+									});
+									close();
+								})
+								.finally(() => {
+									setNominationsLoading(false);
+								});
+						} else {
+							setError(true);
+							setNominationsLoading(false);
+						}
+					}
+				)
+				.then((_unsubscribe) => {
+					unsubscribe = _unsubscribe;
+				})
+				.finally(() => {
+					setLoading(false);
+				});
 
 			return () => {
 				unsubscribe();
@@ -96,9 +143,11 @@ const Overview = () => {
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">
 					<AlertTriangle size="2rem" className="text-orange-500" />
-					<span className="text-gray-600 text-lg mb-10">No account connected!</span>
+					<span className="text-gray-600 text-lg mb-10">
+						No account connected!
+					</span>
 					<button
-						className="border border-teal-500 text-teal-500 text-2xl px-3 py-2 rounded-xl"
+						className="border border-teal-500 text-teal-500 px-3 py-2 rounded-full"
 						onClick={toggle}
 					>
 						Connect Wallet
@@ -112,8 +161,10 @@ const Overview = () => {
 		return (
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">
-					<Spinner size="xl" />
-					<span className="text-sm text-gray-600 mt-5">Fetching your data...</span>
+					<Spinner size="xl" color="teal.500" thickness="4px" />
+					<span className="text-sm text-gray-600 mt-5">
+						Fetching your data...
+					</span>
 				</div>
 			</div>
 		);
@@ -124,7 +175,10 @@ const Overview = () => {
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">
 					<AlertTriangle size="2rem" className="text-orange-500" />
-					<span className="font-semibold text-red-600 text-lg mb-10">Sorry, no data for your account since you don't have active nominations! :(</span>
+					<span className="font-semibold text-red-600 text-lg mb-10">
+						Sorry, no data for your account since you don't have active
+						nominations! :(
+					</span>
 					<span
 						onClick={() => router.replace(Routes.CALCULATOR)}
 						className="text-sm text-gray-600 mt-5 hover:underline cursor-pointer"
@@ -173,46 +227,68 @@ const Overview = () => {
 					setTimeout(() => toggleChillAlert(), 500);
 				}}
 			/>
-			<ChillAlert
-				isOpen={chillAlertOpen}
-				close={closeChillAlert}
-			/>
+			<ChillAlert isOpen={chillAlertOpen} close={closeChillAlert} />
 			<OverviewCards
 				stats={userData.stats}
+				bondedAmount={bondedAmount}
+				validators={userData.validatorsInfo}
 				unlockingBalances={unlockingBalances}
-				bondFunds={() => openFundsUpdateModal('bond')}
-				unbondFunds={() => openFundsUpdateModal('unbond')}
+				bondFunds={() => openFundsUpdateModal("bond")}
+				unbondFunds={() => openFundsUpdateModal("unbond")}
 				openRewardDestinationModal={toggleRewardDestinationModal}
 			/>
-			<div className="mt-10">
-				<div className="flex justify-between items-center">
-					<div className="flex items-center rounded-xl border border-gray-400">
-						<span
-							className={`px-3 py-2 cursor-pointer rounded-xl ${selectedTab === Tabs.ACTIVE_VALIDATORS ? 'text-white bg-teal-500' : 'text-gray-600'}`}
-							onClick={() => setSelectedTab(Tabs.ACTIVE_VALIDATORS)}
-						>
-							Active Nominations
-						</span>
-						<span
-							className={`px-3 py-2 cursor-pointer  rounded-xl ${selectedTab === Tabs.NOMINATIONS ? 'text-white bg-teal-500' : 'text-gray-600'}`}
-							onClick={() => setSelectedTab(Tabs.NOMINATIONS)}
-						>
-							All Nominations
-						</span>
+			<div className="mt-10 flex">
+				<div className="w-8/12 mr-8">
+					<div className="flex justify-between items-center">
+						<div className="flex items-center">
+							<h3 className="text-2xl">
+								{/* {selectedTab === Tabs.NOMINATIONS ? "All" : "Active"}{" "} */}
+								My validators
+							</h3>
+							{selectedTab === Tabs.NOMINATIONS && (
+								<button
+									className="flex items-center text-gray-600 mr-5 p-1"
+									onClick={toggleEditValidatorsModal}
+								>
+									<Edit2 size="20px" className="ml-2" />
+								</button>
+							)}
+						</div>
+						<div className="flex items-center">
+							<button
+								className={
+									selectedTab === Tabs.NOMINATIONS
+										? "text-gray-900 mx-2"
+										: "text-gray-500 mx-2"
+								}
+								onClick={() => setSelectedTab(Tabs.NOMINATIONS)}
+							>
+								Selected
+							</button>
+							<button
+								className={
+									selectedTab === Tabs.ACTIVE_VALIDATORS
+										? "text-gray-900 mx-2"
+										: "text-gray-500 mx-2"
+								}
+								onClick={() => setSelectedTab(Tabs.ACTIVE_VALIDATORS)}
+							>
+								Active
+							</button>
+						</div>
 					</div>
-					<div className="flex items-center">
-						<button className="flex items-center text-gray-500 mr-5 p-1" onClick={toggleEditValidatorsModal}>
-							<Edit2 size="20px" className="mr-2" />
-							<span>Edit Validators</span>
-						</button>
-						<button hidden className="text-teal-500 p-1">Claim All Rewards</button>
-					</div>
+					{selectedTab === Tabs.ACTIVE_VALIDATORS ? (
+						<NominationsTable validators={userData.validatorsInfo} />
+					) : (
+						<AllNominations nominations={allNominationsData} />
+					)}
 				</div>
-				{selectedTab === Tabs.ACTIVE_VALIDATORS ? (
-					<NominationsTable validators={userData.validatorsInfo} />
-				) : (
-					<AllNominations nominations={allNominationsData} />
-				)}
+				<div className="w-4/12">
+					<ExpectedReturns
+						stats={userData.stats}
+						validators={userData.validatorsInfo}
+					/>
+				</div>
 			</div>
 		</div>
 	);

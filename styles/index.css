@@ -45,6 +45,14 @@ input[type=number] {
 	background: none;
 }
 
+.w-fit-content {
+	width: fit-content;
+}
+
+.min-w-20-rem {
+	min-width: 20rem;
+}
+
 .min-w-40-rem {
 	min-width: 40rem;
 }
@@ -55,6 +63,14 @@ input[type=number] {
 
 .min-w-max-content {
 	min-width: max-content;
+}
+
+.min-h-12-rem {
+	min-height: 12rem;
+}
+
+.max-h-25-rem {
+	max-height: 25rem;
 }
 
 .fade-top {

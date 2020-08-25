@@ -15,6 +15,7 @@ import { useState, useEffect } from "react";
 import { Circle, CheckCircle } from "react-feather";
 import { web3FromAddress } from "@polkadot/extension-dapp";
 import updatePayee from "@lib/polkadot/update-payee";
+import Identicon from "@components/common/Identicon";
 
 const RewardDestinationModal = withSlideIn(({ close, styles, onEditController }) => {
 	const toast = useToast();
@@ -86,13 +87,24 @@ const RewardDestinationModal = withSlideIn(({ close, styles, onEditController })
 			<ModalOverlay />
 			<ModalContent rounded="lg" maxWidth="40rem" height="36rem" {...styles}>
 				<ModalHeader>
-				<h1>Payment Destination</h1>
+					<h1>Payment Destination</h1>
 				</ModalHeader>
-				<ModalCloseButton onClick={close} />
+				<ModalCloseButton
+					onClick={close}
+					boxShadow="0 0 0 0 #fff"
+					color="gray.400"
+					backgroundColor="gray.100"
+					rounded="1rem"
+					mt={4}
+					mr={4}
+				/>
 				<ModalBody>
 					<div className="px-20 py-5">
 						<h1 className="text-xl">Compound Rewards</h1>
-						<span className="text-gray-600 text-sm">Your rewards will be locked for staking over the specified time period</span>
+						<span className="text-gray-600 text-sm">
+							Your rewards will be locked for staking for the unbonding period
+							(approx. 7 days on Kusama)
+						</span>
 						<div className="mt-5">
 							<CompoundRewardSlider
 								checked={compounding}
@@ -102,46 +114,61 @@ const RewardDestinationModal = withSlideIn(({ close, styles, onEditController })
 						<div className="mt-8">
 							<h1 className="text-lg">Selected Account</h1>
 							<div className="mt-4">
-								{accounts.length > 1 ? accounts.map(accountType => (
-									<div
-										key={accountType}
-										className={`
+								{accounts.length > 1 ? (
+									accounts.map((accountType) => (
+										<div
+											key={accountType}
+											className={`
 											w-full flex items-center rounded-lg border-2 border-teal-500 cursor-pointer px-3 py-2 mb-2
-											${accountType === destination ? 'text-white bg-teal-500' : 'text-gray-600'}
+											${accountType === destination ? "text-white bg-teal-500" : "text-gray-600"}
 										`}
-										onClick={() => setDestination(accountType)}
-									>
-										{destination === accountType ? (
-											<CheckCircle className="mr-2" />
-										) : (
-											<Circle className="mr-2" />
-										)}
-										<div className="flex flex-col">
-											<span>{accountType}</span>
+											onClick={() => setDestination(accountType)}
+										>
+											{destination === accountType ? (
+												<CheckCircle className="mr-2" />
+											) : (
+												<Circle className="mr-2" />
+											)}
+											<div className="flex flex-col">
+												<span>{accountType}</span>
+											</div>
 										</div>
-									</div>
-								)) : (
+									))
+								) : (
 									<div>
-										<span className="text-orange-500 text-sm font-semibold">
-											When compounding is enabled, reward destination can only be stash account.
+										<span className="text-gray-600 text-sm">
+											When compounding is enabled, reward destination can only
+											be stash account.
 										</span>
-										<div className="mt-2 flex items-center rounded-lg text-white bg-teal-500 cursor-pointer px-3 py-2 mb-2">
+										{/* <div className="mt-2 flex items-center rounded-lg text-white bg-teal-500 cursor-pointer px-3 py-2 mb-2">
 											<div className="flex flex-col">
 												<h3>{stashAccount.meta.name}</h3>
 												<span className="text-sm">{stashAccount.address}</span>
+											</div>
+										</div> */}
+										<div className="mr-2 flex items-center rounded-lg bg-gray-100 border border-gray-200 px-3 py-4 mb-2 w-full mt-4">
+											<Identicon
+												address={stashAccount.address}
+												size="3.25rem"
+											/>
+											<div className="ml-2 flex flex-col">
+												<h3 className="text-lg">{stashAccount.meta.name}</h3>
+												<span className="text-xs text-gray-600">
+													{stashAccount.address}
+												</span>
 											</div>
 										</div>
 									</div>
 								)}
 							</div>
 						</div>
-						<button
+						{/* <button
 							className="text-sm text-gray-600 hover:underline"
 							onClick={onEditController}
 						>
 							Edit Controller
-						</button>
-						<div className="mt-12 flex-center">
+						</button> */}
+						<div className="mt-8 flex-center">
 							<Button
 								px="8"
 								py="2"

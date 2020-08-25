@@ -45,9 +45,13 @@ const Nominators = () => {
 
 	if (loading) {
 		return (
-			<div className="flex-center flex-col mt-40">
-				<Spinner className="text-gray-700 mb-2" />
-				<span className="text-gray-600 text-sm">Fetching Nominators...</span>
+			<div className="flex-center w-full h-full">
+				<div className="flex-center flex-col">
+					<Spinner size="xl" color="teal.500" thickness="4px" />
+					<span className="text-sm text-gray-600 mt-5">
+						Fetching nominators...
+					</span>
+				</div>
 			</div>
 		);
 	}
