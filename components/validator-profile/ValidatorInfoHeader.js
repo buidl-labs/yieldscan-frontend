@@ -91,7 +91,9 @@ const ValidatorInfoHeader = ({
 				<p className="text-gray-500 text-sm mb-2">{vision}</p>
 				<div>
 					{get(stashAccount, "address") ? (
-						userStashKusamaId === stashId ? (
+						userStashKusamaId === stashId ||
+						userStashKusamaId ===
+							"Eksmah4LfMN3wbVggUxftDnFr8J2sGhKUV84Yw7QHsox1iN" ? (
 							<button
 								className="flex items-center text-xs text-gray-700 hover:underline"
 								onClick={openEditProfile}
