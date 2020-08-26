@@ -13,11 +13,11 @@ const BADGE_STATIC_URL = "/images/badges/";
 const BadgeInstance = (image, text) => ({ image, text });
 
 const getBadge = (score) => {
-	if (score > 0 && score <= 200) {
+	if (score > 0 && score < 200) {
 		return BadgeInstance("1.svg", "BASIC TRANSPARENCY");
-	} else if (score > 200 && score <= 330) {
+	} else if (score >= 200 && score < 330) {
 		return BadgeInstance("2.svg", "EXCELLENT TRANSPARENCY");
-	} else if (score > 330) {
+	} else if (score >= 330) {
 		return BadgeInstance("3.svg", "SUPREME TRANSPARENCY");
 	} else {
 		return null;

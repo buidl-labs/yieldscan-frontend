@@ -25,11 +25,23 @@ const customTheme = {
 			"500": "#F5B100",
 		},
 	},
+	opacity: {
+		...theme.opacity,
+		"10": ".1",
+		"20": ".2",
+		"30": ".3",
+		"40": ".4",
+		"50": ".5",
+		"60": ".6",
+		"70": ".7",
+		"80": ".8",
+		"90": ".9",
+	},
 };
 
 if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
 	Sentry.init({
-    environment: process.env.NODE_ENV,
+		environment: process.env.NODE_ENV,
 		enabled: process.env.NODE_ENV === "production",
 		dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
 	});

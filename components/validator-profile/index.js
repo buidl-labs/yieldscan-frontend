@@ -4,7 +4,7 @@ import { Spinner, useDisclosure } from "@chakra-ui/core";
 import { useState, useEffect } from "react";
 import { useAccounts } from "@lib/store";
 import TeamMembers from "./TeamMembers";
-import ValidatorViz from "./validator-viz/ValidatorViz"
+import ValidatorViz from "./validator-viz/ValidatorViz";
 import ProfileTabs from "./ProfileTabs";
 import ValidatorKeyStats from "./ValidatorKeyStats";
 import ValidatorInfoHeader from "./ValidatorInfoHeader";
@@ -17,30 +17,28 @@ import TransparencyScoreModal from "./TransparencyScoreModal";
 
 const ProfileTabsConfig = {
 	// ACTIVITY: 'Activity',
-	VISUALISATION: 'Visualisation',
-	TEAM: 'Team',
+	VISUALISATION: "Visualisation",
+	TEAM: "Team",
 };
 
 const ValidatorProfile = () => {
 	const router = useRouter();
-	const { query: { id: validatorStashId } } = router;
+	const {
+		query: { id: validatorStashId },
+	} = router;
 
 	const { toggle: toggleWalletConnect } = useWalletConnect();
 	const { stashAccount } = useAccounts();
 	const [error, setError] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [validatorData, setValidatorData] = useState();
-	const [selectedTab, setSelectedTab] = useState(ProfileTabsConfig.VISUALISATION);
+	const [selectedTab, setSelectedTab] = useState(
+		ProfileTabsConfig.VISUALISATION
+	);
 
-	const {
-		accountInfoLoading,
-	} = useAccounts();
+	const { accountInfoLoading } = useAccounts();
 
-	const {
-		isOpen: editProfileModalOpen,
-		onClose: closeEditProfileModal,
-		onToggle: toggleEditProfileModal,
-	} = useDisclosure();
+	const [editProfileOpen, setEditProfileOpen] = useState();
 	const {
 		isOpen: scoreModalOpen,
 		onClose: closeScoreModal,
@@ -48,14 +46,18 @@ const ValidatorProfile = () => {
 	} = useDisclosure();
 
 	const initData = () => {
-		axios.get(`validator/${validatorStashId}`).then(({ data }) => {
-			setValidatorData(data);
-			// console.log(data);
-		}).catch(() => {
-			setError(true);
-		}).finally(() => {
-			setLoading(false);
-		});
+		axios
+			.get(`validator/${validatorStashId}`)
+			.then(({ data }) => {
+				setValidatorData(data);
+				// console.log(data);
+			})
+			.catch(() => {
+				setError(true);
+			})
+			.finally(() => {
+				setLoading(false);
+			});
 	};
 
 	useEffect(() => {
@@ -79,69 +81,85 @@ const ValidatorProfile = () => {
 		return (
 			<div className="flex-center flex-col mt-40">
 				<div className="text-4xl">🧐</div>
-				<h3>Sorry, this validator's info couldn't be fetched! We'll surely look into this.</h3>
+				<h3>
+					Sorry, this validator's info couldn't be fetched! We'll surely look
+					into this.
+				</h3>
 			</div>
 		);
 	}
 
 	return (
 		<div className="px-16 py-16">
-			<TransparencyScoreModal
-				isOpen={scoreModalOpen}
-				onClose={closeScoreModal}
-			/>
-			
-			<EditValidatorProfileModal
-				stashId={validatorStashId}
-				socialInfo={validatorData.socialInfo}
-				vision={get(validatorData, 'additionalInfo.vision', '')}
-				members={get(validatorData, 'additionalInfo.members')}
-				onSuccess={initData}
-				isOpen={editProfileModalOpen}
-				onClose={closeEditProfileModal}
-			/>
-		
-			<ValidatorInfoHeader
-				stashId={validatorStashId}
-				stashAccount={stashAccount}
-				socialInfo={validatorData.socialInfo}
-				transparencyScore={validatorData.transparencyScores}
-				openEditProfile={toggleEditProfileModal}
-				toggleWalletConnect={toggleWalletConnect}
-				vision={get(validatorData, 'additionalInfo.vision', '')}
-			/>
-
-			<div className="my-5">
-				<div className="flex items-center justify-between">
-					<ProfileTabs
-						tabs={ProfileTabsConfig}
-						selectedTab={selectedTab}
-						setSelectedTab={setSelectedTab}
+			{editProfileOpen ? (
+				<>
+					<TransparencyScoreModal
+						transparencyScore={validatorData.transparencyScores}
+						isOpen={scoreModalOpen}
+						onClose={closeScoreModal}
 					/>
-					<LinkedValidatorsGroup validators={validatorData.linkedValidators} />
-				</div>
-			</div>
+					<EditValidatorProfileModal
+						stashId={validatorStashId}
+						socialInfo={validatorData.socialInfo}
+						vision={get(validatorData, "additionalInfo.vision", "")}
+						members={get(validatorData, "additionalInfo.members")}
+						transparencyScore={validatorData.transparencyScores}
+						onSuccess={initData}
+						isOpen={editProfileOpen}
+						toggleScoreModal={toggleScoreModal}
+						goBack={() => setEditProfileOpen(false)}
+					/>
+				</>
+			) : (
+				<>
+					<ValidatorInfoHeader
+						stashId={validatorStashId}
+						stashAccount={stashAccount}
+						socialInfo={validatorData.socialInfo}
+						transparencyScore={validatorData.transparencyScores}
+						openEditProfile={() => setEditProfileOpen(true)}
+						toggleWalletConnect={toggleWalletConnect}
+						vision={get(validatorData, "additionalInfo.vision", "")}
+					/>
 
-			<div className="flex w-full">
-				<div className="w-2/3 mr-4">
-					{selectedTab === ProfileTabsConfig.TEAM && (
-						<TeamMembers members={get(validatorData, 'additionalInfo.members', [])} />
-					)}
-					{selectedTab === ProfileTabsConfig.VISUALISATION && (
-						<ValidatorViz validatorData={validatorData} networkName="KUSAMA NETWORK" />
-					)}
-				</div>
-				<div className="w-1/3 flex flex-col">
-					<div className="mb-2">
-						<ValidatorReturnsCalculator
-							validatorInfo={validatorData.keyStats}
-						/>
+					<div className="my-5">
+						<div className="flex items-center justify-between">
+							<ProfileTabs
+								tabs={ProfileTabsConfig}
+								selectedTab={selectedTab}
+								setSelectedTab={setSelectedTab}
+							/>
+							<LinkedValidatorsGroup
+								validators={validatorData.linkedValidators}
+							/>
+						</div>
 					</div>
-					<ValidatorKeyStats
-						stats={validatorData.keyStats}
-					/>
-				</div>
-			</div>
+
+					<div className="flex w-full">
+						<div className="w-2/3 mr-4">
+							{selectedTab === ProfileTabsConfig.TEAM && (
+								<TeamMembers
+									members={get(validatorData, "additionalInfo.members", [])}
+								/>
+							)}
+							{selectedTab === ProfileTabsConfig.VISUALISATION && (
+								<ValidatorViz
+									validatorData={validatorData}
+									networkName="KUSAMA NETWORK"
+								/>
+							)}
+						</div>
+						<div className="w-1/3 flex flex-col">
+							<div className="mb-2">
+								<ValidatorReturnsCalculator
+									validatorInfo={validatorData.keyStats}
+								/>
+							</div>
+							<ValidatorKeyStats stats={validatorData.keyStats} />
+						</div>
+					</div>
+				</>
+			)}
 		</div>
 	);
 };
