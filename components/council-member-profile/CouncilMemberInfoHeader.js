@@ -107,7 +107,7 @@ const CouncilMemberInfoHeader = ({
 				<p className="text-gray-500 text-sm mb-2">{vision}</p>
 				<div>
 					{get(stashAccount, "address") ? (
-						userStashKusamaId === stashId || userStashKusamaId ? (
+						userStashKusamaId === stashId ? (
 							<button
 								className="flex items-center text-xs text-gray-700 hover:underline"
 								onClick={openEditProfile}
