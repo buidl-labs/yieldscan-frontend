@@ -153,7 +153,7 @@ const EditProfileModal = withSlideIn(
 							status: "success",
 							position: "top-right",
 						});
-						onClose();
+						goBack();
 						onSuccess();
 					}
 				})
