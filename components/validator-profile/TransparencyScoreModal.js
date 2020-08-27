@@ -158,14 +158,14 @@ const TransparencyScoreModal = withSlideIn(
 									isDone={transparencyScore.web > 0}
 								/>
 								<TaskCard
-									title="Add your twitter"
+									title="Add your twitter handle"
 									description="The twitter name for this identity."
 									score={40}
 									isDone={transparencyScore.twitter > 0}
 								/>
 								<TaskCard
-									title="Add your riot"
-									description="A riot name linked to this identity"
+									title="Add your element name"
+									description="An element (previously riot) name linked to this identity"
 									score={50}
 									isDone={transparencyScore.riot > 0}
 								/>

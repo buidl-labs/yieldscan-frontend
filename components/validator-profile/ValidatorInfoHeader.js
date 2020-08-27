@@ -67,6 +67,22 @@ const ValidatorInfoHeader = ({
 								<span>{get(socialInfo, "twitter")}</span>
 							</button>
 						)}
+						{socialInfo.riot && (
+							<button
+								className="mr-4 text-sm flex items-center hover:underline"
+								style={{ color: "#0dbd8b" }}
+								onClick={() =>
+									openWindow(`https://app.element.io/#/user/${socialInfo.riot}`)
+								}
+							>
+								<img
+									src="/images/riot-logo.svg"
+									alt="riot-logo"
+									className="h-4 w-4 mr-1"
+								/>
+								<span>{get(socialInfo, "riot")}</span>
+							</button>
+						)}
 						{socialInfo.web && (
 							<button
 								className="mr-4 text-sm flex items-center hover:underline"
