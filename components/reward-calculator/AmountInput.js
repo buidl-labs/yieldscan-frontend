@@ -5,9 +5,23 @@ import {
 	InputRightElement,
 } from "@chakra-ui/core";
 import formatCurrency from "@lib/format-currency";
+import { useState, useEffect } from "react";
 
 const AmountInputDefault = ({ bonded, value, onChange }) => {
-	const [isEditable, setIsEditable] = React.useState(true);
+	const initiallyEditable = bonded === undefined;
+	const [isEditable, setIsEditable] = React.useState(initiallyEditable);
+	const [inputValue, setInputValue] = useState(value.currency);
+	useEffect(() => {
+		if (bonded) {
+			onChange(bonded);
+			setInputValue(Number(Math.max(bonded, 0).toFixed(4)));
+		}
+	}, [bonded]);
+	const handleChange = (value) => {
+		onChange(value);
+		setInputValue(value === 0 ? "" : value);
+	};
+
 	return (
 		<div>
 			<div className="flex items-center justify-between rounded-full border border-gray-200 w-2/3">
@@ -27,10 +41,10 @@ const AmountInputDefault = ({ bonded, value, onChange }) => {
 						pb={12}
 						px={8}
 						placeholder="0"
-						defaultValue={value.currency === 0 ? "" : value.currency}
+						value={inputValue}
 						onChange={(e) => {
 							const { value } = e.target;
-							onChange(value === "" ? 0 : Number(value));
+							handleChange(value === "" ? 0 : Number(value));
 						}}
 						border="none"
 						fontSize="2xl"
@@ -66,6 +80,9 @@ const AmountInputDefault = ({ bonded, value, onChange }) => {
 				<button
 					className="mt-4 py-2 px-4 shadow-custom rounded-full text-sm border border-gray-200"
 					onClick={() => {
+						if (isEditable) {
+							handleChange(bonded);
+						}
 						setIsEditable(!isEditable);
 					}}
 				>
@@ -141,7 +158,7 @@ const AmountInput = ({ value, bonded, onChange }) => {
 					onChange={onChange}
 				/>
 			): ( */}
-			<AmountInputDefault value={value} onChange={onChange} />
+			<AmountInputDefault value={value} bonded={bonded} onChange={onChange} />
 			{/* )} */}
 		</div>
 	);
