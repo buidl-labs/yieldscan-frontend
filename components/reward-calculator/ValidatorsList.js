@@ -100,7 +100,7 @@ const ValidatorInfo = ({
 // TODO: subCurrency to be calculated right
 const ValidatorsList = ({
 	disableList,
-	totalAmount = 0,
+	stakingAmount = 0,
 	validators = [],
 	selectedValidators = {},
 	setSelectedValidators = {},
@@ -148,7 +148,7 @@ const ValidatorsList = ({
 		(v) => !isNil(v)
 	);
 	const amountPerValidator = Number(
-		totalAmount / selectedValidatorsList.length
+		stakingAmount / selectedValidatorsList.length
 	);
 	const tempSelectedValidatorsList = Object.values(
 		tempSelectedValidators

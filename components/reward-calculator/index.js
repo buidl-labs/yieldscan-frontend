@@ -208,7 +208,8 @@ const RewardCalculatorPage = () => {
 		);
 	}
 
-	const totalAmount = get(bondedAmount, "currency", 0) + (amount || 0);
+	const totalBalance =
+		get(bondedAmount, "currency", 0) + get(freeAmount, "currency", 0);
 
 	// console.log("stashAccount");
 	// console.log(stashAccount);
@@ -220,13 +221,13 @@ const RewardCalculatorPage = () => {
 	// console.log(freeAmount);
 	// console.log("amount");
 	// console.log(amount);
-	// console.log("totalAmount");
-	// console.log(totalAmount);
+	// console.log("totalBalance");
+	// console.log(totalBalance);
 	// console.log("timePeriodValue");
 	// console.log(timePeriodValue);
 	// console.log("calculationDisabled");
 	// console.log(
-	// 	!totalAmount ||
+	// 	!totalBalance ||
 	// 		!timePeriodValue ||
 	// 		(amount || 0) > get(freeAmount, "currency", 0)
 	// );
@@ -249,9 +250,7 @@ const RewardCalculatorPage = () => {
 						</div>
 						<div
 							className="rounded-lg px-5 py-2 text-sm bg-red-200 text-red-600 my-4"
-							hidden={
-								!stashAccount || amount < get(freeAmount, "currency", -Infinity)
-							}
+							hidden={!stashAccount || amount < totalBalance - 0.1}
 						>
 							<span>
 								We cannot stake this amount since you need to maintain a minimum
@@ -296,7 +295,7 @@ const RewardCalculatorPage = () => {
 					result={result}
 					stashAccount={stashAccount}
 					calculationDisabled={
-						!totalAmount ||
+						!totalBalance ||
 						!timePeriodValue ||
 						(amount || 0) > get(freeAmount, "currency", 0)
 					}
@@ -304,8 +303,8 @@ const RewardCalculatorPage = () => {
 					onPayment={onPayment}
 				/>
 				<ValidatorsList
-					// disableList={!totalAmount || !timePeriodValue || !risk}
-					totalAmount={totalAmount}
+					// disableList={!amount || !timePeriodValue || !risk}
+					stakingAmount={amount}
 					validators={get(validatorMap, "total", [])}
 					selectedValidators={selectedValidators}
 					setSelectedValidators={setSelectedValidators}
