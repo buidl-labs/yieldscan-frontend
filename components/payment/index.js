@@ -123,6 +123,7 @@ const Payment = () => {
 				stashAccount.address,
 				transactionState.controller,
 				transactionState.stakingAmount,
+				transactionState.rewardDestination,
 				transactionState.selectedValidators.map((v) => v.stashId),
 				apiInstance,
 				handlers
@@ -160,6 +161,8 @@ const Payment = () => {
 			</div>
 		);
 	}
+
+	console.log(transactionState);
 
 	return (
 		<div className="mx-auto mb-8 mt-4" style={{ width: "45rem" }}>

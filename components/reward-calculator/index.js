@@ -210,6 +210,27 @@ const RewardCalculatorPage = () => {
 
 	const totalAmount = get(bondedAmount, "currency", 0) + (amount || 0);
 
+	// console.log("stashAccount");
+	// console.log(stashAccount);
+	// console.log("result");
+	// console.log(result);
+	// console.log("bondedAmount");
+	// console.log(bondedAmount);
+	// console.log("freeAmount");
+	// console.log(freeAmount);
+	// console.log("amount");
+	// console.log(amount);
+	// console.log("totalAmount");
+	// console.log(totalAmount);
+	// console.log("timePeriodValue");
+	// console.log(timePeriodValue);
+	// console.log("calculationDisabled");
+	// console.log(
+	// 	!totalAmount ||
+	// 		!timePeriodValue ||
+	// 		(amount || 0) > get(freeAmount, "currency", 0)
+	// );
+
 	return (
 		<div className="flex px-24 pt-12">
 			<WalletConnectPopover isOpen={isOpen} />
