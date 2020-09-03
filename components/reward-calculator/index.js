@@ -229,7 +229,8 @@ const RewardCalculatorPage = () => {
 	// console.log(
 	// 	!totalBalance ||
 	// 		!timePeriodValue ||
-	// 		(amount || 0) > get(freeAmount, "currency", 0)
+	// 		(amount || 0) > totalBalance - 0.1 ||
+	// 		amount == 0
 	// );
 
 	return (
@@ -297,7 +298,8 @@ const RewardCalculatorPage = () => {
 					calculationDisabled={
 						!totalBalance ||
 						!timePeriodValue ||
-						(amount || 0) > get(freeAmount, "currency", 0)
+						(amount || 0) > totalBalance - 0.1 ||
+						amount == 0
 					}
 					onWalletConnectClick={toggle}
 					onPayment={onPayment}
