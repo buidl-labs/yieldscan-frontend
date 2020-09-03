@@ -1,8 +1,8 @@
+import { useState } from "react";
 import { get } from "lodash";
-import RiskTag from "@components/reward-calculator/RiskTag";
 import Identicon from "@components/common/Identicon";
-import { ArrowRight } from "react-feather";
 import formatCurrency from "@lib/format-currency";
+import TermsAndServicePopover from "@components/payment/TermsOfService";
 
 const ValidatorInfo = ({ name, stashId, riskScore, amountPerValidator }) => (
 	<div className="rounded-lg flex items-center border border-gray-200 px-4 py-3 my-1">
@@ -42,6 +42,8 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 		currency: get(bondedAmount, "currency", 0),
 		subCurrency: get(bondedAmount, "subCurrency", 0),
 	};
+
+	const [tcPopoverOpen, setTCPopoverOpen] = useState(false);
 
 	return (
 		<div className="mt-16">
@@ -103,68 +105,28 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 					${!bonded.currency && "w-5/12"}
 				`}
 			>
-				{!!bonded.currency && (
-					<>
-						<div className="rounded-lg p-4 flex flex-col justify-center border-2 border-teal-500">
-							<span className="text-teal-500 text-sm">
-								Additional Funds to Bond
-							</span>
-							<h3 className="text-2xl">
-								{formatCurrency.methods.formatAmount(
-									Math.trunc(stakingAmount * 10 ** 12)
-								)}
-							</h3>
-							{/* <span className="text-gray-500 text-sm">${stakingAmount}</span> */}
-						</div>
-						<div className="rounded-lg p-4 flex flex-col justify-center">
-							<span className="text-gray-600 text-sm">Currently Bonded</span>
-							<h3 className="text-2xl">
-								{formatCurrency.methods.formatAmount(
-									Math.trunc(bonded.currency * 10 ** 12)
-								)}
-							</h3>
-							{/* <span className="text-gray-500 text-sm">${bonded.subCurrency}</span> */}
-						</div>
-						<ArrowRight />
-					</>
-				)}
-				<div
-					className={`rounded-lg p-4 flex flex-col justify-center ${
-						!bonded.currency &&
-						"bg-gray-100 py-4 pl-6 pr-16 border border-gray-300"
-					}`}
-				>
-					<span
-						className={`text-sm ${
-							!bonded.currency ? "text-teal-500" : "text-gray-600 "
-						}`}
-					>
-						{!!bonded.currency ? "Total" : ""} Staking Amount
-					</span>
+				<div className="rounded-lg p-4 flex flex-col justify-center border-2 border-teal-500">
+					<span className="text-teal-500 text-sm">Staking Amount</span>
 					<h3 className="text-2xl">
 						{formatCurrency.methods.formatAmount(
-							Math.trunc(
-								Number(
-									!!bonded.currency
-										? bonded.currency + stakingAmount
-										: stakingAmount
-								) *
-									10 ** 12
-							)
+							Math.trunc(stakingAmount * 10 ** 12)
 						)}
 					</h3>
-					{/* <span className="text-gray-500 text-sm">
-						${Number(bonded.subCurrency + stakingAmount).toFixed(4)} KSM
-				</span>*/}
+					{/* <span className="text-gray-500 text-sm">${stakingAmount}</span> */}
 				</div>
 			</div>
 
 			<button
 				className="px-6 py-2 shadow-lg rounded-lg text-white bg-teal-500"
-				onClick={onConfirm}
+				onClick={() => setTCPopoverOpen(true)}
 			>
-				Agree and Confirm
+				Confirm
 			</button>
+			<TermsAndServicePopover
+				tcPopoverOpen={tcPopoverOpen}
+				setTCPopoverOpen={setTCPopoverOpen}
+				onConfirm={onConfirm}
+			/>
 		</div>
 	);
 };
