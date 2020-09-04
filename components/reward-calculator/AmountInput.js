@@ -8,7 +8,12 @@ import formatCurrency from "@lib/format-currency";
 import { useState, useEffect } from "react";
 
 const AmountInputDefault = ({ bonded, value, onChange }) => {
-	const initiallyEditable = bonded === undefined;
+	const initiallyEditable =
+		bonded === undefined ? true : bonded == 0 ? true : false;
+	console.log("initiallyEditable");
+	console.log(initiallyEditable);
+	console.log("bonded");
+	console.log(bonded);
 	const [isEditable, setIsEditable] = React.useState(initiallyEditable);
 	const [inputValue, setInputValue] = useState(value.currency);
 	useEffect(() => {
@@ -55,28 +60,8 @@ const AmountInputDefault = ({ bonded, value, onChange }) => {
 						${formatCurrency.methods.formatNumber(value.subCurrency.toFixed(2))}
 					</h6>
 				</InputGroup>
-				{/* <div className="flex flex-col ml-6">
-			<input
-				type="number"
-				placeholder="0"
-				defaultValue={value.currency === 0 ? "" : value.currency}
-				onChange={(e) => {
-					const { value } = e.target;
-					onChange(value === "" ? 0 : Number(value));
-				}}
-				className="w-24 text-2xl p-0 outline-none"
-			/>
-			<h6 className="text-gray-600 text-sm">${value.subCurrency}</h6> 
-		</div> */}
-				{/* <div className="flex-center">
-			<div className="px-5 py-4 rounded-r-full border-l border-gray-200">
-				<div className="flex items-center relative text-xl">
-					<span>KSM</span>
-				</div>
 			</div>
-		</div> */}
-			</div>
-			{bonded && (
+			{(bonded && (
 				<button
 					className="mt-4 py-2 px-4 shadow-custom rounded-full text-sm border border-gray-200"
 					onClick={() => {
@@ -88,7 +73,8 @@ const AmountInputDefault = ({ bonded, value, onChange }) => {
 				>
 					{isEditable ? "Use Currently Bonded Amount" : "Use Custom Amount"}
 				</button>
-			)}
+			)) ||
+				""}
 		</div>
 	);
 };
@@ -159,7 +145,6 @@ const AmountInput = ({ value, bonded, onChange }) => {
 				/>
 			): ( */}
 			<AmountInputDefault value={value} bonded={bonded} onChange={onChange} />
-			{/* )} */}
 		</div>
 	);
 };
