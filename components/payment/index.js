@@ -47,6 +47,35 @@ const Steps = ({ steps, currentStep }) => (
 	</>
 );
 
+const SuccessfullyBonded = ({ transactionHash, onConfirm }) => {
+	return (
+		<div className="mx-10 mt-8 mb-20 flex flex-col text-center items-center">
+			<img src="/images/polkadot-successfully-bonded.png" width="200px" />
+			<h3 className="mt-4 text-2xl">
+				Your staking request is successfully sent to the KSM network
+			</h3>
+			<span className="mt-1 px-4 text-sm text-gray-500">
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+				tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+				veniam.
+			</span>
+			<a
+				href={`https://polkascan.io/kusama/transaction/${transactionHash}`}
+				className="mt-6 text-gray-500"
+				target="_blank"
+			>
+				Track this transaction on PolkaScan
+			</a>
+			<button
+				className="mt-8 px-24 py-4 bg-teal-500 text-white rounded-lg"
+				onClick={onConfirm}
+			>
+				Proceed
+			</button>
+		</div>
+	);
+};
+
 // TODO: add `back` button from `payments` to `reward-calculator` and calculator state should be maintained
 const Payment = () => {
 	const toast = useToast();
@@ -58,6 +87,7 @@ const Payment = () => {
 	const { setHeaderLoading } = useHeaderLoading();
 
 	const [loading, setLoading] = useState(true);
+	const [transactionHash, setTransactionHash] = useState();
 	const [stakingEvent, setStakingEvent] = useState();
 	const [stakingLoading, setStakingLoading] = useState(false);
 
@@ -85,6 +115,10 @@ const Payment = () => {
 		const handlers = {
 			onEvent: (eventInfo) => {
 				setStakingEvent(eventInfo.message);
+			},
+			onSuccessfullSigning: (hash) => {
+				setStakingLoading(false);
+				setTransactionHash(hash.message);
 			},
 			onFinish: (status, message, eventLogs) => {
 				// status = 0 for success, anything else for error code
@@ -114,7 +148,7 @@ const Payment = () => {
 				if (status === 0) {
 					// To allow the user to switch accounts and networks after the payment process is complete
 					setHeaderLoading(false);
-					router.replace("/overview");
+					// router.replace("/overview");
 				}
 			},
 		};
@@ -151,6 +185,10 @@ const Payment = () => {
 		} else setCurrentStep((step) => step - 1);
 	};
 
+	const handleOnClickForSuccessfulTransaction = () => {
+		router.replace("/overview");
+	};
+
 	if (loading) {
 		return (
 			<div className="flex-center w-full h-full">
@@ -164,56 +202,66 @@ const Payment = () => {
 		);
 	}
 
-	console.log(transactionState);
-
 	return (
 		<div className="mx-auto mb-8 mt-4" style={{ width: "45rem" }}>
-			<div className="mb-10">
-				<button
-					className="flex items-center bg-gray-200 text-gray-900 rounded-full px-2 py-1"
-					onClick={back}
-				>
-					<ChevronLeft className="text-gray-900" />
-					<span className="mr-2">Back</span>
-				</button>
-			</div>
-			<Steps
-				steps={["Confirmation", "Reward Destination", "Payment"]}
-				currentStep={currentStep}
-			/>
-			{currentStep === 0 && (
-				<Confirmation
-					bondedAmount={bondedAmount}
-					transactionState={transactionState}
-					onConfirm={() => setCurrentStep((step) => step + 1)}
-				/>
-			)}
-			{currentStep === 1 && (
-				<RewardDestination
-					stashAccount={stashAccount}
-					transactionState={transactionState}
-					setTransactionState={setTransactionState}
-					onConfirm={() => setCurrentStep((step) => step + 1)}
-				/>
-			)}
-			{currentStep === 2 && (
-				<Transaction
-					accounts={accounts}
-					stashAccount={stashAccount}
-					stakingLoading={stakingLoading}
-					transactionState={transactionState}
-					setController={(controller) => setTransactionState({ controller })}
-					onConfirm={transact}
-				/>
+			{!stakingLoading && !transactionHash && (
+				<>
+					<div className="mb-10">
+						<button
+							className="flex items-center bg-gray-200 text-gray-900 rounded-full px-2 py-1"
+							onClick={back}
+						>
+							<ChevronLeft className="text-gray-900" />
+							<span className="mr-2">Back</span>
+						</button>
+					</div>
+					<Steps
+						steps={["Confirmation", "Reward Destination", "Payment"]}
+						currentStep={currentStep}
+					/>
+					{currentStep === 0 && (
+						<Confirmation
+							bondedAmount={bondedAmount}
+							transactionState={transactionState}
+							onConfirm={() => setCurrentStep((step) => step + 1)}
+						/>
+					)}
+					{currentStep === 1 && (
+						<RewardDestination
+							stashAccount={stashAccount}
+							transactionState={transactionState}
+							setTransactionState={setTransactionState}
+							onConfirm={() => setCurrentStep((step) => step + 1)}
+						/>
+					)}
+					{currentStep === 2 && (
+						<Transaction
+							accounts={accounts}
+							stashAccount={stashAccount}
+							stakingLoading={stakingLoading}
+							transactionState={transactionState}
+							setController={(controller) =>
+								setTransactionState({ controller })
+							}
+							onConfirm={transact}
+						/>
+					)}
+				</>
 			)}
 			{stakingLoading && (
 				<div className="mt-6">
-					<h1 className="font-semibold text-xl text-gray-700">Status:</h1>
+					{/* <h1 className="font-semibold text-xl text-gray-700">Status:</h1> */}
 					<div className="flex items-center justify-between">
 						<span>{stakingEvent}</span>
 						<Spinner className="ml-4" />
 					</div>
 				</div>
+			)}
+			{transactionHash && (
+				<SuccessfullyBonded
+					transactionHash={transactionHash}
+					onConfirm={handleOnClickForSuccessfulTransaction}
+				/>
 			)}
 		</div>
 	);
