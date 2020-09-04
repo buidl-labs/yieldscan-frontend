@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { get } from "lodash";
+import { Stack, Icon, Text } from "@chakra-ui/core";
 import Identicon from "@components/common/Identicon";
 import formatCurrency from "@lib/format-currency";
 import TermsAndServicePopover from "@components/payment/TermsOfService";
@@ -115,7 +116,12 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 					{/* <span className="text-gray-500 text-sm">${stakingAmount}</span> */}
 				</div>
 			</div>
-
+			<Stack isInline>
+				<Icon name="warning" size="32px" color="#F5B100" />
+				<Text>
+					These funds will be locked for a period of 28 eras or 7 days{" "}
+				</Text>
+			</Stack>
 			<button
 				className="px-6 py-2 shadow-lg rounded-lg text-white bg-teal-500"
 				onClick={() => setTCPopoverOpen(true)}

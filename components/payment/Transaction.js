@@ -104,6 +104,7 @@ const Transaction = ({
 	onConfirm,
 }) => {
 	const [editController, setEditController] = useState(false);
+	const compounding = get(transactionState, "compounding", true);
 	const [selectedController, setSelectedController] = useState(stashAccount);
 	const [controllerEdited, setControllerEdited] = useState(false);
 
@@ -113,6 +114,9 @@ const Transaction = ({
 
 	// TODO: stakingAmount subCurrency version
 	const stakingAmount = get(transactionState, "stakingAmount", 0);
+
+	console.log("compounding");
+	console.log(compounding);
 
 	return (
 		<div className="mt-10">
@@ -169,15 +173,17 @@ const Transaction = ({
 					</div>
 				</>
 			)}
-			<button
-				className={`
+			{!compounding && (
+				<button
+					className={`
 					mt-4 px-3 py-px text-gray-600 border border-gray-300 font-semibold rounded text-sm hover:bg-gray-200 transition duration-200
 				`}
-				hidden={editController}
-				onClick={() => setEditController(true)}
-			>
-				Edit Controller
-			</button>
+					hidden={editController}
+					onClick={() => setEditController(true)}
+				>
+					Edit Controller
+				</button>
+			)}
 
 			<EditControllerModal
 				isOpen={editController}

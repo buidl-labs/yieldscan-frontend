@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ChevronRight, ChevronLeft } from "react-feather";
+import { get } from "lodash";
 import Confirmation from "./Confirmation";
 import RewardDestination from "./RewardDestination";
 import Transaction from "./Transaction";
@@ -123,6 +124,7 @@ const Payment = () => {
 				stashAccount.address,
 				transactionState.controller,
 				transactionState.stakingAmount,
+				get(bondedAmount, "currency", 0),
 				transactionState.rewardDestination,
 				transactionState.selectedValidators.map((v) => v.stashId),
 				apiInstance,
