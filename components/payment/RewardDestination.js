@@ -30,9 +30,12 @@ const RewardDestination = ({
 	return (
 		<div className="mt-10">
 			<div className="text-2xl">Reward Destination</div>
-			<span className="text-gray-600">
+			<span className="text-gray-600" hidden={!compounding}>
 				To compound your rewards, the rewards will be locked for staking in your
 				stash account over the unbonding time period.
+			</span>
+			<span className="text-gray-600" hidden={compounding}>
+				Please select the destination account for your rewards
 			</span>
 			<p hidden={compounding} className="mt-10 text-orange-500 font-semibold">
 				Feel free to ignore this selection if you don't have knowledge about
