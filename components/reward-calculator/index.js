@@ -11,7 +11,13 @@ import {
 	WalletConnectPopover,
 	useWalletConnect,
 } from "@components/wallet-connect";
-import { useAccounts, useTransaction, useHeaderLoading } from "@lib/store";
+import {
+	useAccounts,
+	useTransaction,
+	useHeaderLoading,
+	usePaymentPopover,
+} from "@lib/store";
+import { PaymentPopover } from "@components/new-payment";
 import { get, isNil, mapValues, keyBy, cloneDeep, debounce } from "lodash";
 import calculateReward from "@lib/calculate-reward";
 import { Spinner } from "@chakra-ui/core";
@@ -39,6 +45,12 @@ const RewardCalculatorPage = () => {
 		accountInfoLoading,
 	} = useAccounts();
 	const { setHeaderLoading } = useHeaderLoading();
+	const {
+		isPaymentPopoverOpen,
+		togglePaymentPopover,
+		closePaymentPopover,
+		openPaymentPopover,
+	} = usePaymentPopover();
 
 	const [loading, setLoading] = useState(false);
 	const [amount, setAmount] = useState(transactionState.stakingAmount || 1000);
@@ -187,7 +199,10 @@ const RewardCalculatorPage = () => {
 
 	const onPayment = async () => {
 		updateTransactionState(Events.INTENT_STAKING);
-		router.push("/payment", "/payment", "shallow");
+		console.log("hello");
+		get(bondedAmount, "currency", 0) === 0
+			? router.push("/payment", "/payment", "shallow")
+			: openPaymentPopover();
 	};
 
 	const onAdvancedSelection = () => {
@@ -232,6 +247,10 @@ const RewardCalculatorPage = () => {
 	// 		(amount || 0) > totalBalance - 0.1 ||
 	// 		amount == 0
 	// );
+	console.log("isPaymentPopoverOpen");
+	console.log(isPaymentPopoverOpen);
+	console.log("selectedValidators");
+	console.log(selectedValidators);
 
 	return (
 		<div className="flex px-24 pt-12">
@@ -313,6 +332,20 @@ const RewardCalculatorPage = () => {
 					onAdvancedSelection={onAdvancedSelection}
 				/>
 			</div>
+
+			<PaymentPopover
+				isPaymentPopoverOpen={isPaymentPopoverOpen}
+				stashAccount={stashAccount}
+				stakingAmount={{ currency: amount, subCurrency: subCurrency }}
+				validators={get(validatorMap, "total", [])}
+				compounding={compounding}
+				selectedValidators={Object.values(selectedValidators)}
+				setSelectedValidators={setSelectedValidators}
+				onAdvancedSelection={onAdvancedSelection}
+				bondedAmount={bondedAmount}
+				closePaymentPopover={closePaymentPopover}
+				result={result}
+			/>
 		</div>
 	);
 };
