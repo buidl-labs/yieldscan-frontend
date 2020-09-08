@@ -247,10 +247,13 @@ const RewardCalculatorPage = () => {
 	// 		(amount || 0) > totalBalance - 0.1 ||
 	// 		amount == 0
 	// );
-	console.log("isPaymentPopoverOpen");
-	console.log(isPaymentPopoverOpen);
-	console.log("selectedValidators");
-	console.log(selectedValidators);
+	// console.log("isPaymentPopoverOpen");
+	// console.log(isPaymentPopoverOpen);
+	// console.log("selectedValidators");
+	// console.log(selectedValidators);
+
+	console.log("transactionState");
+	console.log(transactionState);
 
 	return (
 		<div className="flex px-24 pt-12">

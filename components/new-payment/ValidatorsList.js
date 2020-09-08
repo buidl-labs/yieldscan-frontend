@@ -53,7 +53,9 @@ const ValidatorInfo = ({
 					<div className="flex items-center text-gray-700 truncate w-4/5">
 						<span className="mr-2 text-base">
 							{name
-								? name.length > 16 && name.slice(0, 6) + "..." + name.slice(-6)
+								? name.length > 16
+									? name.slice(0, 6) + "..." + name.slice(-6)
+									: name
 								: stashId.slice(0, 6) + "..." + stashId.slice(-6) || "-"}
 						</span>
 						{/* <ExternalLink size="1rem" /> */}
@@ -100,7 +102,7 @@ const ValidatorInfo = ({
 // TODO: subCurrency to be calculated right
 const ValidatorsList = ({
 	disableList,
-	totalAmount = 0,
+	stakingAmount = 0,
 	validators = [],
 	selectedValidators = {},
 	setSelectedValidators = {},
@@ -148,11 +150,16 @@ const ValidatorsList = ({
 		(v) => !isNil(v)
 	);
 	const amountPerValidator = Number(
-		totalAmount / selectedValidatorsList.length
+		stakingAmount / selectedValidatorsList.length
 	);
 	const tempSelectedValidatorsList = Object.values(
 		tempSelectedValidators
 	).filter((v) => !isNil(v));
+
+	console.log("amountPerValidator");
+	console.log(amountPerValidator);
+	console.log("stakingAmount");
+	console.log(stakingAmount);
 
 	if (disableList) {
 		return (
