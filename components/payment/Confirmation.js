@@ -12,9 +12,13 @@ const ValidatorInfo = ({ name, stashId, riskScore, amountPerValidator }) => (
 		</div>
 		<div className="flex flex-col items-start">
 			<h3 className="text-gray-900 text-base">
-				{name
-					? name.length > 16 && name.slice(0, 6) + "..." + name.slice(-6)
-					: stashId.slice(0, 6) + "..." + stashId.slice(-6) || "-"}
+				<span className="mr-2 text-base">
+					{name
+						? name.length > 16
+							? name.slice(0, 6) + "..." + name.slice(-6)
+							: name
+						: stashId.slice(0, 6) + "..." + stashId.slice(-6) || "-"}
+				</span>
 			</h3>
 			{/* <span className="flex items-center text-gray-500 text-sm rounded-full border border-gray-200 mt-1 pl-4">
 				<span className="text-xs">Risk Score</span>

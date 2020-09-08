@@ -90,9 +90,13 @@ const TermsAndServicePopover = ({
 				</ModalBody>
 				<ModalFooter>
 					<button
+						// 	className={`
+						// 	rounded-full font-semibold text-lg mt-5 px-8 py-3 bg-white text-teal-500
+						// 	${clickDisabled ? "opacity-75 cursor-not-allowed" : "opacity-100"}
+						// `}
 						className={`
-						rounded-full font-semibold text-lg mt-5 px-8 py-3 bg-white text-teal-500
-						${clickDisabled ? "opacity-75 cursor-not-allowed" : "opacity-100"}
+						flex items-center px-12 py-3 text-white rounded-lg
+						${!clickDisabled ? "bg-teal-500" : "bg-gray-400 cursor-not-allowed"}
 					`}
 						disabled={clickDisabled}
 						onClick={onConfirm}
