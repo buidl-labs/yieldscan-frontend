@@ -34,6 +34,7 @@ import FilterPanel from "./FilterPanel";
 import { useWalletConnect } from "@components/wallet-connect";
 import { useRouter } from "next/router";
 import axios from "@lib/axios";
+import convertCurrency from "@lib/convert-currency";
 
 const DEFAULT_FILTER_OPTIONS = {
 	numOfNominators: { min: "", max: "" },
@@ -75,6 +76,7 @@ const Validators = () => {
 	const [filteredValidators, setFilteredValidators] = useState(validators);
 	const [advancedMode] = useState(router.query.advanced);
 	const [amount, setAmount] = useState(transactionState.stakingAmount);
+	const [subCurrency, setSubCurrency] = useState(0);
 	const [timePeriodValue, setTimePeriod] = useState(
 		transactionState.timePeriodValue
 	);
@@ -108,6 +110,18 @@ const Validators = () => {
 			setLoading(false);
 		}
 	}, []);
+
+	useEffect(() => {
+		if (bondedAmount) {
+			setAmount(get(bondedAmount, "currency"));
+		}
+	}, [bondedAmount]);
+
+	useEffect(() => {
+		convertCurrency(amount || 0).then((convertedAmount) => {
+			setSubCurrency(convertedAmount);
+		});
+	}, [amount]);
 
 	useEffect(() => {
 		const sorted = orderBy(filteredValidators, [sortKey], [sortOrder]);
@@ -252,6 +266,13 @@ const Validators = () => {
 		);
 	}
 
+	console.log("transactionState");
+	console.log(transactionState);
+	console.log("amount");
+	console.log(amount);
+	console.log("bondedAmount");
+	console.log(bondedAmount);
+
 	return (
 		<div className="relative h-full px-10 py-5">
 			{advancedMode && (
@@ -270,6 +291,7 @@ const Validators = () => {
 				onClose={onClose}
 				amount={amount}
 				setAmount={setAmount}
+				subCurrency={subCurrency}
 				freeAmount={freeAmount}
 				bondedAmount={bondedAmount}
 				stashAccount={stashAccount}
