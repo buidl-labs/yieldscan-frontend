@@ -25,10 +25,11 @@ import {
 	isNull,
 	cloneDeep,
 } from "lodash";
-import { useTransaction, useAccounts } from "@lib/store";
+import { useTransaction, useAccounts, usePaymentPopover } from "@lib/store";
 import calculateReward from "@lib/calculate-reward";
 import ValidatorsResult from "./ValidatorsResult";
 import ValidatorsTable from "./ValidatorsTable";
+import { PaymentPopover } from "@components/new-payment";
 import EditAmountModal from "./EditAmountModal";
 import FilterPanel from "./FilterPanel";
 import { useWalletConnect } from "@components/wallet-connect";
@@ -98,6 +99,12 @@ const Validators = () => {
 	const [sortOrder, setSortOrder] = useState("asc");
 	const [sortKey, setSortKey] = useState("rewardsPer100KSM");
 	const [result, setResult] = useState({});
+	const {
+		isPaymentPopoverOpen,
+		togglePaymentPopover,
+		closePaymentPopover,
+		openPaymentPopover,
+	} = usePaymentPopover();
 
 	useEffect(() => {
 		if (!validators) {
@@ -254,7 +261,10 @@ const Validators = () => {
 
 	const onPayment = async () => {
 		updateTransactionState();
-		router.push("/payment");
+		console.log("hello");
+		get(bondedAmount, "currency", 0) === 0
+			? router.push("/payment", "/payment", "shallow")
+			: openPaymentPopover();
 	};
 
 	if (loading || accountInfoLoading) {
@@ -457,6 +467,18 @@ const Validators = () => {
 					</div>
 				)}
 			</div>
+			<PaymentPopover
+				isPaymentPopoverOpen={isPaymentPopoverOpen}
+				stashAccount={stashAccount}
+				stakingAmount={{ currency: amount, subCurrency: subCurrency }}
+				validators={validators}
+				compounding={compounding}
+				selectedValidators={Object.values(selectedValidatorsMap)}
+				setSelectedValidators={setSelectedValidatorsMap}
+				bondedAmount={bondedAmount}
+				closePaymentPopover={closePaymentPopover}
+				result={result}
+			/>
 		</div>
 	);
 };
