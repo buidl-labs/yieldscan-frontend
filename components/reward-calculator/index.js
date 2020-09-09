@@ -249,8 +249,8 @@ const RewardCalculatorPage = () => {
 	// );
 	// console.log("isPaymentPopoverOpen");
 	// console.log(isPaymentPopoverOpen);
-	// console.log("selectedValidators");
-	// console.log(selectedValidators);
+	console.log("selectedValidators");
+	console.log(selectedValidators);
 
 	console.log("transactionState");
 	console.log(transactionState);

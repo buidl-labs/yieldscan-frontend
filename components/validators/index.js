@@ -104,6 +104,7 @@ const Validators = () => {
 			axios.get("/rewards/risk-set").then(({ data }) => {
 				setValidators(data.totalset);
 				setFilteredValidators(data.totalset);
+				setSelectedValidatorsMap(mapValues(keyBy(data.medriskset, "stashId")));
 				setLoading(false);
 			});
 		} else {
@@ -206,6 +207,9 @@ const Validators = () => {
 			const selectedValidatorsList = Object.values(
 				selectedValidatorsMap
 			).filter((v) => !isNil(v));
+			console.log(selectedValidatorsMap);
+			console.log("selectedValidatorsList");
+			console.log(selectedValidatorsList);
 			calculateReward(
 				selectedValidatorsList,
 				amount,
@@ -272,6 +276,11 @@ const Validators = () => {
 	console.log(amount);
 	console.log("bondedAmount");
 	console.log(bondedAmount);
+	console.log("result");
+	console.log(result);
+
+	console.log("selectedValidatorsMap");
+	console.log(selectedValidatorsMap);
 
 	return (
 		<div className="relative h-full px-10 py-5">
@@ -293,7 +302,7 @@ const Validators = () => {
 				setAmount={setAmount}
 				subCurrency={subCurrency}
 				freeAmount={freeAmount}
-				bondedAmount={bondedAmount}
+				bondedAmount={get(bondedAmount, "currency", 0)}
 				stashAccount={stashAccount}
 			/>
 			<ValidatorsResult

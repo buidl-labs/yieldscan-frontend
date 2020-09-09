@@ -104,6 +104,17 @@ const ValidatorsResult = ({
 						</div>
 					)}
 				</div>
+				<div className="flex flex-col px-3 py-1 border border-gray-200 rounded-lg mr-2 h-20 w-32">
+					<span className="text-sm text-teal-500 font-semibold mb-2">
+						Compounding
+					</span>
+					<div className="py-1">
+						<CompoundRewardSlider
+							checked={compounding}
+							setChecked={onCompoundingChange}
+						/>
+					</div>
+				</div>
 				<div className="flex flex-col px-3 py-1 border border-gray-200 rounded-lg mr-2 h-20">
 					<span className="text-sm text-teal-500 font-semibold mb-2">
 						Expected Yield
@@ -119,17 +130,6 @@ const ValidatorsResult = ({
 							/>
 						</span>
 					</h3>
-				</div>
-				<div className="flex flex-col px-3 py-1 border border-gray-200 rounded-lg mr-2 h-20 w-32">
-					<span className="text-sm text-teal-500 font-semibold mb-2">
-						Compounding
-					</span>
-					<div className="py-1">
-						<CompoundRewardSlider
-							checked={compounding}
-							setChecked={onCompoundingChange}
-						/>
-					</div>
 				</div>
 				<div className="flex flex-col px-3 py-1 bg-teal-500 shadow-teal text-white rounded-lg h-20 w-48">
 					<span className="text-sm font-semibold mb-2">Expected Returns</span>
