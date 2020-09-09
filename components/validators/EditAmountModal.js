@@ -31,7 +31,10 @@ const EditAmountModal = withSlideIn(
 
 		const totalBalance = bondedAmount + get(freeAmount, "currency", 0);
 		const calculationDisabled =
-			!totalBalance || stakingAmount == 0 || stakingAmount > totalBalance - 0.1;
+			(!totalBalance ||
+				stakingAmount == 0 ||
+				stakingAmount > totalBalance - 0.1) &&
+			stashAccount;
 
 		console.log("stakingAmount");
 		console.log(stakingAmount);
