@@ -19,6 +19,7 @@ import RiskTag from "@components/reward-calculator/RiskTag";
 import { noop, mapValues, keyBy, isNil, get } from "lodash";
 import calculateReward from "@lib/calculate-reward";
 import formatCurrency from "@lib/format-currency";
+import convertArrayToObject from "@lib/convert-arr-to-object";
 import { useAccounts, usePolkadotApi } from "@lib/store";
 import nominate from "@lib/polkadot/nominate";
 import Identicon from "@components/common/Identicon";
@@ -133,16 +134,6 @@ const EditValidators = withSlideIn(
 		const [errMessage, setErrMessage] = useState();
 		const [transactionHash, setTransactionHash] = useState();
 		const [closeOnOverlayClick, setCloseOnOverlayClick] = useState(true);
-
-		const convertArrayToObject = (array, key) => {
-			const initialValue = {};
-			return array.reduce((obj, item) => {
-				return {
-					...obj,
-					[item[key]]: item,
-				};
-			}, initialValue);
-		};
 
 		const [selectedValidatorsMap, setSelectedValidatorsMap] = useState(
 			convertArrayToObject(currentValidators, "stashId")
