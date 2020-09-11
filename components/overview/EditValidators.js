@@ -240,7 +240,7 @@ const EditValidators = withSlideIn(
 						setEditLoading(false);
 						setCloseOnOverlayClick(true);
 						setErrMessage(message);
-						if (message === "Cancelled") setChainError(true);
+						if (message !== "Cancelled") setChainError(true);
 					}
 				},
 			};
