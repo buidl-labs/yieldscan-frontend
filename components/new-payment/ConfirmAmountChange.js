@@ -1,7 +1,7 @@
 import ValidatorsList from "./ValidatorsList";
 import { ArrowRight } from "react-feather";
 import formatCurrency from "@lib/format-currency";
-import { Spinner } from "@chakra-ui/core";
+import { Spinner, Alert, AlertIcon } from "@chakra-ui/core";
 const ConfirmAmountChange = ({
 	stakingAmount,
 	validators,
@@ -12,11 +12,23 @@ const ConfirmAmountChange = ({
 	stakingLoading,
 	stakingEvent,
 	onConfirm,
+	transactionHash,
 	handlePopoverClose,
 }) => (
 	<div className="mx-10 mt-8 mb-20 flex flex-col text-center items-center">
 		{!stakingLoading && (
 			<>
+				<Alert status="success">
+					<AlertIcon />
+					Your nominations have been successfully updated.
+					<a
+						href={`https://kusama.subscan.io/block/${transactionHash}`}
+						className="mt-6 text-gray-500"
+						target="_blank"
+					>
+						Track this transaction on Subscan
+					</a>
+				</Alert>
 				<h3 className="mt-4 text-2xl">Change Bonding Amount</h3>
 				<div className="mt-8 mb-12 rounded text-gray-900 flex items-center justify-between">
 					<div className="rounded-lg p-4 flex flex-col justify-center">
@@ -36,9 +48,8 @@ const ConfirmAmountChange = ({
 					</div>
 				</div>
 				<span className="mt-1 px-4 text-sm text-gray-500">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-					eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-					minim veniam
+					You used a staking budget different than your currently bonded amount
+					on the calculator. Would you like to update the amount to match?
 				</span>
 				<button
 					className="mt-8 px-24 py-4 bg-teal-500 text-white rounded-lg"

@@ -167,6 +167,7 @@ const PaymentPopover = ({
 						setCloseOnOverlayClick(true);
 					} else {
 						setCurrentStep(1);
+						setCloseOnOverlayClick(true);
 						setStakingLoading(false);
 					}
 				} else {
@@ -311,6 +312,7 @@ const PaymentPopover = ({
 							stakingLoading={stakingLoading}
 							stakingEvent={stakingEvent}
 							onConfirm={transact}
+							transactionHash={transactionHash}
 							handlePopoverClose={handlePopoverClose}
 						/>
 					)}
