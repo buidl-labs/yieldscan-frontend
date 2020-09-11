@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
 	Modal,
 	ModalOverlay,
@@ -10,6 +10,7 @@ import {
 import AmountInput from "@components/reward-calculator/AmountInput";
 import withSlideIn from "@components/common/withSlideIn";
 import { isNil, get } from "lodash";
+import convertCurrency from "@lib/convert-currency";
 
 const EditAmountModal = withSlideIn(
 	({
@@ -20,14 +21,20 @@ const EditAmountModal = withSlideIn(
 		bondedAmount,
 		amount = "",
 		setAmount,
-		subCurrency,
 	}) => {
 		const [stakingAmount, setStakingAmount] = useState(amount);
+		const [subCurrency, setSubCurrency] = useState(0);
 
 		const onConfirm = () => {
 			if (stakingAmount) setAmount(stakingAmount);
 			onClose();
 		};
+
+		useEffect(() => {
+			convertCurrency(stakingAmount || 0).then((convertedAmount) => {
+				setSubCurrency(convertedAmount);
+			});
+		}, [stakingAmount]);
 
 		const totalBalance = bondedAmount + get(freeAmount, "currency", 0);
 		const calculationDisabled =

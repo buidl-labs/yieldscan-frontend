@@ -113,46 +113,40 @@ const ValidatorCard = ({
 };
 
 const EditValidators = withSlideIn(
-	({ styles, close, currentValidators, onChill = noop }) => {
+	({
+		styles,
+		close,
+		validators,
+		validatorsLoading,
+		currentValidators,
+		onChill = noop,
+	}) => {
 		const toast = useToast();
 		const { apiInstance } = usePolkadotApi();
 		const [compounding, setCompounding] = useState(false);
 		const { stashAccount, freeAmount, bondedAmount } = useAccounts();
-		const [validators, setValidators] = useState([]);
 		const [editLoading, setEditLoading] = useState(false);
 		const [estimatedReward, setEstimatedReward] = useState();
 		const [stakingEvent, setStakingEvent] = useState();
 		const [processComplete, setProcessComplete] = useState(false);
 		const [chainError, setChainError] = useState(false);
+		const [errMessage, setErrMessage] = useState();
 		const [transactionHash, setTransactionHash] = useState();
 		const [closeOnOverlayClick, setCloseOnOverlayClick] = useState(true);
-		const [validatorsLoading, setValidatorsLoading] = useState(true);
-		const [selectedValidatorsMap, setSelectedValidatorsMap] = useState({});
 
-		useEffect(() => {
-			if (currentValidators) {
-				axios
-					.get("/rewards/risk-set")
-					.then(({ data }) => {
-						const validators = data.totalset;
-						setValidators(validators);
-						setSelectedValidatorsMap(currentValidators);
-					})
-					.catch(() => {
-						toast({
-							title: "Error",
-							description: "Something went wrong!",
-							position: "top-right",
-							duration: 3000,
-							status: "error",
-						});
-						close();
-					})
-					.finally(() => {
-						setValidatorsLoading(false);
-					});
-			}
-		}, [currentValidators]);
+		const convertArrayToObject = (array, key) => {
+			const initialValue = {};
+			return array.reduce((obj, item) => {
+				return {
+					...obj,
+					[item[key]]: item,
+				};
+			}, initialValue);
+		};
+
+		const [selectedValidatorsMap, setSelectedValidatorsMap] = useState(
+			convertArrayToObject(currentValidators, "stashId")
+		);
 
 		useEffect(() => {
 			apiInstance.query.staking.payee(stashAccount.address).then((payee) => {
@@ -254,6 +248,7 @@ const EditValidators = withSlideIn(
 					} else {
 						setEditLoading(false);
 						setCloseOnOverlayClick(true);
+						setErrMessage(message);
 						if (message === "Cancelled") setChainError(true);
 					}
 				},
@@ -276,6 +271,13 @@ const EditValidators = withSlideIn(
 		const handleOnClickForSuccessfulTransaction = () => {
 			close();
 		};
+
+		console.log("selectedValidatorsMap");
+		console.log(selectedValidatorsMap);
+		console.log("selectedValidatorsList");
+		console.log(selectedValidatorsList);
+		console.log("currentValidators");
+		console.log(currentValidators);
 
 		return (
 			<Modal
@@ -432,6 +434,7 @@ const EditValidators = withSlideIn(
 									<ChainErrorPage
 										transactionHash={transactionHash}
 										onConfirm={handleOnClickForSuccessfulTransaction}
+										errMessage={errMessage}
 									/>
 								)}
 							</div>

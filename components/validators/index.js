@@ -310,7 +310,6 @@ const Validators = () => {
 				onClose={onClose}
 				amount={amount}
 				setAmount={setAmount}
-				subCurrency={subCurrency}
 				freeAmount={freeAmount}
 				bondedAmount={get(bondedAmount, "currency", 0)}
 				stashAccount={stashAccount}

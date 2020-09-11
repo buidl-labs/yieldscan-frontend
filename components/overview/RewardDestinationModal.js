@@ -29,6 +29,7 @@ const RewardDestinationModal = withSlideIn(
 		const [stakingEvent, setStakingEvent] = useState();
 		const [processComplete, setProcessComplete] = useState(false);
 		const [chainError, setChainError] = useState(false);
+		const [errMessage, setErrMessage] = useState();
 		const [transactionHash, setTransactionHash] = useState();
 		const [closeOnOverlayClick, setCloseOnOverlayClick] = useState(true);
 		const [destination, setDestination] = useState("");
@@ -95,7 +96,8 @@ const RewardDestinationModal = withSlideIn(
 					} else {
 						setUpdatingFunds(false);
 						setCloseOnOverlayClick(true);
-						if (message === "Cancelled") setChainError(true);
+						setErrMessage(message);
+						if (message !== "Cancelled") setChainError(true);
 					}
 				},
 			};
@@ -242,6 +244,7 @@ const RewardDestinationModal = withSlideIn(
 								<ChainErrorPage
 									transactionHash={transactionHash}
 									onConfirm={handleOnClickForSuccessfulTransaction}
+									errMessage={errMessage}
 								/>
 							)}
 						</div>

@@ -1,3 +1,4 @@
+import { ExternalLink } from "react-feather";
 const SuccessfullyBonded = ({ transactionHash, onConfirm }) => {
 	return (
 		<div className="mx-10 mt-8 mb-20 flex flex-col text-center items-center">
@@ -16,12 +17,13 @@ const SuccessfullyBonded = ({ transactionHash, onConfirm }) => {
 				target="_blank"
 			>
 				Track this transaction on Subscan
+				<ExternalLink size="12px" />
 			</a>
 			<button
 				className="mt-8 px-24 py-4 bg-teal-500 text-white rounded-lg"
 				onClick={onConfirm}
 			>
-				Proceed
+				Continue
 			</button>
 		</div>
 	);

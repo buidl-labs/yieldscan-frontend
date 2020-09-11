@@ -79,7 +79,7 @@ const FundsUpdate = withSlideIn(
 		const toast = useToast();
 		const { stashAccount, freeAmount } = useAccounts();
 		const { apiInstance } = usePolkadotApi();
-		const [amount, _setAmount] = useState("");
+		const [amount, setAmount] = useState();
 		const [subCurrency, setSubCurrency] = useState("");
 		const [compounding, setCompounding] = useState(false);
 		const [validators, setValidators] = useState([]);
@@ -90,10 +90,14 @@ const FundsUpdate = withSlideIn(
 		const [chainError, setChainError] = useState(false);
 		const [transactionHash, setTransactionHash] = useState();
 		const [closeOnOverlayClick, setCloseOnOverlayClick] = useState(true);
+		const [calculationDisabled, setCalculationDisabled] = useState(true);
 
-		const [totalStakingAmount, setTotalStakingAmount] = useState(0);
+		const [totalStakingAmount, setTotalStakingAmount] = useState(
+			get(bondedAmount, "currency", 0)
+		);
 		const [totalStakingAmountFiat, setTotalStakingAmountFiat] = useState(0);
 		const [validatorsLoading, setValidatorsLoading] = useState(true);
+		const [errMessage, setErrMessage] = useState();
 		const title = `${type === "bond" ? "Bond Additional" : "Unbond"} Funds`;
 
 		useEffect(() => {
@@ -112,11 +116,11 @@ const FundsUpdate = withSlideIn(
 		}, [stashAccount]);
 
 		useEffect(() => {
-			let amountByType = amount * (type === "bond" ? 1 : -1);
-			const totalStakingAmount = Math.max(
-				get(bondedAmount, "currency", 0) + amountByType,
-				0
-			);
+			// let amountByType = amount * (type === "bond" ? 1 : -1);
+			// const totalStakingAmount = Math.max(
+			// 	get(bondedAmount, "currency", 0) + amountByType,
+			// 	0
+			// );
 			const timePeriodValue = 12,
 				timePeriodUnit = "months";
 
@@ -128,10 +132,21 @@ const FundsUpdate = withSlideIn(
 				compounding,
 				{ currency: 0 }
 			).then((result) => {
-				setTotalStakingAmount(totalStakingAmount);
+				// setTotalStakingAmount(totalStakingAmount);
 				setEstimatedReturns(get(result, "returns", 0));
 			});
 		}, [amount, compounding]);
+
+		useEffect(() => {
+			if (amount) {
+				let amountByType = amount * (type === "bond" ? 1 : -1);
+				const totalAmount = Math.max(
+					get(bondedAmount, "currency", 0) + amountByType,
+					0
+				);
+				setTotalStakingAmount(totalAmount);
+			}
+		}, [amount]);
 
 		useEffect(() => {
 			convertCurrency(amount || 0).then((convertedAmount) => {
@@ -142,13 +157,27 @@ const FundsUpdate = withSlideIn(
 			});
 		}, [amount, totalStakingAmount]);
 
-		const setAmount = (value) => {
-			if (value < 0) return;
-			if (type === "unbond" && value >= get(bondedAmount, "currency", 0))
-				return;
-			if (type === "bond" && value >= get(freeAmount, "currency", 0)) return;
-			_setAmount(value === "" ? "" : Number(value));
-		};
+		useEffect(() => {
+			if (type === "unbond" && amount >= get(bondedAmount, "currency", 0)) {
+				setCalculationDisabled(true);
+			} else if (
+				type === "bond" &&
+				amount >= get(freeAmount, "currency", 0) - 0.1
+			) {
+				setCalculationDisabled(true);
+			} else if (amount === 0 || amount === undefined || amount === "") {
+				console.log("hello world");
+				setCalculationDisabled(true);
+			} else setCalculationDisabled(false);
+		}, [amount]);
+
+		// const setAmount = (value) => {
+		// 	if (value < 0) return;
+		// 	if (type === "unbond" && value >= get(bondedAmount, "currency", 0))
+		// 		return;
+		// 	if (type === "bond" && value >= get(freeAmount, "currency", 0)) return;
+		// 	_setAmount(value === "" ? "" : Number(value));
+		// };
 
 		const onConfirm = () => {
 			setUpdatingFunds(true);
@@ -187,13 +216,14 @@ const FundsUpdate = withSlideIn(
 					});
 
 					if (status === 0) {
-						// setProcessComplete(true);
+						setProcessComplete(true);
 						setUpdatingFunds(false);
 						setCloseOnOverlayClick(true);
 					} else {
 						setUpdatingFunds(false);
 						setCloseOnOverlayClick(true);
-						if (message === "Cancelled") setChainError(true);
+						setErrMessage(message);
+						if (message !== "Cancelled") setChainError(true);
 					}
 				},
 			};
@@ -210,6 +240,21 @@ const FundsUpdate = withSlideIn(
 		const handleOnClickForSuccessfulTransaction = () => {
 			close();
 		};
+
+		console.log("type");
+		console.log(type);
+		console.log("amount");
+		console.log(amount);
+		console.log(
+			type === "unbond" && amount >= get(bondedAmount, "currency", 0)
+		);
+		console.log(type === "bond" && amount >= get(freeAmount, "currency", 0));
+
+		console.log("calculationDisabled");
+		console.log(calculationDisabled);
+
+		console.log("totalStakingAmount");
+		console.log(totalStakingAmount);
 
 		return (
 			<Modal
@@ -278,6 +323,22 @@ const FundsUpdate = withSlideIn(
 															)
 														)}
 													</span>
+													<div
+														className="rounded-lg px-5 py-2 text-sm bg-red-200 text-red-600 my-4"
+														hidden={
+															!calculationDisabled || !amount || amount == 0
+														}
+													>
+														<span hidden={type === "bond"}>
+															We cannot unbond this amount since this is greater
+															than bondedAmount.{" "}
+														</span>
+														<span hidden={type === "unbond"}>
+															We cannot stake this amount since you need to
+															maintain a minimum balance of 0.1 KSM in your
+															account at all times.{" "}
+														</span>
+													</div>
 													<div className="flex items-center border border-gray-200 rounded-lg my-4">
 														<div className="flex flex-col">
 															<input
@@ -383,7 +444,7 @@ const FundsUpdate = withSlideIn(
 												backgroundColor="teal.500"
 												color="white"
 												onClick={onConfirm}
-												isDisabled={!amount}
+												isDisabled={calculationDisabled}
 												isLoading={updatingFunds}
 											>
 												Confirm
@@ -410,6 +471,7 @@ const FundsUpdate = withSlideIn(
 									<ChainErrorPage
 										transactionHash={transactionHash}
 										onConfirm={handleOnClickForSuccessfulTransaction}
+										errMessage={errMessage}
 									/>
 								)}
 							</div>

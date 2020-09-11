@@ -1,4 +1,5 @@
-const ChainErrorPage = ({ onConfirm }) => {
+import * as Sentry from "@sentry/node";
+const ChainErrorPage = ({ onConfirm, errMessage }) => {
 	return (
 		<div className="mx-10 mt-8 mb-20 flex flex-col text-center items-center">
 			<img src="/images/polkadot_alert.png" width="200px" />
@@ -25,7 +26,11 @@ const ChainErrorPage = ({ onConfirm }) => {
 			</button>
 			<button
 				className="mt-8 px-24 py-4 bg-teal-500 text-white rounded-lg"
-				onClick={onConfirm}
+				onClick={() =>
+					Sentry.showReportDialog({
+						eventId: Sentry.captureException(errMessage),
+					})
+				}
 			>
 				Share this with the help center
 			</button>

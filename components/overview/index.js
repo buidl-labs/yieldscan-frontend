@@ -3,7 +3,7 @@ import { Edit2, AlertTriangle } from "react-feather";
 import OverviewCards from "./OverviewCards";
 import NominationsTable from "./NominationsTable";
 import ExpectedReturns from "./ExpectedReturns";
-import { Spinner, useDisclosure } from "@chakra-ui/core";
+import { Spinner, useDisclosure, useToast } from "@chakra-ui/core";
 import axios from "@lib/axios";
 import { useAccounts, usePolkadotApi } from "@lib/store";
 import { useWalletConnect } from "@components/wallet-connect";
@@ -34,11 +34,14 @@ const Overview = () => {
 		unlockingBalances,
 		accountInfoLoading,
 	} = useAccounts();
+	const toast = useToast();
 	const [loading, setLoading] = useState(true);
 	const [nominationsLoading, setNominationsLoading] = useState(true); // work-around :(
 	const [error, setError] = useState(false);
 	const [userData, setUserData] = useState();
 	const [allNominationsData, setAllNominations] = useState([]);
+	const [validators, setValidators] = useState();
+	const [validatorsLoading, setValidatorsLoading] = useState(true);
 	const [fundsUpdateModalType, setFundsUpdateModalType] = useState();
 	const [selectedTab, setSelectedTab] = useState(Tabs.NOMINATIONS);
 	const {
@@ -138,6 +141,31 @@ const Overview = () => {
 		}
 	}, [stashAccount, apiInstance]);
 
+	useEffect(() => {
+		if (!validators) {
+			axios
+				.get("/rewards/risk-set")
+				.then(({ data }) => {
+					const validators = data.totalset;
+					setValidators(validators);
+					setSelectedValidatorsMap(allNominationsData);
+				})
+				.catch(() => {
+					// toast({
+					// 	title: "Error",
+					// 	description: "Something went wrong!",
+					// 	position: "top-right",
+					// 	duration: 3000,
+					// 	status: "error",
+					// });
+					close();
+				})
+				.finally(() => {
+					setValidatorsLoading(false);
+				});
+		}
+	}, [allNominationsData]);
+
 	if (!stashAccount) {
 		return (
 			<div className="flex-center w-full h-full">
@@ -200,6 +228,9 @@ const Overview = () => {
 		toggleFundsUpdateModal();
 	};
 
+	console.log("allNominationsData");
+	console.log(allNominationsData);
+
 	return (
 		<div className="px-10 py-10">
 			<RewardDestinationModal
@@ -221,6 +252,8 @@ const Overview = () => {
 			<EditValidators
 				isOpen={editValidatorModalOpen}
 				close={closeEditValidatorsModal}
+				validators={validators}
+				validatorsLoading={validatorsLoading}
 				currentValidators={allNominationsData}
 				onChill={() => {
 					closeEditValidatorsModal();
