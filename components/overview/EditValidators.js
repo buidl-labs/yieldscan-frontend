@@ -202,6 +202,7 @@ const EditValidators = withSlideIn(
 			const handlers = {
 				onEvent: ({ message }) => {
 					setStakingEvent(message);
+					setCloseOnOverlayClick(false);
 
 					toast({
 						title: "Info",
@@ -233,7 +234,7 @@ const EditValidators = withSlideIn(
 					});
 
 					if (status === 0) {
-						// setProcessComplete(true);
+						setProcessComplete(true);
 						setEditLoading(false);
 						setCloseOnOverlayClick(true);
 					} else {
