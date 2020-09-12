@@ -92,9 +92,13 @@ const OverviewCards = ({
 						{totalAmountStakedFiat && (
 							<h3 className="text-gray-500">
 								$
-								{formatCurrency.methods.formatNumber(
-									totalAmountStakedFiat.toFixed(2)
-								) || 0.0}
+								{stats.totalAmountStaked === get(bondedAmount, "currency", 0)
+									? formatCurrency.methods.formatNumber(
+											totalAmountStakedFiat.toFixed(2)
+									  ) || 0.0
+									: formatCurrency.methods.formatNumber(
+											get(bondedAmount, "subCurrency", 0).toFixed(2)
+									  ) || 0.0}
 							</h3>
 						)}
 					</div>
