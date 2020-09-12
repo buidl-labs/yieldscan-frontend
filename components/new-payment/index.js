@@ -10,6 +10,7 @@ import {
 	ModalHeader,
 } from "@chakra-ui/core";
 import { useRouter } from "next/router";
+import * as Sentry from "@sentry/node";
 import ConfirmSelection from "./ConfirmSelection";
 import ConfirmAmountChange from "./ConfirmAmountChange";
 import { useTransaction, usePolkadotApi } from "@lib/store";
@@ -41,6 +42,7 @@ const PaymentPopover = ({
 	const [stakingEvent, setStakingEvent] = useState();
 	const [processComplete, setProcessComplete] = useState(false);
 	const [closeOnOverlayClick, setCloseOnOverlayClick] = useState(true);
+	const [errMessage, setErrMessage] = useState();
 	const [transactionHash, setTransactionHash] = useState();
 	const [stakingLoading, setStakingLoading] = useState(false);
 	const toast = useToast();
@@ -54,13 +56,13 @@ const PaymentPopover = ({
 					Your staking request is successfully sent to the KSM network
 				</h3>
 				<span className="mt-1 px-4 text-sm text-gray-500">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-					eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-					minim veniam.
+					Your transaction is successfully sent to the network. You can safely
+					close this page now. You can view the status of this transaction using
+					the link below:
 				</span>
 				<a
 					href={`https://kusama.subscan.io/block/${transactionHash}`}
-					className="mt-6 text-gray-500"
+					className="mt-6 text-blue-400"
 					target="_blank"
 				>
 					Track this transaction on Subscan
@@ -75,7 +77,7 @@ const PaymentPopover = ({
 		);
 	};
 
-	const ChainErrorPage = ({ onConfirm }) => {
+	const ChainErrorPage = ({ onConfirm, errMessage }) => {
 		return (
 			<div className="mx-10 mt-8 mb-20 flex flex-col text-center items-center">
 				<img src="/images/polkadot_alert.png" width="200px" />
@@ -96,13 +98,17 @@ const PaymentPopover = ({
 				</a> */}
 				<button
 					className="mt-8 px-24 py-4 bg-teal-500 text-white rounded-lg"
-					// onClick={onConfirm}
+					onClick={onConfirm}
 				>
 					Retry
 				</button>
 				<button
 					className="mt-8 px-24 py-4 bg-teal-500 text-white rounded-lg"
-					// onClick={onConfirm}
+					onClick={() =>
+						Sentry.showReportDialog({
+							eventId: Sentry.captureException(errMessage),
+						})
+					}
 				>
 					Share this with the help center
 				</button>
@@ -173,7 +179,10 @@ const PaymentPopover = ({
 				} else {
 					setStakingLoading(false);
 					setCloseOnOverlayClick(true);
-					if (message !== "Cancelled") setChainError(true);
+					if (message !== "Cancelled") {
+						setErrMessage(message);
+						setChainError(true);
+					}
 				}
 			},
 		};
@@ -326,6 +335,7 @@ const PaymentPopover = ({
 						<ChainErrorPage
 							// transactionHash={transactionHash}
 							onConfirm={handleOnClickForSuccessfulTransaction}
+							errMessage={errMessage}
 						/>
 					)}
 				</ModalBody>
