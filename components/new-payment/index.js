@@ -243,16 +243,6 @@ const PaymentPopover = ({
 		closePaymentPopover();
 	};
 
-	console.log("stakingEvent inside payment");
-	console.log(stakingEvent);
-	console.log(stashAccount);
-	// console.log(controller);
-	console.log("stakingAmount");
-	console.log(stakingAmount);
-	console.log(get(bondedAmount, "currency", 0));
-	// console.log(rewardDestination);
-	console.log(selectedValidators.map((v) => v.stashId));
-
 	return (
 		<Modal
 			isOpen={isPaymentPopoverOpen}
