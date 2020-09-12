@@ -10,8 +10,8 @@ const AmountInputDefault = ({ bonded, value, onChange }) => {
 	const [isEditable, setIsEditable] = React.useState(true);
 	return (
 		<div>
-			<div className="flex items-center justify-between rounded-full border border-gray-200 w-2/3">
-				<InputGroup border="1px solid gray.100">
+			<div className="flex items-center justify-between w-2/3">
+				<InputGroup className="border border-gray-200 rounded-full">
 					<InputRightElement
 						opacity={isEditable ? "1" : "0.4"}
 						children="KSM"

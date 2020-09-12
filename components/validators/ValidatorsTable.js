@@ -79,9 +79,10 @@ const ValidatorCard = ({
 			<div className="flex flex-col w-32">
 				<span className="text-xs text-gray-500 font-semibold">Other Stake</span>
 				<h3 className="text-base">
-					{formatCurrency.methods.formatAmount(
+					{!isNaN(otherStake) && formatCurrency.methods.formatAmount(
 						Math.trunc((otherStake || 0) * 10 ** 12)
 					)}
+					{console.log(otherStake)}
 				</h3>
 			</div>
 			<div className="flex flex-col w-20">
@@ -134,11 +135,11 @@ const ValidatorsTable = ({
 						stashId={validator.stashId}
 						riskScore={Number((validator.riskScore || 0).toFixed(2))}
 						ownStake={
-							validator.ownStake ? Number(validator.ownStake).toFixed(1) : "-"
+							validator.ownStake ? Number(validator.ownStake) : "-"
 						}
 						otherStake={
 							validator.othersStake
-								? Number(validator.othersStake).toFixed(1)
+								? Number(validator.othersStake)
 								: "-"
 						}
 						commission={validator.commission}

@@ -2,8 +2,8 @@ import { Select, Input, InputRightElement, InputGroup } from "@chakra-ui/core";
 
 const TimePeriodInput = ({ value, unit, onChange, onUnitChange }) => {
 	return (
-		<div className="flex items-center justify-between rounded-full border border-gray-200 w-2/3">
-			<InputGroup border="1px solid gray.100">
+		<div className="flex items-center justify-between w-2/3">
+			<InputGroup className="border border-gray-200 rounded-full">
 				<InputRightElement
 					children={
 						<Select
