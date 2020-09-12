@@ -466,18 +466,20 @@ const Validators = () => {
 					</div>
 				)}
 			</div>
-			<PaymentPopover
-				isPaymentPopoverOpen={isPaymentPopoverOpen}
-				stashAccount={stashAccount}
-				stakingAmount={{ currency: amount, subCurrency: subCurrency }}
-				validators={validators}
-				compounding={compounding}
-				selectedValidators={Object.values(selectedValidatorsMap)}
-				setSelectedValidators={setSelectedValidatorsMap}
-				bondedAmount={bondedAmount}
-				closePaymentPopover={closePaymentPopover}
-				result={result}
-			/>
+			{isPaymentPopoverOpen && (
+				<PaymentPopover
+					isPaymentPopoverOpen={isPaymentPopoverOpen}
+					stashAccount={stashAccount}
+					stakingAmount={{ currency: amount, subCurrency: subCurrency }}
+					validators={validators}
+					compounding={compounding}
+					selectedValidators={Object.values(selectedValidatorsMap)}
+					setSelectedValidators={setSelectedValidatorsMap}
+					bondedAmount={bondedAmount}
+					closePaymentPopover={closePaymentPopover}
+					result={result}
+				/>
+			)}
 		</div>
 	);
 };

@@ -335,20 +335,21 @@ const RewardCalculatorPage = () => {
 					onAdvancedSelection={onAdvancedSelection}
 				/>
 			</div>
-
-			<PaymentPopover
-				isPaymentPopoverOpen={isPaymentPopoverOpen}
-				stashAccount={stashAccount}
-				stakingAmount={{ currency: amount, subCurrency: subCurrency }}
-				validators={get(validatorMap, "total", [])}
-				compounding={compounding}
-				selectedValidators={Object.values(selectedValidators)}
-				setSelectedValidators={setSelectedValidators}
-				onAdvancedSelection={onAdvancedSelection}
-				bondedAmount={bondedAmount}
-				closePaymentPopover={closePaymentPopover}
-				result={result}
-			/>
+			{isPaymentPopoverOpen && (
+				<PaymentPopover
+					isPaymentPopoverOpen={isPaymentPopoverOpen}
+					stashAccount={stashAccount}
+					stakingAmount={{ currency: amount, subCurrency: subCurrency }}
+					validators={get(validatorMap, "total", [])}
+					compounding={compounding}
+					selectedValidators={Object.values(selectedValidators)}
+					setSelectedValidators={setSelectedValidators}
+					onAdvancedSelection={onAdvancedSelection}
+					bondedAmount={bondedAmount}
+					closePaymentPopover={closePaymentPopover}
+					result={result}
+				/>
+			)}
 		</div>
 	);
 };
