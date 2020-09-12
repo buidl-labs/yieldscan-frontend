@@ -8,7 +8,7 @@ import ValidatorViz from "./validator-viz/ValidatorViz"
 import ProfileTabs from "./ProfileTabs";
 import ValidatorKeyStats from "./ValidatorKeyStats";
 import ValidatorInfoHeader from "./ValidatorInfoHeader";
-import LinkedValidatorsGroup from "./LInkedValidatorsGroup";
+import LinkedValidatorsGroup from "./LinkedValidatorsGroup";
 import { useWalletConnect } from "@components/wallet-connect";
 import EditValidatorProfileModal from "./EditValidatorProfileModal";
 import ValidatorReturnsCalculator from "./ValidatorReturnsCalculator";
