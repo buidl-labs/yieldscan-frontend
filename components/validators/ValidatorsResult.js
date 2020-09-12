@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { noop } from "lodash";
 import { Edit2 } from "react-feather";
-import { Switch, Select } from "@chakra-ui/core";
+import { Switch, Select, Icon } from "@chakra-ui/core";
 import CompoundRewardSlider from "@components/reward-calculator/CompoundRewardSlider";
 import CountUp from "react-countup";
 
@@ -19,6 +19,8 @@ const ValidatorsResult = ({
 	onEditAmount = noop,
 }) => {
 	const [timePeriodEditable, setTimePeriodEditable] = useState(false);
+	const [timePeriod, setTimePeriod] = useState(timePeriodValue);
+	const [timeUnit, setTimeUnit] = useState(timePeriodUnit);
 
 	const { returns = {}, yieldPercentage } = result;
 
@@ -78,9 +80,9 @@ const ValidatorsResult = ({
 								type="number"
 								placeholder="12"
 								className="w-16 rounded border border-gray-200 text-lg py-1 px-1 mr-2"
-								value={timePeriodValue}
+								value={timePeriod}
 								onChange={({ target: { value } }) =>
-									onTimePeriodValueChange(value === "" ? value : Number(value))
+									setTimePeriod(value === "" ? value : Number(value))
 								}
 							/>
 							<Select
@@ -92,15 +94,22 @@ const ValidatorsResult = ({
 								cursor="pointer"
 								color="gray.500"
 								border="none"
-								value={timePeriodUnit}
-								onChange={({ target: { value } }) =>
-									onTimePeriodUnitChange(value)
-								}
+								value={timeUnit}
+								onChange={({ target: { value } }) => setTimeUnit(value)}
 							>
 								<option value="months">months</option>
 								<option value="days">days</option>
 								<option value="eras">eras</option>
 							</Select>
+							<button
+								onClick={() => {
+									onTimePeriodUnitChange(timeUnit);
+									onTimePeriodValueChange(timePeriod);
+									setTimePeriodEditable(false);
+								}}
+							>
+								<Icon name="check-circle" color="teal.500" size="24px" />
+							</button>
 						</div>
 					)}
 				</div>
