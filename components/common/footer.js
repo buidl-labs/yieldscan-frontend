@@ -4,9 +4,9 @@ import { Mail } from "react-feather";
 
 const Footer = () => {
 	return (
-		<footer className="w-full mb-12">
+		<footer className="w-full mb-12 px-8">
 			<hr className="border-2 border-teal-700 my-8 opacity-10" />{" "}
-			<div className="flex justify-between text-gray-600">
+			<div className="flex justify-between text-gray-600 px-8">
 				<p>
 					Made with ❤️ by{" "}
 					<a href="https://buidllabs.io" className="underline" target="_blank">
@@ -15,21 +15,25 @@ const Footer = () => {
 				</p>
 				<div className="flex items-center flex-wrap">
 					<div>
-						<Link href="#">
+						<Link href="/privacy">
 							<a className="mr-8">Privacy</a>
 						</Link>
-						<Link href="#">
+						<Link href="/terms">
 							<a className="mr-8">Terms</a>
 						</Link>
-						<Link href="#">
+						<Link href="/disclaimer">
 							<a className="mr-12">Disclaimer</a>
 						</Link>
 					</div>
 					<div className="flex">
-						<a href="" className="mr-4">
+						<a
+							target="_blank"
+							href="https://discord.gg/5Dggqx8"
+							className="mr-4"
+						>
 							<img src="/images/discord-logo.svg" alt="Discord Community" />
 						</a>
-						<a href="" className="mr-4">
+						<a target="_blank" href="https://t.me/yieldscan" className="mr-4">
 							<img src="/images/telegram-logo.svg" alt="Telegram Community" />
 						</a>
 						<a

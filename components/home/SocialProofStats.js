@@ -69,9 +69,11 @@ const SocialProofStats = () => {
 		<div className="flex w-full max-w-65-rem mt-32 flex-wrap">
 			<StatCard
 				stat={
-					loading
-						? <Spinner />
-						: `$${Math.floor(totalAmountStakedSubCurrency / 10 ** 6)}M+`
+					loading || isNaN(totalAmountStakedSubCurrency) ? (
+						<Spinner />
+					) : (
+						`$${Math.floor(totalAmountStakedSubCurrency / 10 ** 6)}M+`
+					)
 				}
 				description="Invested in staking on Kusama"
 				subText={
@@ -85,11 +87,13 @@ const SocialProofStats = () => {
 			/>
 			<StatCard
 				stat={
-					loading
-						? <Spinner />
-						: formatCurrency.methods.formatNumber(
-								Math.floor(nominatorsData.stats.nominatorsCount / 100) * 100
-						  ) + "+"
+					loading || isNaN(nominatorsData.stats.nominatorsCount) ? (
+						<Spinner />
+					) : (
+						formatCurrency.methods.formatNumber(
+							Math.floor(nominatorsData.stats.nominatorsCount / 100) * 100
+						) + "+"
+					)
 				}
 				description="Active nominators"
 				subText={
@@ -100,11 +104,13 @@ const SocialProofStats = () => {
 			/>
 			<StatCard
 				stat={
-					loading
-						? <Spinner />
-						: `$${formatCurrency.methods.formatNumber(
-								Math.floor(totalRewardsSubCurrency / 10 ** 3) * 10 ** 3
-						  )}+`
+					loading || isNaN(totalRewardsSubCurrency) ? (
+						<Spinner />
+					) : (
+						`$${formatCurrency.methods.formatNumber(
+							Math.floor(totalRewardsSubCurrency / 10 ** 3) * 10 ** 3
+						)}+`
+					)
 				}
 				description="Earned as staking rewards"
 				subText={<p className="text-gray-700 text-xs">In the past 24 hrs</p>}

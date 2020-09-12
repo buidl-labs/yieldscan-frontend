@@ -6,6 +6,7 @@ import convertCurrency from '@lib/convert-currency';
 import { pick } from 'lodash';
 import { useEffect } from 'react';
 import { trackEvent, Events } from '@lib/analytics';
+import Footer from '../footer';
 
 const Header = dynamic(
 	() => import('@components/common/header').then(mod => mod.default),
@@ -106,6 +107,7 @@ const withDashboardLayout = (children) => {
 				
 				<div className="h-full xl:w-10/12 overflow-y-scroll">
 					{children()}
+					<Footer />
 				</div>
 			</div>
 			<style jsx>{`
