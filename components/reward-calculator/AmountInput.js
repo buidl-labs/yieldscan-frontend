@@ -24,7 +24,7 @@ const AmountInputDefault = ({ bonded, value, onChange }) => {
 	}, [bonded]);
 	const handleChange = (value) => {
 		onChange(value);
-		setInputValue(value === 0 ? "" : value);
+		setInputValue(value);
 	};
 
 	return (
@@ -49,7 +49,7 @@ const AmountInputDefault = ({ bonded, value, onChange }) => {
 						value={inputValue}
 						onChange={(e) => {
 							const { value } = e.target;
-							handleChange(value === "" ? 0 : Number(value));
+							handleChange(value)
 						}}
 						border="none"
 						fontSize="2xl"
