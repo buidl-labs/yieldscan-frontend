@@ -1,6 +1,5 @@
 import {
 	InputGroup,
-	InputRightAddon,
 	Input,
 	InputRightElement,
 } from "@chakra-ui/core";
@@ -10,10 +9,6 @@ import { useState, useEffect } from "react";
 const AmountInputDefault = ({ bonded, value, onChange }) => {
 	const initiallyEditable =
 		bonded === undefined ? true : bonded == 0 ? true : false;
-	console.log("initiallyEditable");
-	console.log(initiallyEditable);
-	console.log("bonded");
-	console.log(bonded);
 	const [isEditable, setIsEditable] = React.useState(initiallyEditable);
 	const [inputValue, setInputValue] = useState(value.currency);
 	useEffect(() => {
