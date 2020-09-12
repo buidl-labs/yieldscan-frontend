@@ -7,17 +7,23 @@ import {
 	ModalCloseButton,
 	ModalHeader,
 	ModalFooter,
-	List,
-	ListItem,
 	Text,
+	Popover,
+	PopoverTrigger,
+	PopoverContent,
+	PopoverArrow,
+	PopoverBody,
 } from "@chakra-ui/core";
+import TermsComponent from "@components/policies/terms-component";
 
 const TermsAndServicePopover = ({
 	tcPopoverOpen,
 	setTCPopoverOpen,
+	setHasAgreed,
 	onConfirm,
 }) => {
 	const [clickDisabled, setClickDisabled] = useState(true);
+	const [showPopover, setShowPopover] = useState(false);
 
 	const handlePopoverClose = () => {
 		setTCPopoverOpen(false);
@@ -57,52 +63,47 @@ const TermsAndServicePopover = ({
 					mr={4}
 				/>
 				<ModalBody onScroll={(e) => handleScroll(e)}>
-					<List as="ol" styleType="decimal">
-						<ListItem>Lorem ipsum dolor sit amet</ListItem>
-						<ListItem>Consectetur adipiscing elit</ListItem>
-						<ListItem>Integer molestie lorem at massa</ListItem>
-						<ListItem>Facilisis in pretium nisl aliquet</ListItem>
-						<ListItem>Lorem ipsum dolor sit amet</ListItem>
-						<ListItem>Consectetur adipiscing elit</ListItem>
-						<ListItem>Integer molestie lorem at massa</ListItem>
-						<ListItem>Facilisis in pretium nisl aliquet</ListItem>
-						<ListItem>Lorem ipsum dolor sit amet</ListItem>
-						<ListItem>Consectetur adipiscing elit</ListItem>
-						<ListItem>Integer molestie lorem at massa</ListItem>
-						<ListItem>Facilisis in pretium nisl aliquet</ListItem>
-						<ListItem>Lorem ipsum dolor sit amet</ListItem>
-						<ListItem>Consectetur adipiscing elit</ListItem>
-						<ListItem>Integer molestie lorem at massa</ListItem>
-						<ListItem>Facilisis in pretium nisl aliquet</ListItem>
-						<ListItem>Lorem ipsum dolor sit amet</ListItem>
-						<ListItem>Consectetur adipiscing elit</ListItem>
-						<ListItem>Integer molestie lorem at massa</ListItem>
-						<ListItem>Facilisis in pretium nisl aliquet</ListItem>
-						<ListItem>Lorem ipsum dolor sit amet</ListItem>
-						<ListItem>Consectetur adipiscing elit</ListItem>
-						<ListItem>Integer molestie lorem at massa</ListItem>
-						<ListItem>Facilisis in pretium nisl aliquet</ListItem>
-						<ListItem>Lorem ipsum dolor sit amet</ListItem>
-						<ListItem>Consectetur adipiscing elit</ListItem>
-						<ListItem>Integer molestie lorem at massa</ListItem>
-						<ListItem>Facilisis in pretium nisl aliquet</ListItem>
-					</List>
+					<div className="documentation -p-8">
+						<TermsComponent />
+					</div>
 				</ModalBody>
-				<ModalFooter>
-					<button
-						// 	className={`
-						// 	rounded-full font-semibold text-lg mt-5 px-8 py-3 bg-white text-teal-500
-						// 	${clickDisabled ? "opacity-75 cursor-not-allowed" : "opacity-100"}
-						// `}
-						className={`
-						flex items-center px-12 py-3 text-white rounded-lg
-						${!clickDisabled ? "bg-teal-500" : "bg-gray-400 cursor-not-allowed"}
+				<ModalFooter display="flex" justifyContent="center">
+					<Popover isOpen={clickDisabled && showPopover} usePortal>
+						<PopoverTrigger>
+							<div
+								onPointerLeave={() => setShowPopover(false)}
+								onPointerEnter={() => setShowPopover(true)}
+							>
+								<button
+									className={`
+						flex items-center px-12 py-3 text-white rounded-full
+						${!clickDisabled ? "bg-teal-500" : "bg-gray-400 cursor-default"}
 					`}
-						disabled={clickDisabled}
-						onClick={onConfirm}
-					>
-						{clickDisabled ? "Scroll to the bottom" : "Agree"}
-					</button>
+									disabled={clickDisabled}
+									onClick={() => {
+										setHasAgreed(true);
+										onConfirm();
+									}}
+								>
+									Agree
+								</button>
+							</div>
+						</PopoverTrigger>
+						<PopoverContent
+							zIndex={999999}
+							_focus={{ outline: "none" }}
+							bg="gray.700"
+							border="none"
+							color="white"
+							textAlign="center"
+							fontSize="sm"
+						>
+							<PopoverArrow />
+							<PopoverBody>
+								Please read the terms of service before proceeding
+							</PopoverBody>
+						</PopoverContent>
+					</Popover>
 				</ModalFooter>
 			</ModalContent>
 		</Modal>

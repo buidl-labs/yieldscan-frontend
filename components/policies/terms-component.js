@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const TermsComponent = () => (
 	<React.Fragment>
 		<h1 id="terms-of-service-of-https-yieldscan-onrender-com">
@@ -15,8 +17,15 @@ const TermsComponent = () => (
 			&quot;Website&quot;) to you, the User, subject to your compliance with all
 			the terms, conditions, and notices contained or referenced herein (the
 			&quot;Terms of Service&quot;), as well as any other written agreement
-			between us and you, including but not limited to the &quot;Privacy
-			Policy&quot; and the &quot;Legal Disclaimer&quot;.
+			between us and you, including but not limited to the &quot;
+			<Link href="/privacy">
+				<a>Privacy Policy</a>
+			</Link>
+			&quot; and the &quot;
+			<Link href="/disclaimer">
+				<a>Legal Disclaimer</a>
+			</Link>
+			&quot;.
 		</p>
 		<p>
 			In addition, when using particular services or materials on this Website,

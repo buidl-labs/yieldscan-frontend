@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { get } from "lodash";
-import { Stack, Icon, Text } from "@chakra-ui/core";
+import { Stack, Icon, Text, Link } from "@chakra-ui/core";
 import Identicon from "@components/common/Identicon";
 import formatCurrency from "@lib/format-currency";
 import TermsAndServicePopover from "@components/payment/TermsOfService";
@@ -40,7 +40,13 @@ const ValidatorInfo = ({ name, stashId, riskScore, amountPerValidator }) => (
 );
 
 // TODO: currency conversion in Confirmation for `stakingAmount`
-const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
+const Confirmation = ({
+	transactionState,
+	bondedAmount,
+	hasAgreed,
+	setHasAgreed,
+	onConfirm,
+}) => {
 	const stakingAmount = get(transactionState, "stakingAmount", 0);
 	const selectedValidators = get(transactionState, "selectedValidators", []);
 	const bonded = {
@@ -55,7 +61,10 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 			<h1 className="text-2xl">Confirmation</h1>
 			<span className="text-gray-600">
 				You are about to stake your KSM on the following validators. Please make
-				sure you understand the risks before proceeding.
+				sure you understand the risks before proceeding. Read the{" "}
+				<Link href="/terms" className="text-blue-400" isExternal>
+					Terms of Service
+				</Link>
 			</span>
 
 			<div className="mt-6 rounded-xl border border-gray-200 px-8 py-3 mt-4">
@@ -128,13 +137,14 @@ const Confirmation = ({ transactionState, bondedAmount, onConfirm }) => {
 			</Stack>
 			<button
 				className="px-6 py-2 shadow-lg rounded-lg text-white bg-teal-500"
-				onClick={() => setTCPopoverOpen(true)}
+				onClick={() => (hasAgreed ? onConfirm() : setTCPopoverOpen(true))}
 			>
 				Confirm
 			</button>
 			<TermsAndServicePopover
 				tcPopoverOpen={tcPopoverOpen}
 				setTCPopoverOpen={setTCPopoverOpen}
+				setHasAgreed={setHasAgreed}
 				onConfirm={onConfirm}
 			/>
 		</div>

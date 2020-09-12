@@ -126,6 +126,7 @@ const Payment = () => {
 	const [transactionHash, setTransactionHash] = useState();
 	const [stakingEvent, setStakingEvent] = useState();
 	const [stakingLoading, setStakingLoading] = useState(false);
+	const [hasAgreed, setHasAgreed] = useState(false)
 
 	useEffect(() => {
 		trackEvent(Events.PAYMENT_STEP_UPDATED, {
@@ -253,7 +254,9 @@ const Payment = () => {
 						<Confirmation
 							bondedAmount={bondedAmount}
 							transactionState={transactionState}
-							onConfirm={() => setCurrentStep((step) => step + 1)}
+							hasAgreed={hasAgreed}
+							setHasAgreed={setHasAgreed}
+							onConfirm={() => {setHasAgreed(true); setCurrentStep((step) => step + 1)}}
 						/>
 					)}
 					{currentStep === 1 && (
