@@ -166,7 +166,6 @@ const FundsUpdate = withSlideIn(
 			) {
 				setCalculationDisabled(true);
 			} else if (amount === 0 || amount === undefined || amount === "") {
-				console.log("hello world");
 				setCalculationDisabled(true);
 			} else setCalculationDisabled(false);
 		}, [amount]);
@@ -202,9 +201,6 @@ const FundsUpdate = withSlideIn(
 					setTransactionHash(hash.message);
 				},
 				onFinish: (status, message, eventLogs) => {
-					console.log("hello finish");
-					console.log("message");
-					console.log(message);
 					// status = 0 for success, anything else for error code
 					toast({
 						title: status === 0 ? "Successful!" : "Error!",
@@ -240,21 +236,6 @@ const FundsUpdate = withSlideIn(
 		const handleOnClickForSuccessfulTransaction = () => {
 			close();
 		};
-
-		console.log("type");
-		console.log(type);
-		console.log("amount");
-		console.log(amount);
-		console.log(
-			type === "unbond" && amount >= get(bondedAmount, "currency", 0)
-		);
-		console.log(type === "bond" && amount >= get(freeAmount, "currency", 0));
-
-		console.log("calculationDisabled");
-		console.log(calculationDisabled);
-
-		console.log("totalStakingAmount");
-		console.log(totalStakingAmount);
 
 		return (
 			<Modal

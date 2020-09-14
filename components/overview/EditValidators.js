@@ -183,19 +183,12 @@ const EditValidators = withSlideIn(
 		};
 
 		const onConfirm = () => {
-			console.log("selectedValidatorsMap");
-			console.log(selectedValidatorsMap);
 			const selectedValidatorsList = Object.values(
 				selectedValidatorsMap
 			).filter((v) => !isNil(v));
 			const stashIds = selectedValidatorsList.map(
 				(validator) => validator.stashId
 			);
-
-			console.log("selectedValidatorsList");
-			console.log(selectedValidatorsList);
-			console.log("stashIds");
-			console.log(stashIds);
 
 			setEditLoading(true);
 
@@ -220,9 +213,6 @@ const EditValidators = withSlideIn(
 					setTransactionHash(hash.message);
 				},
 				onFinish: (status, message, eventLogs) => {
-					console.log("hello finish");
-					console.log("message");
-					console.log(message);
 					// status = 0 for success, anything else for error code
 					toast({
 						title: status === 0 ? "Successful!" : "Error!",
@@ -263,13 +253,6 @@ const EditValidators = withSlideIn(
 		const handleOnClickForSuccessfulTransaction = () => {
 			close();
 		};
-
-		console.log("selectedValidatorsMap");
-		console.log(selectedValidatorsMap);
-		console.log("selectedValidatorsList");
-		console.log(selectedValidatorsList);
-		console.log("currentValidators");
-		console.log(currentValidators);
 
 		return (
 			<Modal

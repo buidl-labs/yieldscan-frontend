@@ -34,7 +34,6 @@ const EditControllerModal = withSlideIn(({ styles, close }) => {
 				setSelected(substrateAddress);
 			})
 			.catch((error) => {
-				// console.log(error);
 				alert("Something went wrong, please reload!");
 			})
 			.finally(() => {
