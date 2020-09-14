@@ -95,7 +95,7 @@ const Header = ({ isBase }) => {
 												{get(stashAccount, "meta.name", "")}
 											</h3>
 											<span className="text-gray-500 text-xs">
-												Balance:{" "}
+												Transferrable:{" "}
 												{formatCurrency.methods.formatAmount(
 													Math.trunc(get(freeAmount, "currency", 0) * 10 ** 12)
 												)}

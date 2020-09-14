@@ -31,6 +31,7 @@ const Overview = () => {
 	const {
 		stashAccount,
 		bondedAmount,
+		activeStake,
 		unlockingBalances,
 		accountInfoLoading,
 	} = useAccounts();
@@ -228,9 +229,6 @@ const Overview = () => {
 		toggleFundsUpdateModal();
 	};
 
-	console.log("allNominationsData");
-	console.log(allNominationsData);
-
 	return (
 		<div className="px-10 py-10">
 			<RewardDestinationModal
@@ -264,6 +262,7 @@ const Overview = () => {
 			<OverviewCards
 				stats={userData.stats}
 				bondedAmount={bondedAmount}
+				activeStake={activeStake}
 				validators={userData.validatorsInfo}
 				unlockingBalances={unlockingBalances}
 				bondFunds={() => openFundsUpdateModal("bond")}

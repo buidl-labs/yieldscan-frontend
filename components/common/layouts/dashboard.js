@@ -32,67 +32,92 @@ const withDashboardLayout = (children) => {
 
 				const { address } = stashAccount;
 
-				api.queryMulti([
-					[api.query.staking.bonded, address], // check if `stashAccount` already has bonded on some controller
-					[api.query.system.account, address],
-					[api.query.staking.ledger, address],
-				], async ([bondedQueryResult, accountQueryResult, ledgerQueryResult]) => {
-					const { isSome: isBonded } = bondedQueryResult;
-					const { data: { free: freeBalance, miscFrozen: lockedBalance } } = accountQueryResult;
-					const { value: { unlocking } } = ledgerQueryResult;
+				api.queryMulti(
+					[
+						[api.query.staking.bonded, address], // check if `stashAccount` already has bonded on some controller
+						[api.query.system.account, address],
+					],
+					async ([
+						controller,
+						accountQueryResult,
+					]) => {
+						const ledgerQueryResult = await api.query.staking.ledger(controller.toString())
+						const {
+							data: { free: freeBalance, miscFrozen: lockedBalance },
+						} = accountQueryResult;
+						const {
+							value: { unlocking, total, active },
+						} = ledgerQueryResult;
 
-					let bondedAmount = 0, bondedAmountInSubCurrency = 0, freeAmount = 0, freeAmountInSubCurrency = 0;
-					if (isBonded && !lockedBalance.isEmpty) {
-						bondedAmount = Number((parseInt(lockedBalance) / (10 ** 12)).toFixed(4));
-						bondedAmountInSubCurrency = await convertCurrency(bondedAmount);
-					}
-	
-					if (freeBalance) {
-						/**
-						 * `freeBalance` here includes `locked` balance also - that's how polkadot API is currently working
-						 *  so we need to subtract the `bondedBalance``
-						 */
-						freeAmount = Number(((parseInt(freeBalance) / (10 ** 12))  - bondedAmount).toFixed(4));
-						freeAmountInSubCurrency = await convertCurrency(freeAmount);
-					}
+						console.log(ledgerQueryResult);
 
-					const unlockingBalances = [];
+						let bondedAmount = 0,
+							bondedAmountInSubCurrency = 0,
+							freeAmount = 0,
+							freeAmountInSubCurrency = 0,
+							activeStake = 0,
+							activeStakeInSubCurrency = 0;
+						if (controller) {
+							bondedAmount = Number(
+								(parseInt(total) / 10 ** 12).toFixed(4)
+							);
+							bondedAmountInSubCurrency = await convertCurrency(bondedAmount);
+							activeStake = Number((parseInt(active) / 10 ** 12).toFixed(4));
+							activeStakeInSubCurrency = await convertCurrency(activeStake);
+						}
 
-					if (unlocking && !unlocking.isEmpty && unlocking.length > 0) {
-						unlocking.forEach(unlockingBalance => {
-							const { era, value } = unlockingBalance;
-							unlockingBalances.push({
-								era: Number(era.toString()),
-								value: Number(value.toString()),
+						if (freeBalance) {
+							/**
+							 * `freeBalance` here includes `locked` balance also - that's how polkadot API is currently working
+							 *  so we need to subtract the `bondedBalance``
+							 */
+							freeAmount = Number(
+								(parseInt(freeBalance) / 10 ** 12 - bondedAmount).toFixed(4)
+							);
+							freeAmountInSubCurrency = await convertCurrency(freeAmount);
+						}
+
+						const unlockingBalances = [];
+
+						if (unlocking && !unlocking.isEmpty && unlocking.length > 0) {
+							unlocking.forEach((unlockingBalance) => {
+								const { era, value } = unlockingBalance;
+								unlockingBalances.push({
+									era: Number(era.toString()),
+									value: Number(value.toString()),
+								});
 							});
+						}
+
+						const setStateAndTrack = (details) => {
+							trackEvent(Events.USER_ACCOUNT_SELECTION, {
+								user: {
+									...details,
+									stashId: address,
+								},
+							});
+							setAccountState(details);
+						};
+
+						setStateAndTrack({
+							ledgerExists: !!controller,
+							bondedAmount: {
+								currency: bondedAmount,
+								subCurrency: bondedAmountInSubCurrency,
+							},
+							freeAmount: {
+								currency: freeAmount,
+								subCurrency: freeAmountInSubCurrency,
+							},
+							activeStake: {
+								currency: activeStake,
+								subCurrency: activeStakeInSubCurrency
+							},
+							unlockingBalances,
+							accountInfoLoading: false,
 						});
 					}
-
-					const setStateAndTrack = (details) => {
-						trackEvent(Events.USER_ACCOUNT_SELECTION, {
-							user: {
-								...details,
-								stashId: address,
-							},
-						});
-						setAccountState(details);
-					};
-
-					setStateAndTrack({
-						ledgerExists: isBonded,
-						bondedAmount: {
-							currency: bondedAmount,
-							subCurrency: bondedAmountInSubCurrency,
-						},
-						freeAmount: {
-							currency: freeAmount,
-							subCurrency: freeAmountInSubCurrency,
-						},
-						unlockingBalances,
-						accountInfoLoading: false,
-					});
-
-				});
+				);
 			});
 		}
 	}, [stashAccount]);
