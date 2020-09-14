@@ -4,6 +4,7 @@ import { Edit2 } from "react-feather";
 import { Switch, Select, Icon } from "@chakra-ui/core";
 import CompoundRewardSlider from "@components/reward-calculator/CompoundRewardSlider";
 import CountUp from "react-countup";
+import formatCurrency from "@lib/format-currency";
 
 const ValidatorsResult = ({
 	stakingAmount,
@@ -40,8 +41,15 @@ const ValidatorsResult = ({
 						Staking Amount
 					</span>
 					<h3 className="flex justify-between items-center text-xl">
-						{stakingAmount && <span className="mr-5">{stakingAmount} KSM</span>}
-						{!stakingAmount && "-"}
+						{stakingAmount ? (
+							<span className="mr-5">
+								{formatCurrency.methods.formatAmount(
+									Math.trunc(stakingAmount * 10 ** 12)
+								)}
+							</span>
+						) : (
+							0
+						)}
 						<Edit2
 							size="20px"
 							strokeWidth="2px"
