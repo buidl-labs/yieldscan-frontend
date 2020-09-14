@@ -72,14 +72,6 @@ const RewardCalculatorPage = () => {
 	); // map with low/med/high risk sets
 	const [result, setResult] = useState({});
 
-	// useEffect(() => {
-	// 	if (get(bondedAmount, "currency")) {
-	// 		setAmount(
-	// 			Number(Math.max(bondedAmount.currency, 0).toFixed(4))
-	// 		);
-	// 	}
-	// }, [bondedAmount]);
-
 	useEffect(() => {
 		convertCurrency(amount || 0).then((convertedAmount) => {
 			setSubCurrency(convertedAmount);
@@ -199,7 +191,6 @@ const RewardCalculatorPage = () => {
 
 	const onPayment = async () => {
 		updateTransactionState(Events.INTENT_STAKING);
-		console.log("hello");
 		get(bondedAmount, "currency", 0) === 0
 			? router.push("/payment", "/payment", "shallow")
 			: openPaymentPopover();
@@ -225,35 +216,7 @@ const RewardCalculatorPage = () => {
 
 	const totalBalance =
 		get(bondedAmount, "currency", 0) + get(freeAmount, "currency", 0);
-
-	// console.log("stashAccount");
-	// console.log(stashAccount);
-	// console.log("result");
-	// console.log(result);
-	// console.log("bondedAmount");
-	// console.log(bondedAmount);
-	// console.log("freeAmount");
-	// console.log(freeAmount);
-	// console.log("amount");
-	// console.log(amount);
-	// console.log("totalBalance");
-	// console.log(totalBalance);
-	// console.log("timePeriodValue");
-	// console.log(timePeriodValue);
-	// console.log("calculationDisabled");
-	// console.log(
-	// 	!totalBalance ||
-	// 		!timePeriodValue ||
-	// 		(amount || 0) > totalBalance - 0.1 ||
-	// 		amount == 0
-	// );
-	// console.log("isPaymentPopoverOpen");
-	// console.log(isPaymentPopoverOpen);
-	console.log("selectedValidators");
-	console.log(selectedValidators);
-
-	console.log("transactionState");
-	console.log(transactionState);
+	// console.log(transactionState);
 
 	return (
 		<div className="flex px-24 pt-12">

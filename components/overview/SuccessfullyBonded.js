@@ -4,12 +4,12 @@ const SuccessfullyBonded = ({ transactionHash, onConfirm }) => {
 		<div className="mx-10 mt-8 mb-20 flex flex-col text-center items-center">
 			<img src="/images/polkadot-successfully-bonded.png" width="200px" />
 			<h3 className="mt-4 text-2xl">
-				Your staking request is successfully sent to the KSM network
+				Your staking request is successfully sent to the network
 			</h3>
 			<span className="mt-1 px-4 text-sm text-gray-500">
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-				tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-				veniam.
+				Your transaction is successfully sent to the network. You can safely
+				close this page now. You can view the status of this transaction using
+				the link below:
 			</span>
 			<a
 				href={`https://kusama.subscan.io/block/${transactionHash}`}

@@ -1,7 +1,6 @@
 import { Input } from "@chakra-ui/core";
 import Footer from "@components/common/footer";
 import { useTransaction } from "@lib/store";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import SocialProofStats from "./SocialProofStats";
 
@@ -27,14 +26,15 @@ const HomePage = () => {
 				</h1>
 				<form
 					className="flex max-w-48-rem items-center mt-8 flex-wrap"
-					onSubmit={e => {
-						e.preventDefault()
+					onSubmit={(e) => {
+						e.preventDefault();
 						setStakingAmount(inputValue);
-						router.push({pathname: "/reward-calculator"});
+						router.push({ pathname: "/reward-calculator" });
 					}}
 				>
 					<Input
 						type="number"
+						step="any"
 						rounded="md"
 						py={6}
 						px={8}
@@ -42,7 +42,7 @@ const HomePage = () => {
 						mr={4}
 						maxW={500}
 						placeholder="Enter the amount in KSM that you want to invest"
-						value={inputValue}
+						value={inputValue || ""}
 						onChange={(e) => {
 							const { value } = e.target;
 							handleChange(value);

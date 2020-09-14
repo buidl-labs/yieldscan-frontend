@@ -82,7 +82,6 @@ const ValidatorCard = ({
 					{!isNaN(otherStake) && formatCurrency.methods.formatAmount(
 						Math.trunc((otherStake || 0) * 10 ** 12)
 					)}
-					{console.log(otherStake)}
 				</h3>
 			</div>
 			<div className="flex flex-col w-20">

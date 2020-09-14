@@ -214,9 +214,6 @@ const Validators = () => {
 			const selectedValidatorsList = Object.values(
 				selectedValidatorsMap
 			).filter((v) => !isNil(v));
-			console.log(selectedValidatorsMap);
-			console.log("selectedValidatorsList");
-			console.log(selectedValidatorsList);
 			calculateReward(
 				selectedValidatorsList,
 				amount,
@@ -261,7 +258,6 @@ const Validators = () => {
 
 	const onPayment = async () => {
 		updateTransactionState();
-		console.log("hello");
 		get(bondedAmount, "currency", 0) === 0
 			? router.push("/payment", "/payment", "shallow")
 			: openPaymentPopover();
@@ -279,18 +275,6 @@ const Validators = () => {
 			</div>
 		);
 	}
-
-	console.log("transactionState");
-	console.log(transactionState);
-	console.log("amount");
-	console.log(amount);
-	console.log("bondedAmount");
-	console.log(bondedAmount);
-	console.log("result");
-	console.log(result);
-
-	console.log("selectedValidatorsMap");
-	console.log(selectedValidatorsMap);
 
 	return (
 		<div className="relative h-full px-10 py-5">

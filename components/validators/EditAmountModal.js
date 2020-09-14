@@ -43,20 +43,6 @@ const EditAmountModal = withSlideIn(
 				stakingAmount > totalBalance - 0.1) &&
 			stashAccount;
 
-		console.log("stakingAmount");
-		console.log(stakingAmount);
-
-		console.log("freeAmount");
-		console.log("stashAccount");
-		console.log("bondedAmount");
-		console.log("amount");
-		console.log(freeAmount);
-		console.log(stashAccount);
-		console.log(bondedAmount);
-		console.log(amount);
-		console.log("totalBalance");
-		console.log(totalBalance);
-
 		return (
 			<Modal isOpen={true} onClose={onClose} isCentered>
 				<ModalOverlay />

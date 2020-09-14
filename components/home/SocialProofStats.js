@@ -78,7 +78,7 @@ const SocialProofStats = () => {
 				description="Invested in staking on Kusama"
 				subText={
 					<div className="flex items-center">
-						<div class="blob red h-fit-content">
+						<div className="blob red h-fit-content">
 							<div className="pulse-box"></div>
 						</div>
 						<p className="text-gray-700 text-xs ml-2">Live</p>

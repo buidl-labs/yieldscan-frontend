@@ -156,11 +156,6 @@ const ValidatorsList = ({
 		tempSelectedValidators
 	).filter((v) => !isNil(v));
 
-	console.log("amountPerValidator");
-	console.log(amountPerValidator);
-	console.log("stakingAmount");
-	console.log(stakingAmount);
-
 	if (disableList) {
 		return (
 			<div className="rounded-xl border border-gray-200 px-8 py-6 mt-8">

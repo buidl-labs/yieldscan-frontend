@@ -20,7 +20,7 @@ const FilterPanel = ({ filterOptions, setFilterOptions }) => {
 				<h1 className="text-gray-900 mb-1">Nominators</h1>
 				<div className="flex">
 					<label
-						for="numOfNominators.min"
+						htmlFor="numOfNominators.min"
 						className="absolute ml-2 mt-1 z-10 tracking-widest text-xxs font-semibold"
 					>
 						MIN
@@ -38,7 +38,7 @@ const FilterPanel = ({ filterOptions, setFilterOptions }) => {
 					<span className="self-center mx-2">-</span>
 					<span>
 						<label
-							for="numOfNominators.max"
+							htmlFor="numOfNominators.max"
 							className="absolute ml-2 mt-1 z-10 tracking-widest text-xxs font-semibold"
 						>
 							MAX
@@ -79,7 +79,7 @@ const FilterPanel = ({ filterOptions, setFilterOptions }) => {
 				<h1 className="text-gray-900 mb-1">Own Stake</h1>
 				<div className="flex">
 					<label
-						for="ownStake.min"
+						htmlFor="ownStake.min"
 						className="absolute ml-2 mt-1 z-10 tracking-widest text-xxs font-semibold"
 					>
 						MIN
@@ -97,7 +97,7 @@ const FilterPanel = ({ filterOptions, setFilterOptions }) => {
 					<span className="self-center mx-2">-</span>
 					<span>
 						<label
-							for="ownStake.max"
+							htmlFor="ownStake.max"
 							className="absolute ml-2 mt-1 z-10 tracking-widest text-xxs font-semibold"
 						>
 							MAX
@@ -119,7 +119,7 @@ const FilterPanel = ({ filterOptions, setFilterOptions }) => {
 				<h1 className="text-gray-900 mb-1">Other Stake</h1>
 				<div className="flex">
 					<label
-						for="totalStake.min"
+						htmlFor="totalStake.min"
 						className="absolute ml-2 mt-1 z-10 tracking-widest text-xxs font-semibold"
 					>
 						MIN
@@ -137,7 +137,7 @@ const FilterPanel = ({ filterOptions, setFilterOptions }) => {
 					<span className="self-center mx-2">-</span>
 					<span>
 						<label
-							for="totalStake.max"
+							htmlFor="totalStake.max"
 							className="absolute ml-2 mt-1 z-10 tracking-widest text-xxs font-semibold"
 						>
 							MAX
@@ -159,7 +159,7 @@ const FilterPanel = ({ filterOptions, setFilterOptions }) => {
 				<h1 className="text-gray-900 mb-1">Max Commission</h1>
 				<div className="flex">
 					<label
-						for="commission"
+						htmlFor="commission"
 						className="absolute ml-2 mt-1 z-10 tracking-widest text-xxs font-semibold"
 					>
 						MAX

@@ -68,7 +68,7 @@ const ExpectedReturnsCard = ({
 						label="Estimated Returns"
 						value={
 							<CountUp
-								end={returns.currency}
+								end={returns.currency || 0}
 								duration={0.5}
 								decimals={3}
 								separator=","
@@ -78,7 +78,7 @@ const ExpectedReturnsCard = ({
 						}
 						supportValue={
 							<CountUp
-								end={returns.subCurrency}
+								end={returns.subCurrency || 0}
 								duration={0.5}
 								decimals={2}
 								separator=","
@@ -108,7 +108,7 @@ const ExpectedReturnsCard = ({
 						label="Estimated Portfolio Value"
 						value={
 							<CountUp
-								end={portfolio.currency}
+								end={portfolio.currency || 0}
 								duration={0.5}
 								decimals={3}
 								separator=","
@@ -118,7 +118,7 @@ const ExpectedReturnsCard = ({
 						}
 						supportValue={
 							<CountUp
-								end={portfolio.subCurrency}
+								end={portfolio.subCurrency || 0}
 								duration={0.5}
 								decimals={2}
 								separator=","
@@ -140,7 +140,7 @@ const ExpectedReturnsCard = ({
 						label="Estimated Yield"
 						value={
 							<CountUp
-								end={result.yieldPercentage}
+								end={result.yieldPercentage || 0}
 								duration={0.5}
 								decimals={2}
 								suffix="%"
@@ -166,7 +166,7 @@ const ExpectedReturnsCard = ({
 								: "opacity-100"
 						}
 					`}
-						disabled={stashAccount && calculationDisabled}
+						disabled={false && (stashAccount && calculationDisabled)}
 						onClick={() =>
 							stashAccount ? onPayment() : onWalletConnectClick()
 						}

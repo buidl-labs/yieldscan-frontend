@@ -140,9 +140,6 @@ const PaymentPopover = ({
 				setTransactionHash(hash.message);
 			},
 			onFinish: (status, message, isNominateOnly, eventLogs) => {
-				console.log("hello finish");
-				console.log("message");
-				console.log(message);
 				// status = 0 for success, anything else for error code
 				toast({
 					title: status === 0 ? "Successful!" : "Error!",
@@ -217,8 +214,6 @@ const PaymentPopover = ({
 			const nominations = transactionState.selectedValidators.map(
 				(v) => v.stashId
 			);
-			console.log("nominations");
-			console.log(nominations);
 			nominate(
 				stashAccount.address,
 				nominations,

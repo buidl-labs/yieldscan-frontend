@@ -131,7 +131,7 @@ const ValidatorsResult = ({
 					<h3 className="flex items-center text-xl">
 						<span className="mr-2">
 							<CountUp
-								end={yieldPercentage && yieldPercentage}
+								end={yieldPercentage || 0}
 								duration={0.5}
 								decimals={2}
 								suffix={"%"}
@@ -145,7 +145,7 @@ const ValidatorsResult = ({
 					<h3 className="flex items-center text-xl">
 						<span className="mr-2">
 							<CountUp
-								end={returns.currency && returns.currency}
+								end={returns.currency || 0}
 								duration={0.5}
 								decimals={3}
 								suffix={" KSM"}
