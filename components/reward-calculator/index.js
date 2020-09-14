@@ -20,10 +20,11 @@ import {
 import { PaymentPopover } from "@components/new-payment";
 import { get, isNil, mapValues, keyBy, cloneDeep, debounce } from "lodash";
 import calculateReward from "@lib/calculate-reward";
-import { Spinner } from "@chakra-ui/core";
+import { Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, Spinner } from "@chakra-ui/core";
 import Routes from "@lib/routes";
 import { trackEvent, Events } from "@lib/analytics";
 import convertCurrency from "@lib/convert-currency";
+import formatCurrency from "@lib/format-currency";
 
 const trackRewardCalculatedEvent = debounce((eventData) => {
 	trackEvent(Events.REWARD_CALCULATED, eventData);
@@ -232,15 +233,39 @@ const RewardCalculatorPage = () => {
 							className="m-2 text-gray-600 text-sm"
 							hidden={isNil(stashAccount)}
 						>
-							Free Balance: {get(freeAmount, "currency", 0)} KSM
+							Transferrable Balance:{" "}
+							{formatCurrency.methods.formatAmount(
+								Math.trunc(get(freeAmount, "currency", 0) * 10 ** 12)
+							)}
 						</div>
 						<div
 							className="rounded-lg px-5 py-2 text-sm bg-red-200 text-red-600 my-4"
 							hidden={!stashAccount || amount < totalBalance - 0.1}
 						>
 							<span>
-								We cannot stake this amount since you need to maintain a minimum
-								balance of 0.1 KSM in your account at all times.{" "}
+								We cannot stake this amount since we recommend maintaining a
+								minimum balance of 0.1 KSM in your account at all times.{" "}
+								<Popover trigger="hover">
+									<PopoverTrigger>
+										<span className="underline cursor-help">Why?</span>
+									</PopoverTrigger>
+									<PopoverContent
+										zIndex={50}
+										_focus={{ outline: "none" }}
+										bg="gray.700"
+										border="none"
+									>
+										<PopoverArrow />
+										<PopoverBody>
+											<span className="text-white">
+												This is to ensure that you have a decent amout of funds
+												in your account to pay transaction fees for claiming
+												rewards, unbonding funds, changing on-chain staking
+												preferences, etc.
+											</span>
+										</PopoverBody>
+									</PopoverContent>
+								</Popover>
 							</span>
 							{/* <a href="#" className="text-blue-500">Learn More?</a> */}
 						</div>
