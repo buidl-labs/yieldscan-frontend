@@ -1,12 +1,11 @@
-import {
-	InputGroup,
-	Input,
-	InputRightElement,
-} from "@chakra-ui/core";
+import { InputGroup, Input, InputRightElement } from "@chakra-ui/core";
 import formatCurrency from "@lib/format-currency";
+import { useAccounts } from "@lib/store";
+import { get } from "lodash";
 import { useState, useEffect } from "react";
 
 const AmountInputDefault = ({ bonded, value, onChange }) => {
+	const { freeAmount, stashAccount } = useAccounts();
 	const initiallyEditable =
 		bonded === undefined ? true : bonded == 0 ? true : false;
 	const [isEditable, setIsEditable] = React.useState(initiallyEditable);
@@ -28,7 +27,26 @@ const AmountInputDefault = ({ bonded, value, onChange }) => {
 				<InputGroup className="border border-gray-200 rounded-full">
 					<InputRightElement
 						opacity={isEditable ? "1" : "0.4"}
-						children="KSM"
+						children={
+							<span className="flex -ml-12">
+								{stashAccount && (
+									<button
+										className={`bg-teal-200 text-teal-500 rounded-md px-2 pb-1 ${
+											!isEditable && "opacity-0 cursor-not-allowed"
+										}`}
+										disabled={!isEditable}
+										onClick={() => {
+											const maxAmount =
+												Math.max(bonded + get(freeAmount, "currency") - 0.1, 0);
+											handleChange(maxAmount);
+										}}
+									>
+										max
+									</button>
+								)}
+								<span className="ml-2 cursor-not-allowed">KSM</span>
+							</span>
+						}
 						rounded="full"
 						pt={8}
 						px={12}
@@ -40,18 +58,19 @@ const AmountInputDefault = ({ bonded, value, onChange }) => {
 						pt={8}
 						pb={12}
 						px={8}
+						pr={20}
 						placeholder="0"
 						value={inputValue}
 						onChange={(e) => {
 							const { value } = e.target;
-							handleChange(value)
+							handleChange(value);
 						}}
 						border="none"
 						fontSize="2xl"
 						isDisabled={!isEditable}
 						backgroundColor={!isEditable && "gray.200"}
 					/>
-					<h6 className="absolute z-20 bottom-0 left-0 ml-8 mb-3 text-gray-600 text-sm">
+					<h6 className="absolute z-20 bottom-0 left-0 ml-8 mb-3 text-gray-600 text-sm cursor-not-allowed">
 						${formatCurrency.methods.formatNumber(value.subCurrency.toFixed(2))}
 					</h6>
 				</InputGroup>

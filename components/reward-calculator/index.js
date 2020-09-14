@@ -238,8 +238,7 @@ const RewardCalculatorPage = () => {
 				<div className="mt-10 mx-2">
 					<h3 className="text-xl text-gray-800">Staking Amount</h3>
 					<div className="mt-3">
-						
-						{(stashAccount && amount > totalBalance - 0.1) && (
+						{stashAccount && amount > totalBalance - 0.1 && (
 							<Alert
 								status="error"
 								rounded="md"
