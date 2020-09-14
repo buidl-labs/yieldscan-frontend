@@ -14,7 +14,7 @@ const AmountInputDefault = ({ bonded, value, onChange }) => {
 	useEffect(() => {
 		if (bonded) {
 			onChange(bonded);
-			setInputValue(Number(Math.max(bonded, 0).toFixed(4)));
+			setInputValue(Number(Math.max(bonded, 0)));
 		}
 	}, [bonded]);
 	const handleChange = (value) => {

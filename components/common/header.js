@@ -26,7 +26,7 @@ const currentNetwork = "Not Kusama";
 const Header = ({ isBase }) => {
 	const { isOpen, toggle } = useWalletConnect();
 	const {
-		accounts,
+		filteredAccounts,
 		stashAccount,
 		freeAmount,
 		setStashAccount,
@@ -40,7 +40,7 @@ const Header = ({ isBase }) => {
 	} = useDisclosure();
 
 	const stashAddress = get(stashAccount, "address");
-	const accountsWithoutCurrent = accounts.filter(
+	const accountsWithoutCurrent = filteredAccounts.filter(
 		(account) => stashAddress && account.address !== stashAddress
 	);
 
