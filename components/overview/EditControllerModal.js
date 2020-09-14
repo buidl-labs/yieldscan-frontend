@@ -29,9 +29,11 @@ const EditControllerModal = withSlideIn(({ styles, close }) => {
 		apiInstance.query.staking
 			.bonded(stashAccount.address)
 			.then((account) => {
-				const address = account.value.toString();
-				const substrateAddress = encodeAddress(decodeAddress(address), 42);
-				setSelected(substrateAddress);
+				if (account.isSome) {
+					const address = account.value.toString();
+					const substrateAddress = encodeAddress(decodeAddress(address), 42);
+					setSelected(substrateAddress);
+				}
 			})
 			.catch((error) => {
 				alert("Something went wrong, please reload!");
@@ -40,6 +42,49 @@ const EditControllerModal = withSlideIn(({ styles, close }) => {
 				setLoading(false);
 			});
 	}, []);
+
+	useEffect(() => {
+		// setIsFilteringAccounts(true);
+		if (accounts && accounts.length > 0) {
+			const api = apiInstance;
+			const queries = accounts.map((account) => [
+				api.query.staking.ledger,
+				account.address,
+			]);
+
+			api
+				.queryMulti(queries, async (queryResults) => {
+					const ledgerArray = await queryResults;
+					const accountLedgers = accounts.map((account, index) => ({
+						account,
+						ledger: ledgerArray[index],
+					}));
+					const filteredAccounts = accountLedgers.filter(
+						({ account: { address }, ledger }) => {
+							const encodedAddress = encodeAddress(
+								decodeAddress(address.toString()),
+								2
+							);
+							return (
+								ledger &&
+								((ledger.value.stash &&
+									ledger.value.stash.toString() === encodedAddress) ||
+									ledger.isNone)
+							);
+						}
+					);
+					const parsedFilteredAccounts = filteredAccounts.map(
+						({ account }) => account
+					);
+					// setFilteredAccounts(parsedFilteredAccounts);
+					// setIsFilteringAccounts(false);
+				})
+
+				.catch((err) => {
+					throw err;
+				});
+		}
+	}, [accounts]);
 
 	const updateController = () => {
 		setEditLoading(true);

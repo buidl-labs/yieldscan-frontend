@@ -20,7 +20,17 @@ import {
 import { PaymentPopover } from "@components/new-payment";
 import { get, isNil, mapValues, keyBy, cloneDeep, debounce } from "lodash";
 import calculateReward from "@lib/calculate-reward";
-import { Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, Spinner } from "@chakra-ui/core";
+import {
+	Alert,
+	AlertDescription,
+	AlertTitle,
+	Popover,
+	PopoverArrow,
+	PopoverBody,
+	PopoverContent,
+	PopoverTrigger,
+	Spinner,
+} from "@chakra-ui/core";
 import Routes from "@lib/routes";
 import { trackEvent, Events } from "@lib/analytics";
 import convertCurrency from "@lib/convert-currency";
@@ -217,7 +227,6 @@ const RewardCalculatorPage = () => {
 
 	const totalBalance =
 		get(bondedAmount, "currency", 0) + get(freeAmount, "currency", 0);
-	// console.log(transactionState);
 
 	return (
 		<div className="flex px-24 pt-12">
@@ -229,6 +238,44 @@ const RewardCalculatorPage = () => {
 				<div className="mt-10 mx-2">
 					<h3 className="text-xl text-gray-800">Staking Amount</h3>
 					<div className="mt-3">
+						
+						{(stashAccount && amount > totalBalance - 0.1) && (
+							<Alert
+								status="error"
+								rounded="md"
+								flex
+								flexDirection="column"
+								alignItems="start"
+								my={4}
+							>
+								<AlertTitle color="red.500">Insufficient Balance</AlertTitle>
+								<AlertDescription color="red.500">
+									We cannot stake this amount since we recommend maintaining a
+									minimum balance of 0.1 KSM in your account at all times.{" "}
+									<Popover trigger="hover" usePortal>
+										<PopoverTrigger>
+											<span className="underline cursor-help">Why?</span>
+										</PopoverTrigger>
+										<PopoverContent
+											zIndex={50}
+											_focus={{ outline: "none" }}
+											bg="gray.700"
+											border="none"
+										>
+											<PopoverArrow />
+											<PopoverBody>
+												<span className="text-white">
+													This is to ensure that you have a decent amout of
+													funds in your account to pay transaction fees for
+													claiming rewards, unbonding funds, changing on-chain
+													staking preferences, etc.
+												</span>
+											</PopoverBody>
+										</PopoverContent>
+									</Popover>
+								</AlertDescription>
+							</Alert>
+						)}
 						<div
 							className="m-2 text-gray-600 text-sm"
 							hidden={isNil(stashAccount)}
@@ -238,37 +285,7 @@ const RewardCalculatorPage = () => {
 								Math.trunc(get(freeAmount, "currency", 0) * 10 ** 12)
 							)}
 						</div>
-						<div
-							className="rounded-lg px-5 py-2 text-sm bg-red-200 text-red-600 my-4"
-							hidden={!stashAccount || amount < totalBalance - 0.1}
-						>
-							<span>
-								We cannot stake this amount since we recommend maintaining a
-								minimum balance of 0.1 KSM in your account at all times.{" "}
-								<Popover trigger="hover">
-									<PopoverTrigger>
-										<span className="underline cursor-help">Why?</span>
-									</PopoverTrigger>
-									<PopoverContent
-										zIndex={50}
-										_focus={{ outline: "none" }}
-										bg="gray.700"
-										border="none"
-									>
-										<PopoverArrow />
-										<PopoverBody>
-											<span className="text-white">
-												This is to ensure that you have a decent amout of funds
-												in your account to pay transaction fees for claiming
-												rewards, unbonding funds, changing on-chain staking
-												preferences, etc.
-											</span>
-										</PopoverBody>
-									</PopoverContent>
-								</Popover>
-							</span>
-							{/* <a href="#" className="text-blue-500">Learn More?</a> */}
-						</div>
+
 						<AmountInput
 							bonded={get(bondedAmount, "currency")}
 							value={{ currency: amount, subCurrency: subCurrency }}

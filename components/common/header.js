@@ -1,4 +1,4 @@
-import { useAccounts, useHeaderLoading } from "@lib/store";
+import { useAccounts, useHeaderLoading, usePolkadotApi } from "@lib/store";
 import { get, isNil } from "lodash";
 import { ChevronDown, Settings, Menu } from "react-feather";
 import {
@@ -15,15 +15,17 @@ import {
 } from "@chakra-ui/core";
 import Identicon from "@components/common/Identicon";
 import EditControllerModal from "@components/overview/EditControllerModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import formatCurrency from "@lib/format-currency";
 import Routes from "@lib/routes";
 import Link from "next/link";
+import createPolkadotAPIInstance from "@lib/polkadot-api";
 
 // TODO: replace this with actual global state
 const currentNetwork = "Not Kusama";
 
 const Header = ({ isBase }) => {
+	const { setApiInstance } = usePolkadotApi();
 	const { isOpen, toggle } = useWalletConnect();
 	const {
 		filteredAccounts,
@@ -46,6 +48,22 @@ const Header = ({ isBase }) => {
 
 	const [isStashPopoverOpen, setIsStashPopoverOpen] = useState(false);
 	const [isNetworkOpen, setIsNetworkOpen] = useState(false);
+	const [isBonded, setIsBonded] = useState(false);
+
+	useEffect(() => {
+		if (stashAccount)
+			createPolkadotAPIInstance().then((api) => {
+				setApiInstance(api);
+				api.query.staking
+					.bonded(stashAccount.address)
+					.then(({ isSome }) => {
+						setIsBonded(isSome);
+					})
+					.catch((error) => {
+						alert("Something went wrong, please reload!");
+					});
+			});
+	}, [stashAccount]);
 
 	return (
 		<div
@@ -243,7 +261,7 @@ const Header = ({ isBase }) => {
 					</PopoverContent>
 				</Popover> */}
 
-						{!isNil(stashAccount) && (
+						{!isNil(stashAccount) && isBonded && (
 							<Popover trigger="click">
 								<PopoverTrigger>
 									<button className="flex items-center ml-5 p-2 font-semibold text-gray-800">
