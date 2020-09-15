@@ -71,9 +71,12 @@ const ValidatorCard = ({
 			<div className="flex flex-col w-32">
 				<span className="text-xs text-gray-500 font-semibold">Own Stake</span>
 				<h3 className="text-base">
-					{formatCurrency.methods.formatAmount(
+					{/* {formatCurrency.methods.formatAmount(
 						Math.trunc((ownStake || 0) * 10 ** 12)
-					)}
+					)} */
+					console.log(ownStake)
+					}
+					{!isNaN(ownStake) && formatCurrency.methods.formatAmount(Math.trunc((ownStake || 0) * 10 ** 12))}
 				</h3>
 			</div>
 			<div className="flex flex-col w-32">
