@@ -14,10 +14,30 @@
 	yarn
 	```
 - Add environment variables in `.env.local`
-	```
+	```env
+	# Main API endpoint
 	NEXT_PUBLIC_API_BASE_URL=<base-url-of-deployed/local-api>
+
+	# Tracking
+	NEXT_PUBLIC_AMPLITUDE_API_TOKEN=<your-amplitude-api-token> # For development you can pass a string like "none" - to prevent unnecessary data from being logged
+	NEXT_PUBLIC_METOMIC_PROJECT_ID=<your-metomic-project-id>
+
+	# Sentry (optional)
+	NEXT_PUBLIC_SENTRY_DSN=<your-sentry-dsn>
+
+	# Only required to upload sourcemaps
+
+	SENTRY_ORG=<your-sentry-org>
+	SENTRY_PROJECT=<your-sentry-project>
+	SENTRY_AUTH_TOKEN=<your-sentry-auth-token>
 	```
 	Note: You can checkout the backend codebase [here](https://github.com/buidl-labs/yieldscan-backend-ts).
+	
+	Useful resources:
+	
+	- [Amplitude](https://amplitude.com/)
+	- [Metomic](https://metomic.io/)
+	- [Sentry](https://sentry.io/)
 
 - Run the development server:
 
