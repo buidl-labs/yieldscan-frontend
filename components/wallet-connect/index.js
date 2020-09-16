@@ -8,6 +8,7 @@ import {
 	ModalContent,
 	ModalCloseButton,
 	ModalHeader,
+	Spinner,
 } from "@chakra-ui/core";
 import IntroPage from "./Intro";
 import CreateWallet from "./CreateWallet";
@@ -38,6 +39,8 @@ const WalletConnectPopover = ({ styles }) => {
 	const [ledgerLoading, setLedgerLoading] = useState(false);
 	const setApiInstance = usePolkadotApi((state) => state.setApiInstance);
 	const {
+		isFilteringAccounts,
+		filteredAccounts,
 		accounts,
 		setAccounts,
 		setStashAccount,
@@ -53,7 +56,8 @@ const WalletConnectPopover = ({ styles }) => {
 		getPolkadotExtensionInfo()
 			.then(({ isExtensionAvailable, accounts = [] }) => {
 				if (!isExtensionAvailable) throw new Error("Extension not available.");
-				if (!accounts.length) throw new Error("No Accounts found.");
+				if (!accounts.length)
+					throw new Error("Couldn't find any stash or unnassigned accounts.");
 
 				setState(WalletConnectStates.CONNECTED);
 				setAccounts(accounts);
@@ -74,7 +78,17 @@ const WalletConnectPopover = ({ styles }) => {
 	};
 
 	return (
-		<Modal isOpen={isOpen} onClose={close} isCentered>
+		<Modal
+			isOpen={isOpen}
+			onClose={close}
+			isCentered
+			closeOnEsc={
+				!isFilteringAccounts && state === WalletConnectStates.CONNECTED
+			}
+			closeOnOverlayClick={
+				!isFilteringAccounts && state === WalletConnectStates.CONNECTED
+			}
+		>
 			<ModalOverlay />
 			<ModalContent
 				rounded="lg"
@@ -96,6 +110,7 @@ const WalletConnectPopover = ({ styles }) => {
 							<span>Wallet Connect</span>
 						</div>
 					) : (
+						!isFilteringAccounts &&
 						state === WalletConnectStates.CONNECTED && (
 							<h3 className="px-3 text-2xl text-left self-start">
 								Select Account for Staking
@@ -103,25 +118,36 @@ const WalletConnectPopover = ({ styles }) => {
 						)
 					)}
 				</ModalHeader>
-				<ModalCloseButton
-					onClick={close}
-					boxShadow="0 0 0 0 #fff"
-					color="gray.400"
-					backgroundColor="gray.100"
-					rounded="1rem"
-					mt={4}
-					mr={4}
-				/>
+				{!isFilteringAccounts && state === WalletConnectStates.CONNECTED && (
+					<ModalCloseButton
+						onClick={close}
+						boxShadow="0 0 0 0 #fff"
+						color="gray.400"
+						backgroundColor="gray.100"
+						rounded="1rem"
+						mt={4}
+						mr={4}
+					/>
+				)}
 				<ModalBody>
 					{state === WalletConnectStates.INTRO ? (
 						<IntroPage
 							onConnected={onConnected}
 							onDisclaimer={() => setState(WalletConnectStates.DISCLAIMER)}
 						/>
+					) : isFilteringAccounts ? (
+						<div className="flex-center w-full h-full min-h-26-rem">
+							<div className="flex-center flex-col">
+								<Spinner size="xl" color="teal.500" thickness="4px" />
+								<span className="text-sm text-gray-600 mt-5">
+									Fetching your accounts...
+								</span>
+							</div>
+						</div>
 					) : (
 						state === WalletConnectStates.CONNECTED && (
 							<WalletConnected
-								accounts={accounts}
+								accounts={filteredAccounts}
 								ledgerLoading={ledgerLoading}
 								onStashSelected={onStashSelected}
 							/>

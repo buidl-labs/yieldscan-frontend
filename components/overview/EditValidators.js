@@ -19,9 +19,12 @@ import RiskTag from "@components/reward-calculator/RiskTag";
 import { noop, mapValues, keyBy, isNil, get } from "lodash";
 import calculateReward from "@lib/calculate-reward";
 import formatCurrency from "@lib/format-currency";
+import convertArrayToObject from "@lib/convert-arr-to-object";
 import { useAccounts, usePolkadotApi } from "@lib/store";
 import nominate from "@lib/polkadot/nominate";
 import Identicon from "@components/common/Identicon";
+import ChainErrorPage from "@components/overview/ChainErrorPage";
+import SuccessfullyBonded from "@components/overview/SuccessfullyBonded";
 import Routes from "@lib/routes";
 
 const ValidatorCard = ({
@@ -111,41 +114,30 @@ const ValidatorCard = ({
 };
 
 const EditValidators = withSlideIn(
-	({ styles, close, currentValidators, onChill = noop }) => {
+	({
+		styles,
+		close,
+		validators,
+		validatorsLoading,
+		currentValidators,
+		onChill = noop,
+	}) => {
 		const toast = useToast();
 		const { apiInstance } = usePolkadotApi();
 		const [compounding, setCompounding] = useState(false);
 		const { stashAccount, freeAmount, bondedAmount } = useAccounts();
-		const [validators, setValidators] = useState([]);
 		const [editLoading, setEditLoading] = useState(false);
 		const [estimatedReward, setEstimatedReward] = useState();
-		const [validatorsLoading, setValidatorsLoading] = useState(true);
-		const [selectedValidatorsMap, setSelectedValidatorsMap] = useState({});
+		const [stakingEvent, setStakingEvent] = useState();
+		const [processComplete, setProcessComplete] = useState(false);
+		const [chainError, setChainError] = useState(false);
+		const [errMessage, setErrMessage] = useState();
+		const [transactionHash, setTransactionHash] = useState();
+		const [closeOnOverlayClick, setCloseOnOverlayClick] = useState(true);
 
-		useEffect(() => {
-			if (currentValidators) {
-				axios
-					.get("/rewards/risk-set")
-					.then(({ data }) => {
-						const validators = data.totalset;
-						setValidators(validators);
-						setSelectedValidatorsMap(currentValidators);
-					})
-					.catch(() => {
-						toast({
-							title: "Error",
-							description: "Something went wrong!",
-							position: "top-right",
-							duration: 3000,
-							status: "error",
-						});
-						close();
-					})
-					.finally(() => {
-						setValidatorsLoading(false);
-					});
-			}
-		}, [currentValidators]);
+		const [selectedValidatorsMap, setSelectedValidatorsMap] = useState(
+			convertArrayToObject(currentValidators, "stashId")
+		);
 
 		useEffect(() => {
 			apiInstance.query.staking.payee(stashAccount.address).then((payee) => {
@@ -199,8 +191,12 @@ const EditValidators = withSlideIn(
 			);
 
 			setEditLoading(true);
-			nominate(stashAccount.address, stashIds, apiInstance, {
+
+			const handlers = {
 				onEvent: ({ message }) => {
+					setStakingEvent(message);
+					setCloseOnOverlayClick(false);
+
 					toast({
 						title: "Info",
 						description: message,
@@ -210,28 +206,43 @@ const EditValidators = withSlideIn(
 						isClosable: true,
 					});
 				},
-				onFinish: (failed, message) => {
+				onSuccessfullSigning: (hash) => {
+					// setProcessComplete(true);
+					// setStakingLoading(false);
+					// setCloseOnOverlayClick(true);
+					setTransactionHash(hash.message);
+				},
+				onFinish: (status, message, eventLogs) => {
+					// status = 0 for success, anything else for error code
 					toast({
-						title: failed ? "Failure" : "Success",
+						title: status === 0 ? "Successful!" : "Error!",
+						status: status === 0 ? "success" : "error",
 						description: message,
-						status: failed ? "error" : "success",
-						duration: 3000,
 						position: "top-right",
 						isClosable: true,
+						duration: 7000,
 					});
-					setEditLoading(false);
-					close();
+
+					if (status === 0) {
+						setProcessComplete(true);
+						setEditLoading(false);
+						setCloseOnOverlayClick(true);
+					} else {
+						setEditLoading(false);
+						setCloseOnOverlayClick(true);
+						setErrMessage(message);
+						if (message !== "Cancelled") setChainError(true);
+					}
 				},
-			}).catch((error) => {
-				setEditLoading(false);
-				toast({
-					title: "Error",
-					description: error.message,
-					status: "error",
-					duration: 3000,
-					position: "top-right",
-					isClosable: true,
-				});
+			};
+			nominate(
+				stashAccount.address,
+				stashIds,
+				true,
+				apiInstance,
+				handlers
+			).catch((error) => {
+				handlers.onFinish(1, error.message);
 			});
 		};
 
@@ -239,8 +250,18 @@ const EditValidators = withSlideIn(
 			window.open(`${Routes.VALIDATOR_PROFILE}/${stashId}`, "_blank");
 		};
 
+		const handleOnClickForSuccessfulTransaction = () => {
+			close();
+		};
+
 		return (
-			<Modal isOpen={true} onClose={close} isCentered>
+			<Modal
+				isOpen={true}
+				onClose={close}
+				closeOnOverlayClick={closeOnOverlayClick}
+				closeOnEsc={closeOnOverlayClick}
+				isCentered
+			>
 				<ModalOverlay />
 				<ModalContent
 					rounded="lg"
@@ -252,7 +273,7 @@ const EditValidators = withSlideIn(
 					<ModalHeader>
 						<h1>Edit Validators</h1>
 					</ModalHeader>
-					<ModalCloseButton onClick={close} />
+					{closeOnOverlayClick && <ModalCloseButton onClick={close} />}
 					<ModalBody px="4rem">
 						{validatorsLoading ? (
 							<div className="flex-center w-full h-full">
@@ -265,44 +286,46 @@ const EditValidators = withSlideIn(
 							</div>
 						) : (
 							<div>
-								<div className="flex justify-around">
-									<div className="w-1/2 bg-gray-100 p-2 mr-2 rounded-lg">
-										<div className="h-12 flex items-center mt-1 mx-2">
-											<h3 className="text-xs tracking-widest">
-												CANDIDATE VALIDATORS
-											</h3>
-										</div>
-										<div className="my-2 overflow-y-scroll validators-table">
-											{validators.map((validator) => (
-												<ValidatorCard
-													key={validator.stashId}
-													name={validator.name}
-													type="candidate"
-													stashId={validator.stashId}
-													riskScore={validator.riskScore}
-													estimatedReward={validator.estimatedPoolReward}
-													totalStake={validator.totalStake}
-													onClick={() => toggleSelected(validator)}
-													isSelected={
-														!isNil(selectedValidatorsMap[validator.stashId])
-													}
-													onProfile={() => onProfile(validator.stashId)}
-												/>
-											))}
-										</div>
-									</div>
-									<div className="w-1/2 border border-gray-200 p-2 rounded-lg">
-										<div className="flex mx-2 justify-between items-center">
-											<div className="h-12 mt-1 flex items-center justify-start">
-												<h3 className="text-xs tracking-widest">
-													SELECTED VALIDATORS
-												</h3>
-												<div className="flex items-center justify-center h-8 w-8 ml-2 text-sm rounded-full bg-gray-200 text-gray-600">
-													<span>{selectedValidatorsList.length}</span>
+								{!editLoading && !processComplete && !chainError && (
+									<>
+										<div className="flex justify-around">
+											<div className="w-1/2 bg-gray-100 p-2 mr-2 rounded-lg">
+												<div className="h-12 flex items-center mt-1 mx-2">
+													<h3 className="text-xs tracking-widest">
+														CANDIDATE VALIDATORS
+													</h3>
+												</div>
+												<div className="my-2 overflow-y-scroll validators-table">
+													{validators.map((validator) => (
+														<ValidatorCard
+															key={validator.stashId}
+															name={validator.name}
+															type="candidate"
+															stashId={validator.stashId}
+															riskScore={validator.riskScore}
+															estimatedReward={validator.estimatedPoolReward}
+															totalStake={validator.totalStake}
+															onClick={() => toggleSelected(validator)}
+															isSelected={
+																!isNil(selectedValidatorsMap[validator.stashId])
+															}
+															onProfile={() => onProfile(validator.stashId)}
+														/>
+													))}
 												</div>
 											</div>
-											<div className="flex items-center text-sm">
-												{/* <span className="mr-2">Est. Annual Returns</span>
+											<div className="w-1/2 border border-gray-200 p-2 rounded-lg">
+												<div className="flex mx-2 justify-between items-center">
+													<div className="h-12 mt-1 flex items-center justify-start">
+														<h3 className="text-xs tracking-widest">
+															SELECTED VALIDATORS
+														</h3>
+														<div className="flex items-center justify-center h-8 w-8 ml-2 text-sm rounded-full bg-gray-200 text-gray-600">
+															<span>{selectedValidatorsList.length}</span>
+														</div>
+													</div>
+													<div className="flex items-center text-sm">
+														{/* <span className="mr-2">Est. Annual Returns</span>
 												{estimatedReward && (
 													<div className="w-32 border border-teal-500 p-1 rounded-lg flex flex-col">
 														<span className="text-teal-500 text-base">
@@ -322,49 +345,73 @@ const EditValidators = withSlideIn(
 														</span>
 													</div>
 												)} */}
+													</div>
+												</div>
+												<div className="my-2 overflow-y-scroll validators-table">
+													{selectedValidatorsList.map((validator) => (
+														<ValidatorCard
+															key={validator.stashId}
+															name={validator.name}
+															type="selected"
+															stashId={validator.stashId}
+															riskScore={validator.riskScore}
+															estimatedReward={validator.estimatedPoolReward}
+															totalStake={validator.totalStake}
+															onClick={() => toggleSelected(validator)}
+															onProfile={() => onProfile(validator.stashId)}
+															isSelected
+														/>
+													))}
+												</div>
 											</div>
 										</div>
-										<div className="my-2 overflow-y-scroll validators-table">
-											{selectedValidatorsList.map((validator) => (
-												<ValidatorCard
-													key={validator.stashId}
-													name={validator.name}
-													type="selected"
-													stashId={validator.stashId}
-													riskScore={validator.riskScore}
-													estimatedReward={validator.estimatedPoolReward}
-													totalStake={validator.totalStake}
-													onClick={() => toggleSelected(validator)}
-													onProfile={() => onProfile(validator.stashId)}
-													isSelected
-												/>
-											))}
+										<div className="mt-2 mb-8 flex relative">
+											<button
+												className="hover:underline text-gray-600 text-sm mt-2 absolute h-full"
+												onClick={onChill}
+											>
+												Stop all nominations?
+											</button>
+											<div className="flex-grow flex justify-center">
+												<Button
+													px="8"
+													py="4"
+													mt="5"
+													rounded="0.5rem"
+													backgroundColor="teal.500"
+													color="white"
+													fontWeight="normal"
+													onClick={onConfirm}
+													isLoading={editLoading}
+												>
+													Confirm Selection
+												</Button>
+											</div>
+										</div>
+									</>
+								)}
+								{editLoading && !processComplete && !chainError && (
+									<div className="mt-6">
+										{/* <h1 className="font-semibold text-xl text-gray-700">Status:</h1> */}
+										<div className="flex items-center justify-between">
+											<span>{stakingEvent}</span>
+											<Spinner className="ml-4" />
 										</div>
 									</div>
-								</div>
-								<div className="mt-2 mb-8 flex relative">
-									<button
-										className="hover:underline text-gray-600 text-sm mt-2 absolute h-full"
-										onClick={onChill}
-									>
-										Stop all nominations?
-									</button>
-									<div className="flex-grow flex justify-center">
-										<Button
-											px="8"
-											py="4"
-											mt="5"
-											rounded="0.5rem"
-											backgroundColor="teal.500"
-											color="white"
-											fontWeight="normal"
-											onClick={onConfirm}
-											isLoading={editLoading}
-										>
-											Confirm Selection
-										</Button>
-									</div>
-								</div>
+								)}
+								{processComplete && (
+									<SuccessfullyBonded
+										transactionHash={transactionHash}
+										onConfirm={handleOnClickForSuccessfulTransaction}
+									/>
+								)}
+								{chainError && (
+									<ChainErrorPage
+										transactionHash={transactionHash}
+										onConfirm={handleOnClickForSuccessfulTransaction}
+										errMessage={errMessage}
+									/>
+								)}
 							</div>
 						)}
 						<style jsx>{`

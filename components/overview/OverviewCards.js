@@ -9,6 +9,7 @@ import calculateReward from "@lib/calculate-reward";
 const OverviewCards = ({
 	stats,
 	bondedAmount,
+	activeStake,
 	validators,
 	unlockingBalances = [],
 	openRewardDestinationModal = noop,
@@ -76,11 +77,12 @@ const OverviewCards = ({
 			>
 				<div className="flex items-center justify-between">
 					<div>
-						{stats.totalAmountStaked !== get(bondedAmount, "currency", 0) && (
+						{get(activeStake, "currency", 0) !==
+							get(bondedAmount, "currency", 0) && (
 							<span className="text-sm bg-gray-200 text-gray-700 px-4 py-1 rounded-lg">
 								Active stake:{" "}
 								{formatCurrency.methods.formatAmount(
-									Math.trunc(Number((stats.totalAmountStaked || 0) * 10 ** 12))
+									Math.trunc(Number(get(activeStake, "currency", 0) * 10 ** 12))
 								)}
 							</span>
 						)}
