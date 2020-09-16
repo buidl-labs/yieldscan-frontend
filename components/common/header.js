@@ -82,7 +82,7 @@ const Header = ({ isBase }) => {
 					<span className="ml-2">YieldScan</span>
 				</a>
 			</Link>
-			{isBase ? (
+			{!accountInfoLoading && !headerLoading && isBase ? (
 				<Link href={Routes.OVERVIEW}>
 					<a className="border border-gray-200 rounded-full py-2 px-4">
 						Dashboard

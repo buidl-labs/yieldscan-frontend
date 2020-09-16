@@ -13,7 +13,7 @@ const SuccessfullyBonded = ({ transactionHash, onConfirm }) => {
 			</span>
 			<a
 				href={`https://kusama.subscan.io/block/${transactionHash}`}
-				className="mt-6 text-gray-500"
+				className="mt-6 text-blue-400"
 				target="_blank"
 			>
 				Track this transaction on Subscan

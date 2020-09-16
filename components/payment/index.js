@@ -55,13 +55,13 @@ const SuccessfullyBonded = ({ transactionHash, onConfirm }) => {
 				Your staking request is successfully sent to the KSM network
 			</h3>
 			<span className="mt-1 px-4 text-sm text-gray-500">
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-				tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-				veniam.
+				Your transaction is successfully sent to the network. You can safely
+				close this page now. You can view the status of this transaction using
+				the link below:
 			</span>
 			<a
 				href={`https://kusama.subscan.io/block/${transactionHash}`}
-				className="mt-6 text-gray-500"
+				className="mt-6 text-blue-400"
 				target="_blank"
 			>
 				Track this transaction on Subscan
