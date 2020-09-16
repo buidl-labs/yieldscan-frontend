@@ -11,13 +11,30 @@ import {
 	WalletConnectPopover,
 	useWalletConnect,
 } from "@components/wallet-connect";
-import { useAccounts, useTransaction, useHeaderLoading } from "@lib/store";
+import {
+	useAccounts,
+	useTransaction,
+	useHeaderLoading,
+	usePaymentPopover,
+} from "@lib/store";
+import { PaymentPopover } from "@components/new-payment";
 import { get, isNil, mapValues, keyBy, cloneDeep, debounce } from "lodash";
 import calculateReward from "@lib/calculate-reward";
-import { Spinner } from "@chakra-ui/core";
+import {
+	Alert,
+	AlertDescription,
+	AlertTitle,
+	Popover,
+	PopoverArrow,
+	PopoverBody,
+	PopoverContent,
+	PopoverTrigger,
+	Spinner,
+} from "@chakra-ui/core";
 import Routes from "@lib/routes";
 import { trackEvent, Events } from "@lib/analytics";
 import convertCurrency from "@lib/convert-currency";
+import formatCurrency from "@lib/format-currency";
 
 const trackRewardCalculatedEvent = debounce((eventData) => {
 	trackEvent(Events.REWARD_CALCULATED, eventData);
@@ -39,6 +56,12 @@ const RewardCalculatorPage = () => {
 		accountInfoLoading,
 	} = useAccounts();
 	const { setHeaderLoading } = useHeaderLoading();
+	const {
+		isPaymentPopoverOpen,
+		togglePaymentPopover,
+		closePaymentPopover,
+		openPaymentPopover,
+	} = usePaymentPopover();
 
 	const [loading, setLoading] = useState(false);
 	const [amount, setAmount] = useState(transactionState.stakingAmount || 1000);
@@ -59,14 +82,6 @@ const RewardCalculatorPage = () => {
 		cloneDeep(previousValidatorMap)
 	); // map with low/med/high risk sets
 	const [result, setResult] = useState({});
-
-	// useEffect(() => {
-	// 	if (get(bondedAmount, "currency")) {
-	// 		setAmount(
-	// 			Number(Math.max(bondedAmount.currency, 0).toFixed(4))
-	// 		);
-	// 	}
-	// }, [bondedAmount]);
 
 	useEffect(() => {
 		convertCurrency(amount || 0).then((convertedAmount) => {
@@ -187,7 +202,9 @@ const RewardCalculatorPage = () => {
 
 	const onPayment = async () => {
 		updateTransactionState(Events.INTENT_STAKING);
-		router.push("/payment", "/payment", "shallow");
+		get(bondedAmount, "currency", 0) === 0
+			? router.push("/payment", "/payment", "shallow")
+			: openPaymentPopover();
 	};
 
 	const onAdvancedSelection = () => {
@@ -208,7 +225,8 @@ const RewardCalculatorPage = () => {
 		);
 	}
 
-	const totalAmount = get(bondedAmount, "currency", 0) + (amount || 0);
+	const totalBalance =
+		get(bondedAmount, "currency", 0) + get(freeAmount, "currency", 0);
 
 	return (
 		<div className="flex px-24 pt-12">
@@ -220,24 +238,53 @@ const RewardCalculatorPage = () => {
 				<div className="mt-10 mx-2">
 					<h3 className="text-xl text-gray-800">Staking Amount</h3>
 					<div className="mt-3">
+						{stashAccount && amount > totalBalance - 0.1 && (
+							<Alert
+								status="error"
+								rounded="md"
+								flex
+								flexDirection="column"
+								alignItems="start"
+								my={4}
+							>
+								<AlertTitle color="red.500">Insufficient Balance</AlertTitle>
+								<AlertDescription color="red.500">
+									We cannot stake this amount since we recommend maintaining a
+									minimum balance of 0.1 KSM in your account at all times.{" "}
+									<Popover trigger="hover" usePortal>
+										<PopoverTrigger>
+											<span className="underline cursor-help">Why?</span>
+										</PopoverTrigger>
+										<PopoverContent
+											zIndex={50}
+											_focus={{ outline: "none" }}
+											bg="gray.700"
+											border="none"
+										>
+											<PopoverArrow />
+											<PopoverBody>
+												<span className="text-white">
+													This is to ensure that you have a decent amout of
+													funds in your account to pay transaction fees for
+													claiming rewards, unbonding funds, changing on-chain
+													staking preferences, etc.
+												</span>
+											</PopoverBody>
+										</PopoverContent>
+									</Popover>
+								</AlertDescription>
+							</Alert>
+						)}
 						<div
 							className="m-2 text-gray-600 text-sm"
 							hidden={isNil(stashAccount)}
 						>
-							Free Balance: {get(freeAmount, "currency", 0)} KSM
+							Transferrable Balance:{" "}
+							{formatCurrency.methods.formatAmount(
+								Math.trunc(get(freeAmount, "currency", 0) * 10 ** 12)
+							)}
 						</div>
-						<div
-							className="rounded-lg px-5 py-2 text-sm bg-red-200 text-red-600 my-4"
-							hidden={
-								!stashAccount || amount < get(freeAmount, "currency", -Infinity)
-							}
-						>
-							<span>
-								We cannot stake this amount since you need to maintain a minimum
-								balance of 0.1 KSM in your account at all times.{" "}
-							</span>
-							{/* <a href="#" className="text-blue-500">Learn More?</a> */}
-						</div>
+
 						<AmountInput
 							bonded={get(bondedAmount, "currency")}
 							value={{ currency: amount, subCurrency: subCurrency }}
@@ -275,22 +322,38 @@ const RewardCalculatorPage = () => {
 					result={result}
 					stashAccount={stashAccount}
 					calculationDisabled={
-						!totalAmount ||
+						!totalBalance ||
 						!timePeriodValue ||
-						(amount || 0) > get(freeAmount, "currency", 0)
+						(amount || 0) > totalBalance - 0.1 ||
+						amount == 0
 					}
 					onWalletConnectClick={toggle}
 					onPayment={onPayment}
 				/>
 				<ValidatorsList
-					// disableList={!totalAmount || !timePeriodValue || !risk}
-					totalAmount={totalAmount}
+					// disableList={!amount || !timePeriodValue || !risk}
+					stakingAmount={amount}
 					validators={get(validatorMap, "total", [])}
 					selectedValidators={selectedValidators}
 					setSelectedValidators={setSelectedValidators}
 					onAdvancedSelection={onAdvancedSelection}
 				/>
 			</div>
+			{isPaymentPopoverOpen && (
+				<PaymentPopover
+					isPaymentPopoverOpen={isPaymentPopoverOpen}
+					stashAccount={stashAccount}
+					stakingAmount={{ currency: amount, subCurrency: subCurrency }}
+					validators={get(validatorMap, "total", [])}
+					compounding={compounding}
+					selectedValidators={Object.values(selectedValidators)}
+					setSelectedValidators={setSelectedValidators}
+					onAdvancedSelection={onAdvancedSelection}
+					bondedAmount={bondedAmount}
+					closePaymentPopover={closePaymentPopover}
+					result={result}
+				/>
+			)}
 		</div>
 	);
 };

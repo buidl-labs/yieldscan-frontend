@@ -104,6 +104,7 @@ const Transaction = ({
 	onConfirm,
 }) => {
 	const [editController, setEditController] = useState(false);
+	const compounding = get(transactionState, "compounding", true);
 	const [selectedController, setSelectedController] = useState(stashAccount);
 	const [controllerEdited, setControllerEdited] = useState(false);
 
@@ -113,6 +114,9 @@ const Transaction = ({
 
 	// TODO: stakingAmount subCurrency version
 	const stakingAmount = get(transactionState, "stakingAmount", 0);
+
+	console.log("compounding");
+	console.log(compounding);
 
 	return (
 		<div className="mt-10">

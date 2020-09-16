@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { noop } from "lodash";
 import { Edit2 } from "react-feather";
-import { Switch, Select } from "@chakra-ui/core";
+import { Switch, Select, Icon } from "@chakra-ui/core";
 import CompoundRewardSlider from "@components/reward-calculator/CompoundRewardSlider";
 import CountUp from "react-countup";
+import formatCurrency from "@lib/format-currency";
 
 const ValidatorsResult = ({
 	stakingAmount,
@@ -19,6 +20,8 @@ const ValidatorsResult = ({
 	onEditAmount = noop,
 }) => {
 	const [timePeriodEditable, setTimePeriodEditable] = useState(false);
+	const [timePeriod, setTimePeriod] = useState(timePeriodValue);
+	const [timeUnit, setTimeUnit] = useState(timePeriodUnit);
 
 	const { returns = {}, yieldPercentage } = result;
 
@@ -38,8 +41,15 @@ const ValidatorsResult = ({
 						Staking Amount
 					</span>
 					<h3 className="flex justify-between items-center text-xl">
-						{stakingAmount && <span className="mr-5">{stakingAmount} KSM</span>}
-						{!stakingAmount && "-"}
+						{stakingAmount ? (
+							<span className="mr-5">
+								{formatCurrency.methods.formatAmount(
+									Math.trunc(stakingAmount * 10 ** 12)
+								)}
+							</span>
+						) : (
+							0
+						)}
 						<Edit2
 							size="20px"
 							strokeWidth="2px"
@@ -78,9 +88,9 @@ const ValidatorsResult = ({
 								type="number"
 								placeholder="12"
 								className="w-16 rounded border border-gray-200 text-lg py-1 px-1 mr-2"
-								value={timePeriodValue}
+								value={timePeriod}
 								onChange={({ target: { value } }) =>
-									onTimePeriodValueChange(value === "" ? value : Number(value))
+									setTimePeriod(value === "" ? value : Number(value))
 								}
 							/>
 							<Select
@@ -92,33 +102,24 @@ const ValidatorsResult = ({
 								cursor="pointer"
 								color="gray.500"
 								border="none"
-								value={timePeriodUnit}
-								onChange={({ target: { value } }) =>
-									onTimePeriodUnitChange(value)
-								}
+								value={timeUnit}
+								onChange={({ target: { value } }) => setTimeUnit(value)}
 							>
 								<option value="months">months</option>
 								<option value="days">days</option>
 								<option value="eras">eras</option>
 							</Select>
+							<button
+								onClick={() => {
+									onTimePeriodUnitChange(timeUnit);
+									onTimePeriodValueChange(timePeriod);
+									setTimePeriodEditable(false);
+								}}
+							>
+								<Icon name="check-circle" color="teal.500" size="24px" />
+							</button>
 						</div>
 					)}
-				</div>
-				<div className="flex flex-col px-3 py-1 border border-gray-200 rounded-lg mr-2 h-20">
-					<span className="text-sm text-teal-500 font-semibold mb-2">
-						Expected Yield
-					</span>
-					<h3 className="flex items-center text-xl">
-						<span className="mr-2">
-							<CountUp
-								end={yieldPercentage && yieldPercentage}
-								duration={0.5}
-								decimals={2}
-								suffix={"%"}
-								preserveValue
-							/>
-						</span>
-					</h3>
 				</div>
 				<div className="flex flex-col px-3 py-1 border border-gray-200 rounded-lg mr-2 h-20 w-32">
 					<span className="text-sm text-teal-500 font-semibold mb-2">
@@ -131,12 +132,28 @@ const ValidatorsResult = ({
 						/>
 					</div>
 				</div>
+				<div className="flex flex-col px-3 py-1 border border-gray-200 rounded-lg mr-2 h-20">
+					<span className="text-sm text-teal-500 font-semibold mb-2">
+						Expected Yield
+					</span>
+					<h3 className="flex items-center text-xl">
+						<span className="mr-2">
+							<CountUp
+								end={yieldPercentage || 0}
+								duration={0.5}
+								decimals={2}
+								suffix={"%"}
+								preserveValue
+							/>
+						</span>
+					</h3>
+				</div>
 				<div className="flex flex-col px-3 py-1 bg-teal-500 shadow-teal text-white rounded-lg h-20 w-48">
 					<span className="text-sm font-semibold mb-2">Expected Returns</span>
 					<h3 className="flex items-center text-xl">
 						<span className="mr-2">
 							<CountUp
-								end={returns.currency && returns.currency}
+								end={returns.currency || 0}
 								duration={0.5}
 								decimals={3}
 								suffix={" KSM"}

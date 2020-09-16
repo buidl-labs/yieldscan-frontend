@@ -1,5 +1,4 @@
 {
-
 	"name": "yieldscan-frontend",
 	"version": "0.1.0",
 	"private": true,
@@ -39,6 +38,7 @@
 		"react-dom": "16.13.1",
 		"react-feather": "^2.0.8",
 		"react-konva": "^16.13.0-3",
+		"sass": "^1.26.10",
 		"styled-components": "^5.1.1",
 		"zustand": "^2.2.3"
 	},

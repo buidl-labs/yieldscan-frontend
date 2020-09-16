@@ -1,20 +1,52 @@
-import {
-	InputGroup,
-	InputRightAddon,
-	Input,
-	InputRightElement,
-} from "@chakra-ui/core";
+import { InputGroup, Input, InputRightElement } from "@chakra-ui/core";
 import formatCurrency from "@lib/format-currency";
+import { useAccounts } from "@lib/store";
+import { get } from "lodash";
+import { useState, useEffect } from "react";
 
 const AmountInputDefault = ({ bonded, value, onChange }) => {
-	const [isEditable, setIsEditable] = React.useState(true);
+	const { freeAmount, stashAccount } = useAccounts();
+	const initiallyEditable =
+		bonded === undefined ? true : bonded == 0 ? true : false;
+	const [isEditable, setIsEditable] = React.useState(initiallyEditable);
+	const [inputValue, setInputValue] = useState(value.currency);
+	useEffect(() => {
+		if (bonded) {
+			onChange(bonded);
+			setInputValue(Number(Math.max(bonded, 0)));
+		}
+	}, [bonded]);
+	const handleChange = (value) => {
+		onChange(value);
+		setInputValue(value);
+	};
+
 	return (
 		<div>
 			<div className="flex items-center justify-between w-2/3">
 				<InputGroup className="border border-gray-200 rounded-full">
 					<InputRightElement
 						opacity={isEditable ? "1" : "0.4"}
-						children="KSM"
+						children={
+							<span className="flex -ml-12">
+								{stashAccount && (
+									<button
+										className={`bg-teal-200 text-teal-500 rounded-md px-2 pb-1 ${
+											!isEditable && "opacity-0 cursor-not-allowed"
+										}`}
+										disabled={!isEditable}
+										onClick={() => {
+											const maxAmount =
+												Math.max(bonded + get(freeAmount, "currency") - 0.1, 0);
+											handleChange(maxAmount);
+										}}
+									>
+										max
+									</button>
+								)}
+								<span className="ml-2 cursor-not-allowed">KSM</span>
+							</span>
+						}
 						rounded="full"
 						pt={8}
 						px={12}
@@ -26,52 +58,37 @@ const AmountInputDefault = ({ bonded, value, onChange }) => {
 						pt={8}
 						pb={12}
 						px={8}
+						pr={20}
 						placeholder="0"
-						defaultValue={value.currency === 0 ? "" : value.currency}
+						value={inputValue}
 						onChange={(e) => {
 							const { value } = e.target;
-							onChange(value === "" ? 0 : Number(value));
+							handleChange(value);
 						}}
 						border="none"
 						fontSize="2xl"
 						isDisabled={!isEditable}
 						backgroundColor={!isEditable && "gray.200"}
 					/>
-					<h6 className="absolute z-20 bottom-0 left-0 ml-8 mb-3 text-gray-600 text-sm">
+					<h6 className="absolute z-20 bottom-0 left-0 ml-8 mb-3 text-gray-600 text-sm cursor-not-allowed">
 						${formatCurrency.methods.formatNumber(value.subCurrency.toFixed(2))}
 					</h6>
 				</InputGroup>
-				{/* <div className="flex flex-col ml-6">
-			<input
-				type="number"
-				placeholder="0"
-				defaultValue={value.currency === 0 ? "" : value.currency}
-				onChange={(e) => {
-					const { value } = e.target;
-					onChange(value === "" ? 0 : Number(value));
-				}}
-				className="w-24 text-2xl p-0 outline-none"
-			/>
-			<h6 className="text-gray-600 text-sm">${value.subCurrency}</h6> 
-		</div> */}
-				{/* <div className="flex-center">
-			<div className="px-5 py-4 rounded-r-full border-l border-gray-200">
-				<div className="flex items-center relative text-xl">
-					<span>KSM</span>
-				</div>
 			</div>
-		</div> */}
-			</div>
-			{bonded && (
+			{(bonded && (
 				<button
 					className="mt-4 py-2 px-4 shadow-custom rounded-full text-sm border border-gray-200"
 					onClick={() => {
+						if (isEditable) {
+							handleChange(bonded);
+						}
 						setIsEditable(!isEditable);
 					}}
 				>
 					{isEditable ? "Use Currently Bonded Amount" : "Use Custom Amount"}
 				</button>
-			)}
+			)) ||
+				""}
 		</div>
 	);
 };
@@ -141,8 +158,7 @@ const AmountInput = ({ value, bonded, onChange }) => {
 					onChange={onChange}
 				/>
 			): ( */}
-			<AmountInputDefault value={value} onChange={onChange} />
-			{/* )} */}
+			<AmountInputDefault value={value} bonded={bonded} onChange={onChange} />
 		</div>
 	);
 };

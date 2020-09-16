@@ -2,7 +2,7 @@ import { ConsentGate, MetomicProvider } from "@metomic/react";
 import * as Sentry from "@sentry/node";
 
 import { ThemeProvider, theme } from "@chakra-ui/core";
-import "../styles/index.css";
+import "../styles/index.scss";
 
 const customTheme = {
 	...theme,
