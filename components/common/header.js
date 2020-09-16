@@ -78,7 +78,7 @@ const Header = ({ isBase }) => {
 			/>
 			<Link href="/">
 				<a className="flex items-center">
-					<Image src="images/yieldscan-logo.svg" alt="YieldScan Logo" />
+					<Image src="/images/yieldscan-logo.svg" alt="YieldScan Logo" />
 					<span className="ml-2">YieldScan</span>
 				</a>
 			</Link>
