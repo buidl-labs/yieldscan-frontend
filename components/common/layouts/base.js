@@ -8,22 +8,12 @@ const Header = dynamic(
 const withBaseLayout = (children) => {
 	return () => (
 		<div>
-			<Header />
-			<div className="dashboard-content flex">
-				<div className="h-full w-full">
+			<Header isBase />
+			<div className="flex">
+				<div className="min-h-full h-fit-content w-full">
 					{children()}
 				</div>
 			</div>
-			<style jsx>{`
-				.dashboard-content {
-					height: calc(100vh - 4rem);
-					animation: fadein 100ms;
-				}
-				@keyframes fadein {
-					from { opacity: 0; transform: scale(0.7); }
-					to   { opacity: 1; transform: scale(1); }
-				}
-			`}</style>
 		</div>
 	);
 };

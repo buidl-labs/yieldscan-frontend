@@ -7,7 +7,7 @@ import {
 	ModalHeader,
 	Spinner,
 	useToast,
-	Button
+	Button,
 } from "@chakra-ui/core";
 import withSlideIn from "@components/common/withSlideIn";
 import { useAccounts, usePolkadotApi } from "@lib/store";
@@ -15,6 +15,7 @@ import { useState, useEffect } from "react";
 import { CheckCircle, Circle } from "react-feather";
 import { encodeAddress, decodeAddress } from "@polkadot/util-crypto";
 import editController from "@lib/polkadot/edit-controller";
+import Identicon from "@components/common/Identicon";
 
 const EditControllerModal = withSlideIn(({ styles, close }) => {
 	const toast = useToast();
@@ -25,17 +26,65 @@ const EditControllerModal = withSlideIn(({ styles, close }) => {
 	const [editLoading, setEditLoading] = useState(false);
 
 	useEffect(() => {
-		apiInstance.query.staking.bonded(stashAccount.address).then(account => {
-			const address = account.value.toString();
-			const substrateAddress = encodeAddress(decodeAddress(address), 42);
-			setSelected(substrateAddress);
-		}).catch((error) => {
-			// console.log(error);
-			alert('Something went wrong, please reload!');
-		}).finally(() => {
-			setLoading(false);
-		});
+		apiInstance.query.staking
+			.bonded(stashAccount.address)
+			.then((account) => {
+				if (account.isSome) {
+					const address = account.value.toString();
+					const substrateAddress = encodeAddress(decodeAddress(address), 42);
+					setSelected(substrateAddress);
+				}
+			})
+			.catch((error) => {
+				alert("Something went wrong, please reload!");
+			})
+			.finally(() => {
+				setLoading(false);
+			});
 	}, []);
+
+	useEffect(() => {
+		// setIsFilteringAccounts(true);
+		if (accounts && accounts.length > 0) {
+			const api = apiInstance;
+			const queries = accounts.map((account) => [
+				api.query.staking.ledger,
+				account.address,
+			]);
+
+			api
+				.queryMulti(queries, async (queryResults) => {
+					const ledgerArray = await queryResults;
+					const accountLedgers = accounts.map((account, index) => ({
+						account,
+						ledger: ledgerArray[index],
+					}));
+					const filteredAccounts = accountLedgers.filter(
+						({ account: { address }, ledger }) => {
+							const encodedAddress = encodeAddress(
+								decodeAddress(address.toString()),
+								2
+							);
+							return (
+								ledger &&
+								((ledger.value.stash &&
+									ledger.value.stash.toString() === encodedAddress) ||
+									ledger.isNone)
+							);
+						}
+					);
+					const parsedFilteredAccounts = filteredAccounts.map(
+						({ account }) => account
+					);
+					// setFilteredAccounts(parsedFilteredAccounts);
+					// setIsFilteringAccounts(false);
+				})
+
+				.catch((err) => {
+					throw err;
+				});
+		}
+	}, [accounts]);
 
 	const updateController = () => {
 		setEditLoading(true);
@@ -44,34 +93,34 @@ const EditControllerModal = withSlideIn(({ styles, close }) => {
 		editController(newControllerId, stashId, apiInstance, {
 			onEvent: ({ message }) => {
 				toast({
-					title: 'Info',
+					title: "Info",
 					description: message,
-					status: 'info',
+					status: "info",
 					duration: 3000,
-					position: 'top-right',
+					position: "top-right",
 					isClosable: true,
 				});
 			},
 			onFinish: (failed, message) => {
 				toast({
-					title: failed ? 'Failure' : 'Success',
+					title: failed ? "Failure" : "Success",
 					description: message,
-					status: failed ? 'error' : 'success',
+					status: failed ? "error" : "success",
 					duration: 3000,
-					position: 'top-right',
+					position: "top-right",
 					isClosable: true,
 				});
 				setEditLoading(false);
 				close();
 			},
-		}).catch(error => {
+		}).catch((error) => {
 			setEditLoading(false);
 			toast({
-				title: 'Error',
+				title: "Error",
 				description: error.message,
-				status: 'error',
+				status: "error",
 				duration: 3000,
-				position: 'top-right',
+				position: "top-right",
 				isClosable: true,
 			});
 		});
@@ -80,37 +129,51 @@ const EditControllerModal = withSlideIn(({ styles, close }) => {
 	return (
 		<Modal isOpen={true} onClose={close} isCentered>
 			<ModalOverlay />
-			<ModalContent rounded="lg" maxWidth="40rem" height="36rem" {...styles}>
+			<ModalContent rounded="lg" maxWidth="40rem" {...styles} py={4}>
 				<ModalHeader>
-				<h1>Edit Controller</h1>
+					<h3 className="px-3 text-2xl text-left self-start">
+						Edit Controller
+					</h3>
 				</ModalHeader>
-				<ModalCloseButton onClick={close} />
+				<ModalCloseButton
+					onClick={close}
+					boxShadow="0 0 0 0 #fff"
+					color="gray.400"
+					backgroundColor="gray.100"
+					rounded="1rem"
+					mt={4}
+					mr={4}
+				/>
 				<ModalBody>
 					{loadingAccount ? (
 						<div className="flex-center flex-col my-auto">
 							<Spinner size="lg" />
-							<span className="mt-5 text-sm text-gray-700">Fetching your current controller...</span>
+							<span className="mt-8 text-sm text-gray-700">
+								Fetching your current controller...
+							</span>
 						</div>
 					) : (
-						<div className="px-20 py-5">
-							<h3 className="text-xl">Select Controller Account</h3>
-							<div className="mt-4 overflow-y-scroll text-sm accounts-container">
-								{accounts.map(account => (
+						<div className="px-8 py-5">
+							{/* <h3 className="text-xl">Select Controller Account</h3> */}
+							<div className="mt-1 w-full px-5 py-2 overflow-y-scroll text-sm accounts-container">
+								{accounts.map((account) => (
 									<div
 										key={account.address}
 										className={`
-											flex items-center rounded-lg border-2 border-teal-500 cursor-pointer px-3 py-2 mb-2
-											${selectedAccount === account.address ? 'text-white bg-teal-500' : 'text-gray-600'}
+											flex items-center rounded-lg border-1 border-gray-200 ${
+												selectedAccount === account.address
+													? "border-teal-500 border-2"
+													: "border-2 transform hover:scale-105"
+											} cursor-pointer px-3 py-3 mb-2 text-gray-600
+								transition-all duration-300 ease-in-out
 										`}
 										onClick={() => setSelected(account.address)}
 									>
-										{selectedAccount === account.address ? (
-											<CheckCircle className="mr-2" />
-										) : (
-											<Circle className="mr-2" />
-										)}
-										<div className="flex flex-col">
-											<span>{account.meta.name}</span>
+										<Identicon address={account.address} size="3rem" />
+										<div className="ml-2 flex flex-col">
+											<p className="text-gray-800 text-base">
+												{account.meta.name}
+											</p>
 											<p className="text-xs">{account.address}</p>
 										</div>
 									</div>

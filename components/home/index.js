@@ -1,49 +1,70 @@
-import { useContext, useState, useEffect, useRef } from "react";
-import stake from "@lib/stake";
-import axios from "@lib/axios";
+import { Input } from "@chakra-ui/core";
+import Footer from "@components/common/footer";
+import { useTransaction } from "@lib/store";
+import { useRouter } from "next/router";
+import SocialProofStats from "./SocialProofStats";
 
 window.setImmediate = (cb) => cb();
 
 const HomePage = () => {
-	const [validators, setValidators] = useState([]); // best validators set
-	const [estimatedReward, setEstimatedReward] = useState('');
+	const router = useRouter();
+	const { setStakingAmount } = useTransaction();
+	const [inputValue, setInputValue] = React.useState();
 
-	const amountInput = useRef();
-
-	useEffect(() => {
-		// axios.get('/maxyieldset').then(({ data }) => setValidators(data));
-	}, []);
-
-	const calculateReward = () => {
-		const amount = amountInput.current.value / validators.length;
-		let totalReward = 0;
-
-		validators.forEach(v => {
-			const stakeFraction = amount / (amount + v.totalStake);
-			const reward = (
-				v.estimatedPoolReward - (
-					(v.commission * v.estimatedPoolReward) / 100)
-				) * stakeFraction;
-			totalReward += reward;
-		});
-
-		setEstimatedReward(totalReward);
+	const handleChange = (value) => {
+		setInputValue(value);
 	};
 
+	React.useEffect(() => {
+		setStakingAmount(null);
+	}, []);
 	return (
-		<div className="m-10">
-			<h1 className="text-5xl text-black font-black">
-				Welcome to YieldScan!
-			</h1>
-			<div className="mt-10 shadow p-5">
-				<input type="number" className="mr-5 p-1" placeholder="Staked Amount" ref={amountInput} />
-				<button className="hover:text-white hover:bg-black p-2 rounded transition duration-200" onClick={calculateReward}>
-					Show me estimated reward
-				</button>
-				<div className="text-2xl font-black text-gray-600 mt-6" hidden={estimatedReward === ''}>
-					You earn {estimatedReward} KSM 💸
-				</div>
+		<div className="pt-20 lg:pt-24 xl:pt-32 w-full min-h-full bg-landing px-4 sm:px-8 md:px-12 lg:px-20 xl:px-32 flex flex-col items-center">
+			<div className="w-full max-w-65-rem">
+				<h1 className="text-5xl text-black font-black">
+					Maximize your yield on staking.
+				</h1>
+				<form
+					className="flex max-w-48-rem items-center mt-8 flex-wrap"
+					onSubmit={(e) => {
+						e.preventDefault();
+						setStakingAmount(inputValue);
+						router.push({ pathname: "/reward-calculator" });
+					}}
+				>
+					<Input
+						type="number"
+						step="any"
+						rounded="md"
+						py={6}
+						px={8}
+						my={2}
+						mr={4}
+						maxW={500}
+						placeholder="Enter the amount in KSM that you want to invest"
+						value={inputValue || ""}
+						onChange={(e) => {
+							const { value } = e.target;
+							handleChange(value);
+						}}
+						variant="filled"
+						isRequired
+					/>
+					<button
+						className="bg-teal-500 text-white rounded-md px-8 py-4 shadow-teal min-w-max-content"
+						onClick={onsubmit}
+					>
+						Calculate Returns
+					</button>
+				</form>
 			</div>
+			<SocialProofStats />
+			<img
+				src="/images/web3foundation_grants_badge_black.png"
+				alt="Web3 Foundation Grants Badge"
+				width="1000px"
+			/>
+			<Footer />
 		</div>
 	);
 };

@@ -34,7 +34,7 @@ class Circleandline extends React.Component {
       '......' +
       this.props.nomId.toString().slice(-5);
 
-    let nombonded = 'Bonded: ' + this.props.stake.toString().slice(0, 7) + ' KSM';
+    const nombonded = this.props.stake !== (undefined || null) ? 'Bonded: ' + this.props.stake.toString().slice(0, 7) + ' KSM': undefined;
 
     let x1 = this.props.x + 15;
     let y1 = this.props.y - 8;
@@ -79,7 +79,7 @@ class Circleandline extends React.Component {
         {this.state.showNominatorAddress && (
           <Text text={nomaddress} x={x1 + 15} y={y1 + 10} fill="#FFFFFF" fontSize={16} fontStyle={'bold'} />
         )}
-        {this.state.showNominatorAddress && (
+        {this.state.showNominatorAddress && this.props.isElected && (
           <Text text={nombonded} x={x1 + 15} y={y1 + 35} fill="#B2BECC" />
         )}
       </React.Fragment>
