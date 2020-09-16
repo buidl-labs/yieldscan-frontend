@@ -173,17 +173,15 @@ const Transaction = ({
 					</div>
 				</>
 			)}
-			{!compounding && (
-				<button
-					className={`
+			<button
+				className={`
 					mt-4 px-3 py-px text-gray-600 border border-gray-300 font-semibold rounded text-sm hover:bg-gray-200 transition duration-200
 				`}
-					hidden={editController}
-					onClick={() => setEditController(true)}
-				>
-					Edit Controller
-				</button>
-			)}
+				hidden={editController}
+				onClick={() => setEditController(true)}
+			>
+				Edit Controller
+			</button>
 
 			<EditControllerModal
 				isOpen={editController}
