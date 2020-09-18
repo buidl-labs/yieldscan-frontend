@@ -46,5 +46,9 @@
 		"git-cz": "^4.7.1",
 		"postcss-preset-env": "^6.7.0",
 		"tailwindcss": "^1.8.10"
+	},
+	"resolutions": {
+		"next/**/node-fetch": "^2.6.1",
+		"@metomic/react/**/node-fetch": "^2.6.1"
 	}
 }
