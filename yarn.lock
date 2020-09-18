@@ -318,7 +318,7 @@
     "@babel/traverse" "^7.10.4"
     "@babel/types" "^7.10.4"
 
-"@babel/highlight@^7.10.4":
+"@babel/highlight@^7.10.4", "@babel/highlight@^7.8.3":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/highlight/-/highlight-7.10.4.tgz#7d1bdfd65753538fabe6c38596cdb76d9ac60143"
   integrity sha512-i6rgnR/YgPEQzZZnbTHHuZdlE8qyoBNalD6F+q4vAFlcMEcqmkoG+mPqJYJCo63qPf74+Y1UZsl3l6f7/RIkmA==
@@ -2060,6 +2060,15 @@ amplitude-js@^7.1.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/amplitude-js/-/amplitude-js-7.1.1.tgz#3e3282be836aa4245eb2d6e52f16ecbb81c0b6d2"
   integrity sha512-grEQf0p4V/q4aIcGYdGEJ6EquBXu91R/RorsYTQvh9O6sxjpwHf5vSDICQJq7twEElBrSHoSF77GUvC9ZTBj4A==
+  dependencies:
+    "@amplitude/ua-parser-js" "0.7.24"
+    blueimp-md5 "^2.10.0"
+    query-string "5"
+
+amplitude-js@^7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/amplitude-js/-/amplitude-js-7.1.0.tgz#3b7fb545d366154328a323996f96633ed040f5c9"
+  integrity sha512-X2Jf4piKGhoPcGow1AZAw73s5tzP6OZLiUkLsnus6Mrx7zZwmCsxIuvhzB8VRnNGUE71m1zemSu0gEmf8A4qnw==
   dependencies:
     "@amplitude/ua-parser-js" "0.7.24"
     blueimp-md5 "^2.10.0"
@@ -4555,6 +4564,13 @@ lru-cache@^5.1.1:
   dependencies:
     yallist "^3.0.2"
 
+lru-cache@6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-6.0.0.tgz#6d6fe6570ebd96aaf90fcad1dafa3b2566db3a94"
+  integrity sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==
+  dependencies:
+    yallist "^4.0.0"
+
 lru-queue@0.1:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/lru-queue/-/lru-queue-0.1.0.tgz#2738bd9f0d3cf4f84490c5736c48699ac632cda3"
@@ -5773,6 +5789,13 @@ prop-types@15.5.8:
   dependencies:
     fbjs "^0.8.9"
 
+prop-types@15.5.8:
+  version "15.5.8"
+  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.5.8.tgz#6b7b2e141083be38c8595aa51fc55775c7199394"
+  integrity sha1-a3suFBCDvjjIWVqlH8VXdccZk5Q=
+  dependencies:
+    fbjs "^0.8.9"
+
 prop-types@15.7.2, prop-types@^15.5.8, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
@@ -6292,6 +6315,11 @@ schema-utils@^1.0.0:
     ajv "^6.1.0"
     ajv-errors "^1.0.0"
     ajv-keywords "^3.1.0"
+
+scryptsy@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/scryptsy/-/scryptsy-2.1.0.tgz#8d1e8d0c025b58fdd25b6fa9a0dc905ee8faa790"
+  integrity sha512-1CdSqHQowJBnMAFyPEBRfqag/YP9OF394FV+4YREIJX4ljD7OxvQRDayyoyyCk+senRjSkP6VnUNQmVQqB6g7w==
 
 scryptsy@^2.1.0:
   version "2.1.0"
