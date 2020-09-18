@@ -42,10 +42,8 @@ const CouncilMembers = () => {
 		return (
 			<div className="flex-center w-full h-full">
 				<div className="flex-center flex-col">
-					<Spinner size="xl" color="teal.500" thickness="4px" />
-					<span className="text-sm text-gray-600 mt-5">
-						Fetching council members...
-					</span>
+					<Spinner size="xl" />
+					<span className="text-sm text-gray-600 mt-5">Fetching council members...</span>
 				</div>
 			</div>
 		);
@@ -54,16 +52,16 @@ const CouncilMembers = () => {
 	return (
 		<div  className="px-10 py-10">
 			<div className="flex justify-between">
-				<h1 className="text-2xl text-gray-900 font-semibold">{ selectedTab === Tabs.COUNCIL_MEMBERS ? "Council Members" : "Runner ups"}</h1>
-				<div className="flex items-center rounded-full border border-gray-200">
+				<h1 className="text-2xl text-gray-600 font-semibold">Council Members</h1>
+				<div className="flex items-center rounded-xl border border-gray-400">
 					<span
-						className={`px-4 py-2 cursor-pointer rounded-full ${selectedTab === Tabs.COUNCIL_MEMBERS ? 'text-white bg-teal-500' : 'text-gray-600'}`}
+						className={`px-3 py-2 cursor-pointer rounded-xl ${selectedTab === Tabs.COUNCIL_MEMBERS ? 'text-white bg-teal-500' : 'text-gray-600'}`}
 						onClick={() => setSelectedTab(Tabs.COUNCIL_MEMBERS)}
 					>
 						Council Members
 					</span>
 					<span
-						className={`px-4 py-2 cursor-pointer  rounded-full ${selectedTab === Tabs.RUNNER_UPS ? 'text-white bg-teal-500' : 'text-gray-600'}`}
+						className={`px-3 py-2 cursor-pointer  rounded-xl ${selectedTab === Tabs.RUNNER_UPS ? 'text-white bg-teal-500' : 'text-gray-600'}`}
 						onClick={() => setSelectedTab(Tabs.RUNNER_UPS)}
 					>
 						Runner Ups

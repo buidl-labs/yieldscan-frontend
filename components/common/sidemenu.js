@@ -1,29 +1,26 @@
-import { Home, UserCheck, Users, Sliders, Globe } from "react-feather";
-import { useRouter } from "next/router";
-import Link from "next/link";
-import Routes from "@lib/routes";
+import { Home, UserCheck, Users, Sliders, Globe } from 'react-feather';
+import { useRouter } from 'next/router';
+import Routes from '@lib/routes';
 
-const MenuOption = ({ label, Icon, selected = false, href }) => {
+const MenuOption = ({ label, Icon, selected = false, onClick }) => {
 	return (
-		<Link href={href}>
-			<a
+		<div className={`rounded-full mx-1 px-5 py-1 mb-2 ${selected && 'teal-500-light py-2'}`}>
+			<button
 				className={`
-					block
-					${!selected && "hover:text-teal-500 hover:ml-2"}
-					text-lg
-					rounded-full 
-					px-5
-					py-2
-					mb-2 
-					transition-all
-					duration-300 ease-in-out
-					${selected ? "text-teal-500 bg-teal-500 bg-opacity-22" : "text-gray-600"}
+					flex-center font-light text-xl
+					${selected ? 'text-teal-500' : 'text-gray-600'}
 				`}
+				onClick={onClick}
 			>
-				<Icon size="1.125rem" className="mr-2 mb-px inline" />
-				<span>{label}</span>
-			</a>
-		</Link>
+				<Icon size="1.125rem" className="mr-2 mb-px" />
+				<span className="font-semibold">{label}</span>
+			</button>
+			<style jsx>{`
+				.teal-500-light {
+					background: rgba(43, 202, 202, 0.22);
+				}
+			`}</style>
+		</div>
 	);
 };
 
@@ -36,31 +33,31 @@ const SideMenu = () => {
 				label="Overview"
 				Icon={Home}
 				selected={router.pathname === Routes.OVERVIEW}
-				href={Routes.OVERVIEW}
+				onClick={() => router.push(Routes.OVERVIEW)}
 			/>
 			<MenuOption
 				label="Calculator"
 				Icon={Sliders}
 				selected={router.pathname === Routes.CALCULATOR}
-				href={Routes.CALCULATOR}
+				onClick={() => router.push(Routes.CALCULATOR)}
 			/>
 			<MenuOption
 				label="Validators"
 				Icon={UserCheck}
 				selected={router.pathname === Routes.VALIDATORS}
-				href={Routes.VALIDATORS}
+				onClick={() => router.push(Routes.VALIDATORS)}
 			/>
 			<MenuOption
 				label="Nominators"
 				Icon={Users}
 				selected={router.pathname === Routes.NOMINATORS}
-				href={Routes.NOMINATORS}
+				onClick={() => router.push(Routes.NOMINATORS)}
 			/>
 			<MenuOption
 				label="Governance"
 				Icon={Globe}
 				selected={router.pathname === Routes.GOVERNANCE}
-				href={Routes.GOVERNANCE}
+				onClick={() => router.push(Routes.GOVERNANCE)}
 			/>
 		</div>
 	);

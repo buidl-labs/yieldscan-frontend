@@ -10,32 +10,26 @@ import EditCouncilMemberProfileModal from "./EditCouncilMemberProfileModal";
 import { useAccounts } from "@lib/store";
 import { useWalletConnect } from "@components/wallet-connect";
 import CouncilViz from "./council-viz/CouncilViz";
-import TeamMembers from "@components/validator-profile/TeamMembers";
-import TransparencyScoreModal from "@components/validator-profile/TransparencyScoreModal";
 
 const ProfileTabsConfig = {
 	// ACTIVITY: 'Activity',
-	VISUALISATION: "Visualisation",
-	TEAM: "Team",
+	VISUALISATION: 'Visualisation',
 };
 
 const CouncilMemberProfile = () => {
 	const router = useRouter();
 	const { query: { id: councilMemberAccountId } } = router;
-	const { stashAccount, accountInfoLoading } = useAccounts();
+	const { stashAccount } = useAccounts();
 	const { toggle: toggleWalletConnect } = useWalletConnect();
 
 	const [error, setError] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [memberInfo, setMemberInfo] = useState();
 	const [selectedTab, setSelectedTab] = useState(ProfileTabsConfig.VISUALISATION);
-
-	const [editProfileOpen, setEditProfileOpen] = useState();
-
 	const {
-		isOpen: scoreModalOpen,
-		onClose: closeScoreModal,
-		onToggle: toggleScoreModal,
+		isOpen: editProfileModalOpen,
+		onClose: closeEditProfileModal,
+		onToggle: toggleEditProfileModal,
 	} = useDisclosure();
 
 	const initData = () => {
@@ -53,15 +47,11 @@ const CouncilMemberProfile = () => {
 		initData();
 	}, []);
 
-	if (loading || accountInfoLoading) {
+	if (loading) {
 		return (
-			<div className="flex-center w-full h-full">
-				<div className="flex-center flex-col">
-					<Spinner size="xl" color="teal.500" thickness="4px" />
-					<span className="text-sm text-gray-600 mt-5">
-						Fetching profile...
-					</span>
-				</div>
+			<div className="flex-center flex-col mt-40">
+				<Spinner className="text-gray-700 mb-2" />
+				<span className="text-gray-600 text-sm">Fetching Council Member Profile...</span>
 			</div>
 		);
 	}
@@ -77,72 +67,48 @@ const CouncilMemberProfile = () => {
 
 	return (
 		<div className="px-16 py-16">
-			{editProfileOpen ? (
-				<>
-					<TransparencyScoreModal
-						transparencyScore={memberInfo.transparencyScores}
-						isOpen={scoreModalOpen}
-						onClose={closeScoreModal}
-					/>
-					<EditCouncilMemberProfileModal
-						name={memberInfo.socialInfo.name}
-						stashId={councilMemberAccountId}
-						vision={get(memberInfo, "additionalInfo.vision", "")}
-						members={get(memberInfo, "additionalInfo.members")}
-						transparencyScore={memberInfo.transparencyScores}
-						onSuccess={initData}
-						isOpen={editProfileOpen}
-						toggleScoreModal={toggleScoreModal}
-						goBack={() => setEditProfileOpen(false)}
-					/>
-				</>
-			) : (
-				<>
-					<CouncilMemberInfoHeader
-						name={memberInfo.name}
-						vision={get(memberInfo, "additionalInfo.vision", "")}
-						stashAccount={stashAccount}
-						socialInfo={memberInfo.socialInfo}
-						transparencyScore={memberInfo.transparencyScores}
-						stashId={councilMemberAccountId}
-						toggleWalletConnect={toggleWalletConnect}
-						openEditProfile={() => setEditProfileOpen(true)}
-					/>
+			<EditCouncilMemberProfileModal
+				name={memberInfo.socialInfo.name}
+				accountId={councilMemberAccountId}
+				isOpen={editProfileModalOpen}
+				onClose={closeEditProfileModal}
+				onSuccess={initData}
+			/>
+		
+			<CouncilMemberInfoHeader
+				name={memberInfo.name}
+				vision={get(memberInfo, 'additionalInfo.vision', '')}
+				stashAccount={stashAccount}
+				socialInfo={memberInfo.socialInfo}
+				accountId={councilMemberAccountId}
+				toggleWalletConnect={toggleWalletConnect}
+				openEditProfile={toggleEditProfileModal}
+			/>
 
-					<div className="my-5">
-						<div className="flex items-center justify-between">
-							<ProfileTabs
-								tabs={ProfileTabsConfig}
-								selectedTab={selectedTab}
-								setSelectedTab={setSelectedTab}
-							/>
-						</div>
-					</div>
+			<div className="my-5">
+				<div className="flex items-center justify-between">
+					<ProfileTabs
+						tabs={ProfileTabsConfig}
+						selectedTab={selectedTab}
+						setSelectedTab={setSelectedTab}
+					/>
+				</div>
+			</div>
 
-					<div className="flex w-full">
-						<div className="w-2/3 mr-4">
-							{selectedTab === ProfileTabsConfig.TEAM && (
-								<TeamMembers
-									members={get(memberInfo, "additionalInfo.members", [])}
-								/>
-							)}
-							{selectedTab === ProfileTabsConfig.VISUALISATION && (
-								<CouncilViz
-									memberInfo={memberInfo}
-									networkName="KUSAMA COUNCIL"
-								/>
-							)}
-						</div>
-						<div className="w-1/3 flex flex-col">
-							<CouncilMemberKeyStats
-								voters={get(memberInfo, "backersInfo.length", 0)}
-								backingAmount={memberInfo.backing}
-								totalBalance={memberInfo.totalBalance}
-							/>
-						</div>
-					</div>
-				</>
-			)}
+			<div className="flex w-full">
+				<div className="w-2/3 mr-4">
+					{selectedTab === ProfileTabsConfig.VISUALISATION && (
+						<CouncilViz memberInfo={memberInfo} networkName="KUSAMA COUNCIL" />
+					)}
+				</div>
+				<div className="w-1/3 flex flex-col">
+					<CouncilMemberKeyStats
+						voters={get(memberInfo, 'backersInfo.length', 0)}
+						backingAmount={memberInfo.backing}
+						totalBalance={memberInfo.totalBalance}
+					/>
+				</div>
+			</div>
 		</div>
 	);
 };
