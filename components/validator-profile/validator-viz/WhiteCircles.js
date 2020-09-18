@@ -30,7 +30,6 @@ class WhiteCircles extends React.Component {
           nomId={element.nomId}
           stake={element.stake}
           angle={angle}
-          isElected={this.props.valinfo.stakingInfo.isElected}
           radius={this.props.r}
           width={this.props.width}
         />

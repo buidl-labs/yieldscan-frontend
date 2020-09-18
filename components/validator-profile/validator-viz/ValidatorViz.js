@@ -99,8 +99,6 @@ class ValidatorViz extends React.Component {
                 points={[width / 2, height - 185, width / 2, height]}
                 fill="#35475C"
                 strokeWidth={2}
-                dash={[5]}
-                dashEnabled={!this.props.validatorData.stakingInfo.isElected}
                 stroke="#35475C"
                 opacity={opacity}
               />

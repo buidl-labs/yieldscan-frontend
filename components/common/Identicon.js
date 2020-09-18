@@ -18,7 +18,7 @@ const Identicon = ({ address, size = '2.5rem', onClick = noop, showToast = true 
 	};
 
 	return (
-		<div onClick={ev => ev.stopPropagation()} className="-mb-1">
+		<div onClick={ev => ev.stopPropagation()}>
 			<BaseIdenticon
 				size={size}
 				value={address}
