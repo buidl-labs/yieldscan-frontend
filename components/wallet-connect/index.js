@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { create } from "zustand";
+import create from "zustand";
 import { ChevronLeft } from "react-feather";
 import {
 	Modal,
