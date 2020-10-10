@@ -20,7 +20,7 @@
 		"@polkadot/ui-keyring": "^0.58.1",
 		"@polkadot/util-crypto": "^3.4.1",
 		"@sentry/browser": "^5.24.1",
-		"@sentry/node": "^5.24.1",
+		"@sentry/node": "^5.24.2",
 		"@sentry/webpack-plugin": "^1.11.1",
 		"@zeit/next-source-maps": "0.0.4-canary.1",
 		"amplitude-js": "^7.1.1",
