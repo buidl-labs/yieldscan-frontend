@@ -1,6 +1,11 @@
 import dynamic from "next/dynamic";
 import SideMenu from "@components/common/sidemenu";
-import { useAccounts, usePolkadotApi, useTransaction } from "@lib/store";
+import {
+	useAccounts,
+	usePolkadotApi,
+	useTransaction,
+	useSelectedNetwork,
+} from "@lib/store";
 import createPolkadotAPIInstance from "@lib/polkadot-api";
 import convertCurrency from "@lib/convert-currency";
 import { isNil, pick } from "lodash";
@@ -16,6 +21,7 @@ const Header = dynamic(
 
 const withDashboardLayout = (children) => {
 	const { setApiInstance } = usePolkadotApi();
+	const { selectedNetwork, setSelectedNetwork } = useSelectedNetwork();
 	const {
 		accounts,
 		setFilteredAccounts,
@@ -40,7 +46,7 @@ const withDashboardLayout = (children) => {
 	useEffect(() => {
 		setIsFilteringAccounts(true);
 		if (accounts && accounts.length > 0) {
-			createPolkadotAPIInstance()
+			createPolkadotAPIInstance(selectedNetwork)
 				.then(async (api) => {
 					setApiInstance(api);
 					const queries = accounts.map((account) => [
@@ -77,7 +83,7 @@ const withDashboardLayout = (children) => {
 				})
 				.catch((err) => {
 					throw err;
-				})
+				});
 		}
 	}, [accounts]);
 
@@ -86,7 +92,7 @@ const withDashboardLayout = (children) => {
 		// when `stashAccount` is selected, fetch ledger for the account and save it.
 		if (stashAccount) {
 			setAccountInfoLoading(true);
-			createPolkadotAPIInstance().then(async (api) => {
+			createPolkadotAPIInstance(selectedNetwork).then(async (api) => {
 				setApiInstance(api);
 
 				const { address } = stashAccount;

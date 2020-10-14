@@ -1,6 +1,7 @@
 import { Input } from "@chakra-ui/core";
 import Footer from "@components/common/footer";
-import { useTransaction } from "@lib/store";
+import { useTransaction, useSelectedNetwork } from "@lib/store";
+import { getNetworkInfo, networks } from "../../yieldscan.config";
 import { useRouter } from "next/router";
 import SocialProofStats from "./SocialProofStats";
 
@@ -8,6 +9,8 @@ window.setImmediate = (cb) => cb();
 
 const HomePage = () => {
 	const router = useRouter();
+	const { selectedNetwork } = useSelectedNetwork();
+	const networkInfo = getNetworkInfo(selectedNetwork);
 	const { setStakingAmount } = useTransaction();
 	const [inputValue, setInputValue] = React.useState();
 
@@ -41,7 +44,7 @@ const HomePage = () => {
 						my={2}
 						mr={4}
 						maxW={500}
-						placeholder="Enter the amount in KSM that you want to invest"
+						placeholder={`Enter the amount in ${networkInfo.denom} that you want to invest`}
 						value={inputValue || ""}
 						onChange={(e) => {
 							const { value } = e.target;
@@ -58,7 +61,7 @@ const HomePage = () => {
 					</button>
 				</form>
 			</div>
-			<SocialProofStats />
+			<SocialProofStats networkName={networkInfo.name} />
 			<img
 				src="/images/web3foundation_grants_badge_black.png"
 				alt="Web3 Foundation Grants Badge"

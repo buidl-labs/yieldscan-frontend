@@ -14,7 +14,7 @@ const StatCard = ({ stat, description, subText }) => {
 	);
 };
 
-const SocialProofStats = () => {
+const SocialProofStats = ({ networkName }) => {
 	const [error, setError] = React.useState(false);
 	const [loading, setLoading] = React.useState(true);
 	const [nominatorsData, setNominatorsData] = React.useState([]);
@@ -75,7 +75,7 @@ const SocialProofStats = () => {
 						`$${Math.floor(totalAmountStakedSubCurrency / 10 ** 6)}M+`
 					)
 				}
-				description="Invested in staking on Kusama"
+				description={`Invested in staking on ${networkName}`}
 				subText={
 					<div className="flex items-center">
 						<div className="blob red h-fit-content">

@@ -115,8 +115,8 @@ const Transaction = ({
 	// TODO: stakingAmount subCurrency version
 	const stakingAmount = get(transactionState, "stakingAmount", 0);
 
-	console.log("compounding");
-	console.log(compounding);
+	// console.log("compounding");
+	// console.log(compounding);
 
 	return (
 		<div className="mt-10">
