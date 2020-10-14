@@ -16,6 +16,8 @@ import {
 	useTransaction,
 	useHeaderLoading,
 	usePaymentPopover,
+	useSelectedNetwork,
+	useValidatorData,
 } from "@lib/store";
 import { PaymentPopover } from "@components/new-payment";
 import { get, isNil, mapValues, keyBy, cloneDeep, debounce } from "lodash";
@@ -35,6 +37,7 @@ import Routes from "@lib/routes";
 import { trackEvent, Events } from "@lib/analytics";
 import convertCurrency from "@lib/convert-currency";
 import formatCurrency from "@lib/format-currency";
+import { getNetworkInfo } from "yieldscan.config";
 
 const trackRewardCalculatedEvent = debounce((eventData) => {
 	trackEvent(Events.REWARD_CALCULATED, eventData);
@@ -42,7 +45,11 @@ const trackRewardCalculatedEvent = debounce((eventData) => {
 
 const RewardCalculatorPage = () => {
 	const router = useRouter();
+	const { selectedNetwork } = useSelectedNetwork();
+	const networkInfo = getNetworkInfo(selectedNetwork);
 
+	// console.log("networkInfo");
+	// console.log(networkInfo);
 	const { isOpen, toggle } = useWalletConnect();
 	const setTransactionState = useTransaction(
 		(state) => state.setTransactionState
@@ -78,16 +85,14 @@ const RewardCalculatorPage = () => {
 	);
 	const [selectedValidators, setSelectedValidators] = useState({});
 
-	const [validatorMap, setValidatorMap] = useState(
-		cloneDeep(previousValidatorMap)
-	); // map with low/med/high risk sets
+	const { validatorMap, setValidatorMap } = useValidatorData();
 	const [result, setResult] = useState({});
 
 	useEffect(() => {
-		convertCurrency(amount || 0).then((convertedAmount) => {
+		convertCurrency(amount || 0, networkInfo.denom).then((convertedAmount) => {
 			setSubCurrency(convertedAmount);
 		});
-	}, [amount]);
+	}, [amount, networkInfo, validatorMap]);
 
 	useEffect(() => {
 		if (get(validatorMap, risk)) {
@@ -100,27 +105,29 @@ const RewardCalculatorPage = () => {
 		if (!validatorMap) {
 			setLoading(true);
 			setHeaderLoading(true);
-			axios.get("/rewards/risk-set").then(({ data }) => {
-				/**
-				 * `mapValues(keyBy(array), 'value-key')`:
-				 * 	O(N + N) operation, using since each risk set will have maximum 16 validators
-				 */
-				const validatorMap = {
-					Low: mapValues(keyBy(data.lowriskset, "stashId")),
-					Medium: mapValues(keyBy(data.medriskset, "stashId")),
-					High: mapValues(keyBy(data.highriskset, "stashId")),
-					total: data.totalset,
-				};
+			axios
+				.get(`/${networkInfo.coinGeckoDenom}/rewards/risk-set`)
+				.then(({ data }) => {
+					/**
+					 * `mapValues(keyBy(array), 'value-key')`:
+					 * 	O(N + N) operation, using since each risk set will have maximum 16 validators
+					 */
+					const validatorMap = {
+						Low: mapValues(keyBy(data.lowriskset, "stashId")),
+						Medium: mapValues(keyBy(data.medriskset, "stashId")),
+						High: mapValues(keyBy(data.highriskset, "stashId")),
+						total: data.totalset,
+					};
 
-				setValidatorMap(validatorMap);
-				setSelectedValidators(validatorMap["Medium"]);
-				setLoading(false);
-				setHeaderLoading(false);
-			});
+					setValidatorMap(validatorMap);
+					setSelectedValidators(validatorMap["Medium"]);
+					setLoading(false);
+					setHeaderLoading(false);
+				});
 		} else {
 			console.info("Using previous validator map.");
 		}
-	}, []);
+	}, [networkInfo, validatorMap]);
 
 	useEffect(() => {
 		if (risk && timePeriodValue) {
@@ -133,7 +140,8 @@ const RewardCalculatorPage = () => {
 				timePeriodValue,
 				timePeriodUnit,
 				compounding,
-				bondedAmount
+				bondedAmount,
+				networkInfo.denom
 			)
 				.then((result) => {
 					setResult(result);
@@ -249,8 +257,8 @@ const RewardCalculatorPage = () => {
 							>
 								<AlertTitle color="red.500">Insufficient Balance</AlertTitle>
 								<AlertDescription color="red.500">
-									We cannot stake this amount since we recommend maintaining a
-									minimum balance of 0.1 KSM in your account at all times.{" "}
+									{`We cannot stake this amount since we recommend maintaining a
+									minimum balance of 0.1 ${networkInfo.denom} in your account at all times.`}{" "}
 									<Popover trigger="hover" usePortal>
 										<PopoverTrigger>
 											<span className="underline cursor-help">Why?</span>
@@ -281,13 +289,15 @@ const RewardCalculatorPage = () => {
 						>
 							Transferrable Balance:{" "}
 							{formatCurrency.methods.formatAmount(
-								Math.trunc(get(freeAmount, "currency", 0) * 10 ** 12)
+								Math.trunc(get(freeAmount, "currency", 0) * 10 ** 12),
+								networkInfo
 							)}
 						</div>
 
 						<AmountInput
 							bonded={get(bondedAmount, "currency")}
 							value={{ currency: amount, subCurrency: subCurrency }}
+							networkInfo={networkInfo}
 							onChange={setAmount}
 						/>
 					</div>
@@ -328,6 +338,7 @@ const RewardCalculatorPage = () => {
 						amount == 0
 					}
 					onWalletConnectClick={toggle}
+					networkInfo={networkInfo}
 					onPayment={onPayment}
 				/>
 				<ValidatorsList
@@ -337,6 +348,7 @@ const RewardCalculatorPage = () => {
 					selectedValidators={selectedValidators}
 					setSelectedValidators={setSelectedValidators}
 					onAdvancedSelection={onAdvancedSelection}
+					networkInfo={networkInfo}
 				/>
 			</div>
 			{isPaymentPopoverOpen && (
@@ -352,6 +364,7 @@ const RewardCalculatorPage = () => {
 					bondedAmount={bondedAmount}
 					closePaymentPopover={closePaymentPopover}
 					result={result}
+					networkInfo={networkInfo}
 				/>
 			)}
 		</div>

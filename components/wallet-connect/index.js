@@ -16,7 +16,7 @@ import ImportAccount from "./ImportAccount";
 import WalletConnected from "./WalletConnected";
 import WalletDisclaimer from "./WalletDisclaimer";
 import getPolkadotExtensionInfo from "@lib/polkadot-extension";
-import { useAccounts, usePolkadotApi } from "@lib/store";
+import { useAccounts } from "@lib/store";
 import { trackEvent, Events } from "@lib/analytics";
 
 const [useWalletConnect] = create((set) => ({
@@ -37,7 +37,6 @@ const WalletConnectStates = {
 const WalletConnectPopover = ({ styles }) => {
 	const { isOpen, close } = useWalletConnect();
 	const [ledgerLoading, setLedgerLoading] = useState(false);
-	const setApiInstance = usePolkadotApi((state) => state.setApiInstance);
 	const {
 		isFilteringAccounts,
 		filteredAccounts,

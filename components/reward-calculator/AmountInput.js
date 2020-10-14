@@ -4,7 +4,7 @@ import { useAccounts } from "@lib/store";
 import { get } from "lodash";
 import { useState, useEffect } from "react";
 
-const AmountInputDefault = ({ bonded, value, onChange }) => {
+const AmountInputDefault = ({ bonded, value, onChange, networkInfo }) => {
 	const { freeAmount, stashAccount } = useAccounts();
 	const initiallyEditable =
 		bonded === undefined ? true : bonded == 0 ? true : false;
@@ -36,15 +36,19 @@ const AmountInputDefault = ({ bonded, value, onChange }) => {
 										}`}
 										disabled={!isEditable}
 										onClick={() => {
-											const maxAmount =
-												Math.max(bonded + get(freeAmount, "currency") - 0.1, 0);
+											const maxAmount = Math.max(
+												bonded + get(freeAmount, "currency") - 0.1,
+												0
+											);
 											handleChange(maxAmount);
 										}}
 									>
 										max
 									</button>
 								)}
-								<span className="ml-2 cursor-not-allowed">KSM</span>
+								<span className="ml-2 cursor-not-allowed">
+									{networkInfo.denom}
+								</span>
 							</span>
 						}
 						rounded="full"
@@ -144,7 +148,7 @@ const AmountInputAlreadyBonded = ({ value, bonded, total, onChange }) => (
 	</div>
 );
 
-const AmountInput = ({ value, bonded, onChange }) => {
+const AmountInput = ({ value, bonded, networkInfo, onChange }) => {
 	return (
 		<div className="w-4/5">
 			{/* {get(bonded, 'currency') ? (
@@ -158,7 +162,12 @@ const AmountInput = ({ value, bonded, onChange }) => {
 					onChange={onChange}
 				/>
 			): ( */}
-			<AmountInputDefault value={value} bonded={bonded} onChange={onChange} />
+			<AmountInputDefault
+				value={value}
+				bonded={bonded}
+				onChange={onChange}
+				networkInfo={networkInfo}
+			/>
 		</div>
 	);
 };

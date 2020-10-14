@@ -23,7 +23,12 @@ const ResultCardInsight = ({
 				<PopoverTrigger>
 					<HelpCircle size="1rem" cursor="help" strokeOpacity="0.75" />
 				</PopoverTrigger>
-				<PopoverContent zIndex={50} _focus={{ outline: "none" }} bg="gray.700" border="none">
+				<PopoverContent
+					zIndex={50}
+					_focus={{ outline: "none" }}
+					bg="gray.700"
+					border="none"
+				>
 					<PopoverArrow />
 					<PopoverBody>{popoverContent}</PopoverBody>
 				</PopoverContent>
@@ -34,9 +39,7 @@ const ResultCardInsight = ({
 		) : (
 			<>
 				<h3 className="text-2xl">{value}</h3>
-				<span className="text-sm">
-					{supportValue}
-				</span>
+				<span className="text-sm">{supportValue}</span>
 			</>
 		)}
 	</div>
@@ -48,6 +51,7 @@ const ExpectedReturnsCard = ({
 	calculationDisabled,
 	onWalletConnectClick,
 	onPayment,
+	networkInfo,
 }) => {
 	const returns = {
 		currency: get(result, "returns.currency"),
@@ -72,7 +76,7 @@ const ExpectedReturnsCard = ({
 								duration={0.5}
 								decimals={3}
 								separator=","
-								suffix=" KSM"
+								suffix={` ${networkInfo.denom}`}
 								preserveValue
 							/>
 						}
@@ -112,7 +116,7 @@ const ExpectedReturnsCard = ({
 								duration={0.5}
 								decimals={3}
 								separator=","
-								suffix=" KSM"
+								suffix={` ${networkInfo.denom}`}
 								preserveValue
 							/>
 						}
@@ -166,7 +170,7 @@ const ExpectedReturnsCard = ({
 								: "opacity-100"
 						}
 					`}
-						disabled={false && (stashAccount && calculationDisabled)}
+						disabled={false && stashAccount && calculationDisabled}
 						onClick={() =>
 							stashAccount ? onPayment() : onWalletConnectClick()
 						}

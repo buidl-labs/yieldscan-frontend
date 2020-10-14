@@ -1,4 +1,10 @@
-import { useAccounts, useHeaderLoading, usePolkadotApi } from "@lib/store";
+import {
+	useAccounts,
+	useHeaderLoading,
+	usePolkadotApi,
+	useSelectedNetwork,
+	useValidatorData,
+} from "@lib/store";
 import { get, isNil } from "lodash";
 import { ChevronDown, Settings, Menu } from "react-feather";
 import {
@@ -20,19 +26,26 @@ import formatCurrency from "@lib/format-currency";
 import Routes from "@lib/routes";
 import Link from "next/link";
 import createPolkadotAPIInstance from "@lib/polkadot-api";
+import { getNetworkInfo } from "yieldscan.config";
 
 // TODO: replace this with actual global state
 const currentNetwork = "Not Kusama";
 
 const Header = ({ isBase }) => {
+	const { selectedNetwork, setSelectedNetwork } = useSelectedNetwork();
+	const { validatorMap, setValidatorMap } = useValidatorData();
+	const networkInfo = getNetworkInfo(selectedNetwork);
 	const { setApiInstance } = usePolkadotApi();
 	const { isOpen, toggle } = useWalletConnect();
 	const {
 		filteredAccounts,
 		stashAccount,
 		freeAmount,
-		setStashAccount,
 		accountInfoLoading,
+		setStashAccount,
+		setAccounts,
+		setFilteredAccounts,
+		setAccountInfoLoading,
 	} = useAccounts();
 	const { headerLoading } = useHeaderLoading();
 	const {
@@ -51,8 +64,9 @@ const Header = ({ isBase }) => {
 	const [isBonded, setIsBonded] = useState(false);
 
 	useEffect(() => {
-		if (stashAccount)
-			createPolkadotAPIInstance().then((api) => {
+		if (stashAccount) {
+			console.log("inside");
+			createPolkadotAPIInstance(networkInfo.name).then((api) => {
 				setApiInstance(api);
 				api.query.staking
 					.bonded(stashAccount.address)
@@ -63,7 +77,13 @@ const Header = ({ isBase }) => {
 						alert("Something went wrong, please reload!");
 					});
 			});
-	}, [stashAccount]);
+		}
+	}, [stashAccount, networkInfo]);
+
+	// console.log("isNetworkOpen");
+	// console.log(isNetworkOpen);
+	// console.log("stashAccount");
+	// console.log(stashAccount);
 
 	return (
 		<div
@@ -115,7 +135,8 @@ const Header = ({ isBase }) => {
 											<span className="text-gray-500 text-xs">
 												Transferrable:{" "}
 												{formatCurrency.methods.formatAmount(
-													Math.trunc(get(freeAmount, "currency", 0) * 10 ** 12)
+													Math.trunc(get(freeAmount, "currency", 0) * 10 ** 12),
+													networkInfo
 												)}
 											</span>
 										</div>
@@ -162,6 +183,104 @@ const Header = ({ isBase }) => {
 						)}
 
 						<div className="relative">
+							<Popover
+								isOpen={isNetworkOpen}
+								onClose={() => setIsNetworkOpen(false)}
+								// onOpen={() => setIsStashPopoverOpen(true)}
+							>
+								<PopoverTrigger>
+									<button
+										className="relative flex items-center rounded-full border border-gray-300 p-2 px-4 font-semibold text-gray-800 z-20"
+										onClick={() => {
+											setIsNetworkOpen(!isNetworkOpen);
+										}}
+									>
+										<img
+											src={`/images/${networkInfo.coinGeckoDenom}-logo.png`}
+											alt={`${networkInfo.coinGeckoDenom}-logo`}
+											className="mr-2 w-6"
+										/>
+										<ChevronDown size="20px" />
+									</button>
+								</PopoverTrigger>
+								<PopoverContent
+									zIndex={50}
+									maxWidth="20rem"
+									minWidth="8rem"
+									backgroundColor="gray.700"
+									border="none"
+								>
+									<p className="text-white text-xxs tracking-widest pt-2 pl-2">
+										NETWORKS
+									</p>
+									<div
+										className="py-1"
+										role="menu"
+										aria-orientation="vertical"
+										aria-labelledby="options-menu"
+									>
+										<button
+											className={`flex items-center px-4 py-2 text-white text-sm leading-5 ${
+												currentNetwork === "Kusama"
+													? "cursor-default bg-gray-600"
+													: "hover:bg-gray-700 focus:bg-gray-700"
+											}  focus:outline-none w-full`}
+											role="menuitem"
+											onClick={() => {
+												if (selectedNetwork !== "Kusama") {
+													setApiInstance(null);
+													setValidatorMap(undefined);
+													setStashAccount(null);
+													setAccounts([]);
+													setFilteredAccounts([]);
+													setAccountInfoLoading(false);
+													setSelectedNetwork("Kusama");
+												}
+												setIsNetworkOpen(!isNetworkOpen);
+											}}
+										>
+											<Avatar
+												name="Kusama"
+												src="/images/kusama-logo.png"
+												size="sm"
+												mr={2}
+											/>
+											<span>Kusama</span>
+										</button>
+										<button
+											className={`flex items-center px-4 py-2 text-white text-sm leading-5 ${
+												currentNetwork === "Polkadot"
+													? "cursor-default bg-gray-600"
+													: "hover:bg-gray-700 focus:bg-gray-700"
+											}  focus:outline-none w-full`}
+											role="menuitem"
+											onClick={() => {
+												if (selectedNetwork !== "Polkadot") {
+													setApiInstance(null);
+													setValidatorMap(undefined);
+													setStashAccount(null);
+													setAccounts([]);
+													setFilteredAccounts([]);
+													setAccountInfoLoading(false);
+													setSelectedNetwork("Polkadot");
+												}
+												setIsNetworkOpen(!isNetworkOpen);
+											}}
+										>
+											<Avatar
+												name="Polkadot"
+												src="/images/polkadot-logo.png"
+												size="sm"
+												mr={2}
+											/>
+											<span>Polkadot</span>
+										</button>
+									</div>
+								</PopoverContent>
+							</Popover>
+						</div>
+
+						{/* <div className="relative">
 							<button
 								className="relative flex items-center rounded-full border border-gray-300 p-2 px-4 font-semibold text-gray-800 z-20"
 								onClick={() => {
@@ -176,7 +295,6 @@ const Header = ({ isBase }) => {
 								<ChevronDown size="20px" />
 							</button>
 
-							{/* TODO: Use Chakra's popover instead of custom implementation here */}
 							<button
 								onClick={() => {
 									setIsNetworkOpen(false);
@@ -243,7 +361,7 @@ const Header = ({ isBase }) => {
 									</div>
 								</div>
 							</div>
-						</div>
+						</div> */}
 
 						{/* <Popover placement="bottom-start">
 					<PopoverTrigger>
