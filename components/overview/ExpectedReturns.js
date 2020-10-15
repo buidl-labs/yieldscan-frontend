@@ -4,10 +4,16 @@ import formatCurrency from "@lib/format-currency";
 import calculateReward from "@lib/calculate-reward";
 import { usePolkadotApi, useAccounts } from "@lib/store";
 import { ChevronDown } from "react-feather";
-import { Popover, PopoverTrigger, PopoverContent, Alert, AlertIcon } from "@chakra-ui/core";
+import {
+	Popover,
+	PopoverTrigger,
+	PopoverContent,
+	Alert,
+	AlertIcon,
+} from "@chakra-ui/core";
 import CountUp from "react-countup";
 
-const ExpectedReturns = ({ stats, validators }) => {
+const ExpectedReturns = ({ stats, validators, networkInfo }) => {
 	const { apiInstance } = usePolkadotApi();
 	const { stashAccount } = useAccounts();
 	const [result, setResult] = React.useState({});
@@ -25,7 +31,8 @@ const ExpectedReturns = ({ stats, validators }) => {
 				_timePeriodValue,
 				_timePeriodUnit,
 				compounding,
-				0
+				0,
+				networkInfo.denom
 			).then((result) => setResult(result));
 		}
 	};
@@ -47,7 +54,8 @@ const ExpectedReturns = ({ stats, validators }) => {
 				timePeriodValue,
 				timePeriodUnit,
 				compounding,
-				0
+				0,
+				networkInfo.denom
 			).then((result) => setResult(result));
 		}
 	}, [stats, validators, timePeriodUnit, compounding]);
@@ -127,7 +135,8 @@ const ExpectedReturns = ({ stats, validators }) => {
 							<h3 className="text-gray-600 text-lg">Estimated Returns</h3>
 							<h1 className="text-3xl text-gray-900 font-semibold">
 								{formatCurrency.methods.formatAmount(
-									Math.trunc(Number(result.returns.currency || 0) * 10 ** 12)
+									Math.trunc(Number(result.returns.currency || 0) * 10 ** 12),
+									networkInfo
 								)}
 							</h1>
 							{/* {estimatedRewardsFiat && ( */}

@@ -5,7 +5,7 @@ import NominationsTable from "./NominationsTable";
 import ExpectedReturns from "./ExpectedReturns";
 import { Spinner, useDisclosure, useToast } from "@chakra-ui/core";
 import axios from "@lib/axios";
-import { useAccounts, usePolkadotApi } from "@lib/store";
+import { useAccounts, usePolkadotApi, useSelectedNetwork } from "@lib/store";
 import { useWalletConnect } from "@components/wallet-connect";
 import { get, noop } from "lodash";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
@@ -17,6 +17,7 @@ import ChillAlert from "./ChillAlert";
 import Routes from "@lib/routes";
 import { useRouter } from "next/router";
 import AllNominations from "./AllNominations";
+import { getNetworkInfo } from "yieldscan.config";
 import formatCurrency from "@lib/format-currency";
 
 const Tabs = {
@@ -26,6 +27,8 @@ const Tabs = {
 
 const Overview = () => {
 	const router = useRouter();
+	const { selectedNetwork } = useSelectedNetwork();
+	const networkInfo = getNetworkInfo(selectedNetwork);
 	const { toggle } = useWalletConnect();
 	const { apiInstance } = usePolkadotApi();
 	const {
@@ -80,7 +83,7 @@ const Overview = () => {
 				2
 			);
 			axios
-				.get(`user/${kusamaAddress}`)
+				.get(`/${networkInfo.coinGeckoDenom}/user/${kusamaAddress}`)
 				.then(({ data }) => {
 					if (data.message === "No data found!") setError(true);
 					setUserData(data);
@@ -106,7 +109,9 @@ const Overview = () => {
 								""
 							);
 							axios
-								.get(`/validator/multi?stashIds=${multiQueryString}`)
+								.get(
+									`/${networkInfo.coinGeckoDenom}/validator/multi?stashIds=${multiQueryString}`
+								)
 								.then(({ data }) => {
 									setAllNominations(data);
 								})
@@ -145,7 +150,7 @@ const Overview = () => {
 	useEffect(() => {
 		if (!validators) {
 			axios
-				.get("/rewards/risk-set")
+				.get(`/${networkInfo.coinGeckoDenom}/rewards/risk-set`)
 				.then(({ data }) => {
 					const validators = data.totalset;
 					setValidators(validators);
@@ -246,6 +251,7 @@ const Overview = () => {
 				type={fundsUpdateModalType}
 				nominations={allNominationsData}
 				bondedAmount={bondedAmount}
+				networkInfo={networkInfo}
 			/>
 			<EditValidators
 				isOpen={editValidatorModalOpen}
@@ -257,6 +263,7 @@ const Overview = () => {
 					closeEditValidatorsModal();
 					setTimeout(() => toggleChillAlert(), 500);
 				}}
+				networkInfo={networkInfo}
 			/>
 			<ChillAlert isOpen={chillAlertOpen} close={closeChillAlert} />
 			<OverviewCards
@@ -268,6 +275,7 @@ const Overview = () => {
 				bondFunds={() => openFundsUpdateModal("bond")}
 				unbondFunds={() => openFundsUpdateModal("unbond")}
 				openRewardDestinationModal={toggleRewardDestinationModal}
+				networkInfo={networkInfo}
 			/>
 			<div className="mt-10 flex">
 				<div className="w-8/12 mr-8">
@@ -310,15 +318,22 @@ const Overview = () => {
 						</div>
 					</div>
 					{selectedTab === Tabs.ACTIVE_VALIDATORS ? (
-						<NominationsTable validators={userData.validatorsInfo} />
+						<NominationsTable
+							validators={userData.validatorsInfo}
+							networkInfo={networkInfo}
+						/>
 					) : (
-						<AllNominations nominations={allNominationsData} />
+						<AllNominations
+							nominations={allNominationsData}
+							networkInfo={networkInfo}
+						/>
 					)}
 				</div>
 				<div className="w-4/12">
 					<ExpectedReturns
 						stats={userData.stats}
 						validators={userData.validatorsInfo}
+						networkInfo={networkInfo}
 					/>
 				</div>
 			</div>

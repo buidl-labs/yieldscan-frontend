@@ -37,6 +37,7 @@ const ValidatorCard = ({
 	type,
 	onClick = noop,
 	onProfile = noop,
+	networkInfo,
 }) => {
 	const [ref, hovered] = useHover();
 
@@ -83,7 +84,8 @@ const ValidatorCard = ({
 						<span className="text-xs text-gray-500">Total Stake</span>
 						<h3 className="text-lg">
 							{formatCurrency.methods.formatAmount(
-								Math.trunc(Number(totalStake || 0) * 10 ** 12)
+								Math.trunc(Number(totalStake || 0) * 10 ** 12),
+								networkInfo
 							)}
 						</h3>
 					</div>
@@ -92,7 +94,8 @@ const ValidatorCard = ({
 					<span className="text-xs text-gray-500">Est. Pool Reward</span>
 					<h3 className="text-lg">
 						{formatCurrency.methods.formatAmount(
-							Math.trunc(Number(estimatedReward || 0) * 10 ** 12)
+							Math.trunc(Number(estimatedReward || 0) * 10 ** 12),
+							networkInfo
 						)}
 					</h3>
 				</div>
@@ -121,6 +124,7 @@ const EditValidators = withSlideIn(
 		validatorsLoading,
 		currentValidators,
 		onChill = noop,
+		networkInfo,
 	}) => {
 		const toast = useToast();
 		const { apiInstance } = usePolkadotApi();
@@ -310,6 +314,7 @@ const EditValidators = withSlideIn(
 																!isNil(selectedValidatorsMap[validator.stashId])
 															}
 															onProfile={() => onProfile(validator.stashId)}
+															networkInfo={networkInfo}
 														/>
 													))}
 												</div>
@@ -360,6 +365,7 @@ const EditValidators = withSlideIn(
 															onClick={() => toggleSelected(validator)}
 															onProfile={() => onProfile(validator.stashId)}
 															isSelected
+															networkInfo={networkInfo}
 														/>
 													))}
 												</div>

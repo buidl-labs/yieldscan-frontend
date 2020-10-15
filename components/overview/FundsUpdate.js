@@ -75,7 +75,7 @@ const ValidatorCard = ({
 );
 
 const FundsUpdate = withSlideIn(
-	({ styles, type, close, nominations, bondedAmount }) => {
+	({ styles, type, close, nominations, bondedAmount, networkInfo }) => {
 		const toast = useToast();
 		const { stashAccount, freeAmount } = useAccounts();
 		const { apiInstance } = usePolkadotApi();
@@ -278,7 +278,8 @@ const FundsUpdate = withSlideIn(
 																	(get(bondedAmount, "currency", 0) || 0) *
 																		10 ** 12
 																)
-															)
+															),
+															networkInfo
 														)}
 													</h1>
 													<span className="text-lg text-gray-600">
@@ -301,7 +302,8 @@ const FundsUpdate = withSlideIn(
 																	(get(freeAmount, "currency", 0) || 0) *
 																		10 ** 12
 																)
-															)
+															),
+															networkInfo
 														)}
 													</span>
 													<div
@@ -357,7 +359,8 @@ const FundsUpdate = withSlideIn(
 														{formatCurrency.methods.formatAmount(
 															Math.trunc(
 																Number((totalStakingAmount || 0) * 10 ** 12)
-															)
+															),
+															networkInfo
 														)}
 													</h1>
 													<span className="text-lg text-gray-600">

@@ -15,12 +15,14 @@ const OverviewCards = ({
 	openRewardDestinationModal = noop,
 	bondFunds = noop,
 	unbondFunds = noop,
+	networkInfo,
 }) => {
 	const totalUnlockingBalanceinKSM = formatCurrency.methods.formatAmount(
 		unlockingBalances.reduce(
 			(total, balanceInfo) => total + balanceInfo.value,
 			0
-		)
+		),
+		networkInfo
 	);
 
 	const { apiInstance } = usePolkadotApi();
@@ -88,7 +90,8 @@ const OverviewCards = ({
 						)}
 						<h1 className="text-3xl text-teal-500 font-semibold">
 							{formatCurrency.methods.formatAmount(
-								Math.trunc(Number(get(bondedAmount, "currency", 0) * 10 ** 12))
+								Math.trunc(Number(get(bondedAmount, "currency", 0) * 10 ** 12)),
+								networkInfo
 							)}
 						</h1>
 						{totalAmountStakedFiat && (
@@ -148,7 +151,8 @@ const OverviewCards = ({
 												<Clock className="text-gray-600 mr-2" size="0.75rem" />
 												<span>
 													{formatCurrency.methods.formatAmount(
-														balanceInfo.value
+														balanceInfo.value,
+														networkInfo
 													)}
 												</span>
 												<span className="ml-2">ERA: {balanceInfo.era}</span>
@@ -196,7 +200,8 @@ const OverviewCards = ({
 			>
 				<h1 className="text-3xl font-semibold">
 					{formatCurrency.methods.formatAmount(
-						Math.trunc(Number(stats.earnings || 0) * 10 ** 12)
+						Math.trunc(Number(stats.earnings || 0) * 10 ** 12),
+						networkInfo
 					)}
 				</h1>
 				{earningsFiat && (
