@@ -74,7 +74,7 @@ const ValidatorCard = ({
 				<h3 className="text-base">
 					{!isNaN(ownStake) &&
 						formatCurrency.methods.formatAmount(
-							Math.trunc((ownStake || 0) * 10 ** 12),
+							Math.trunc((ownStake || 0) * 10 ** networkInfo.decimalPlaces),
 							networkInfo
 						)}
 				</h3>
@@ -84,7 +84,7 @@ const ValidatorCard = ({
 				<h3 className="text-base">
 					{!isNaN(otherStake) &&
 						formatCurrency.methods.formatAmount(
-							Math.trunc((otherStake || 0) * 10 ** 12),
+							Math.trunc((otherStake || 0) * 10 ** networkInfo.decimalPlaces),
 							networkInfo
 						)}
 				</h3>
@@ -99,7 +99,7 @@ const ValidatorCard = ({
 				</span>
 				<h3 className="text-base">
 					{formatCurrency.methods.formatAmount(
-						Math.trunc((returnsPer100KSM || 0) * 10 ** 12),
+						Math.trunc((returnsPer100KSM || 0) * 10 ** networkInfo.decimalPlaces),
 						networkInfo
 					)}
 				</h3>

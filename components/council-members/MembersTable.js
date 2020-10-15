@@ -40,7 +40,7 @@ const MemberCard = ({
 					<span className="text-xs text-gray-500 font-semibold">Backing</span>
 					<h3 className="text-lg">
 						{formatCurrency.methods.formatAmount(
-							Math.trunc((backing || 0) * 10 ** 12),
+							Math.trunc((backing || 0) * 10 ** networkInfo.decimalPlaces),
 							networkInfo
 						)}
 					</h3>
@@ -49,7 +49,7 @@ const MemberCard = ({
 					<span className="text-xs text-gray-500 font-semibold">Balance</span>
 					<h3 className="text-lg">
 						{formatCurrency.methods.formatAmount(
-							Math.trunc((totalBalance || 0) * 10 ** 12),
+							Math.trunc((totalBalance || 0) * 10 ** networkInfo.decimalPlaces),
 							networkInfo
 						)}
 					</h3>

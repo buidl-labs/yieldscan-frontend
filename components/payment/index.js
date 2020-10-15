@@ -9,12 +9,14 @@ import {
 	useTransaction,
 	usePolkadotApi,
 	useHeaderLoading,
+	useSelectedNetwork,
 } from "@lib/store";
 import stake from "@lib/stake";
 import { useToast, Spinner } from "@chakra-ui/core";
 import { useRouter } from "next/router";
 import nominate from "@lib/polkadot/nominate";
 import { trackEvent, Events } from "@lib/analytics";
+import { getNetworkInfo } from "yieldscan.config";
 
 const Steps = ({ steps, currentStep }) => (
 	<>
@@ -115,6 +117,8 @@ const ChainErrorPage = ({ onConfirm }) => {
 const Payment = () => {
 	const toast = useToast();
 	const router = useRouter();
+	const { selectedNetwork } = useSelectedNetwork();
+	const networkInfo = getNetworkInfo(selectedNetwork);
 	const { apiInstance } = usePolkadotApi();
 	const [currentStep, setCurrentStep] = useState(0);
 	const [chainError, setChainError] = useState(false);
@@ -126,7 +130,7 @@ const Payment = () => {
 	const [transactionHash, setTransactionHash] = useState();
 	const [stakingEvent, setStakingEvent] = useState();
 	const [stakingLoading, setStakingLoading] = useState(false);
-	const [hasAgreed, setHasAgreed] = useState(false)
+	const [hasAgreed, setHasAgreed] = useState(false);
 
 	useEffect(() => {
 		trackEvent(Events.PAYMENT_STEP_UPDATED, {
@@ -202,7 +206,8 @@ const Payment = () => {
 				transactionState.rewardDestination,
 				transactionState.selectedValidators.map((v) => v.stashId),
 				apiInstance,
-				handlers
+				handlers,
+				networkInfo
 			).catch((error) => {
 				handlers.onFinish(1, error.message);
 			});
@@ -256,7 +261,11 @@ const Payment = () => {
 							transactionState={transactionState}
 							hasAgreed={hasAgreed}
 							setHasAgreed={setHasAgreed}
-							onConfirm={() => {setHasAgreed(true); setCurrentStep((step) => step + 1)}}
+							onConfirm={() => {
+								setHasAgreed(true);
+								setCurrentStep((step) => step + 1);
+							}}
+							networkInfo={networkInfo}
 						/>
 					)}
 					{currentStep === 1 && (
@@ -265,6 +274,7 @@ const Payment = () => {
 							transactionState={transactionState}
 							setTransactionState={setTransactionState}
 							onConfirm={() => setCurrentStep((step) => step + 1)}
+							networkInfo={networkInfo}
 						/>
 					)}
 					{currentStep === 2 && (
@@ -277,6 +287,7 @@ const Payment = () => {
 								setTransactionState({ controller })
 							}
 							onConfirm={transact}
+							networkInfo={networkInfo}
 						/>
 					)}
 				</>

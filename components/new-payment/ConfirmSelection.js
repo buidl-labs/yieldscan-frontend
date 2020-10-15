@@ -14,6 +14,7 @@ const ConfirmSelection = ({
 	stakingEvent,
 	handleSelectionConfirmation,
 	result,
+	networkInfo,
 }) => (
 	<div className="mx-10 mt-8 mb-20 flex flex-col text-center items-center">
 		{!stakingLoading && (
@@ -31,7 +32,10 @@ const ConfirmSelection = ({
 					<span>Estimated Returns</span>
 					<div className="ml-2 px-3 py-2 bg-teal-500 text-white rounded-full">
 						{formatCurrency.methods.formatAmount(
-							Math.trunc(result.returns.currency * 10 ** 12)
+							Math.trunc(
+								result.returns.currency * 10 ** networkInfo.decimalPlaces
+							),
+							networkInfo
 						)}
 					</div>
 				</div>
@@ -42,6 +46,7 @@ const ConfirmSelection = ({
 					selectedValidators={selectedValidators}
 					setSelectedValidators={setSelectedValidators}
 					onAdvancedSelection={onAdvancedSelection}
+					networkInfo={networkInfo}
 				/>
 				<button
 					className="mt-8 px-24 py-4 bg-teal-500 text-white rounded-lg"

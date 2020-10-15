@@ -30,7 +30,7 @@ const ValidatorKeyStats = ({ stats }) => {
 				<span className="text-sm text-gray-600">Own Stake</span>
 				<h3 className="text-2xl text-black">
 					{formatCurrency.methods.formatAmount(
-						Math.trunc((stats.ownStake || 0) * 10 ** 12)
+						Math.trunc((stats.ownStake || 0) * 10 ** networkInfo.decimalPlaces)
 					)}
 				</h3>
 				{ownStakeSubCurrency && (
@@ -46,7 +46,7 @@ const ValidatorKeyStats = ({ stats }) => {
 				<span className="text-sm text-gray-600">Other Stake</span>
 				<h3 className="text-2xl text-black">
 					{formatCurrency.methods.formatAmount(
-						Math.trunc((stats.othersStake || 0) * 10 ** 12)
+						Math.trunc((stats.othersStake || 0) * 10 ** networkInfo.decimalPlaces)
 					)}
 				</h3>
 				{otherStakeSubCurrency && (

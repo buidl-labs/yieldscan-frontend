@@ -48,7 +48,7 @@ const ValidatorReturnsCalculator = ({ validatorInfo }) => {
 				<div className="flex flex-col px-5 pt-3">
 					<h3 className="text-2xl text-black">
 						{formatCurrency.methods.formatAmount(
-							Math.trunc(get(returns, "currency") * 10 ** 12)
+							Math.trunc(get(returns, "currency") * 10 ** networkInfo.decimalPlaces)
 						)}
 					</h3>
 					<span className="text-xs text-gray-600">

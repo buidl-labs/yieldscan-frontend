@@ -62,7 +62,7 @@ const ValidatorCard = ({
 					</span>
 					<h3 className="text-lg">
 						{formatCurrency.methods.formatAmount(
-							Math.trunc(stakedAmount * 10 ** 12),
+							Math.trunc(stakedAmount * 10 ** networkInfo.decimalPlaces),
 							networkInfo
 						)}
 					</h3>
@@ -73,7 +73,7 @@ const ValidatorCard = ({
 					</span>
 					<h3 className="text-lg">
 						{formatCurrency.methods.formatAmount(
-							Math.trunc(estimatedReward * 10 ** 12),
+							Math.trunc(estimatedReward * 10 ** networkInfo.decimalPlaces),
 							networkInfo
 						)}
 					</h3>

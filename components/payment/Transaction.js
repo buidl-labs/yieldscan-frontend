@@ -102,6 +102,7 @@ const Transaction = ({
 	transactionState,
 	setController,
 	onConfirm,
+	networkInfo,
 }) => {
 	const [editController, setEditController] = useState(false);
 	const compounding = get(transactionState, "compounding", true);
@@ -196,7 +197,8 @@ const Transaction = ({
 				<span className="text-teal-500">Amount</span>
 				<span className="text-black text-xl">
 					{formatCurrency.methods.formatAmount(
-						Math.trunc(stakingAmount * 10 ** 12)
+						Math.trunc(stakingAmount * 10 ** networkInfo.decimalPlaces),
+						networkInfo
 					)}
 				</span>
 				{/* <span className="text-gray-600 text-sm">${stakingAmount}</span> */}

@@ -31,6 +31,7 @@ const PaymentPopover = ({
 	isPaymentPopoverOpen,
 	closePaymentPopover,
 	result,
+	networkInfo,
 }) => {
 	const router = useRouter();
 	const [currentStep, setCurrentStep] = useState(0);
@@ -48,7 +49,7 @@ const PaymentPopover = ({
 	const toast = useToast();
 	const rewardDestination = compounding ? 0 : 1;
 
-	const SuccessfullyBonded = ({ transactionHash, onConfirm }) => {
+	const SuccessfullyBonded = ({ transactionHash, onConfirm, networkInfo }) => {
 		return (
 			<div className="mx-10 mt-8 mb-20 flex flex-col text-center items-center">
 				<img src="/images/polkadot-successfully-bonded.png" width="200px" />
@@ -61,7 +62,7 @@ const PaymentPopover = ({
 					the link below:
 				</span>
 				<a
-					href={`https://kusama.subscan.io/block/${transactionHash}`}
+					href={`https://${networkInfo.coinGeckoDenom}.subscan.io/block/${transactionHash}`}
 					className="mt-6 text-blue-400"
 					target="_blank"
 				>
@@ -205,7 +206,8 @@ const PaymentPopover = ({
 					rewardDestination,
 					selectedValidators.map((v) => v.stashId),
 					apiInstance,
-					handlers
+					handlers,
+					networkInfo
 				).catch((error) => {
 					handlers.onFinish(1, error.message);
 				});
@@ -293,6 +295,7 @@ const PaymentPopover = ({
 							stakingEvent={stakingEvent}
 							handleSelectionConfirmation={transact}
 							result={result}
+							networkInfo={networkInfo}
 						/>
 					)}
 					{currentStep === 1 && !processComplete && !chainError && (
@@ -314,6 +317,7 @@ const PaymentPopover = ({
 						<SuccessfullyBonded
 							transactionHash={transactionHash}
 							onConfirm={handleOnClickForSuccessfulTransaction}
+							networkInfo={networkInfo}
 						/>
 					)}
 					{chainError && (
@@ -321,6 +325,7 @@ const PaymentPopover = ({
 							// transactionHash={transactionHash}
 							onConfirm={handleOnClickForSuccessfulTransaction}
 							errMessage={errMessage}
+							networkInfo={networkInfo}
 						/>
 					)}
 				</ModalBody>

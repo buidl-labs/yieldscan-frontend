@@ -138,7 +138,10 @@ const Header = ({ isBase }) => {
 											<span className="text-gray-500 text-xs">
 												Transferrable:{" "}
 												{formatCurrency.methods.formatAmount(
-													Math.trunc(get(freeAmount, "currency", 0) * 10 ** 12),
+													Math.trunc(
+														get(freeAmount, "currency", 0) *
+															10 ** networkInfo.decimalPlaces
+													),
 													networkInfo
 												)}
 											</span>

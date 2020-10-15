@@ -135,7 +135,7 @@ const ExpectedReturns = ({ stats, validators, networkInfo }) => {
 							<h3 className="text-gray-600 text-lg">Estimated Returns</h3>
 							<h1 className="text-3xl text-gray-900 font-semibold">
 								{formatCurrency.methods.formatAmount(
-									Math.trunc(Number(result.returns.currency || 0) * 10 ** 12),
+									Math.trunc(Number(result.returns.currency || 0) * 10 ** networkInfo.decimalPlaces),
 									networkInfo
 								)}
 							</h1>

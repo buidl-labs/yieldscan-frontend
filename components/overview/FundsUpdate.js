@@ -228,7 +228,8 @@ const FundsUpdate = withSlideIn(
 				stashAccount.address,
 				amount,
 				apiInstance,
-				handlers
+				handlers,
+				networkInfo
 			).catch((error) => {
 				handlers.onFinish(1, error.message);
 			});
@@ -276,7 +277,7 @@ const FundsUpdate = withSlideIn(
 															Math.trunc(
 																Number(
 																	(get(bondedAmount, "currency", 0) || 0) *
-																		10 ** 12
+																		10 ** networkInfo.decimalPlaces
 																)
 															),
 															networkInfo
@@ -300,7 +301,7 @@ const FundsUpdate = withSlideIn(
 															Math.trunc(
 																Number(
 																	(get(freeAmount, "currency", 0) || 0) *
-																		10 ** 12
+																		10 ** networkInfo.decimalPlaces
 																)
 															),
 															networkInfo
@@ -358,7 +359,7 @@ const FundsUpdate = withSlideIn(
 													<h1 className="text-3xl">
 														{formatCurrency.methods.formatAmount(
 															Math.trunc(
-																Number((totalStakingAmount || 0) * 10 ** 12)
+																Number((totalStakingAmount || 0) * 10 ** networkInfo.decimalPlaces)
 															),
 															networkInfo
 														)}
@@ -385,7 +386,7 @@ const FundsUpdate = withSlideIn(
 															{formatCurrency.methods.formatAmount(
 																Math.trunc(
 																	Number(estimatedReturns.currency || 0) *
-																		10 ** 12
+																		10 ** networkInfo.decimalPlaces
 																)
 															)}
 														</h3>

@@ -102,7 +102,8 @@ const Nominators = () => {
 							{formatCurrency.methods
 								.formatAmount(
 									Math.trunc(
-										nominatorsData.stats.totalAmountStaked * 10 ** 12
+										nominatorsData.stats.totalAmountStaked *
+											10 ** networkInfo.decimalPlaces
 									).toString()
 								)
 								.slice(0, -4)}{" "}
@@ -124,7 +125,8 @@ const Nominators = () => {
 							{formatCurrency.methods
 								.formatAmount(
 									Math.trunc(
-										nominatorsData.stats.totalRewards * 10 ** 12
+										nominatorsData.stats.totalRewards *
+											10 ** networkInfo.decimalPlaces
 									).toString()
 								)
 								.slice(0, -4)}{" "}

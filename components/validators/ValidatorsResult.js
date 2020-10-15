@@ -45,7 +45,7 @@ const ValidatorsResult = ({
 						{stakingAmount ? (
 							<span className="mr-5">
 								{formatCurrency.methods.formatAmount(
-									Math.trunc(stakingAmount * 10 ** 12),
+									Math.trunc(stakingAmount * 10 ** networkInfo.decimalPlaces),
 									networkInfo
 								)}
 							</span>

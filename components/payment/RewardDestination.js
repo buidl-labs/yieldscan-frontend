@@ -9,6 +9,7 @@ const RewardDestination = ({
 	transactionState,
 	setTransactionState,
 	onConfirm,
+	networkInfo,
 }) => {
 	const [compounding] = useState(get(transactionState, "compounding", true));
 	const stakingAmount = get(transactionState, "stakingAmount", 0);
@@ -88,7 +89,8 @@ const RewardDestination = ({
 				<span className="text-teal-500 text-sm">Staking Amount</span>
 				<h3 className="text-2xl">
 					{formatCurrency.methods.formatAmount(
-						Math.trunc(stakingAmount * 10 ** 12)
+						Math.trunc(stakingAmount * 10 ** networkInfo.decimalPlaces),
+						networkInfo
 					)}
 				</h3>
 				{/* <span className="text-gray-500 text-sm">${stakingAmount}</span> */}
