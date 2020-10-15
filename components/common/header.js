@@ -7,6 +7,7 @@ import {
 	useCouncil,
 } from "@lib/store";
 import { get, isNil } from "lodash";
+import { setCookie } from "nookies";
 import { ChevronDown, Settings, Menu } from "react-feather";
 import {
 	WalletConnectPopover,
@@ -232,6 +233,7 @@ const Header = ({ isBase }) => {
 												if (selectedNetwork !== "Kusama") {
 													setApiInstance(null);
 													setValidatorMap(undefined);
+													setCookie(null, "networkName", "Kusama");
 													setCouncilMembers(undefined);
 													setCouncilLoading(true);
 													setStashAccount(null);
@@ -262,12 +264,13 @@ const Header = ({ isBase }) => {
 												if (selectedNetwork !== "Polkadot") {
 													setApiInstance(null);
 													setValidatorMap(undefined);
+													setCookie(null, "networkName", "Polkadot");
 													setCouncilMembers(undefined);
 													setCouncilLoading(true);
 													setStashAccount(null);
-													// setAccounts([]);
+													setAccounts([]);
 													setFilteredAccounts([]);
-													// setAccountInfoLoading(false);
+													setAccountInfoLoading(false);
 													setSelectedNetwork("Polkadot");
 												}
 												setIsNetworkOpen(!isNetworkOpen);
