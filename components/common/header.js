@@ -4,6 +4,7 @@ import {
 	usePolkadotApi,
 	useSelectedNetwork,
 	useValidatorData,
+	useCouncil,
 } from "@lib/store";
 import { get, isNil } from "lodash";
 import { ChevronDown, Settings, Menu } from "react-feather";
@@ -34,6 +35,7 @@ const currentNetwork = "Not Kusama";
 const Header = ({ isBase }) => {
 	const { selectedNetwork, setSelectedNetwork } = useSelectedNetwork();
 	const { validatorMap, setValidatorMap } = useValidatorData();
+	const { setCouncilMembers, setCouncilLoading } = useCouncil();
 	const networkInfo = getNetworkInfo(selectedNetwork);
 	const { setApiInstance } = usePolkadotApi();
 	const { isOpen, toggle } = useWalletConnect();
@@ -230,6 +232,8 @@ const Header = ({ isBase }) => {
 												if (selectedNetwork !== "Kusama") {
 													setApiInstance(null);
 													setValidatorMap(undefined);
+													setCouncilMembers(undefined);
+													setCouncilLoading(true);
 													setStashAccount(null);
 													setAccounts([]);
 													setFilteredAccounts([]);
@@ -258,6 +262,8 @@ const Header = ({ isBase }) => {
 												if (selectedNetwork !== "Polkadot") {
 													setApiInstance(null);
 													setValidatorMap(undefined);
+													setCouncilMembers(undefined);
+													setCouncilLoading(true);
 													setStashAccount(null);
 													setAccounts([]);
 													setFilteredAccounts([]);
