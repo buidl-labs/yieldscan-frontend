@@ -265,9 +265,9 @@ const Header = ({ isBase }) => {
 													setCouncilMembers(undefined);
 													setCouncilLoading(true);
 													setStashAccount(null);
-													setAccounts([]);
+													// setAccounts([]);
 													setFilteredAccounts([]);
-													setAccountInfoLoading(false);
+													// setAccountInfoLoading(false);
 													setSelectedNetwork("Polkadot");
 												}
 												setIsNetworkOpen(!isNetworkOpen);

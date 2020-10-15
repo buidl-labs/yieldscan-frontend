@@ -30,6 +30,7 @@ const ValidatorCard = ({
 	stakedAmount,
 	estimatedReward,
 	onProfile = noop,
+	networkInfo,
 }) => {
 	return (
 		<div className="flex items-center justify-between rounded-lg border border-gray-200 py-2 mb-2">
@@ -61,7 +62,8 @@ const ValidatorCard = ({
 					</span>
 					<h3 className="text-lg">
 						{formatCurrency.methods.formatAmount(
-							Math.trunc(stakedAmount * 10 ** 12)
+							Math.trunc(stakedAmount * 10 ** 12),
+							networkInfo
 						)}
 					</h3>
 				</div>
@@ -71,7 +73,8 @@ const ValidatorCard = ({
 					</span>
 					<h3 className="text-lg">
 						{formatCurrency.methods.formatAmount(
-							Math.trunc(estimatedReward * 10 ** 12)
+							Math.trunc(estimatedReward * 10 ** 12),
+							networkInfo
 						)}
 					</h3>
 				</div>
@@ -94,7 +97,7 @@ const ValidatorCard = ({
 	);
 };
 
-const NominationsTable = ({ validators }) => {
+const NominationsTable = ({ validators, networkInfo }) => {
 	return (
 		<div>
 			<div className="table-container overflow-y-scroll mt-5 py-4">
@@ -114,6 +117,7 @@ const NominationsTable = ({ validators }) => {
 									"_blank"
 								)
 							}
+							networkInfo={networkInfo}
 						/>
 					))}
 				<div className="text-xs text-gray-500 text-right mt-2">
