@@ -25,7 +25,13 @@ import {
 	isNull,
 	cloneDeep,
 } from "lodash";
-import { useTransaction, useAccounts, usePaymentPopover } from "@lib/store";
+import {
+	useTransaction,
+	useAccounts,
+	usePaymentPopover,
+	useSelectedNetwork,
+	useValidatorData,
+} from "@lib/store";
 import calculateReward from "@lib/calculate-reward";
 import ValidatorsResult from "./ValidatorsResult";
 import ValidatorsTable from "./ValidatorsTable";
@@ -35,6 +41,7 @@ import FilterPanel from "./FilterPanel";
 import { useWalletConnect } from "@components/wallet-connect";
 import { useRouter } from "next/router";
 import axios from "@lib/axios";
+import { getNetworkInfo } from "yieldscan.config";
 import convertCurrency from "@lib/convert-currency";
 
 const DEFAULT_FILTER_OPTIONS = {
@@ -47,6 +54,8 @@ const DEFAULT_FILTER_OPTIONS = {
 
 const Validators = () => {
 	const router = useRouter();
+	const { selectedNetwork } = useSelectedNetwork();
+	const networkInfo = getNetworkInfo(selectedNetwork);
 	const { toggle: toggleWalletConnect } = useWalletConnect();
 	const {
 		stashAccount,
@@ -54,6 +63,7 @@ const Validators = () => {
 		freeAmount,
 		accountInfoLoading,
 	} = useAccounts();
+	const { validatorMap, setValidatorMap } = useValidatorData();
 	const { isOpen, onClose, onToggle } = useDisclosure();
 	const transactionState = useTransaction((state) => {
 		let _returns = get(result, "returns"),
@@ -72,9 +82,15 @@ const Validators = () => {
 
 	const [loading, setLoading] = useState(true);
 	const [validators, setValidators] = useState(
-		get(transactionState.validatorMap, "total")
+		get(validatorMap, "total", undefined)
 	);
-	const [filteredValidators, setFilteredValidators] = useState(validators);
+	console.log("validators");
+	console.log(validators);
+	const [filteredValidators, setFilteredValidators] = useState(
+		get(validatorMap, "total", undefined)
+	);
+	console.log("filteredValidators");
+	console.log(filteredValidators);
 	const [advancedMode] = useState(router.query.advanced);
 	const [amount, setAmount] = useState(transactionState.stakingAmount);
 	const [subCurrency, setSubCurrency] = useState(0);
@@ -106,18 +122,53 @@ const Validators = () => {
 		openPaymentPopover,
 	} = usePaymentPopover();
 
+	// useEffect(() => {
+	// 	if (!validators) {
+	// 		axios
+	// 			.get(`/${networkInfo.coinGeckoDenom}/rewards/risk-set`)
+	// 			.then(({ data }) => {
+	// 				setValidators(data.totalset);
+	// 				setFilteredValidators(data.totalset);
+	// 				setSelectedValidatorsMap(
+	// 					mapValues(keyBy(data.medriskset, "stashId"))
+	// 				);
+	// 				setLoading(false);
+	// 			});
+	// 	} else {
+	// 		setLoading(false);
+	// 	}
+	// }, []);
+
 	useEffect(() => {
-		if (!validators) {
-			axios.get("/rewards/risk-set").then(({ data }) => {
-				setValidators(data.totalset);
-				setFilteredValidators(data.totalset);
-				setSelectedValidatorsMap(mapValues(keyBy(data.medriskset, "stashId")));
-				setLoading(false);
-			});
-		} else {
-			setLoading(false);
+		if (!validatorMap) {
+			axios
+				.get(`/${networkInfo.coinGeckoDenom}/rewards/risk-set`)
+				.then(({ data }) => {
+					const validatorMap = {
+						Low: mapValues(keyBy(data.lowriskset, "stashId")),
+						Medium: mapValues(keyBy(data.medriskset, "stashId")),
+						High: mapValues(keyBy(data.highriskset, "stashId")),
+						total: data.totalset,
+					};
+
+					setValidatorMap(validatorMap);
+				});
 		}
-	}, []);
+	}, [validatorMap, networkInfo]);
+
+	useEffect(() => {
+		console.log("hello");
+		if (validatorMap) {
+			console.log("hello2");
+			setLoading(true);
+			setValidators(validatorMap.total);
+			setFilteredValidators(validatorMap.total);
+			setSelectedValidatorsMap(validatorMap.Medium);
+			setLoading(false);
+		} else {
+			setLoading(true);
+		}
+	}, [validatorMap, networkInfo]);
 
 	useEffect(() => {
 		if (bondedAmount) {
@@ -276,6 +327,9 @@ const Validators = () => {
 		);
 	}
 
+	console.log("loading");
+	console.log(loading);
+
 	return (
 		<div className="relative h-full px-10 py-5">
 			{advancedMode && (
@@ -311,6 +365,7 @@ const Validators = () => {
 				onEditAmount={onToggle}
 				result={result}
 				transactionState={transactionState}
+				networkInfo={networkInfo}
 			/>
 			<div className="flex justify-between items-center mt-8">
 				<div className="flex items-center">
@@ -401,6 +456,7 @@ const Validators = () => {
 				validators={filteredValidators}
 				selectedValidatorsMap={selectedValidatorsMap}
 				setSelectedValidators={setSelectedValidatorsMap}
+				networkInfo={networkInfo}
 			/>
 			<div className="fixed left-0 bottom-0 flex-end w-full bg-white">
 				<div className="text-xs text-gray-500 text-right mr-24 mt-4">

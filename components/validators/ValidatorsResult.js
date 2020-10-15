@@ -18,6 +18,7 @@ const ValidatorsResult = ({
 	onTimePeriodUnitChange = noop,
 	onCompoundingChange = noop,
 	onEditAmount = noop,
+	networkInfo,
 }) => {
 	const [timePeriodEditable, setTimePeriodEditable] = useState(false);
 	const [timePeriod, setTimePeriod] = useState(timePeriodValue);
@@ -44,7 +45,8 @@ const ValidatorsResult = ({
 						{stakingAmount ? (
 							<span className="mr-5">
 								{formatCurrency.methods.formatAmount(
-									Math.trunc(stakingAmount * 10 ** 12)
+									Math.trunc(stakingAmount * 10 ** 12),
+									networkInfo
 								)}
 							</span>
 						) : (
@@ -156,7 +158,7 @@ const ValidatorsResult = ({
 								end={returns.currency || 0}
 								duration={0.5}
 								decimals={3}
-								suffix={" KSM"}
+								suffix={` ${networkInfo.denom}`}
 								preserveValue
 							/>
 						</span>
