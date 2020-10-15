@@ -5,7 +5,13 @@ import Identicon from "@components/common/Identicon";
 import formatCurrency from "@lib/format-currency";
 import TermsAndServicePopover from "@components/payment/TermsOfService";
 
-const ValidatorInfo = ({ name, stashId, riskScore, amountPerValidator }) => (
+const ValidatorInfo = ({
+	name,
+	stashId,
+	riskScore,
+	amountPerValidator,
+	networkInfo,
+}) => (
 	<div className="rounded-lg flex items-center border border-gray-200 px-4 py-3 my-1">
 		<div className="mr-4">
 			<Identicon address={stashId} />
@@ -32,7 +38,8 @@ const ValidatorInfo = ({ name, stashId, riskScore, amountPerValidator }) => (
 			<span className="text-teal-500">Stake</span>
 			<h5 className="text-gray-700">
 				{formatCurrency.methods.formatAmount(
-					Math.trunc(amountPerValidator * 10 ** 12)
+					Math.trunc(amountPerValidator * 10 ** networkInfo.decimalPlaces),
+					networkInfo
 				)}
 			</h5>
 		</div>
@@ -46,6 +53,7 @@ const Confirmation = ({
 	hasAgreed,
 	setHasAgreed,
 	onConfirm,
+	networkInfo,
 }) => {
 	const stakingAmount = get(transactionState, "stakingAmount", 0);
 	const selectedValidators = get(transactionState, "selectedValidators", []);
@@ -77,8 +85,9 @@ const Confirmation = ({
 						<div className="ml-2 px-3 py-2 bg-teal-500 text-white rounded-full">
 							{formatCurrency.methods.formatAmount(
 								Math.trunc(
-									get(transactionState, "returns.currency", 0) * 10 ** 12
-								)
+									get(transactionState, "returns.currency", 0) * 10 ** networkInfo.decimalPlaces
+								),
+								networkInfo
 							)}
 						</div>
 					</div>
@@ -108,6 +117,7 @@ const Confirmation = ({
 							amountPerValidator={Number(
 								stakingAmount / selectedValidators.length
 							)}
+							networkInfo={networkInfo}
 						/>
 					))}
 				</div>
@@ -123,7 +133,8 @@ const Confirmation = ({
 					<span className="text-teal-500 text-sm">Staking Amount</span>
 					<h3 className="text-2xl">
 						{formatCurrency.methods.formatAmount(
-							Math.trunc(stakingAmount * 10 ** 12)
+							Math.trunc(stakingAmount * 10 ** networkInfo.decimalPlaces),
+							networkInfo
 						)}
 					</h3>
 					{/* <span className="text-gray-500 text-sm">${stakingAmount}</span> */}

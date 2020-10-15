@@ -289,7 +289,7 @@ const RewardCalculatorPage = () => {
 						>
 							Transferrable Balance:{" "}
 							{formatCurrency.methods.formatAmount(
-								Math.trunc(get(freeAmount, "currency", 0) * 10 ** 12),
+								Math.trunc(get(freeAmount, "currency", 0) * 10 ** networkInfo.decimalPlaces),
 								networkInfo
 							)}
 						</div>

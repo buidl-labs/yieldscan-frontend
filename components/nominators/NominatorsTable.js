@@ -33,7 +33,7 @@ const MemberCard = ({
 					</span>
 					<h3 className="text-base">
 						{formatCurrency.methods.formatAmount(
-							Math.trunc((dailyEarnings || 0) * 10 ** 12)
+							Math.trunc((dailyEarnings || 0) * 10 ** networkInfo.decimalPlaces)
 						)}
 					</h3>
 				</div>
@@ -43,7 +43,9 @@ const MemberCard = ({
 					</span>
 					<h3 className="text-base">
 						{formatCurrency.methods.formatAmount(
-							Math.trunc((totalAmountStaked || 0) * 10 ** 12)
+							Math.trunc(
+								(totalAmountStaked || 0) * 10 ** networkInfo.decimalPlaces
+							)
 						)}
 					</h3>
 				</div>

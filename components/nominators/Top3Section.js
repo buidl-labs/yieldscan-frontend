@@ -32,7 +32,7 @@ const TopNominatorCard = ({
 		</span>
 		<h5 className="text-base">
 			{formatCurrency.methods.formatAmount(
-				Math.trunc((dailyEarnings || 0) * 10 ** 12)
+				Math.trunc((dailyEarnings || 0) * 10 ** networkInfo.decimalPlaces)
 			)}
 		</h5>
 		<span className="text-gray-600 font-semibold text-xs mt-4">
@@ -40,7 +40,7 @@ const TopNominatorCard = ({
 		</span>
 		<h5 className="text-base">
 			{formatCurrency.methods.formatAmount(
-				Math.trunc((totalStake || 0) * 10 ** 12)
+				Math.trunc((totalStake || 0) * 10 ** networkInfo.decimalPlaces)
 			)}
 		</h5>
 		<span className="text-gray-600 font-semibold text-xs mt-4">
@@ -53,17 +53,20 @@ const TopNominatorCard = ({
 const Top3Section = ({ nominators = [] }) => {
 	return (
 		<div className="flex items-center justify-between">
-			{nominators.map(nominator => (
-				<div
-					key={nominator.nomId}
-				>
+			{nominators.map((nominator) => (
+				<div key={nominator.nomId}>
 					<TopNominatorCard
 						name={nominator.name}
 						stashId={nominator.nomId}
 						nominations={nominator.nominations}
 						totalStake={nominator.nomtotalStake}
 						dailyEarnings={nominator.dailyEarnings}
-						onProfile={() => window.open(`https://polkascan.io/kusama/account/${nominator.nomId}`, '_blank')}
+						onProfile={() =>
+							window.open(
+								`https://polkascan.io/kusama/account/${nominator.nomId}`,
+								"_blank"
+							)
+						}
 					/>
 				</div>
 			))}

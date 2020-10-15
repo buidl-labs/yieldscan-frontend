@@ -84,13 +84,13 @@ const OverviewCards = ({
 							<span className="text-sm bg-gray-200 text-gray-700 px-4 py-1 rounded-lg">
 								Active stake:{" "}
 								{formatCurrency.methods.formatAmount(
-									Math.trunc(Number(get(activeStake, "currency", 0) * 10 ** 12))
+									Math.trunc(Number(get(activeStake, "currency", 0) * 10 ** networkInfo.decimalPlaces))
 								)}
 							</span>
 						)}
 						<h1 className="text-3xl text-teal-500 font-semibold">
 							{formatCurrency.methods.formatAmount(
-								Math.trunc(Number(get(bondedAmount, "currency", 0) * 10 ** 12)),
+								Math.trunc(Number(get(bondedAmount, "currency", 0) * 10 ** networkInfo.decimalPlaces)),
 								networkInfo
 							)}
 						</h1>
@@ -171,7 +171,7 @@ const OverviewCards = ({
 			>
 				<h1 className="text-3xl text-teal-500 font-semibold">
 					{/* {formatCurrency.methods.formatAmount(
-						Math.trunc(Number(stats.estimatedRewards || 0) * 10 ** 12)
+						Math.trunc(Number(stats.estimatedRewards || 0) * 10 ** networkInfo.decimalPlaces)
 					)} */}
 					{expectedAPR}%
 				</h1>
@@ -200,7 +200,7 @@ const OverviewCards = ({
 			>
 				<h1 className="text-3xl font-semibold">
 					{formatCurrency.methods.formatAmount(
-						Math.trunc(Number(stats.earnings || 0) * 10 ** 12),
+						Math.trunc(Number(stats.earnings || 0) * 10 ** networkInfo.decimalPlaces),
 						networkInfo
 					)}
 				</h1>

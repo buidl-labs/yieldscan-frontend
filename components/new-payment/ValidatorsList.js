@@ -22,6 +22,7 @@ const ValidatorInfo = ({
 	selected,
 	toggleSelected,
 	onProfile = noop,
+	networkInfo,
 }) => (
 	<div
 		className={`
@@ -74,7 +75,10 @@ const ValidatorInfo = ({
 					<span className="text-teal-500 text-sm">Stake</span>
 					<h5 className="text-gray-700 text-lg truncate">
 						{formatCurrency.methods.formatAmount(
-							Math.trunc(amountPerValidator.currency * 10 ** 12)
+							Math.trunc(
+								amountPerValidator.currency * 10 ** networkInfo.decimalPlaces
+							),
+							networkInfo
 						)}
 						{/* <CountUp
 							end={amountPerValidator.currency}
@@ -107,6 +111,7 @@ const ValidatorsList = ({
 	selectedValidators = {},
 	setSelectedValidators = {},
 	onAdvancedSelection = noop,
+	networkInfo,
 }) => {
 	const [editMode, setEditMode] = useState(false);
 	const [tempSelectedValidators, setTempSelectedValidators] = useState({});
@@ -254,6 +259,7 @@ const ValidatorsList = ({
 									"_blank"
 								)
 							}
+							networkInfo={networkInfo}
 						/>
 					))}
 				{!editMode && !validators.length && (
