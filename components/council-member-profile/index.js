@@ -7,10 +7,11 @@ import ProfileTabs from "@components/validator-profile/ProfileTabs";
 import { get } from "lodash";
 import CouncilMemberKeyStats from "./CouncilMemberKeyStats";
 import EditCouncilMemberProfileModal from "./EditCouncilMemberProfileModal";
-import { useAccounts } from "@lib/store";
+import { useAccounts, useSelectedNetwork } from "@lib/store";
 import { useWalletConnect } from "@components/wallet-connect";
 import CouncilViz from "./council-viz/CouncilViz";
 import TeamMembers from "@components/validator-profile/TeamMembers";
+import { getNetworkInfo } from "yieldscan.config";
 import TransparencyScoreModal from "@components/validator-profile/TransparencyScoreModal";
 
 const ProfileTabsConfig = {
@@ -21,14 +22,20 @@ const ProfileTabsConfig = {
 
 const CouncilMemberProfile = () => {
 	const router = useRouter();
-	const { query: { id: councilMemberAccountId } } = router;
+	const { selectedNetwork } = useSelectedNetwork();
+	const networkInfo = getNetworkInfo(selectedNetwork);
+	const {
+		query: { id: councilMemberAccountId },
+	} = router;
 	const { stashAccount, accountInfoLoading } = useAccounts();
 	const { toggle: toggleWalletConnect } = useWalletConnect();
 
 	const [error, setError] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [memberInfo, setMemberInfo] = useState();
-	const [selectedTab, setSelectedTab] = useState(ProfileTabsConfig.VISUALISATION);
+	const [selectedTab, setSelectedTab] = useState(
+		ProfileTabsConfig.VISUALISATION
+	);
 
 	const [editProfileOpen, setEditProfileOpen] = useState();
 
@@ -40,13 +47,19 @@ const CouncilMemberProfile = () => {
 
 	const initData = () => {
 		setError(false);
-		axios.get(`/council/member/${councilMemberAccountId}`).then(({ data }) => {
-			setMemberInfo(data);
-		}).catch(() => {
-			setError(true);
-		}).finally(() => {
-			setLoading(false);
-		});
+		axios
+			.get(
+				`/${networkInfo.coinGeckoDenom}/council/member/${councilMemberAccountId}`
+			)
+			.then(({ data }) => {
+				setMemberInfo(data);
+			})
+			.catch(() => {
+				setError(true);
+			})
+			.finally(() => {
+				setLoading(false);
+			});
 	};
 
 	useEffect(() => {
@@ -70,7 +83,10 @@ const CouncilMemberProfile = () => {
 		return (
 			<div className="flex-center flex-col mt-40">
 				<div className="text-4xl">🧐</div>
-				<h3>Sorry, this member's info couldn't be fetched! We'll surely look into this.</h3>
+				<h3>
+					Sorry, this member's info couldn't be fetched! We'll surely look into
+					this.
+				</h3>
 			</div>
 		);
 	}
@@ -83,6 +99,7 @@ const CouncilMemberProfile = () => {
 						transparencyScore={memberInfo.transparencyScores}
 						isOpen={scoreModalOpen}
 						onClose={closeScoreModal}
+						networkInfo={networkInfo}
 					/>
 					<EditCouncilMemberProfileModal
 						name={memberInfo.socialInfo.name}
@@ -94,6 +111,7 @@ const CouncilMemberProfile = () => {
 						isOpen={editProfileOpen}
 						toggleScoreModal={toggleScoreModal}
 						goBack={() => setEditProfileOpen(false)}
+						networkInfo={networkInfo}
 					/>
 				</>
 			) : (
@@ -107,6 +125,7 @@ const CouncilMemberProfile = () => {
 						stashId={councilMemberAccountId}
 						toggleWalletConnect={toggleWalletConnect}
 						openEditProfile={() => setEditProfileOpen(true)}
+						networkInfo={networkInfo}
 					/>
 
 					<div className="my-5">
@@ -115,6 +134,7 @@ const CouncilMemberProfile = () => {
 								tabs={ProfileTabsConfig}
 								selectedTab={selectedTab}
 								setSelectedTab={setSelectedTab}
+								networkInfo={networkInfo}
 							/>
 						</div>
 					</div>
@@ -130,6 +150,7 @@ const CouncilMemberProfile = () => {
 								<CouncilViz
 									memberInfo={memberInfo}
 									networkName="KUSAMA COUNCIL"
+									networkInfo={networkInfo}
 								/>
 							)}
 						</div>
@@ -138,6 +159,7 @@ const CouncilMemberProfile = () => {
 								voters={get(memberInfo, "backersInfo.length", 0)}
 								backingAmount={memberInfo.backing}
 								totalBalance={memberInfo.totalBalance}
+								networkInfo={networkInfo}
 							/>
 						</div>
 					</div>

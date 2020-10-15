@@ -114,6 +114,7 @@ const EditCouncilMemberProfileModal = withSlideIn(
 		socialInfo,
 		toggleScoreModal,
 		transparencyScore,
+		networkInfo,
 	}) => {
 		const toast = useToast();
 		const [newMembers, setMembers] = useState(members || []);
@@ -141,7 +142,7 @@ const EditCouncilMemberProfileModal = withSlideIn(
 		const updateProfile = () => {
 			setUpdating(true);
 			axios
-				.put(`council/member/${stashId}/update`, {
+				.put(`${networkInfo.coinGeckoDenom}council/member/${stashId}/update`, {
 					members: newMembers,
 					vision: newVision,
 				})

@@ -6,6 +6,7 @@ const CouncilMemberKeyStats = ({
 	voters = 0,
 	backingAmount = 0,
 	totalBalance = 0,
+	networkInfo,
 }) => {
 	const [backingSubCurrency, setBackingSubCurrency] = useState();
 	const [totalBalanceSubCurrency, setTotalBalanceSubCurrency] = useState();
@@ -36,7 +37,8 @@ const CouncilMemberKeyStats = ({
 				<span className="text-sm text-gray-600">Amount of Backing</span>
 				<h3 className="text-2xl text-black">
 					{formatCurrency.methods.formatAmount(
-						Math.trunc((backingAmount || 0) * 10 ** 12)
+						Math.trunc((backingAmount || 0) * 10 ** 12),
+						networkInfo
 					)}
 				</h3>
 				{backingSubCurrency && (
@@ -50,7 +52,8 @@ const CouncilMemberKeyStats = ({
 				<span className="text-sm text-gray-600">Total Account Balance</span>
 				<h3 className="text-2xl text-black">
 					{formatCurrency.methods.formatAmount(
-						Math.trunc((totalBalance || 0) * 10 ** 12)
+						Math.trunc((totalBalance || 0) * 10 ** 12),
+						networkInfo
 					)}
 				</h3>
 				{totalBalanceSubCurrency && (
