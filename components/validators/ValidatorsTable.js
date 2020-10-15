@@ -18,6 +18,7 @@ const ValidatorCard = ({
 	returnsPer100KSM,
 	toggleSelected = noop,
 	onProfile = noop,
+	networkInfo,
 }) => (
 	<div
 		className={`
@@ -71,15 +72,21 @@ const ValidatorCard = ({
 			<div className="flex flex-col w-32">
 				<span className="text-xs text-gray-500 font-semibold">Own Stake</span>
 				<h3 className="text-base">
-					{!isNaN(ownStake) && formatCurrency.methods.formatAmount(Math.trunc((ownStake || 0) * 10 ** 12))}
+					{!isNaN(ownStake) &&
+						formatCurrency.methods.formatAmount(
+							Math.trunc((ownStake || 0) * 10 ** 12),
+							networkInfo
+						)}
 				</h3>
 			</div>
 			<div className="flex flex-col w-32">
 				<span className="text-xs text-gray-500 font-semibold">Other Stake</span>
 				<h3 className="text-base">
-					{!isNaN(otherStake) && formatCurrency.methods.formatAmount(
-						Math.trunc((otherStake || 0) * 10 ** 12)
-					)}
+					{!isNaN(otherStake) &&
+						formatCurrency.methods.formatAmount(
+							Math.trunc((otherStake || 0) * 10 ** 12),
+							networkInfo
+						)}
 				</h3>
 			</div>
 			<div className="flex flex-col w-20">
@@ -92,7 +99,8 @@ const ValidatorCard = ({
 				</span>
 				<h3 className="text-base">
 					{formatCurrency.methods.formatAmount(
-						Math.trunc((returnsPer100KSM || 0) * 10 ** 12)
+						Math.trunc((returnsPer100KSM || 0) * 10 ** 12),
+						networkInfo
 					)}
 				</h3>
 			</div>
@@ -104,6 +112,7 @@ const ValidatorsTable = ({
 	validators,
 	selectedValidatorsMap,
 	setSelectedValidators,
+	networkInfo,
 }) => {
 	const router = useRouter();
 	const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(
@@ -122,6 +131,9 @@ const ValidatorsTable = ({
 		});
 	};
 
+	console.log("validatorsTable");
+	console.log(validators);
+
 	return (
 		<div>
 			<div className="mt-5 mb-2 table-container px-6 pb-16 overflow-y-scroll">
@@ -131,13 +143,9 @@ const ValidatorsTable = ({
 						name={validator.name}
 						stashId={validator.stashId}
 						riskScore={Number((validator.riskScore || 0).toFixed(2))}
-						ownStake={
-							validator.ownStake ? Number(validator.ownStake) : "-"
-						}
+						ownStake={validator.ownStake ? Number(validator.ownStake) : "-"}
 						otherStake={
-							validator.othersStake
-								? Number(validator.othersStake)
-								: "-"
+							validator.othersStake ? Number(validator.othersStake) : "-"
 						}
 						commission={validator.commission}
 						nominators={validator.numOfNominators}
@@ -150,6 +158,7 @@ const ValidatorsTable = ({
 								"_blank"
 							)
 						}
+						networkInfo={networkInfo}
 					/>
 				))}
 				{!validators.length && (
