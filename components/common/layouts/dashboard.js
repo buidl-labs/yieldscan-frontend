@@ -19,9 +19,12 @@ const Header = dynamic(
 	{ ssr: false }
 );
 
+import { getNetworkInfo } from "yieldscan.config";
+
 const withDashboardLayout = (children) => {
 	const { setApiInstance } = usePolkadotApi();
 	const { selectedNetwork, setSelectedNetwork } = useSelectedNetwork();
+	const networkInfo = getNetworkInfo(selectedNetwork);
 	const {
 		accounts,
 		setFilteredAccounts,
@@ -137,9 +140,13 @@ const withDashboardLayout = (children) => {
 								});
 							}
 
-							bondedAmount = Number(parseInt(total) / 10 ** 12);
+							bondedAmount = Number(
+								parseInt(total) / 10 ** networkInfo.decimalPlaces
+							);
 							bondedAmountInSubCurrency = await convertCurrency(bondedAmount);
-							activeStake = Number(parseInt(active) / 10 ** 12);
+							activeStake = Number(
+								parseInt(active) / 10 ** networkInfo.decimalPlaces
+							);
 							activeStakeInSubCurrency = await convertCurrency(activeStake);
 						}
 
@@ -149,7 +156,8 @@ const withDashboardLayout = (children) => {
 							 *  so we need to subtract the `bondedBalance``
 							 */
 							freeAmount = Number(
-								parseInt(freeBalance) / 10 ** 12 - bondedAmount
+								parseInt(freeBalance) / 10 ** networkInfo.decimalPlaces -
+									bondedAmount
 							);
 							freeAmountInSubCurrency = await convertCurrency(freeAmount);
 						}
