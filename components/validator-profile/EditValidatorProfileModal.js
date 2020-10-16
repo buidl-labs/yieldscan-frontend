@@ -113,6 +113,7 @@ const EditProfileModal = withSlideIn(
 		styles,
 		goBack,
 		toggleScoreModal,
+		networkInfo,
 	}) => {
 		const toast = useToast();
 		const [newMembers, setMembers] = useState(members || []);
@@ -140,7 +141,7 @@ const EditProfileModal = withSlideIn(
 		const updateProfile = () => {
 			setUpdating(true);
 			axios
-				.put(`/validator/${stashId}/update`, {
+				.put(`${networkInfo.denom}/validator/${stashId}/update`, {
 					members: newMembers,
 					vision: newVision,
 				})

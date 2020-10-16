@@ -2,7 +2,7 @@ import axios from "@lib/axios";
 import { useRouter } from "next/router";
 import { Spinner, useDisclosure } from "@chakra-ui/core";
 import { useState, useEffect } from "react";
-import { useAccounts } from "@lib/store";
+import { useAccounts, useSelectedNetwork } from "@lib/store";
 import TeamMembers from "./TeamMembers";
 import ValidatorViz from "./validator-viz/ValidatorViz";
 import ProfileTabs from "./ProfileTabs";
@@ -14,6 +14,7 @@ import EditValidatorProfileModal from "./EditValidatorProfileModal";
 import ValidatorReturnsCalculator from "./ValidatorReturnsCalculator";
 import { get } from "lodash";
 import TransparencyScoreModal from "./TransparencyScoreModal";
+import { getNetworkInfo } from "yieldscan.config";
 
 const ProfileTabsConfig = {
 	// ACTIVITY: 'Activity',
@@ -23,6 +24,8 @@ const ProfileTabsConfig = {
 
 const ValidatorProfile = () => {
 	const router = useRouter();
+	const { selectedNetwork } = useSelectedNetwork();
+	const networkInfo = getNetworkInfo(selectedNetwork);
 	const {
 		query: { id: validatorStashId },
 	} = router;
@@ -47,7 +50,7 @@ const ValidatorProfile = () => {
 
 	const initData = () => {
 		axios
-			.get(`validator/${validatorStashId}`)
+			.get(`/${networkInfo.coinGeckoDenom}/validator/${validatorStashId}`)
 			.then(({ data }) => {
 				setValidatorData(data);
 				// console.log(data);
@@ -97,6 +100,7 @@ const ValidatorProfile = () => {
 						transparencyScore={validatorData.transparencyScores}
 						isOpen={scoreModalOpen}
 						onClose={closeScoreModal}
+						networkInfo={networkInfo}
 					/>
 					<EditValidatorProfileModal
 						stashId={validatorStashId}
@@ -108,6 +112,7 @@ const ValidatorProfile = () => {
 						isOpen={editProfileOpen}
 						toggleScoreModal={toggleScoreModal}
 						goBack={() => setEditProfileOpen(false)}
+						networkInfo={networkInfo}
 					/>
 				</>
 			) : (
@@ -120,6 +125,7 @@ const ValidatorProfile = () => {
 						openEditProfile={() => setEditProfileOpen(true)}
 						toggleWalletConnect={toggleWalletConnect}
 						vision={get(validatorData, "additionalInfo.vision", "")}
+						networkInfo={networkInfo}
 					/>
 
 					<div className="my-5">
@@ -128,9 +134,11 @@ const ValidatorProfile = () => {
 								tabs={ProfileTabsConfig}
 								selectedTab={selectedTab}
 								setSelectedTab={setSelectedTab}
+								networkInfo={networkInfo}
 							/>
 							<LinkedValidatorsGroup
 								validators={validatorData.linkedValidators}
+								networkInfo={networkInfo}
 							/>
 						</div>
 					</div>
@@ -140,12 +148,14 @@ const ValidatorProfile = () => {
 							{selectedTab === ProfileTabsConfig.TEAM && (
 								<TeamMembers
 									members={get(validatorData, "additionalInfo.members", [])}
+									networkInfo={networkInfo}
 								/>
 							)}
 							{selectedTab === ProfileTabsConfig.VISUALISATION && (
 								<ValidatorViz
 									validatorData={validatorData}
 									networkName="KUSAMA NETWORK"
+									networkInfo={networkInfo}
 								/>
 							)}
 						</div>
@@ -153,9 +163,13 @@ const ValidatorProfile = () => {
 							<div className="mb-2">
 								<ValidatorReturnsCalculator
 									validatorInfo={validatorData.keyStats}
+									networkInfo={networkInfo}
 								/>
 							</div>
-							<ValidatorKeyStats stats={validatorData.keyStats} />
+							<ValidatorKeyStats
+								stats={validatorData.keyStats}
+								networkInfo={networkInfo}
+							/>
 						</div>
 					</div>
 				</>

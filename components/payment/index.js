@@ -49,12 +49,13 @@ const Steps = ({ steps, currentStep }) => (
 	</>
 );
 
-const SuccessfullyBonded = ({ transactionHash, onConfirm }) => {
+const SuccessfullyBonded = ({ transactionHash, onConfirm, networkInfo }) => {
 	return (
 		<div className="mx-10 mt-8 mb-20 flex flex-col text-center items-center">
 			<img src="/images/polkadot-successfully-bonded.png" width="200px" />
 			<h3 className="mt-4 text-2xl">
-				Your staking request is successfully sent to the KSM network
+				Your staking request is successfully sent to the {networkInfo.denom}{" "}
+				network
 			</h3>
 			<span className="mt-1 px-4 text-sm text-gray-500">
 				Your transaction is successfully sent to the network. You can safely
@@ -305,12 +306,14 @@ const Payment = () => {
 				<SuccessfullyBonded
 					transactionHash={transactionHash}
 					onConfirm={handleOnClickForSuccessfulTransaction}
+					networkInfo={networkInfo}
 				/>
 			)}
 			{chainError && (
 				<ChainErrorPage
 					// transactionHash={transactionHash}
 					onConfirm={handleOnClickForSuccessfulTransaction}
+					networkInfo={networkInfo}
 				/>
 			)}
 		</div>

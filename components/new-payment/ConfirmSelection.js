@@ -21,8 +21,9 @@ const ConfirmSelection = ({
 			<>
 				<h3 className="mt-4 text-2xl">Confirm Selection</h3>
 				<span className="mt-1 px-4 text-sm text-gray-500">
-					You are about to stake your KSM on the following validators. Please
-					make sure you understand the risks before proceeding. Read the{" "}
+					You are about to stake your {networkInfo.denom} on the following
+					validators. Please make sure you understand the risks before
+					proceeding. Read the{" "}
 					<Link href="/terms" className="text-blue-400" isExternal>
 						Terms of Service
 					</Link>

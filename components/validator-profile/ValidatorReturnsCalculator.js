@@ -3,7 +3,7 @@ import { get } from "lodash";
 import calculateReward from "@lib/calculate-reward";
 import formatCurrency from "@lib/format-currency";
 
-const ValidatorReturnsCalculator = ({ validatorInfo }) => {	
+const ValidatorReturnsCalculator = ({ validatorInfo, networkInfo }) => {
 	const [amount, _setAmount] = useState(1000);
 	const [returns, setReturns] = useState();
 
@@ -13,15 +13,17 @@ const ValidatorReturnsCalculator = ({ validatorInfo }) => {
 				...validatorInfo,
 				totalStake: validatorInfo.ownStake + validatorInfo.othersStake,
 			};
-	
-			calculateReward([validator], amount, 12, 'months', true).then(result => {
-				setReturns(result.returns);
-			});
+
+			calculateReward([validator], amount, 12, "months", true).then(
+				(result) => {
+					setReturns(result.returns);
+				}
+			);
 		}
 	}, [amount]);
 
 	const setAmount = (value) => {
-		if (value === '') _setAmount(value);
+		if (value === "") _setAmount(value);
 		else _setAmount(Number(value));
 	};
 
@@ -38,7 +40,7 @@ const ValidatorReturnsCalculator = ({ validatorInfo }) => {
 						onChange={(ev) => setAmount(ev.target.value)}
 						className="w-24 text-gray-900 outline-none rounded-lg p-2"
 					/>
-					<span className="text-gray-900">KSM</span>
+					<span className="text-gray-900">{networkInfo.denom}</span>
 				</div>
 			</div>
 			<h5 className="px-3 text-xs text-teal-500 tracking-widest font-medium mt-8">
@@ -48,11 +50,15 @@ const ValidatorReturnsCalculator = ({ validatorInfo }) => {
 				<div className="flex flex-col px-5 pt-3">
 					<h3 className="text-2xl text-black">
 						{formatCurrency.methods.formatAmount(
-							Math.trunc(get(returns, "currency") * 10 ** networkInfo.decimalPlaces)
+							Math.trunc(
+								get(returns, "currency") * 10 ** networkInfo.decimalPlaces
+							),
+							networkInfo
 						)}
 					</h3>
 					<span className="text-xs text-gray-600">
-						${formatCurrency.methods.formatNumber(
+						$
+						{formatCurrency.methods.formatNumber(
 							get(returns, "subCurrency").toFixed(2)
 						)}
 					</span>

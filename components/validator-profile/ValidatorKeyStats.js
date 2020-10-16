@@ -2,7 +2,7 @@ import formatCurrency from "@lib/format-currency";
 import { useEffect, useState } from "react";
 import convertCurrency from "@lib/convert-currency";
 
-const ValidatorKeyStats = ({ stats }) => {
+const ValidatorKeyStats = ({ stats, networkInfo }) => {
 	const [ownStakeSubCurrency, setOwnStakeSubCurrency] = useState();
 	const [otherStakeSubCurrency, setOtherStakeSubCurrency] = useState();
 	useEffect(() => {
@@ -30,7 +30,8 @@ const ValidatorKeyStats = ({ stats }) => {
 				<span className="text-sm text-gray-600">Own Stake</span>
 				<h3 className="text-2xl text-black">
 					{formatCurrency.methods.formatAmount(
-						Math.trunc((stats.ownStake || 0) * 10 ** networkInfo.decimalPlaces)
+						Math.trunc((stats.ownStake || 0) * 10 ** networkInfo.decimalPlaces),
+						networkInfo
 					)}
 				</h3>
 				{ownStakeSubCurrency && (
@@ -46,7 +47,10 @@ const ValidatorKeyStats = ({ stats }) => {
 				<span className="text-sm text-gray-600">Other Stake</span>
 				<h3 className="text-2xl text-black">
 					{formatCurrency.methods.formatAmount(
-						Math.trunc((stats.othersStake || 0) * 10 ** networkInfo.decimalPlaces)
+						Math.trunc(
+							(stats.othersStake || 0) * 10 ** networkInfo.decimalPlaces
+						),
+						networkInfo
 					)}
 				</h3>
 				{otherStakeSubCurrency && (
@@ -71,7 +75,7 @@ const ValidatorKeyStats = ({ stats }) => {
 			{false && (
 				<div className="flex flex-col px-5 pt-3 pb-2">
 					<span className="text-sm text-gray-600">Total Account Balance</span>
-					<h3 className="text-2xl text-black">42000 KSM</h3>
+					<h3 className="text-2xl text-black">42000 {networkInfo.denom}</h3>
 					<span className="text-xs text-gray-600">$24000</span>
 				</div>
 			)}
