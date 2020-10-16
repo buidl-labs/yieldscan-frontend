@@ -33,6 +33,7 @@ const ValidatorCard = ({
 	stakedAmount,
 	estimatedReward,
 	onProfile = noop,
+	networkInfo,
 }) => (
 	<div className="flex justify-around items-center py-2 my-2 rounded-lg cursor-pointer border border-gray-300">
 		<div className="flex">
@@ -63,13 +64,17 @@ const ValidatorCard = ({
 		</div>
 		<div className="flex flex-col">
 			<span className="text-xs text-gray-500 font-semibold">Total Staked</span>
-			<h3 className="text-lg">{stakedAmount.toFixed(1)} KSM</h3>
+			<h3 className="text-lg">
+				{stakedAmount.toFixed(1)} {networkInfo.denom}
+			</h3>
 		</div>
 		<div className="flex flex-col">
 			<span className="text-xs text-gray-500 font-semibold">
 				Estimated Pool Reward
 			</span>
-			<h3 className="text-lg">{estimatedReward.toFixed(4)} KSM</h3>
+			<h3 className="text-lg">
+				{estimatedReward.toFixed(4)} {networkInfo.denom}
+			</h3>
 		</div>
 	</div>
 );
@@ -319,8 +324,8 @@ const FundsUpdate = withSlideIn(
 														</span>
 														<span hidden={type === "unbond"}>
 															We cannot stake this amount since you need to
-															maintain a minimum balance of 0.1 KSM in your
-															account at all times.{" "}
+															maintain a minimum balance of 0.1{" "}
+															{networkInfo.denom} in your account at all times.{" "}
 														</span>
 													</div>
 													<div className="flex items-center border border-gray-200 rounded-lg my-4">
@@ -350,7 +355,7 @@ const FundsUpdate = withSlideIn(
 																	: "text-red-500"
 															} mx-2`}
 														>
-															KSM
+															{networkInfo.denom}
 														</span>
 													</div>
 												</div>
@@ -359,7 +364,10 @@ const FundsUpdate = withSlideIn(
 													<h1 className="text-3xl">
 														{formatCurrency.methods.formatAmount(
 															Math.trunc(
-																Number((totalStakingAmount || 0) * 10 ** networkInfo.decimalPlaces)
+																Number(
+																	(totalStakingAmount || 0) *
+																		10 ** networkInfo.decimalPlaces
+																)
 															),
 															networkInfo
 														)}
@@ -415,6 +423,7 @@ const FundsUpdate = withSlideIn(
 																	"_blank"
 																)
 															}
+															networkInfo={networkInfo}
 														/>
 													))}
 												</div>

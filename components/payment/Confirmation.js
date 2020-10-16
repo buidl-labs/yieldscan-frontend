@@ -68,8 +68,9 @@ const Confirmation = ({
 		<div className="mt-16">
 			<h1 className="text-2xl">Confirmation</h1>
 			<span className="text-gray-600">
-				You are about to stake your KSM on the following validators. Please make
-				sure you understand the risks before proceeding. Read the{" "}
+				You are about to stake your {networkInfo.denom} on the following
+				validators. Please make sure you understand the risks before proceeding.
+				Read the{" "}
 				<Link href="/terms" className="text-blue-400" isExternal>
 					Terms of Service
 				</Link>
@@ -85,7 +86,8 @@ const Confirmation = ({
 						<div className="ml-2 px-3 py-2 bg-teal-500 text-white rounded-full">
 							{formatCurrency.methods.formatAmount(
 								Math.trunc(
-									get(transactionState, "returns.currency", 0) * 10 ** networkInfo.decimalPlaces
+									get(transactionState, "returns.currency", 0) *
+										10 ** networkInfo.decimalPlaces
 								),
 								networkInfo
 							)}

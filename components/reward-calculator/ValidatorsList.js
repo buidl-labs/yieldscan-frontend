@@ -76,16 +76,11 @@ const ValidatorInfo = ({
 						<span className="text-teal-500 text-sm">Stake</span>
 						<h5 className="text-gray-700 text-lg truncate">
 							{formatCurrency.methods.formatAmount(
-								Math.trunc(amountPerValidator.currency * 10 ** networkInfo.decimalPlaces),
+								Math.trunc(
+									amountPerValidator.currency * 10 ** networkInfo.decimalPlaces
+								),
 								networkInfo
 							)}
-							{/* <CountUp
-							end={amountPerValidator.currency}
-							duration={0.5}
-							decimals={3}
-							suffix={" KSM"}
-							preserveValue
-						/> */}
 						</h5>
 						<span hidden className="text-gray-500 text-sm">
 							<CountUp
