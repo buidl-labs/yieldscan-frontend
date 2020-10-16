@@ -351,6 +351,7 @@ const Validators = () => {
 				freeAmount={freeAmount}
 				bondedAmount={get(bondedAmount, "currency", 0)}
 				stashAccount={stashAccount}
+				networkInfo={networkInfo}
 			/>
 			<ValidatorsResult
 				stakingAmount={amount}
@@ -518,6 +519,7 @@ const Validators = () => {
 					bondedAmount={bondedAmount}
 					closePaymentPopover={closePaymentPopover}
 					result={result}
+					networkInfo={networkInfo}
 				/>
 			)}
 		</div>
