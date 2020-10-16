@@ -9,6 +9,7 @@ const MemberCard = ({
 	dailyEarnings,
 	totalAmountStaked,
 	onProfile,
+	networkInfo,
 }) => {
 	return (
 		<div className="flex rounded-lg justify-between border border-gray-200 py-3 px-5 my-1">
@@ -33,7 +34,10 @@ const MemberCard = ({
 					</span>
 					<h3 className="text-base">
 						{formatCurrency.methods.formatAmount(
-							Math.trunc((dailyEarnings || 0) * 10 ** networkInfo.decimalPlaces)
+							Math.trunc(
+								(dailyEarnings || 0) * 10 ** networkInfo.decimalPlaces
+							),
+							networkInfo
 						)}
 					</h3>
 				</div>
@@ -45,7 +49,8 @@ const MemberCard = ({
 						{formatCurrency.methods.formatAmount(
 							Math.trunc(
 								(totalAmountStaked || 0) * 10 ** networkInfo.decimalPlaces
-							)
+							),
+							networkInfo
 						)}
 					</h3>
 				</div>
@@ -60,7 +65,7 @@ const MemberCard = ({
 	);
 };
 
-const NominatorsTable = ({ nominators = [] }) => {
+const NominatorsTable = ({ nominators = [], networkInfo }) => {
 	return (
 		<div className="mt-8">
 			<div>
@@ -74,10 +79,11 @@ const NominatorsTable = ({ nominators = [] }) => {
 						totalAmountStaked={member.nomtotalStake}
 						onProfile={() =>
 							window.open(
-								`https://polkascan.io/kusama/account/${member.nomId}`,
+								`https://polkascan.io/${networkInfo.coinGeckoDenom}/account/${member.nomId}`,
 								"_blank"
 							)
 						}
+						networkInfo={networkInfo}
 					/>
 				))}
 			</div>

@@ -3,13 +3,18 @@ import Top3Section from "./Top3Section";
 import NominationsTable from "./NominatorsTable";
 import { useEffect, useState } from "react";
 import axios from "@lib/axios";
+import { useSelectedNetwork, useNominatorsData } from "@lib/store";
 import formatCurrency from "@lib/format-currency";
 import convertCurrency from "@lib/convert-currency";
+import { getNetworkInfo } from "yieldscan.config";
 
 const Nominators = () => {
 	const [error, setError] = useState(false);
+	const { selectedNetwork } = useSelectedNetwork();
+	const networkInfo = getNetworkInfo(selectedNetwork);
+	const { nomLoading, setNomLoading } = useNominatorsData();
 	const [loading, setLoading] = useState(true);
-	const [nominatorsData, setNominatorsData] = useState([]);
+	const [nominatorsData, setNominatorsData] = useState(undefined);
 	const [
 		totalAmountStakedSubCurrency,
 		setTotalAmountStakedSubCurrency,
@@ -17,10 +22,11 @@ const Nominators = () => {
 	const [totalRewardsSubCurrency, setTotalRewardsSubCurrency] = useState();
 
 	useEffect(() => {
+		setNomLoading(true);
 		setLoading(true);
 		setError(false);
 		axios
-			.get("/actors/nominators")
+			.get(`/${networkInfo.coinGeckoDenom}/actors/nominators`)
 			.then(({ data }) => {
 				setNominatorsData(data);
 			})
@@ -28,12 +34,13 @@ const Nominators = () => {
 				setError(true);
 			})
 			.finally(() => {
+				setNomLoading(false);
 				setLoading(false);
 			});
-	}, []);
+	}, [networkInfo]);
 
 	useEffect(() => {
-		if (nominatorsData.stats) {
+		if (nominatorsData) {
 			convertCurrency(nominatorsData.stats.totalAmountStaked).then((value) =>
 				setTotalAmountStakedSubCurrency(value)
 			);
@@ -43,32 +50,48 @@ const Nominators = () => {
 		}
 	}, [nominatorsData]);
 
-	if (loading) {
-		return (
-			<div className="flex-center w-full h-full">
-				<div className="flex-center flex-col">
-					<Spinner size="xl" color="teal.500" thickness="4px" />
-					<span className="text-sm text-gray-600 mt-5">
-						Fetching nominators...
-					</span>
-				</div>
-			</div>
-		);
-	}
+	// if (nomLoading && loading) {
+	// 	return (
+	// 		<div className="flex-center w-full h-full">
+	// 			<div className="flex-center flex-col">
+	// 				<Spinner size="xl" color="teal.500" thickness="4px" />
+	// 				<span className="text-sm text-gray-600 mt-5">
+	// 					Fetching nominators...
+	// 				</span>
+	// 			</div>
+	// 		</div>
+	// 	);
+	// }
 
-	if (error) {
-		return (
-			<div className="flex-center flex-col mt-40">
-				<div className="text-4xl">🧐</div>
-				<h3>
-					Sorry, something went wrong while fetching! We'll surely look into
-					this.
-				</h3>
-			</div>
-		);
-	}
+	// if (error) {
+	// 	return (
+	// 		<div className="flex-center flex-col mt-40">
+	// 			<div className="text-4xl">🧐</div>
+	// 			<h3>
+	// 				Sorry, something went wrong while fetching! We'll surely look into
+	// 				this.
+	// 			</h3>
+	// 		</div>
+	// 	);
+	// }
 
-	return (
+	return error ? (
+		<div className="flex-center flex-col mt-40">
+			<div className="text-4xl">🧐</div>
+			<h3>
+				Sorry, something went wrong while fetching! We'll surely look into this.
+			</h3>
+		</div>
+	) : loading ? (
+		<div className="flex-center w-full h-full">
+			<div className="flex-center flex-col">
+				<Spinner size="xl" color="teal.500" thickness="4px" />
+				<span className="text-sm text-gray-600 mt-5">
+					Fetching nominators...
+				</span>
+			</div>
+		</div>
+	) : (
 		<div className="px-10 py-5">
 			<h1 className="text-2xl text-gray-800 font-semibold">Nominators</h1>
 
@@ -78,9 +101,15 @@ const Nominators = () => {
 						<p className="text-gray-600 text-xs mb-2 tracking-widest">
 							TOP NOMINATORS
 						</p>
-						<Top3Section nominators={nominatorsData.top3.slice(0, 3)} />
+						<Top3Section
+							nominators={nominatorsData.top3.slice(0, 3)}
+							networkInfo={networkInfo}
+						/>
 					</div>
-					<NominationsTable nominators={nominatorsData.nominatorsInfo} />
+					<NominationsTable
+						nominators={nominatorsData.nominatorsInfo}
+						networkInfo={networkInfo}
+					/>
 				</div>
 				<div className="sticky top-0 self-start pt-8 ml-8">
 					<div
@@ -104,10 +133,21 @@ const Nominators = () => {
 									Math.trunc(
 										nominatorsData.stats.totalAmountStaked *
 											10 ** networkInfo.decimalPlaces
-									).toString()
+									).toString(),
+									networkInfo
 								)
-								.slice(0, -4)}{" "}
-							<span className="text-xl">KSM</span>
+								.slice(0, -4)}
+							<span className="text-xl">
+								{formatCurrency.methods
+									.formatAmount(
+										Math.trunc(
+											nominatorsData.stats.totalAmountStaked *
+												10 ** networkInfo.decimalPlaces
+										).toString(),
+										networkInfo
+									)
+									.slice(-4)}
+							</span>
 						</h1>
 						{totalAmountStakedSubCurrency && (
 							<p className="-mt-2 opacity-50">
@@ -127,10 +167,21 @@ const Nominators = () => {
 									Math.trunc(
 										nominatorsData.stats.totalRewards *
 											10 ** networkInfo.decimalPlaces
-									).toString()
+									).toString(),
+									networkInfo
 								)
-								.slice(0, -4)}{" "}
-							<span className="text-xl">KSM</span>
+								.slice(0, -4)}
+							<span className="text-xl">
+								{formatCurrency.methods
+									.formatAmount(
+										Math.trunc(
+											nominatorsData.stats.totalAmountStaked *
+												10 ** networkInfo.decimalPlaces
+										).toString(),
+										networkInfo
+									)
+									.slice(-4)}
+							</span>
 						</h1>
 						{totalRewardsSubCurrency && (
 							<p className="-mt-2 opacity-75">

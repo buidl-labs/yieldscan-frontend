@@ -4,6 +4,7 @@ import {
 	usePolkadotApi,
 	useSelectedNetwork,
 	useValidatorData,
+	useNominatorsData,
 	useCouncil,
 } from "@lib/store";
 import { get, isNil } from "lodash";
@@ -36,6 +37,7 @@ const currentNetwork = "Not Kusama";
 const Header = ({ isBase }) => {
 	const { selectedNetwork, setSelectedNetwork } = useSelectedNetwork();
 	const { validatorMap, setValidatorMap } = useValidatorData();
+	const { setNominatorsData, setNomLoading } = useNominatorsData();
 	const { setCouncilMembers, setCouncilLoading } = useCouncil();
 	const networkInfo = getNetworkInfo(selectedNetwork);
 	const { setApiInstance } = usePolkadotApi();
@@ -236,6 +238,8 @@ const Header = ({ isBase }) => {
 												if (selectedNetwork !== "Kusama") {
 													setApiInstance(null);
 													setValidatorMap(undefined);
+													// setNominatorsData(undefined);
+													setNomLoading(true);
 													setCookie(null, "networkName", "Kusama");
 													setCouncilMembers(undefined);
 													setCouncilLoading(true);
@@ -267,6 +271,8 @@ const Header = ({ isBase }) => {
 												if (selectedNetwork !== "Polkadot") {
 													setApiInstance(null);
 													setValidatorMap(undefined);
+													// setNominatorsData(undefined);
+													setNomLoading(true);
 													setCookie(null, "networkName", "Polkadot");
 													setCouncilMembers(undefined);
 													setCouncilLoading(true);

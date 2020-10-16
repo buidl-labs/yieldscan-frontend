@@ -9,6 +9,7 @@ const TopNominatorCard = ({
 	totalStake,
 	dailyEarnings,
 	onProfile,
+	networkInfo,
 }) => (
 	<div className="mt-4 px-12 py-4 flex-center flex-col border border-gray-200 rounded-lg shadow-lg">
 		<Identicon address={stashId} size="3.5rem" />
@@ -32,7 +33,8 @@ const TopNominatorCard = ({
 		</span>
 		<h5 className="text-base">
 			{formatCurrency.methods.formatAmount(
-				Math.trunc((dailyEarnings || 0) * 10 ** networkInfo.decimalPlaces)
+				Math.trunc((dailyEarnings || 0) * 10 ** networkInfo.decimalPlaces),
+				networkInfo
 			)}
 		</h5>
 		<span className="text-gray-600 font-semibold text-xs mt-4">
@@ -40,7 +42,8 @@ const TopNominatorCard = ({
 		</span>
 		<h5 className="text-base">
 			{formatCurrency.methods.formatAmount(
-				Math.trunc((totalStake || 0) * 10 ** networkInfo.decimalPlaces)
+				Math.trunc((totalStake || 0) * 10 ** networkInfo.decimalPlaces),
+				networkInfo
 			)}
 		</h5>
 		<span className="text-gray-600 font-semibold text-xs mt-4">
@@ -50,7 +53,7 @@ const TopNominatorCard = ({
 	</div>
 );
 
-const Top3Section = ({ nominators = [] }) => {
+const Top3Section = ({ nominators = [], networkInfo }) => {
 	return (
 		<div className="flex items-center justify-between">
 			{nominators.map((nominator) => (
@@ -67,6 +70,7 @@ const Top3Section = ({ nominators = [] }) => {
 								"_blank"
 							)
 						}
+						networkInfo={networkInfo}
 					/>
 				</div>
 			))}
