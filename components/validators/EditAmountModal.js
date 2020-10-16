@@ -31,6 +31,7 @@ const EditAmountModal = withSlideIn(
 		bondedAmount,
 		amount = "",
 		setAmount,
+		networkInfo,
 	}) => {
 		const [stakingAmount, setStakingAmount] = useState(amount);
 		const [subCurrency, setSubCurrency] = useState(0);
@@ -77,7 +78,8 @@ const EditAmountModal = withSlideIn(
 									<AlertTitle color="red.500">Insufficient Balance</AlertTitle>
 									<AlertDescription color="red.500">
 										We cannot stake this amount since we recommend maintaining a
-										minimum balance of 0.1 KSM in your account at all times.{" "}
+										minimum balance of 0.1 {networkInfo.denom} in your account
+										at all times.{" "}
 										<Popover trigger="hover" usePortal>
 											<PopoverTrigger>
 												<span className="underline cursor-help">Why?</span>
@@ -108,7 +110,11 @@ const EditAmountModal = withSlideIn(
 							>
 								Transferrable Balance:{" "}
 								{formatCurrency.methods.formatAmount(
-									Math.trunc(get(freeAmount, "currency", 0) * 10 ** networkInfo.decimalPlaces)
+									Math.trunc(
+										get(freeAmount, "currency", 0) *
+											10 ** networkInfo.decimalPlaces
+									),
+									networkInfo
 								)}
 							</div>
 							<div className="my-5">
@@ -116,6 +122,7 @@ const EditAmountModal = withSlideIn(
 									value={{ currency: amount, subCurrency: subCurrency }}
 									bonded={bondedAmount}
 									onChange={setStakingAmount}
+									networkInfo={networkInfo}
 								/>
 							</div>
 							<div className="">
