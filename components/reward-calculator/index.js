@@ -48,8 +48,6 @@ const RewardCalculatorPage = () => {
 	const { selectedNetwork } = useSelectedNetwork();
 	const networkInfo = getNetworkInfo(selectedNetwork);
 
-	// console.log("networkInfo");
-	// console.log(networkInfo);
 	const { isOpen, toggle } = useWalletConnect();
 	const setTransactionState = useTransaction(
 		(state) => state.setTransactionState
@@ -289,7 +287,10 @@ const RewardCalculatorPage = () => {
 						>
 							Transferrable Balance:{" "}
 							{formatCurrency.methods.formatAmount(
-								Math.trunc(get(freeAmount, "currency", 0) * 10 ** networkInfo.decimalPlaces),
+								Math.trunc(
+									get(freeAmount, "currency", 0) *
+										10 ** networkInfo.decimalPlaces
+								),
 								networkInfo
 							)}
 						</div>

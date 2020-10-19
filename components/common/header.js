@@ -70,7 +70,6 @@ const Header = ({ isBase }) => {
 
 	useEffect(() => {
 		if (stashAccount) {
-			console.log("inside");
 			createPolkadotAPIInstance(networkInfo.name).then((api) => {
 				setApiInstance(api);
 				api.query.staking
@@ -84,11 +83,6 @@ const Header = ({ isBase }) => {
 			});
 		}
 	}, [stashAccount, networkInfo]);
-
-	// console.log("isNetworkOpen");
-	// console.log(isNetworkOpen);
-	// console.log("stashAccount");
-	// console.log(stashAccount);
 
 	return (
 		<div
