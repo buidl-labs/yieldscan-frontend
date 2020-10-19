@@ -238,7 +238,7 @@ const RewardCalculatorPage = () => {
 
 	return (
 		<div className="flex px-24 pt-12">
-			<WalletConnectPopover isOpen={isOpen} />
+			<WalletConnectPopover isOpen={isOpen} networkInfo={networkInfo} />
 			<div className="w-1/2">
 				<h1 className="font-semibold text-3xl text-gray-800">
 					Calculate Returns

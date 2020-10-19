@@ -10,6 +10,7 @@ import {
 	ModalHeader,
 	Spinner,
 } from "@chakra-ui/core";
+import { encodeAddress, decodeAddress } from "@polkadot/util-crypto";
 import IntroPage from "./Intro";
 import CreateWallet from "./CreateWallet";
 import ImportAccount from "./ImportAccount";
@@ -34,7 +35,7 @@ const WalletConnectStates = {
 	IMPORT: "import",
 };
 
-const WalletConnectPopover = ({ styles }) => {
+const WalletConnectPopover = ({ styles, networkInfo }) => {
 	const { isOpen, close } = useWalletConnect();
 	const [ledgerLoading, setLedgerLoading] = useState(false);
 	const {
@@ -58,6 +59,12 @@ const WalletConnectPopover = ({ styles }) => {
 				if (!accounts.length)
 					throw new Error("Couldn't find any stash or unnassigned accounts.");
 
+				accounts.map((x) => {
+					x.address = encodeAddress(
+						decodeAddress(x.address.toString()),
+						networkInfo.addressPrefix
+					);
+				});
 				setState(WalletConnectStates.CONNECTED);
 				setAccounts(accounts);
 

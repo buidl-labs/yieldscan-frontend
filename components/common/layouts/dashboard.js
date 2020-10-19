@@ -67,7 +67,7 @@ const withDashboardLayout = (children) => {
 							({ account: { address }, ledger }) => {
 								const encodedAddress = encodeAddress(
 									decodeAddress(address.toString()),
-									2
+									networkInfo.addressPrefix
 								);
 								return (
 									ledger &&
@@ -143,11 +143,17 @@ const withDashboardLayout = (children) => {
 							bondedAmount = Number(
 								parseInt(total) / 10 ** networkInfo.decimalPlaces
 							);
-							bondedAmountInSubCurrency = await convertCurrency(bondedAmount);
+							bondedAmountInSubCurrency = await convertCurrency(
+								bondedAmount,
+								networkInfo.denom
+							);
 							activeStake = Number(
 								parseInt(active) / 10 ** networkInfo.decimalPlaces
 							);
-							activeStakeInSubCurrency = await convertCurrency(activeStake);
+							activeStakeInSubCurrency = await convertCurrency(
+								activeStake,
+								networkInfo.denom
+							);
 						}
 
 						if (freeBalance) {
@@ -159,7 +165,10 @@ const withDashboardLayout = (children) => {
 								parseInt(freeBalance) / 10 ** networkInfo.decimalPlaces -
 									bondedAmount
 							);
-							freeAmountInSubCurrency = await convertCurrency(freeAmount);
+							freeAmountInSubCurrency = await convertCurrency(
+								freeAmount,
+								networkInfo.denom
+							);
 						}
 
 						const setStateAndTrack = (details) => {

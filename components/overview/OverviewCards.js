@@ -44,13 +44,14 @@ const OverviewCards = ({
 	}, [stashAccount]);
 	React.useEffect(() => {
 		if (stats.totalAmountStaked) {
-			convertCurrency(stats.totalAmountStaked).then((value) =>
-				setTotalAmountStakedFiat(value)
-			);
+			convertCurrency(
+				stats.totalAmountStaked,
+				networkInfo.denom
+			).then((value) => setTotalAmountStakedFiat(value));
 		}
 
 		if (stats.estimatedRewards) {
-			convertCurrency(stats.estimatedRewards).then((value) =>
+			convertCurrency(stats.estimatedRewards, networkInfo.denom).then((value) =>
 				setEstimatedRewardsFiat(value)
 			);
 		}
@@ -67,7 +68,9 @@ const OverviewCards = ({
 		}
 
 		if (stats.earnings) {
-			convertCurrency(stats.earnings).then((value) => setEarningsFiat(value));
+			convertCurrency(stats.earnings, networkInfo.denom).then((value) =>
+				setEarningsFiat(value)
+			);
 		}
 	}, [stats, compounding]);
 

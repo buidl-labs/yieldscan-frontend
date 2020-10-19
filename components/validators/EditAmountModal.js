@@ -42,9 +42,11 @@ const EditAmountModal = withSlideIn(
 		};
 
 		useEffect(() => {
-			convertCurrency(stakingAmount || 0).then((convertedAmount) => {
-				setSubCurrency(convertedAmount);
-			});
+			convertCurrency(stakingAmount || 0, networkInfo.denom).then(
+				(convertedAmount) => {
+					setSubCurrency(convertedAmount);
+				}
+			);
 		}, [stakingAmount]);
 
 		const totalBalance = bondedAmount + get(freeAmount, "currency", 0);

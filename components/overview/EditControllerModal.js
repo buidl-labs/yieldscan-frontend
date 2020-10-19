@@ -17,7 +17,7 @@ import { encodeAddress, decodeAddress } from "@polkadot/util-crypto";
 import editController from "@lib/polkadot/edit-controller";
 import Identicon from "@components/common/Identicon";
 
-const EditControllerModal = withSlideIn(({ styles, close }) => {
+const EditControllerModal = withSlideIn(({ styles, close, networkInfo }) => {
 	const toast = useToast();
 	const { apiInstance } = usePolkadotApi();
 	const { stashAccount, accounts } = useAccounts();
@@ -63,7 +63,7 @@ const EditControllerModal = withSlideIn(({ styles, close }) => {
 						({ account: { address }, ledger }) => {
 							const encodedAddress = encodeAddress(
 								decodeAddress(address.toString()),
-								2
+								networkInfo.addressPrefix
 							);
 							return (
 								ledger &&
