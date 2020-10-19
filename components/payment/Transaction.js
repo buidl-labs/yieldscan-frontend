@@ -61,7 +61,6 @@ const EditControllerModal = ({
 										}}
 									>
 										<Identicon address={get(account, "address")} size="3rem" />
-										{false && console.log(get(account, "address"))}
 										<div className="ml-2 flex flex-col">
 											<p className="text-gray-800 text-base">
 												{account.meta.name}
@@ -115,9 +114,6 @@ const Transaction = ({
 
 	// TODO: stakingAmount subCurrency version
 	const stakingAmount = get(transactionState, "stakingAmount", 0);
-
-	// console.log("compounding");
-	// console.log(compounding);
 
 	return (
 		<div className="mt-10">

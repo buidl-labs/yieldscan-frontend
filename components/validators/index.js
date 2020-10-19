@@ -84,13 +84,9 @@ const Validators = () => {
 	const [validators, setValidators] = useState(
 		get(validatorMap, "total", undefined)
 	);
-	console.log("validators");
-	console.log(validators);
 	const [filteredValidators, setFilteredValidators] = useState(
 		get(validatorMap, "total", undefined)
 	);
-	console.log("filteredValidators");
-	console.log(filteredValidators);
 	const [advancedMode] = useState(router.query.advanced);
 	const [amount, setAmount] = useState(transactionState.stakingAmount);
 	const [subCurrency, setSubCurrency] = useState(0);
@@ -157,9 +153,7 @@ const Validators = () => {
 	}, [validatorMap, networkInfo]);
 
 	useEffect(() => {
-		console.log("hello");
 		if (validatorMap) {
-			console.log("hello2");
 			setLoading(true);
 			setValidators(validatorMap.total);
 			setFilteredValidators(validatorMap.total);
@@ -326,9 +320,6 @@ const Validators = () => {
 			</div>
 		);
 	}
-
-	console.log("loading");
-	console.log(loading);
 
 	return (
 		<div className="relative h-full px-10 py-5">

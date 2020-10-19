@@ -99,7 +99,9 @@ const ValidatorCard = ({
 				</span>
 				<h3 className="text-base">
 					{formatCurrency.methods.formatAmount(
-						Math.trunc((returnsPer100KSM || 0) * 10 ** networkInfo.decimalPlaces),
+						Math.trunc(
+							(returnsPer100KSM || 0) * 10 ** networkInfo.decimalPlaces
+						),
 						networkInfo
 					)}
 				</h3>
@@ -130,9 +132,6 @@ const ValidatorsTable = ({
 			[stashId]: isNil(selectedValidatorsMap[stashId]) ? validator : null,
 		});
 	};
-
-	console.log("validatorsTable");
-	console.log(validators);
 
 	return (
 		<div>

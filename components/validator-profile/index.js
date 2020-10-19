@@ -53,7 +53,6 @@ const ValidatorProfile = () => {
 			.get(`/${networkInfo.coinGeckoDenom}/validator/${validatorStashId}`)
 			.then(({ data }) => {
 				setValidatorData(data);
-				// console.log(data);
 			})
 			.catch(() => {
 				setError(true);
