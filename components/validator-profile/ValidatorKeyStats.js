@@ -7,12 +7,12 @@ const ValidatorKeyStats = ({ stats, networkInfo }) => {
 	const [otherStakeSubCurrency, setOtherStakeSubCurrency] = useState();
 	useEffect(() => {
 		if (stats.ownStake) {
-			convertCurrency(stats.ownStake).then((value) =>
+			convertCurrency(stats.ownStake, networkInfo.denom).then((value) =>
 				setOwnStakeSubCurrency(value)
 			);
 		}
 		if (stats.othersStake) {
-			convertCurrency(stats.othersStake).then((value) =>
+			convertCurrency(stats.othersStake, networkInfo.denom).then((value) =>
 				setOtherStakeSubCurrency(value)
 			);
 		}

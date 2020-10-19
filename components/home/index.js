@@ -61,7 +61,11 @@ const HomePage = () => {
 					</button>
 				</form>
 			</div>
-			<SocialProofStats networkName={networkInfo.name} />
+			<SocialProofStats
+				networkName={networkInfo.name}
+				networkDenom={networkInfo.denom}
+				networkUrl={networkInfo.coinGeckoDenom}
+			/>
 			<img
 				src="/images/web3foundation_grants_badge_black.png"
 				alt="Web3 Foundation Grants Badge"

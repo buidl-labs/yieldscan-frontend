@@ -14,7 +14,7 @@ const StatCard = ({ stat, description, subText }) => {
 	);
 };
 
-const SocialProofStats = ({ networkName }) => {
+const SocialProofStats = ({ networkName, networkDenom, networkUrl }) => {
 	const [error, setError] = React.useState(false);
 	const [loading, setLoading] = React.useState(true);
 	const [nominatorsData, setNominatorsData] = React.useState([]);
@@ -31,7 +31,7 @@ const SocialProofStats = ({ networkName }) => {
 		setLoading(true);
 		setError(false);
 		axios
-			.get("/actors/nominators")
+			.get(`/${networkUrl}/actors/nominators`)
 			.then(({ data }) => {
 				setNominatorsData(data);
 			})
@@ -45,12 +45,14 @@ const SocialProofStats = ({ networkName }) => {
 
 	React.useEffect(() => {
 		if (nominatorsData.stats) {
-			convertCurrency(nominatorsData.stats.totalAmountStaked).then((value) =>
-				setTotalAmountStakedSubCurrency(value)
-			);
-			convertCurrency(nominatorsData.stats.totalRewards).then((value) =>
-				setTotalRewardsSubCurrency(value)
-			);
+			convertCurrency(
+				nominatorsData.stats.totalAmountStaked,
+				networkDenom
+			).then((value) => setTotalAmountStakedSubCurrency(value));
+			convertCurrency(
+				nominatorsData.stats.totalRewards,
+				networkDenom
+			).then((value) => setTotalRewardsSubCurrency(value));
 		}
 	}, [nominatorsData]);
 

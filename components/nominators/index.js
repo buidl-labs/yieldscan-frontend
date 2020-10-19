@@ -41,12 +41,14 @@ const Nominators = () => {
 
 	useEffect(() => {
 		if (nominatorsData) {
-			convertCurrency(nominatorsData.stats.totalAmountStaked).then((value) =>
-				setTotalAmountStakedSubCurrency(value)
-			);
-			convertCurrency(nominatorsData.stats.totalRewards).then((value) =>
-				setTotalRewardsSubCurrency(value)
-			);
+			convertCurrency(
+				nominatorsData.stats.totalAmountStaked,
+				networkInfo.denom
+			).then((value) => setTotalAmountStakedSubCurrency(value));
+			convertCurrency(
+				nominatorsData.stats.totalRewards,
+				networkInfo.denom
+			).then((value) => setTotalRewardsSubCurrency(value));
 		}
 	}, [nominatorsData]);
 

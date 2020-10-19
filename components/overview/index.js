@@ -80,7 +80,7 @@ const Overview = () => {
 		if (get(stashAccount, "address") && apiInstance) {
 			const kusamaAddress = encodeAddress(
 				decodeAddress(stashAccount.address),
-				2
+				networkInfo.addressPrefix
 			);
 			axios
 				.get(`/${networkInfo.coinGeckoDenom}/user/${kusamaAddress}`)
@@ -244,6 +244,7 @@ const Overview = () => {
 			<EditControllerModal
 				isOpen={editControllerModalOpen}
 				close={closeEditControllerModal}
+				networkInfo={networkInfo}
 			/>
 			<FundsUpdate
 				isOpen={fundsUpdateModalOpen}

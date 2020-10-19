@@ -12,14 +12,14 @@ const CouncilMemberKeyStats = ({
 	const [totalBalanceSubCurrency, setTotalBalanceSubCurrency] = useState();
 	useEffect(() => {
 		if (backingAmount) {
-			convertCurrency(backingAmount).then((value) =>
+			convertCurrency(backingAmount, networkInfo.denom).then((value) =>
 				setBackingSubCurrency(value)
 			);
 		}
 	}, [backingAmount]);
 	useEffect(() => {
 		if (totalBalance) {
-			convertCurrency(totalBalance).then((value) =>
+			convertCurrency(totalBalance, networkInfo.denom).then((value) =>
 				setTotalBalanceSubCurrency(value)
 			);
 		}

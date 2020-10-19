@@ -154,12 +154,16 @@ const FundsUpdate = withSlideIn(
 		}, [amount]);
 
 		useEffect(() => {
-			convertCurrency(amount || 0).then((convertedAmount) => {
-				setSubCurrency(convertedAmount);
-			});
-			convertCurrency(totalStakingAmount || 0).then((convertedAmount) => {
-				setTotalStakingAmountFiat(convertedAmount);
-			});
+			convertCurrency(amount || 0, networkInfo.denom).then(
+				(convertedAmount) => {
+					setSubCurrency(convertedAmount);
+				}
+			);
+			convertCurrency(totalStakingAmount || 0, networkInfo.denom).then(
+				(convertedAmount) => {
+					setTotalStakingAmountFiat(convertedAmount);
+				}
+			);
 		}, [amount, totalStakingAmount]);
 
 		useEffect(() => {

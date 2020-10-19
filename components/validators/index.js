@@ -177,7 +177,7 @@ const Validators = () => {
 	}, [bondedAmount]);
 
 	useEffect(() => {
-		convertCurrency(amount || 0).then((convertedAmount) => {
+		convertCurrency(amount || 0, networkInfo.denom).then((convertedAmount) => {
 			setSubCurrency(convertedAmount);
 		});
 	}, [amount]);

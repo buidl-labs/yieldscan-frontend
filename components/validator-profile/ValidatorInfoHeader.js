@@ -19,11 +19,15 @@ const ValidatorInfoHeader = ({
 	stashAccount,
 	openEditProfile = noop,
 	toggleWalletConnect = noop,
+	networkInfo,
 }) => {
 	const userStashId = get(stashAccount, "address");
 	let userStashKusamaId;
 	if (userStashId) {
-		userStashKusamaId = encodeAddress(decodeAddress(userStashId), 2);
+		userStashKusamaId = encodeAddress(
+			decodeAddress(userStashId),
+			networkInfo.addressPrefix
+		);
 	}
 
 	const openWindow = (url) => {
