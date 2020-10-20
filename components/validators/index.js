@@ -265,7 +265,7 @@ const Validators = () => {
 				timePeriodValue,
 				timePeriodUnit,
 				compounding,
-				bondedAmount
+				networkInfo
 			)
 				.then(setResult)
 				.catch((error) => {

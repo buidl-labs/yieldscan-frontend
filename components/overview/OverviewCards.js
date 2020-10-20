@@ -63,7 +63,7 @@ const OverviewCards = ({
 				12,
 				"months",
 				compounding,
-				0
+				networkInfo
 			).then(({ yieldPercentage }) => setExpectedAPR(yieldPercentage));
 		}
 

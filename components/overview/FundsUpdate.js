@@ -135,7 +135,7 @@ const FundsUpdate = withSlideIn(
 				timePeriodValue,
 				timePeriodUnit,
 				compounding,
-				{ currency: 0 }
+				networkInfo
 			).then((result) => {
 				// setTotalStakingAmount(totalStakingAmount);
 				setEstimatedReturns(get(result, "returns", 0));

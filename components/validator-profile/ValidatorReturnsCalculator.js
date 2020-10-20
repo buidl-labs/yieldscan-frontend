@@ -14,11 +14,16 @@ const ValidatorReturnsCalculator = ({ validatorInfo, networkInfo }) => {
 				totalStake: validatorInfo.ownStake + validatorInfo.othersStake,
 			};
 
-			calculateReward([validator], amount, 12, "months", true).then(
-				(result) => {
-					setReturns(result.returns);
-				}
-			);
+			calculateReward(
+				[validator],
+				amount,
+				12,
+				"months",
+				true,
+				networkInfo
+			).then((result) => {
+				setReturns(result.returns);
+			});
 		}
 	}, [amount]);
 

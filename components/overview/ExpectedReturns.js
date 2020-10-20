@@ -31,8 +31,7 @@ const ExpectedReturns = ({ stats, validators, networkInfo }) => {
 				_timePeriodValue,
 				_timePeriodUnit,
 				compounding,
-				0,
-				networkInfo.denom
+				networkInfo
 			).then((result) => setResult(result));
 		}
 	};
@@ -54,8 +53,7 @@ const ExpectedReturns = ({ stats, validators, networkInfo }) => {
 				timePeriodValue,
 				timePeriodUnit,
 				compounding,
-				0,
-				networkInfo.denom
+				networkInfo
 			).then((result) => setResult(result));
 		}
 	}, [stats, validators, timePeriodUnit, compounding]);
@@ -135,7 +133,10 @@ const ExpectedReturns = ({ stats, validators, networkInfo }) => {
 							<h3 className="text-gray-600 text-lg">Estimated Returns</h3>
 							<h1 className="text-3xl text-gray-900 font-semibold">
 								{formatCurrency.methods.formatAmount(
-									Math.trunc(Number(result.returns.currency || 0) * 10 ** networkInfo.decimalPlaces),
+									Math.trunc(
+										Number(result.returns.currency || 0) *
+											10 ** networkInfo.decimalPlaces
+									),
 									networkInfo
 								)}
 							</h1>
