@@ -138,8 +138,7 @@ const RewardCalculatorPage = () => {
 				timePeriodValue,
 				timePeriodUnit,
 				compounding,
-				bondedAmount,
-				networkInfo.denom
+				networkInfo
 			)
 				.then((result) => {
 					setResult(result);

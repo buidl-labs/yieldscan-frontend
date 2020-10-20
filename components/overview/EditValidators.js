@@ -84,7 +84,9 @@ const ValidatorCard = ({
 						<span className="text-xs text-gray-500">Total Stake</span>
 						<h3 className="text-lg">
 							{formatCurrency.methods.formatAmount(
-								Math.trunc(Number(totalStake || 0) * 10 ** networkInfo.decimalPlaces),
+								Math.trunc(
+									Number(totalStake || 0) * 10 ** networkInfo.decimalPlaces
+								),
 								networkInfo
 							)}
 						</h3>
@@ -94,7 +96,9 @@ const ValidatorCard = ({
 					<span className="text-xs text-gray-500">Est. Pool Reward</span>
 					<h3 className="text-lg">
 						{formatCurrency.methods.formatAmount(
-							Math.trunc(Number(estimatedReward || 0) * 10 ** networkInfo.decimalPlaces),
+							Math.trunc(
+								Number(estimatedReward || 0) * 10 ** networkInfo.decimalPlaces
+							),
 							networkInfo
 						)}
 					</h3>
@@ -161,7 +165,8 @@ const EditValidators = withSlideIn(
 				get(bondedAmount, "currency", 0),
 				12,
 				"months",
-				compounding
+				compounding,
+				networkInfo
 			).then((result) => {
 				setEstimatedReward(result.returns);
 			});
