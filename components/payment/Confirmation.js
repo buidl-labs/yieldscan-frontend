@@ -145,7 +145,8 @@ const Confirmation = ({
 			<Stack isInline>
 				<Icon name="warning" size="32px" color="#F5B100" />
 				<Text>
-					These funds will be locked for a period of 28 eras or 7 days{" "}
+					These funds will be locked for a period of 28 eras or{" "}
+					{networkInfo.lockUpPeriod} days{" "}
 				</Text>
 			</Stack>
 			<button
