@@ -14,6 +14,7 @@ const ConfirmAmountChange = ({
 	onConfirm,
 	transactionHash,
 	handlePopoverClose,
+	networkInfo,
 }) => (
 	<div className="mx-10 mt-8 mb-20 flex flex-col text-center items-center">
 		{!stakingLoading && (
@@ -22,7 +23,7 @@ const ConfirmAmountChange = ({
 					<AlertIcon />
 					Your nominations have been successfully updated.
 					<a
-						href={`https://kusama.subscan.io/block/${transactionHash}`}
+						href={`https://${networkInfo.coinGeckoDenom}.subscan.io/block/${transactionHash}`}
 						className="mt-6 text-gray-500"
 						target="_blank"
 					>

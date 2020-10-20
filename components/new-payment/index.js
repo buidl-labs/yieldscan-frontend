@@ -312,6 +312,7 @@ const PaymentPopover = ({
 							onConfirm={transact}
 							transactionHash={transactionHash}
 							handlePopoverClose={handlePopoverClose}
+							networkInfo={networkInfo}
 						/>
 					)}
 					{processComplete && (
