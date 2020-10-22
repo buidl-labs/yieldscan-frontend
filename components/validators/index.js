@@ -378,7 +378,7 @@ const Validators = () => {
 						<option value="riskScore">Risk Score</option>
 						<option value="commission">Commission</option>
 						<option value="numOfNominators">Nominators</option>
-						<option value="totalStake">Other Stake</option>
+						<option value="othersStake">Other Stake</option>
 					</Select>
 					<div className="flex items-center justify-between items-center ml-2">
 						<button
