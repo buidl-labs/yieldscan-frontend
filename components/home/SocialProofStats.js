@@ -2,6 +2,7 @@ import { Spinner } from "@chakra-ui/core";
 import axios from "@lib/axios";
 import convertCurrency from "@lib/convert-currency";
 import formatCurrency from "@lib/format-currency";
+import millify from "millify";
 import Link from "next/link";
 
 const StatCard = ({ stat, description, subText }) => {
@@ -74,7 +75,7 @@ const SocialProofStats = ({ networkName, networkDenom, networkUrl }) => {
 					loading || isNaN(totalAmountStakedSubCurrency) ? (
 						<Spinner />
 					) : (
-						`$${Math.floor(totalAmountStakedSubCurrency / 10 ** 6)}M+`
+						`$${millify(totalAmountStakedSubCurrency)}+`
 					)
 				}
 				description={`Invested in staking on ${networkName}`}
@@ -109,9 +110,7 @@ const SocialProofStats = ({ networkName, networkDenom, networkUrl }) => {
 					loading || isNaN(totalRewardsSubCurrency) ? (
 						<Spinner />
 					) : (
-						`$${formatCurrency.methods.formatNumber(
-							Math.floor(totalRewardsSubCurrency / 10 ** 3) * 10 ** 3
-						)}+`
+						`$${millify(totalRewardsSubCurrency)}+`
 					)
 				}
 				description="Earned as staking rewards"
