@@ -177,7 +177,7 @@ const Nominators = () => {
 								{formatCurrency.methods
 									.formatAmount(
 										Math.trunc(
-											nominatorsData.stats.totalAmountStaked *
+											nominatorsData.stats.totalRewards *
 												10 ** networkInfo.decimalPlaces
 										).toString(),
 										networkInfo
