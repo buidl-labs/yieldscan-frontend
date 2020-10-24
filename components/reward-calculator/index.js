@@ -341,7 +341,7 @@ const RewardCalculatorPage = () => {
 					networkInfo={networkInfo}
 					onPayment={onPayment}
 				/>
-				<ValidatorsList
+				{/* <ValidatorsList
 					// disableList={!amount || !timePeriodValue || !risk}
 					stakingAmount={amount}
 					validators={get(validatorMap, "total", [])}
@@ -349,7 +349,7 @@ const RewardCalculatorPage = () => {
 					setSelectedValidators={setSelectedValidators}
 					onAdvancedSelection={onAdvancedSelection}
 					networkInfo={networkInfo}
-				/>
+				/> */}
 			</div>
 			{isPaymentPopoverOpen && (
 				<PaymentPopover
