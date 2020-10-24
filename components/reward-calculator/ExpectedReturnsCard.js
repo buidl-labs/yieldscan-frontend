@@ -178,9 +178,9 @@ const ExpectedReturnsCard = ({
 						{stashAccount ? "Stake" : "Connect Wallet to Stake"}
 					</button>
 				</div>
-				<div className="absolute bg-white h-16 w-16 -ml-8 mt-4 rounded-full text-gray-900 flex items-center justify-center shadow-teal left-50">
+				{/* <div className="absolute bg-white h-16 w-16 -ml-8 mt-4 rounded-full text-gray-900 flex items-center justify-center shadow-teal left-50">
 					<ChevronDown />
-				</div>
+				</div> */}
 			</div>
 		</>
 	);
