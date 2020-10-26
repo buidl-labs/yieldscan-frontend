@@ -27,6 +27,7 @@ import {
 	AlertDescription,
 	AlertIcon,
 	AlertTitle,
+	Box,
 	Popover,
 	PopoverArrow,
 	PopoverBody,
@@ -237,123 +238,127 @@ const RewardCalculatorPage = () => {
 	return (
 		<div className="flex px-24 pt-12">
 			<WalletConnectPopover isOpen={isOpen} networkInfo={networkInfo} />
-			<div className="w-1/2">
-				<h1 className="font-semibold text-3xl text-gray-800">
-					Calculate Returns
-				</h1>
-				<div className="mt-10 mx-2">
-					<h3 className="text-xl text-gray-800">Staking Amount</h3>
-					<div className="mt-3">
-						{stashAccount && amount > totalBalance - 0.1 && (
-							<Alert
-								status="error"
-								rounded="md"
-								flex
-								flexDirection="column"
-								alignItems="start"
-								my={4}
-							>
-								<AlertTitle color="red.500">Insufficient Balance</AlertTitle>
-								<AlertDescription color="red.500">
-									{`We cannot stake this amount since we recommend maintaining a
+			<div>
+				<div className="flex">
+					<div className="w-1/2">
+						<h1 className="font-semibold text-3xl text-gray-800">
+							Calculate Returns
+						</h1>
+						<div className="mt-10 mx-2">
+							<h3 className="text-xl text-gray-800">Staking Amount</h3>
+							<div className="mt-3">
+								{stashAccount && amount > totalBalance - 0.1 && (
+									<Alert
+										status="error"
+										rounded="md"
+										flex
+										flexDirection="column"
+										alignItems="start"
+										my={4}
+									>
+										<AlertTitle color="red.500">
+											Insufficient Balance
+										</AlertTitle>
+										<AlertDescription color="red.500">
+											{`We cannot stake this amount since we recommend maintaining a
 									minimum balance of 0.1 ${networkInfo.denom} in your account at all times.`}{" "}
-									<Popover trigger="hover" usePortal>
-										<PopoverTrigger>
-											<span className="underline cursor-help">Why?</span>
-										</PopoverTrigger>
-										<PopoverContent
-											zIndex={50}
-											_focus={{ outline: "none" }}
-											bg="gray.700"
-											border="none"
-										>
-											<PopoverArrow />
-											<PopoverBody>
-												<span className="text-white">
-													This is to ensure that you have a decent amout of
-													funds in your account to pay transaction fees for
-													claiming rewards, unbonding funds, changing on-chain
-													staking preferences, etc.
-												</span>
-											</PopoverBody>
-										</PopoverContent>
-									</Popover>
+											<Popover trigger="hover" usePortal>
+												<PopoverTrigger>
+													<span className="underline cursor-help">Why?</span>
+												</PopoverTrigger>
+												<PopoverContent
+													zIndex={50}
+													_focus={{ outline: "none" }}
+													bg="gray.700"
+													border="none"
+												>
+													<PopoverArrow />
+													<PopoverBody>
+														<span className="text-white">
+															This is to ensure that you have a decent amout of
+															funds in your account to pay transaction fees for
+															claiming rewards, unbonding funds, changing
+															on-chain staking preferences, etc.
+														</span>
+													</PopoverBody>
+												</PopoverContent>
+											</Popover>
+										</AlertDescription>
+									</Alert>
+								)}
+								<div
+									className="m-2 text-gray-600 text-sm"
+									hidden={isNil(stashAccount)}
+								>
+									Transferrable Balance:{" "}
+									{formatCurrency.methods.formatAmount(
+										Math.trunc(
+											get(freeAmount, "currency", 0) *
+												10 ** networkInfo.decimalPlaces
+										),
+										networkInfo
+									)}
+								</div>
+
+								<AmountInput
+									bonded={get(bondedAmount, "currency")}
+									value={{ currency: amount, subCurrency: subCurrency }}
+									networkInfo={networkInfo}
+									onChange={setAmount}
+								/>
+							</div>
+							<h3 className="text-xl mt-10 text-gray-800">Risk Preference</h3>
+							<div className="mt-3">
+								<RiskSelect selected={risk} setSelected={setRisk} />
+							</div>
+							<h3 className="text-xl mt-10 text-gray-800">Time Period</h3>
+							<Alert
+								status="warning"
+								color="#FDB808"
+								backgroundColor="#FFF4DA"
+								borderRadius="8px"
+							>
+								<AlertDescription color="#FDB808">
+									Time period is only used for estimating returns. It doesn’t
+									affect the unbonding period of approximately 7 days.
 								</AlertDescription>
 							</Alert>
-						)}
-						<div
-							className="m-2 text-gray-600 text-sm"
-							hidden={isNil(stashAccount)}
-						>
-							Transferrable Balance:{" "}
-							{formatCurrency.methods.formatAmount(
-								Math.trunc(
-									get(freeAmount, "currency", 0) *
-										10 ** networkInfo.decimalPlaces
-								),
-								networkInfo
-							)}
+							<div className="mt-3">
+								<TimePeriodInput
+									value={timePeriodValue}
+									unit={timePeriodUnit}
+									onChange={setTimePeriod}
+									onUnitChange={setTimePeriodUnit}
+								/>
+							</div>
+							<h3 className="text-xl mt-10 text-gray-800">Compound Rewards</h3>
+							<span className="text-sm text-gray-500">
+								Your rewards will be locked for staking over the specified time
+								period
+							</span>
+							<div className="mt-3 my-10">
+								<CompoundRewardSlider
+									checked={compounding}
+									setChecked={setCompounding}
+								/>
+							</div>
 						</div>
-
-						<AmountInput
-							bonded={get(bondedAmount, "currency")}
-							value={{ currency: amount, subCurrency: subCurrency }}
+					</div>
+					<div className="w-1/2">
+						<ExpectedReturnsCard
+							result={result}
+							stashAccount={stashAccount}
+							calculationDisabled={
+								!totalBalance ||
+								!timePeriodValue ||
+								(amount || 0) > totalBalance - 0.1 ||
+								amount == 0
+							}
+							onWalletConnectClick={toggle}
 							networkInfo={networkInfo}
-							onChange={setAmount}
+							onPayment={onPayment}
 						/>
-					</div>
-					<h3 className="text-xl mt-10 text-gray-800">Risk Preference</h3>
-					<div className="mt-3">
-						<RiskSelect selected={risk} setSelected={setRisk} />
-					</div>
-					<h3 className="text-xl mt-10 text-gray-800">Time Period</h3>
-					<Alert
-						status="warning"
-						color="#FDB808"
-						backgroundColor="#FFF4DA"
-						borderRadius="8px"
-					>
-						<AlertDescription color="#FDB808">
-							Time period is only used for estimating returns. It doesn’t affect
-							the unbonding period of approximately 7 days.
-						</AlertDescription>
-					</Alert>
-					<div className="mt-3">
-						<TimePeriodInput
-							value={timePeriodValue}
-							unit={timePeriodUnit}
-							onChange={setTimePeriod}
-							onUnitChange={setTimePeriodUnit}
-						/>
-					</div>
-					<h3 className="text-xl mt-10 text-gray-800">Compound Rewards</h3>
-					<span className="text-sm text-gray-500">
-						Your rewards will be locked for staking over the specified time
-						period
-					</span>
-					<div className="mt-3 my-10">
-						<CompoundRewardSlider
-							checked={compounding}
-							setChecked={setCompounding}
-						/>
-					</div>
-				</div>
-			</div>
-			<div className="w-1/2">
-				<ExpectedReturnsCard
-					result={result}
-					stashAccount={stashAccount}
-					calculationDisabled={
-						!totalBalance ||
-						!timePeriodValue ||
-						(amount || 0) > totalBalance - 0.1 ||
-						amount == 0
-					}
-					onWalletConnectClick={toggle}
-					networkInfo={networkInfo}
-					onPayment={onPayment}
-				/>
-				{/* <ValidatorsList
+						{/* <ValidatorsList
 					// disableList={!amount || !timePeriodValue || !risk}
 					stakingAmount={amount}
 					validators={get(validatorMap, "total", [])}
@@ -362,23 +367,59 @@ const RewardCalculatorPage = () => {
 					onAdvancedSelection={onAdvancedSelection}
 					networkInfo={networkInfo}
 				/> */}
-				<div className="mt-3">
-					<Alert
-						color="#798594"
-						backgroundColor="white"
-						border="1px solid #E2ECF9"
-						borderRadius="8px"
-					>
-						<AlertIcon name="secureLogo"></AlertIcon>
-						<div>
-							<AlertTitle>Non-custodial & Secure</AlertTitle>
-							<AlertDescription>
-								We do not own your private keys and cannot access your funds
-								without your confirmation.
-							</AlertDescription>
+						<div className="mt-3">
+							<Alert
+								color="#798594"
+								backgroundColor="white"
+								border="1px solid #E2ECF9"
+								borderRadius="8px"
+							>
+								<AlertIcon name="secureLogo"></AlertIcon>
+								<div>
+									<AlertTitle>Non-custodial & Secure</AlertTitle>
+									<AlertDescription>
+										We do not own your private keys and cannot access your funds
+										without your confirmation.
+									</AlertDescription>
+								</div>
+							</Alert>
 						</div>
-					</Alert>
+					</div>
 				</div>
+				<Box pos="fixed" w="100%" zIndex={1}>
+					<div className="fixed w-full bg-white bottom-0 p-10 left-0 flex-center">
+						<button
+							className={`
+						rounded-full font-semibold text-lg px-24 py-4 bg-teal-500 text-white
+						${
+							stashAccount && calculationDisabled
+								? "opacity-75 cursor-not-allowed"
+								: "opacity-100"
+						}
+					`}
+							disabled={false && stashAccount && calculationDisabled}
+							onClick={() => (stashAccount ? onPayment() : toggle())}
+						>
+							{stashAccount ? "Stake" : "Connect Wallet"}
+						</button>
+					</div>
+				</Box>
+				{/* <div className="fixed w-full bg-white bottom-0 p-10 left-0 flex-center">
+					<button
+						className={`
+						rounded-full font-semibold text-lg px-24 py-4 bg-teal-500 text-white
+						${
+							stashAccount && calculationDisabled
+								? "opacity-75 cursor-not-allowed"
+								: "opacity-100"
+						}
+					`}
+						disabled={false && stashAccount && calculationDisabled}
+						onClick={() => (stashAccount ? onPayment() : toggle())}
+					>
+						{stashAccount ? "Stake" : "Connect Wallet"}
+					</button>
+				</div> */}
 			</div>
 			{isPaymentPopoverOpen && (
 				<PaymentPopover
