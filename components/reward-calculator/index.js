@@ -25,6 +25,7 @@ import calculateReward from "@lib/calculate-reward";
 import {
 	Alert,
 	AlertDescription,
+	AlertIcon,
 	AlertTitle,
 	Popover,
 	PopoverArrow,
@@ -306,6 +307,17 @@ const RewardCalculatorPage = () => {
 						<RiskSelect selected={risk} setSelected={setRisk} />
 					</div>
 					<h3 className="text-xl mt-10 text-gray-800">Time Period</h3>
+					<Alert
+						status="warning"
+						color="#FDB808"
+						backgroundColor="#FFF4DA"
+						borderRadius="8px"
+					>
+						<AlertDescription color="#FDB808">
+							Time period is only used for estimating returns. It doesn’t affect
+							the unbonding period of approximately 7 days.
+						</AlertDescription>
+					</Alert>
 					<div className="mt-3">
 						<TimePeriodInput
 							value={timePeriodValue}
@@ -350,6 +362,23 @@ const RewardCalculatorPage = () => {
 					onAdvancedSelection={onAdvancedSelection}
 					networkInfo={networkInfo}
 				/> */}
+				<div className="mt-3">
+					<Alert
+						color="#798594"
+						backgroundColor="white"
+						border="1px solid #E2ECF9"
+						borderRadius="8px"
+					>
+						<AlertIcon name="secureLogo"></AlertIcon>
+						<div>
+							<AlertTitle>Non-custodial & Secure</AlertTitle>
+							<AlertDescription>
+								We do not own your private keys and cannot access your funds
+								without your confirmation.
+							</AlertDescription>
+						</div>
+					</Alert>
+				</div>
 			</div>
 			{isPaymentPopoverOpen && (
 				<PaymentPopover
