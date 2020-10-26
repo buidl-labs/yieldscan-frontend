@@ -160,7 +160,7 @@ const ExpectedReturnsCard = ({
 						}
 					/>
 				</div>
-				<div className="flex mt-4">
+				{/* <div className="flex mt-4">
 					<button
 						className={`
 						rounded-full font-semibold text-lg mt-5 px-8 py-3 bg-white text-teal-500
@@ -177,7 +177,7 @@ const ExpectedReturnsCard = ({
 					>
 						{stashAccount ? "Stake" : "Connect Wallet to Stake"}
 					</button>
-				</div>
+				</div> */}
 				{/* <div className="absolute bg-white h-16 w-16 -ml-8 mt-4 rounded-full text-gray-900 flex items-center justify-center shadow-teal left-50">
 					<ChevronDown />
 				</div> */}
