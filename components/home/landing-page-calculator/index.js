@@ -6,8 +6,14 @@ import { useTransaction } from "@lib/store";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Rifm } from "rifm";
+import EarningsOutput from "./earnings-output";
 
-const LandingPageCalculator = ({ inputValue, setInputValue, networkUrl }) => {
+const LandingPageCalculator = ({
+	inputValue,
+	setInputValue,
+	networkUrl,
+	networkDenom,
+}) => {
 	// const router = useRouter();
 
 	const { setStakingAmount } = useTransaction();
@@ -53,7 +59,7 @@ const LandingPageCalculator = ({ inputValue, setInputValue, networkUrl }) => {
 	};
 
 	const _formatCurrency = (string) =>
-		formatFloatingPointNumber(string, 12) + " KSM";
+		formatFloatingPointNumber(string, 12) + " " + networkDenom;
 
 	useEffect(() => {
 		axios
@@ -133,9 +139,7 @@ const LandingPageCalculator = ({ inputValue, setInputValue, networkUrl }) => {
 							volume is{" "}
 							<span className="text-teal-500 font-semibold">
 								{vol24H
-									? `$${formatCurrency.methods.formatNumber(
-											vol24H.toFixed(2)
-									  )}`
+									? `$${formatCurrency.methods.formatNumber(vol24H.toFixed(2))}`
 									: "..."}
 							</span>
 							.
@@ -148,41 +152,7 @@ const LandingPageCalculator = ({ inputValue, setInputValue, networkUrl }) => {
 					borderRightWidth={1}
 					borderColor="gray-300"
 				/>
-				<Box minW={320} maxW={500}>
-					<div>
-						<FormLabel fontSize="xs" className="text-gray-700">
-							You could be earning
-						</FormLabel>
-						<h2 className="text-2xl text-gray-700 font-bold">29.88% APR</h2>
-					</div>
-					<div>
-						<FormLabel fontSize="xs" className="text-gray-700" mt={8}>
-							Yearly Earning
-						</FormLabel>
-						<div className="flex justify-between">
-							<p className="text-sm text-gray-600">25.000 KSM</p>
-							<p className="text-sm font-medium text-teal-500">$857.00</p>
-						</div>
-					</div>
-					<div>
-						<FormLabel fontSize="xs" className="text-gray-700" mt={6}>
-							Monthly Earning
-						</FormLabel>
-						<div className="flex justify-between">
-							<p className="text-sm text-gray-600">25.000 KSM</p>
-							<p className="text-sm font-medium text-teal-500">$857.00</p>
-						</div>
-					</div>
-					<div>
-						<FormLabel fontSize="xs" className="text-gray-700" mt={6}>
-							Daily Earning
-						</FormLabel>
-						<div className="flex justify-between">
-							<p className="text-sm text-gray-600">25.000 KSM</p>
-							<p className="text-sm font-medium text-teal-500">$857.00</p>
-						</div>
-					</div>
-				</Box>
+				<EarningsOutput />
 			</div>
 			<div className="w-full text-center mt-20">
 				<Button

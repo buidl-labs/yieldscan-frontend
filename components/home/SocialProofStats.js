@@ -42,7 +42,7 @@ const SocialProofStats = ({ networkName, networkDenom, networkUrl }) => {
 			.finally(() => {
 				setLoading(false);
 			});
-	}, []);
+	}, [networkUrl]);
 
 	React.useEffect(() => {
 		if (nominatorsData.stats) {
@@ -55,7 +55,7 @@ const SocialProofStats = ({ networkName, networkDenom, networkUrl }) => {
 				networkDenom
 			).then((value) => setTotalRewardsSubCurrency(value));
 		}
-	}, [nominatorsData]);
+	}, [nominatorsData, networkDenom]);
 
 	if (error) {
 		return (
@@ -75,7 +75,7 @@ const SocialProofStats = ({ networkName, networkDenom, networkUrl }) => {
 					loading || isNaN(totalAmountStakedSubCurrency) ? (
 						<Spinner />
 					) : (
-						`$ ${millify(totalAmountStakedSubCurrency, { precision: 0 })}+`
+						`$ ${millify(totalAmountStakedSubCurrency)}+`
 					)
 				}
 				description={`Invested in staking on ${networkName}`}
