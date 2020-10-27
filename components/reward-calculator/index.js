@@ -245,7 +245,7 @@ const RewardCalculatorPage = () => {
 							Calculate Returns
 						</h1>
 						<div className="mt-10 mx-2">
-							<h3 className="text-xl text-gray-800">Staking Amount</h3>
+							<h3 className="text-xl text-gray-800">I want to invest:</h3>
 							<div className="mt-3">
 								{stashAccount && amount > totalBalance - 0.1 && (
 									<Alert
@@ -307,11 +307,15 @@ const RewardCalculatorPage = () => {
 									onChange={setAmount}
 								/>
 							</div>
-							<h3 className="text-xl mt-10 text-gray-800">Risk Preference</h3>
+							<h3 className="text-xl mt-10 text-gray-800">
+								With a risk level:
+							</h3>
 							<div className="mt-3">
 								<RiskSelect selected={risk} setSelected={setRisk} />
 							</div>
-							<h3 className="text-xl mt-10 text-gray-800">Time Period</h3>
+							<h3 className="text-xl mt-10 text-gray-800">
+								For the time period:
+							</h3>
 							<Alert
 								status="warning"
 								color="#FDB808"
@@ -331,11 +335,13 @@ const RewardCalculatorPage = () => {
 									onUnitChange={setTimePeriodUnit}
 								/>
 							</div>
-							<h3 className="text-xl mt-10 text-gray-800">Compound Rewards</h3>
-							<span className="text-sm text-gray-500">
+							<h3 className="text-xl mt-10 text-gray-800">
+								Lock rewards for compounding?
+							</h3>
+							{/* <span className="text-sm text-gray-500">
 								Your rewards will be locked for staking over the specified time
 								period
-							</span>
+							</span> */}
 							<div className="mt-3 my-10">
 								<CompoundRewardSlider
 									checked={compounding}
@@ -386,7 +392,7 @@ const RewardCalculatorPage = () => {
 						</div>
 					</div>
 				</div>
-				<Box pos="fixed" w="100%" zIndex={1}>
+				<Box pos="fixed" w="100%" zIndex={5}>
 					<div className="fixed w-full bg-white bottom-0 p-10 left-0 flex-center">
 						<button
 							className={`

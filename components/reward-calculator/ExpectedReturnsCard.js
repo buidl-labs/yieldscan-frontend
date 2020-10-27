@@ -66,7 +66,7 @@ const ExpectedReturnsCard = ({
 	return (
 		<>
 			<div className="relative rounded-xl bg-teal-500 shadow-teal text-white p-8">
-				<h1 className="font-semibold text-2xl">Expected Returns</h1>
+				<h1 className="font-semibold text-2xl">Expected Results</h1>
 				<div className="flex flex-wrap mt-2">
 					<ResultCardInsight
 						label="Estimated Returns"
