@@ -162,7 +162,7 @@ const LandingPageCalculator = ({
 					borderRightWidth={1}
 					borderColor="gray-300"
 				/>
-				<EarningsOutput />
+				<EarningsOutput networkDenom={networkDenom} />
 			</div>
 			<div className="w-full text-center mt-20">
 				<Button
