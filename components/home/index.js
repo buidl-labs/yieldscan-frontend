@@ -35,6 +35,7 @@ const HomePage = () => {
 			<LandingPageCalculator
 				inputValue={inputValue}
 				setInputValue={(val) => setInputValue(val)}
+				networkUrl={networkInfo.coinGeckoDenom}
 			/>
 			<SocialProofStats
 				networkName={networkInfo.name}

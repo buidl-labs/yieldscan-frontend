@@ -1,13 +1,19 @@
 import { Box, Button, FormLabel, Input } from "@chakra-ui/core";
 import NetworkPopover from "@components/common/utilities/popovers/network-popover";
+import axios from "@lib/axios";
+import formatCurrency from "@lib/format-currency";
 import { useTransaction } from "@lib/store";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { Rifm } from "rifm";
 
-const LandingPageCalculator = ({ inputValue, setInputValue }) => {
-    // const router = useRouter();
+const LandingPageCalculator = ({ inputValue, setInputValue, networkUrl }) => {
+	// const router = useRouter();
 
-    const { setStakingAmount } = useTransaction();
+	const { setStakingAmount } = useTransaction();
+	const [marketCap, setMarketCap] = useState();
+	const [vol24H, setVol24H] = useState();
+
 	const numberAccept = /[\d.]+/g;
 	const parseNumber = (string) =>
 		(String(string).match(numberAccept) || []).join("");
@@ -46,8 +52,20 @@ const LandingPageCalculator = ({ inputValue, setInputValue }) => {
 		return formatted;
 	};
 
-	const formatCurrency = (string) =>
+	const _formatCurrency = (string) =>
 		formatFloatingPointNumber(string, 12) + " KSM";
+
+	useEffect(() => {
+		axios
+			.get(
+				`https://api.coingecko.com/api/v3/simple/price?ids=${networkUrl}&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true`
+			)
+			.then(({ data }) => {
+				setMarketCap(data[networkUrl].usd_market_cap);
+				setVol24H(data[networkUrl].usd_24h_vol);
+			});
+	});
+
 	return (
 		<form
 			onSubmit={(e) => {
@@ -71,7 +89,7 @@ const LandingPageCalculator = ({ inputValue, setInputValue }) => {
 						</FormLabel>
 						<Rifm
 							accept={/[\d.$]/g}
-							format={formatCurrency}
+							format={_formatCurrency}
 							value={inputValue || 0}
 							onChange={(value) => setInputValue(parseNumber(value))}
 						>
@@ -104,10 +122,23 @@ const LandingPageCalculator = ({ inputValue, setInputValue }) => {
 						<p className="text-sm text-gray-600 w-80">
 							Kusama is an early, unaudited, and unrefined release of Polkadot.
 							The market cap is{" "}
-							<span className="text-teal-500 font-semibold">$309,282,553</span>{" "}
+							<span className="text-teal-500 font-semibold">
+								{marketCap
+									? `$${formatCurrency.methods.formatNumber(
+											marketCap.toFixed(2)
+									  )}`
+									: "..."}
+							</span>{" "}
 							and the <span className="text-gray-700 font-semibold">24h</span>{" "}
 							volume is{" "}
-							<span className="text-teal-500 font-semibold">$23,252,260</span>.
+							<span className="text-teal-500 font-semibold">
+								{vol24H
+									? `$${formatCurrency.methods.formatNumber(
+											vol24H.toFixed(2)
+									  )}`
+									: "..."}
+							</span>
+							.
 						</p>
 					</div>
 				</div>
