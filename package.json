@@ -40,6 +40,8 @@
 		"react-dom": "16.13.1",
 		"react-feather": "^2.0.8",
 		"react-konva": "^16.13.0-3",
+		"react-marquee-slider": "^1.1.2",
+		"rifm": "^0.12.0",
 		"sass": "^1.26.11",
 		"styled-components": "^5.2.0",
 		"zustand": "^3.1.2"

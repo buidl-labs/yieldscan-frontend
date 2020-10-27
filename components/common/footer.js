@@ -10,7 +10,7 @@ const Footer = () => {
 		!accountInfoLoading &&
 		!headerLoading && (
 			<footer className="w-full mb-12 px-8">
-				<hr className="border-2 border-teal-700 my-8 opacity-10" />{" "}
+				<hr className="border border-gray-200 my-8" />{" "}
 				<div className="flex justify-between text-gray-600 px-8">
 					<p>
 						Made with ❤️ by{" "}
