@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Spinner } from "@chakra-ui/core";
+import { Box, Spinner } from "@chakra-ui/core";
 import Identicon from "@components/common/Identicon";
 import { get } from "lodash";
 import formatCurrency from "@lib/format-currency";
@@ -27,13 +27,13 @@ const WalletConnected = ({
 								} cursor-pointer px-3 py-3 mb-2 text-gray-600
 								transition-all duration-300 ease-in-out
 							`}
-								onClick={() => setSelected(account)}
+								onClick={() => onStashSelected(account)}
 							>
 								<Identicon address={get(account, "address")} size="3rem" />
 								{selectedAccount === account &&
 									console.log(get(account, "address"))}
-								<div className="ml-2 flex">
-									<div className="ml-2 flex flex-col">
+								<div className="ml-2 flex w-full">
+									<div className="ml-2 flex-col w-1/2">
 										<p className="text-gray-800 text-base">
 											{account.meta.name}
 										</p>
@@ -49,7 +49,7 @@ const WalletConnected = ({
 											<Spinner />
 										)}
 									</div>
-									<p className="text-xs">
+									<p className="text-xs w-1/2 text-right">
 										{account.address.slice(0, 6) +
 											"...." +
 											account.address.slice(-6)}
@@ -60,7 +60,7 @@ const WalletConnected = ({
 					})}
 				</div>
 			</div>
-			<div className="flex justify-end">
+			{/* <div className="flex justify-end">
 				<button
 					className={`
 						flex items-center px-12 py-3 text-white rounded-lg
@@ -71,7 +71,7 @@ const WalletConnected = ({
 					<span>Proceed</span>
 					{ledgerLoading && <Spinner color="white" className="ml-4" />}
 				</button>
-			</div>
+			</div> */}
 			<style jsx>{`
 				.accounts-container {
 					height: 23rem;
