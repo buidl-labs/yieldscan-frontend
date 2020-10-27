@@ -234,6 +234,11 @@ const RewardCalculatorPage = () => {
 
 	const totalBalance =
 		get(bondedAmount, "currency", 0) + get(freeAmount, "currency", 0);
+	const calculationDisabled =
+		!totalBalance ||
+		!timePeriodValue ||
+		(amount || 0) > totalBalance - 0.1 ||
+		amount == 0;
 
 	return (
 		<div className="flex px-24 pt-12">
@@ -403,7 +408,7 @@ const RewardCalculatorPage = () => {
 								: "opacity-100"
 						}
 					`}
-							disabled={false && stashAccount && calculationDisabled}
+							disabled={stashAccount && calculationDisabled}
 							onClick={() => (stashAccount ? onPayment() : toggle())}
 						>
 							{stashAccount ? "Stake" : "Connect Wallet"}

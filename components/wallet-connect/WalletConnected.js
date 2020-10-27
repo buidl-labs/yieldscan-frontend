@@ -25,9 +25,13 @@ const WalletConnected = ({ accounts, onStashSelected, ledgerLoading }) => {
 							<Identicon address={get(account, "address")} size="3rem" />
 							{selectedAccount === account &&
 								console.log(get(account, "address"))}
-							<div className="ml-2 flex flex-col">
+							<div className="ml-2 flex flex">
 								<p className="text-gray-800 text-base">{account.meta.name}</p>
-								<p className="text-xs">{account.address}</p>
+								<p className="text-xs">
+									{account.address.slice(0, 6) +
+										"...." +
+										account.address.slice(-6)}
+								</p>
 							</div>
 						</div>
 					))}
