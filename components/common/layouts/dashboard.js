@@ -27,19 +27,17 @@ const withDashboardLayout = (children) => {
 	const networkInfo = getNetworkInfo(selectedNetwork);
 	const {
 		accounts,
-		setFilteredAccounts,
+		setAccountsWithBalances,
 		stashAccount,
 		setAccountInfoLoading,
-		setIsFilteringAccounts,
 		setAccountState,
 	} = useAccounts((state) =>
 		pick(state, [
 			"accounts",
-			"setFilteredAccounts",
+			"setAccountsWithBalances",
 			"stashAccount",
-			"setAccountState",
 			"setAccountInfoLoading",
-			"setIsFilteringAccounts",
+			"setAccountState",
 		])
 	);
 	const { stakingAmount, setTransactionState } = useTransaction((state) =>
@@ -47,7 +45,6 @@ const withDashboardLayout = (children) => {
 	);
 
 	useEffect(() => {
-		setIsFilteringAccounts(true);
 		if (accounts && accounts.length > 0) {
 			createPolkadotAPIInstance(selectedNetwork)
 				.then(async (api) => {
@@ -57,32 +54,20 @@ const withDashboardLayout = (children) => {
 						account.address,
 					]);
 
-					api.queryMulti(queries, async (queryResults) => {
-						const ledgerArray = await queryResults;
-						const accountLedgers = accounts.map((account, index) => ({
-							account,
-							ledger: ledgerArray[index],
-						}));
-						const filteredAccounts = accountLedgers.filter(
-							({ account: { address }, ledger }) => {
-								const encodedAddress = encodeAddress(
-									decodeAddress(address.toString()),
-									networkInfo.addressPrefix
-								);
-								return (
-									ledger &&
-									((ledger.value.stash &&
-										ledger.value.stash.toString() === encodedAddress) ||
-										ledger.isNone)
-								);
-							}
-						);
-						const parsedFilteredAccounts = filteredAccounts.map(
-							({ account }) => account
-						);
-						setFilteredAccounts(parsedFilteredAccounts);
-						setIsFilteringAccounts(false);
-					});
+					const accountsWithBalances = await Promise.all(
+						accounts.map(async (account) => {
+							const balanceInfo = await api.derive.balances.all(
+								account.address.toString()
+							);
+							account.address = encodeAddress(
+								decodeAddress(account.address.toString()),
+								networkInfo.addressPrefix
+							);
+							account.balances = balanceInfo;
+							return account;
+						})
+					);
+					setAccountsWithBalances(accountsWithBalances);
 				})
 				.catch((err) => {
 					throw err;
