@@ -49,7 +49,8 @@ const NetworkPopover = ({ isExpanded, hasBorder }) => {
 					className={`relative flex items-center rounded-full  ${
 						hasBorder && "border border-gray-300 p-2 px-4"
 					} font-semibold text-gray-800 z-20`}
-					onClick={() => {
+					onClick={e => {
+						e.preventDefault();
 						setIsNetworkOpen(!isNetworkOpen);
 					}}
 				>

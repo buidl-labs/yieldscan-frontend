@@ -36,6 +36,7 @@ const HomePage = () => {
 				inputValue={inputValue}
 				setInputValue={(val) => setInputValue(val)}
 				networkUrl={networkInfo.coinGeckoDenom}
+				networkDenom={networkInfo.denom}
 			/>
 			<SocialProofStats
 				networkName={networkInfo.name}
