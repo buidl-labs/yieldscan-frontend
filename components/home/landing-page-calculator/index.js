@@ -12,6 +12,7 @@ const LandingPageCalculator = ({
 	setInputValue,
 	networkUrl,
 	networkDenom,
+	networkInfo
 }) => {
 	const router = useRouter();
 
@@ -125,7 +126,10 @@ const LandingPageCalculator = ({
 									/>
 								)}
 							</Rifm>
-							<p className="text-teal-500 text-xs font-semibold absolute z-20 left-0 ml-8 mb-6" style={{bottom: "3px"}}>
+							<p
+								className="text-teal-500 text-xs font-semibold absolute z-20 left-0 ml-8 mb-6"
+								style={{ bottom: "3px" }}
+							>
 								$
 								{formatFloatingPointNumber(
 									(inputValue * tokenPrice).toFixed(2)
@@ -162,7 +166,12 @@ const LandingPageCalculator = ({
 					borderRightWidth={1}
 					borderColor="gray-300"
 				/>
-				<EarningsOutput networkDenom={networkDenom} />
+				<EarningsOutput
+					networkDenom={networkDenom}
+					networkUrl={networkUrl}
+					networkInfo={networkInfo}
+					inputValue={inputValue}
+				/>
 			</div>
 			<div className="w-full text-center mt-20">
 				<Button
