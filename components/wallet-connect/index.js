@@ -111,9 +111,6 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 		setStashAccount(stashAccount);
 	};
 
-	console.log("wallet state");
-	console.log(state);
-
 	return (
 		<Modal
 			isOpen={isOpen}
@@ -150,22 +147,20 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 						!isFilteringAccounts &&
 						state === WalletConnectStates.CONNECTED && (
 							<h3 className="px-3 text-2xl text-left self-start">
-								Select Account for Staking
+								Select Account
 							</h3>
 						)
 					)}
 				</ModalHeader>
-				{!isFilteringAccounts && state === WalletConnectStates.CONNECTED && (
-					<ModalCloseButton
-						onClick={close}
-						boxShadow="0 0 0 0 #fff"
-						color="gray.400"
-						backgroundColor="gray.100"
-						rounded="1rem"
-						mt={4}
-						mr={4}
-					/>
-				)}
+				<ModalCloseButton
+					onClick={close}
+					boxShadow="0 0 0 0 #fff"
+					color="gray.400"
+					backgroundColor="gray.100"
+					rounded="1rem"
+					mt={4}
+					mr={4}
+				/>
 				<ModalBody>
 					{state === WalletConnectStates.INTRO ? (
 						<IntroPage
