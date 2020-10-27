@@ -52,6 +52,34 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 		trackEvent(Events.INTENT_CONNECT_WALLET);
 	}, []);
 
+	useEffect(() => {
+		getPolkadotExtensionInfo()
+			.then(({ isExtensionAvailable, accounts = [] }) => {
+				if (!isExtensionAvailable) {
+				} else {
+					if (!accounts.length)
+						throw new Error("Couldn't find any stash or unnassigned accounts.");
+
+					accounts.map((x) => {
+						x.address = encodeAddress(
+							decodeAddress(x.address.toString()),
+							networkInfo.addressPrefix
+						);
+					});
+					setState(WalletConnectStates.CONNECTED);
+					setAccounts(accounts);
+
+					trackEvent(Events.WALLET_CONNECTED, {
+						userAccounts: accounts.map((account) => account.address),
+					});
+				}
+			})
+			.catch((error) => {
+				// TODO: handle error properly using UI toast
+				alert(error);
+			});
+	}, []);
+
 	const onConnected = () => {
 		getPolkadotExtensionInfo()
 			.then(({ isExtensionAvailable, accounts = [] }) => {
@@ -82,6 +110,9 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 		if (stashAccount) close();
 		setStashAccount(stashAccount);
 	};
+
+	console.log("wallet state");
+	console.log(state);
 
 	return (
 		<Modal
