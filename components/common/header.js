@@ -200,7 +200,7 @@ const Header = ({ isBase }) => {
 										<img
 											src={`/images/${networkInfo.coinGeckoDenom}-logo.png`}
 											alt={`${networkInfo.coinGeckoDenom}-logo`}
-											className="mr-2 w-6"
+											className="mr-2 w-6 rounded-full"
 										/>
 										<ChevronDown size="20px" />
 									</button>

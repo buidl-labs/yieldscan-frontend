@@ -14,7 +14,7 @@ const LandingPageCalculator = ({
 	networkUrl,
 	networkDenom,
 }) => {
-	// const router = useRouter();
+	const router = useRouter();
 
 	const { setStakingAmount } = useTransaction();
 	const [marketCap, setMarketCap] = useState();
