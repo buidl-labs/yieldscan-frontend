@@ -20,8 +20,8 @@ const HomePage = () => {
 	const [inputValue, setInputValue] = React.useState(stakingAmount || 1000);
 
 	React.useEffect(() => {
-		setStakingAmount(null);
-	}, []);
+		setStakingAmount(inputValue);
+	}, [inputValue]);
 	return (
 		<div className="pt-12 w-full min-h-full px-4 sm:px-8 md:px-12 lg:px-20 xl:px-32 flex flex-col items-center">
 			<div className="w-full max-w-65-rem">
