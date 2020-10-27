@@ -1,8 +1,14 @@
 import { Box, FormLabel } from "@chakra-ui/core";
 import axios from "@lib/axios";
 import calculateReward from "@lib/calculate-reward";
-import { useTransaction, useValidatorData } from "@lib/store";
-import { get, isNil, keyBy, mapValues } from "lodash";
+import {
+	useYearlyEarning,
+	useMonthlyEarning,
+	useDailyEarning,
+	useValidatorData,
+    useTransaction,
+} from "@lib/store";
+import { cloneDeep, get, isNil, keyBy, mapValues } from "lodash";
 import { useEffect, useState } from "react";
 import CountUp from "react-countup";
 
@@ -12,12 +18,28 @@ const EarningsOutput = ({
 	inputValue,
 	networkInfo,
 }) => {
-    const [yearlyEarning, setYearlyEarning] = useState({});
-    const [monthlyEarning, setMonthlyEarning] = useState({});
-    const [dailyEarning, setDailyEarning] = useState({});
+    const transactionState = useTransaction();
+	const [risk, setRisk] = useState(transactionState.riskPreference || "Medium");
+	const yearlyEarning = useYearlyEarning((state) => state.yearlyEarning);
+	const setYearlyEarning = useYearlyEarning((state) => state.setYearlyEarning);
 
-	const { validatorMap, setValidatorMap } = useValidatorData();
+	const monthlyEarning = useMonthlyEarning((state) => state.monthlyEarning);
+	const setMonthlyEarning = useMonthlyEarning(
+		(state) => state.setMonthlyEarning
+	);
+
+	const dailyEarning = useDailyEarning((state) => state.dailyEarning);
+	const setDailyEarning = useDailyEarning((state) => state.setDailyEarning);
+
 	const [selectedValidators, setSelectedValidators] = useState({});
+	const { validatorMap, setValidatorMap } = useValidatorData();
+
+	useEffect(() => {
+		if (get(validatorMap, risk)) {
+			const selectedValidators = cloneDeep(validatorMap[risk]);
+			setSelectedValidators(selectedValidators);
+		}
+	}, [validatorMap, risk, setSelectedValidators]);
 
 	useEffect(() => {
 		if (!validatorMap) {
@@ -54,7 +76,7 @@ const EarningsOutput = ({
 			networkInfo
 		)
 			.then((result) => {
-                setYearlyEarning(result);
+				setYearlyEarning(result);
 			})
 			.catch((error) => {
 				// TODO: handle error gracefully with UI toast
@@ -99,96 +121,112 @@ const EarningsOutput = ({
 					You could be earning
 				</FormLabel>
 				<h2 className="text-2xl text-gray-700 font-bold">
-					<CountUp
-						end={get(yearlyEarning, "yieldPercentage") || 0}
-						duration={0.5}
-						decimals={2}
-						separator=","
-						suffix={`% APR`}
-						preserveValue
-					/>
+					{!isNil(yearlyEarning) ? (
+						<CountUp
+							end={get(yearlyEarning, "yieldPercentage") || 0}
+							duration={0.5}
+							decimals={2}
+							separator=","
+							suffix={`% APR`}
+							preserveValue
+						/>
+					) : (
+						"Loading..."
+					)}
 				</h2>
 			</div>
 			<div>
 				<FormLabel fontSize="xs" className="text-gray-700" mt={8}>
 					Yearly Earning
 				</FormLabel>
-				<div className="flex justify-between">
-					<p className="text-sm text-gray-600">
-						<CountUp
-							end={get(yearlyEarning, "returns.currency") || 0}
-							duration={0.5}
-							decimals={3}
-							separator=","
-							suffix={` ${networkDenom}`}
-							preserveValue
-						/>
-					</p>
-					<p className="text-sm font-medium text-teal-500">
-						<CountUp
-							end={get(yearlyEarning, "returns.subCurrency") || 0}
-							duration={0.5}
-							decimals={2}
-							separator=","
-							prefix={`$`}
-							preserveValue
-						/>
-					</p>
-				</div>
+				{!isNil(yearlyEarning) ? (
+					<div className="flex justify-between">
+						<p className="text-sm text-gray-600">
+							<CountUp
+								end={get(yearlyEarning, "returns.currency") || 0}
+								duration={0.5}
+								decimals={3}
+								separator=","
+								suffix={` ${networkDenom}`}
+								preserveValue
+							/>
+						</p>
+						<p className="text-sm font-medium text-teal-500">
+							<CountUp
+								end={get(yearlyEarning, "returns.subCurrency") || 0}
+								duration={0.5}
+								decimals={2}
+								separator=","
+								prefix={`$`}
+								preserveValue
+							/>
+						</p>
+					</div>
+				) : (
+					<p>Loading...</p>
+				)}
 			</div>
 			<div>
 				<FormLabel fontSize="xs" className="text-gray-700" mt={6}>
 					Monthly Earning
 				</FormLabel>
-				<div className="flex justify-between">
-					<p className="text-sm text-gray-600">
-						<CountUp
-							end={get(monthlyEarning, "returns.currency") || 0}
-							duration={0.5}
-							decimals={3}
-							separator=","
-							suffix={` ${networkDenom}`}
-							preserveValue
-						/>
-					</p>
-					<p className="text-sm font-medium text-teal-500">
-						<CountUp
-							end={get(monthlyEarning, "returns.subCurrency") || 0}
-							duration={0.5}
-							decimals={2}
-							separator=","
-							prefix={`$`}
-							preserveValue
-						/>
-					</p>
-				</div>
+				{!isNil(monthlyEarning) ? (
+					<div className="flex justify-between">
+						<p className="text-sm text-gray-600">
+							<CountUp
+								end={get(monthlyEarning, "returns.currency") || 0}
+								duration={0.5}
+								decimals={3}
+								separator=","
+								suffix={` ${networkDenom}`}
+								preserveValue
+							/>
+						</p>
+						<p className="text-sm font-medium text-teal-500">
+							<CountUp
+								end={get(monthlyEarning, "returns.subCurrency") || 0}
+								duration={0.5}
+								decimals={2}
+								separator=","
+								prefix={`$`}
+								preserveValue
+							/>
+						</p>
+					</div>
+				) : (
+					<p>Loading...</p>
+				)}
 			</div>
 			<div>
 				<FormLabel fontSize="xs" className="text-gray-700" mt={6}>
 					Daily Earning
 				</FormLabel>
-				<div className="flex justify-between">
-					<p className="text-sm text-gray-600">
-						<CountUp
-							end={get(dailyEarning, "returns.currency") || 0}
-							duration={0.5}
-							decimals={3}
-							separator=","
-							suffix={` ${networkDenom}`}
-							preserveValue
-						/>
-					</p>
-					<p className="text-sm font-medium text-teal-500">
-						<CountUp
-							end={get(dailyEarning, "returns.subCurrency") || 0}
-							duration={0.5}
-							decimals={2}
-							separator=","
-							prefix={`$`}
-							preserveValue
-						/>
-					</p>
-				</div>
+				{!isNil(dailyEarning) ? (
+					<div className="flex justify-between">
+						<p className="text-sm text-gray-600">
+							<CountUp
+								end={get(dailyEarning, "returns.currency") || 0}
+								duration={0.5}
+								decimals={3}
+								separator=","
+								suffix={` ${networkDenom}`}
+								preserveValue
+							/>
+						</p>
+						<p className="text-sm font-medium text-teal-500">
+							<CountUp
+								end={get(dailyEarning, "returns.subCurrency") || 0}
+								duration={0.5}
+								decimals={2}
+								separator=","
+								prefix={`$`}
+								preserveValue
+							/>
+						</p>
+					</div>
+				) : (
+					<p>Loading...</p>
+				)}
 			</div>
 		</Box>
 	);
