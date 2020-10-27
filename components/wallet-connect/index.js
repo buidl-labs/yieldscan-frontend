@@ -39,9 +39,8 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 	const { isOpen, close } = useWalletConnect();
 	const [ledgerLoading, setLedgerLoading] = useState(false);
 	const {
-		isFilteringAccounts,
-		filteredAccounts,
 		accounts,
+		accountsWithBalances,
 		setAccounts,
 		setStashAccount,
 		setAccountState,
@@ -116,12 +115,8 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 			isOpen={isOpen}
 			onClose={close}
 			isCentered
-			closeOnEsc={
-				!isFilteringAccounts && state === WalletConnectStates.CONNECTED
-			}
-			closeOnOverlayClick={
-				!isFilteringAccounts && state === WalletConnectStates.CONNECTED
-			}
+			closeOnEsc={true}
+			closeOnOverlayClick={true}
 		>
 			<ModalOverlay />
 			<ModalContent
@@ -144,7 +139,6 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 							<span>Wallet Connect</span>
 						</div>
 					) : (
-						!isFilteringAccounts &&
 						state === WalletConnectStates.CONNECTED && (
 							<h3 className="px-3 text-2xl text-left self-start">
 								Select Account
@@ -167,7 +161,7 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 							onConnected={onConnected}
 							onDisclaimer={() => setState(WalletConnectStates.DISCLAIMER)}
 						/>
-					) : isFilteringAccounts ? (
+					) : !accounts ? (
 						<div className="flex-center w-full h-full min-h-26-rem">
 							<div className="flex-center flex-col">
 								<Spinner size="xl" color="teal.500" thickness="4px" />
@@ -179,9 +173,14 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 					) : (
 						state === WalletConnectStates.CONNECTED && (
 							<WalletConnected
-								accounts={filteredAccounts}
+								accounts={
+									accountsWithBalances !== null
+										? accountsWithBalances
+										: accounts
+								}
 								ledgerLoading={ledgerLoading}
 								onStashSelected={onStashSelected}
+								networkInfo={networkInfo}
 							/>
 						)
 					)}
