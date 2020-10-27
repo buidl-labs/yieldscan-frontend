@@ -1,7 +1,6 @@
-import { Box, Button, FormLabel, Input } from "@chakra-ui/core";
+import { Box, Button, FormLabel, Input, InputGroup } from "@chakra-ui/core";
 import NetworkPopover from "@components/common/utilities/popovers/network-popover";
 import axios from "@lib/axios";
-import formatCurrency from "@lib/format-currency";
 import { useTransaction } from "@lib/store";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -19,6 +18,7 @@ const LandingPageCalculator = ({
 	const { setStakingAmount } = useTransaction();
 	const [marketCap, setMarketCap] = useState();
 	const [vol24H, setVol24H] = useState();
+	const [tokenPrice, setTokenPrice] = useState(0);
 
 	const numberAccept = /[\d.]+/g;
 	const parseNumber = (string) =>
@@ -67,6 +67,7 @@ const LandingPageCalculator = ({
 				`https://api.coingecko.com/api/v3/simple/price?ids=${networkUrl}&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true`
 			)
 			.then(({ data }) => {
+				setTokenPrice(data[networkUrl].usd);
 				setMarketCap(data[networkUrl].usd_market_cap);
 				setVol24H(data[networkUrl].usd_24h_vol);
 			});
@@ -93,33 +94,44 @@ const LandingPageCalculator = ({
 						<FormLabel fontSize="xs" className="text-gray-700" mt={8}>
 							Your Investment
 						</FormLabel>
-						<Rifm
-							accept={/[\d.$]/g}
-							format={_formatCurrency}
-							value={inputValue || 0}
-							onChange={(value) => setInputValue(parseNumber(value))}
-						>
-							{({ value, onChange }) => (
-								// type=number is not allowed
-								<Input
-									type="tel"
-									rounded="md"
-									py={6}
-									px={8}
-									my={2}
-									mr={4}
-									maxW={500}
-									placeholder={`0`}
-									value={value}
-									onChange={onChange}
-									className="text-gray-700"
-									fontSize="xl"
-									fontWeight="medium"
-									variant="filled"
-									isRequired
-								/>
-							)}
-						</Rifm>
+
+						<InputGroup>
+							<Rifm
+								accept={/[\d.$]/g}
+								format={_formatCurrency}
+								value={inputValue || 0}
+								onChange={(value) => setInputValue(parseNumber(value))}
+							>
+								{({ value, onChange }) => (
+									// type=number is not allowed
+									<Input
+										type="tel"
+										rounded="md"
+										pt={6}
+										pb={10}
+										px={8}
+										mt={2}
+										mb={4}
+										mr={4}
+										maxW={500}
+										placeholder={`0`}
+										value={value}
+										onChange={onChange}
+										className="text-gray-700"
+										fontSize="xl"
+										fontWeight="medium"
+										variant="filled"
+										isRequired
+									/>
+								)}
+							</Rifm>
+							<p className="text-teal-500 text-xs font-semibold absolute z-20 left-0 ml-8 mb-6" style={{bottom: "3px"}}>
+								$
+								{formatFloatingPointNumber(
+									(inputValue * tokenPrice).toFixed(2)
+								)}
+							</p>
+						</InputGroup>
 					</div>
 					<div>
 						<FormLabel fontSize="xs" className="text-gray-700" mt={8}>
@@ -128,18 +140,16 @@ const LandingPageCalculator = ({
 						<p className="text-sm text-gray-600 w-80">
 							Kusama is an early, unaudited, and unrefined release of Polkadot.
 							The market cap is{" "}
-							<span className="text-teal-500 font-semibold">
+							<span className="text-teal-500">
 								{marketCap
-									? `$${formatCurrency.methods.formatNumber(
-											marketCap.toFixed(2)
-									  )}`
+									? `$${formatFloatingPointNumber(marketCap.toFixed(2))}`
 									: "..."}
 							</span>{" "}
 							and the <span className="text-gray-700 font-semibold">24h</span>{" "}
 							volume is{" "}
-							<span className="text-teal-500 font-semibold">
+							<span className="text-teal-500">
 								{vol24H
-									? `$${formatCurrency.methods.formatNumber(vol24H.toFixed(2))}`
+									? `$${formatFloatingPointNumber(vol24H.toFixed(2))}`
 									: "..."}
 							</span>
 							.
