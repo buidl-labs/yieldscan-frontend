@@ -43,13 +43,14 @@ const Header = ({ isBase }) => {
 	const { setApiInstance } = usePolkadotApi();
 	const { isOpen, toggle } = useWalletConnect();
 	const {
-		filteredAccounts,
+		accounts,
+		accountsWithBalances,
 		stashAccount,
 		freeAmount,
 		accountInfoLoading,
 		setStashAccount,
 		setAccounts,
-		setFilteredAccounts,
+		setAccountsWithBalances,
 		setAccountInfoLoading,
 	} = useAccounts();
 	const { headerLoading } = useHeaderLoading();
@@ -59,14 +60,27 @@ const Header = ({ isBase }) => {
 		onToggle: toggleEditControllerModal,
 	} = useDisclosure();
 
+	const [accountsWithoutCurrent, setAccountsWithoutCurrent] = useState([]);
+
 	const stashAddress = get(stashAccount, "address");
-	const accountsWithoutCurrent = filteredAccounts.filter(
-		(account) => stashAddress && account.address !== stashAddress
-	);
 
 	const [isStashPopoverOpen, setIsStashPopoverOpen] = useState(false);
 	const [isNetworkOpen, setIsNetworkOpen] = useState(false);
 	const [isBonded, setIsBonded] = useState(false);
+
+	useEffect(() => {
+		if (accounts) {
+			const accountsWithoutCurrent =
+				accountsWithBalances !== null
+					? accountsWithBalances.filter(
+							(account) => stashAddress && account.address !== stashAddress
+					  )
+					: accounts.filter(
+							(account) => stashAddress && account.address !== stashAddress
+					  );
+			setAccountsWithoutCurrent(accountsWithoutCurrent);
+		}
+	}, [stashAccount, networkInfo]);
 
 	useEffect(() => {
 		if (stashAccount) {
@@ -240,8 +254,8 @@ const Header = ({ isBase }) => {
 													setCouncilMembers(undefined);
 													setCouncilLoading(true);
 													setStashAccount(null);
-													setAccounts([]);
-													setFilteredAccounts([]);
+													setAccounts(null);
+													setAccountsWithBalances(null);
 													setAccountInfoLoading(false);
 													setSelectedNetwork("Kusama");
 												}
@@ -273,8 +287,8 @@ const Header = ({ isBase }) => {
 													setCouncilMembers(undefined);
 													setCouncilLoading(true);
 													setStashAccount(null);
-													setAccounts([]);
-													setFilteredAccounts([]);
+													setAccounts(null);
+													setAccountsWithBalances([]);
 													setAccountInfoLoading(false);
 													setSelectedNetwork("Polkadot");
 												}
