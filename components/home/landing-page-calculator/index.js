@@ -123,6 +123,7 @@ const LandingPageCalculator = ({
 										fontWeight="medium"
 										variant="filled"
 										isRequired
+										autoFocus
 									/>
 								)}
 							</Rifm>

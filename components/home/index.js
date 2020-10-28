@@ -1,15 +1,14 @@
-import { Box, Button, FormLabel, Image, Input, Link } from "@chakra-ui/core";
+import { Box, Button, Image, Link } from "@chakra-ui/core";
+import { Link as ScrollLink, animateScroll as scroll } from "react-scroll";
 import Footer from "@components/common/footer";
 import { useTransaction, useSelectedNetwork } from "@lib/store";
-import { getNetworkInfo, networks } from "../../yieldscan.config";
-import { useRouter } from "next/router";
+import { getNetworkInfo } from "../../yieldscan.config";
 import SocialProofStats from "./SocialProofStats";
-import NetworkPopover from "@components/common/utilities/popovers/network-popover";
-import { Rifm } from "rifm";
 import LandingPageCalculator from "./landing-page-calculator";
 import Testimonials from "./testimonials";
 import FAQs from "./FAQs";
 import SupportedNetworks from "./SupportedNetworks";
+import { ArrowUp, ChevronRight } from "react-feather";
 
 window.setImmediate = (cb) => cb();
 
@@ -19,17 +18,53 @@ const HomePage = () => {
 	const { stakingAmount, setStakingAmount } = useTransaction();
 	const [inputValue, setInputValue] = React.useState(stakingAmount || 1000);
 
+	const [showScroll, setShowScroll] = React.useState(false);
+
+	const scrollToTop = () => {
+		scroll.scrollToTop();
+	};
+
+	const checkScrollTop = () => {
+		if (!showScroll && window.pageYOffset > 400) {
+			setShowScroll(true);
+		} else if (showScroll && window.pageYOffset <= 400) {
+			setShowScroll(false);
+		}
+	};
+
 	React.useEffect(() => {
 		setStakingAmount(inputValue);
 	}, [inputValue]);
+
+	window.addEventListener("scroll", checkScrollTop);
+
 	return (
 		<div className="pt-12 w-full min-h-full px-4 sm:px-8 md:px-12 lg:px-20 xl:px-32 flex flex-col items-center">
+			<button
+				className={`fixed bottom-0 z-20 mb-8 px-4 py-2 bg-gray-700 rounded-full text-white flex items-center justify-center transition ease-in-out duration-500 ${
+					showScroll ? "opacity-75 hover:opacity-100" : "opacity-0"
+				}`}
+				onClick={scrollToTop}
+			>
+				<ArrowUp className="mr-2" />
+				Scroll to top
+			</button>
 			<div className="w-full max-w-65-rem">
 				<h1 className="text-4xl text-gray-700 font-bold text-center">
-					Simple. Non-custodial. Secure.
+					Designed to maximize staking yield
 				</h1>
-				<p className="text-center text-gray-600">
-					Maximizing yield on staking has never been easier
+				<p className="text-center text-gray-600 text-xl">
+					Simple. Non-custodial. Secure.
+					<br />
+					<ScrollLink
+						to="supported-networks"
+						smooth={true}
+						offset={-70}
+						duration={1000}
+						className="cursor-pointer inline-flex items-center font-medium text-gray-700 text-xs underline"
+					>
+						Looking for supported networks?
+					</ScrollLink>
 				</p>
 			</div>
 			<LandingPageCalculator
@@ -45,7 +80,9 @@ const HomePage = () => {
 				networkUrl={networkInfo.coinGeckoDenom}
 			/>
 			<Testimonials />
-			<SupportedNetworks />
+			<section name="Supported Networks" id="supported-networks">
+				<SupportedNetworks />
+			</section>
 			<hr className="w-screen" />
 			<FAQs />
 			<div className="w-screen shadow-teal bg-teal-500 py-8 flex justify-center items-center mt-40">

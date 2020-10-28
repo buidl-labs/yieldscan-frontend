@@ -8,9 +8,9 @@ const SupportedNetworks = () => {
 			<h1 className="text-3xl text-gray-700 font-bold text-center mb-16">
 				Networks you can start investing in now
 			</h1>
-			<div className="flex">
+			<div className="flex justify-center">
 				{supportedNetworks.map((network) => (
-					<div className="mx-4 mb-16">
+					<div className="mx-12 mb-16">
 						<img
 							src={`/images/${network}-logo.png`}
 							alt={`${network}-logo`}
