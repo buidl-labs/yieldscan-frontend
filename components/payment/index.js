@@ -14,6 +14,8 @@ import {
 import stake from "@lib/stake";
 import { useToast, Spinner } from "@chakra-ui/core";
 import { useRouter } from "next/router";
+import { web3FromAddress } from "@polkadot/extension-dapp";
+import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 import nominate from "@lib/polkadot/nominate";
 import { trackEvent, Events } from "@lib/analytics";
 import { getNetworkInfo } from "yieldscan.config";
@@ -239,6 +241,9 @@ const Payment = () => {
 		);
 	}
 
+	console.log("transactionState");
+	console.log(transactionState.controller);
+
 	return (
 		<div className="mx-auto mb-8 mt-4" style={{ width: "45rem" }}>
 			{!stakingLoading && !transactionHash && !chainError && (
@@ -252,20 +257,24 @@ const Payment = () => {
 							<span className="mr-2">Back</span>
 						</button>
 					</div>
-					<Steps
+					{/* <Steps
 						steps={["Confirmation", "Reward Destination", "Payment"]}
 						currentStep={currentStep}
-					/>
+					/> */}
 					{currentStep === 0 && (
 						<Confirmation
 							bondedAmount={bondedAmount}
+							stashAccount={stashAccount}
+							accounts={accounts}
+							stakingLoading={stakingLoading}
+							setController={(controller) =>
+								setTransactionState({ controller })
+							}
 							transactionState={transactionState}
+							setTransactionState={setTransactionState}
 							hasAgreed={hasAgreed}
 							setHasAgreed={setHasAgreed}
-							onConfirm={() => {
-								setHasAgreed(true);
-								setCurrentStep((step) => step + 1);
-							}}
+							onConfirm={transact}
 							networkInfo={networkInfo}
 						/>
 					)}

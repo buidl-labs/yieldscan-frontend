@@ -117,7 +117,7 @@ const Transaction = ({
 
 	return (
 		<div className="mt-10">
-			<div className="text-2xl">Transaction</div>
+			{/* <div className="text-2xl">Transaction</div>
 			<h3 className="text-lg mt-10 mb-4 ml-2 font-semibold">
 				{controllerEdited && "Stash "} Account
 			</h3>
@@ -141,35 +141,33 @@ const Transaction = ({
 						{get(stashAccount, "address")}
 					</p>
 				</div>
-			</div>
-			{controllerEdited && (
-				<>
-					<h3 className="text-lg mt-10 mb-4 ml-2 font-semibold">
-						Controller Account
-					</h3>
-					<div className="w-full flex items-center rounded-lg bg-gray-100 px-4 py-4 border border-gray-200">
-						<div className="mr-5">
-							<Identicon
-								address={get(selectedController, "address")}
-								size="3.25rem"
-							/>
-						</div>
-						<div className="flex flex-col text-gray-800">
-							<div>
-								<h3 className="font-semibold text-lg inline">
-									{get(selectedController, "meta.name")}
-								</h3>
-								<span className="text-xs mx-4 p-1 px-2 font-bold bg-gray-300 text-gray-600 tracking-wide rounded-full">
-									CONTROLLER
-								</span>
-							</div>
-							<p className="text-xs text-gray-600 mt-1">
-								{get(selectedController, "address")}
-							</p>
-						</div>
+			</div> */}
+
+			<h3 className="text-lg mt-10 mb-4 ml-2 font-semibold">
+				Controller Account
+			</h3>
+			<div className="w-full flex items-center rounded-lg bg-gray-100 px-4 py-4 border border-gray-200">
+				<div className="mr-5">
+					<Identicon
+						address={get(selectedController, "address")}
+						size="3.25rem"
+					/>
+				</div>
+				<div className="flex flex-col text-gray-800">
+					<div>
+						<h3 className="font-semibold text-lg inline">
+							{get(selectedController, "meta.name")}
+						</h3>
+						<span className="text-xs mx-4 p-1 px-2 font-bold bg-gray-300 text-gray-600 tracking-wide rounded-full">
+							CONTROLLER
+						</span>
 					</div>
-				</>
-			)}
+					<p className="text-xs text-gray-600 mt-1">
+						{get(selectedController, "address")}
+					</p>
+				</div>
+			</div>
+
 			<button
 				className={`
 					mt-4 px-3 py-px text-gray-600 border border-gray-300 font-semibold rounded text-sm hover:bg-gray-200 transition duration-200
@@ -189,7 +187,7 @@ const Transaction = ({
 				setControllerEdited={setControllerEdited}
 			/>
 
-			<div className="flex flex-col w-48 border-2 border-gray-300 rounded-lg mt-12 px-4 py-2">
+			{/* <div className="flex flex-col w-48 border-2 border-gray-300 rounded-lg mt-12 px-4 py-2">
 				<span className="text-teal-500">Amount</span>
 				<span className="text-black text-xl">
 					{formatCurrency.methods.formatAmount(
@@ -197,16 +195,14 @@ const Transaction = ({
 						networkInfo
 					)}
 				</span>
-				{/* <span className="text-gray-600 text-sm">${stakingAmount}</span> */}
 			</div>
-
 			<button
 				hidden={stakingLoading}
 				className="mt-12 px-12 py-2 shadow-lg rounded-lg text-white bg-teal-500"
 				onClick={onConfirm}
 			>
 				Transact and Stake
-			</button>
+			</button> */}
 		</div>
 	);
 };
