@@ -209,9 +209,10 @@ const RewardCalculatorPage = () => {
 
 	const onPayment = async () => {
 		updateTransactionState(Events.INTENT_STAKING);
-		get(bondedAmount, "currency", 0) === 0
-			? router.push("/payment", "/payment", "shallow")
-			: openPaymentPopover();
+		router.push("/payment", "/payment", "shallow");
+		// get(bondedAmount, "currency", 0) === 0
+		// 	? router.push("/payment", "/payment", "shallow")
+		// 	: openPaymentPopover();
 	};
 
 	const onAdvancedSelection = () => {
