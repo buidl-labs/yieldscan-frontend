@@ -1,6 +1,17 @@
 import { useState, useEffect } from "react";
 import { get } from "lodash";
-import { Stack, Icon, Text, Link, Collapse, Button } from "@chakra-ui/core";
+import {
+	Stack,
+	Icon,
+	Text,
+	Link,
+	Collapse,
+	Button,
+	Divider,
+	Alert,
+	AlertDescription,
+	AlertIcon,
+} from "@chakra-ui/core";
 import { ChevronRight, ChevronDown } from "react-feather";
 import Identicon from "@components/common/Identicon";
 import formatCurrency from "@lib/format-currency";
@@ -61,6 +72,7 @@ const Confirmation = ({
 	bondedAmount,
 	hasAgreed,
 	setHasAgreed,
+	transactionFee,
 	onConfirm,
 	networkInfo,
 }) => {
@@ -74,11 +86,10 @@ const Confirmation = ({
 	const [tcPopoverOpen, setTCPopoverOpen] = useState(false);
 	const [showValidators, setShowValidators] = useState(false);
 	const [subCurrency, setSubCurrency] = useState(0);
+	const [subFeeCurrency, setFeeSubCurrency] = useState(0);
 	const handleValToggle = () => setShowValidators(!showValidators);
 	const [showAdvPrefs, setShowAdvPrefs] = useState(false);
 	const handleAdvPrefsToggle = () => setShowAdvPrefs(!showAdvPrefs);
-
-	console.log(stakingAmount);
 
 	useEffect(() => {
 		convertCurrency(stakingAmount, networkInfo.denom).then(
@@ -88,10 +99,19 @@ const Confirmation = ({
 		);
 	}, []);
 
+	useEffect(() => {
+		convertCurrency(
+			transactionFee / Math.pow(10, networkInfo.decimalPlaces),
+			networkInfo.denom
+		).then((convertedAmount) => {
+			setFeeSubCurrency(convertedAmount);
+		});
+	}, [transactionFee]);
+
 	return (
-		<div className="mt-16">
-			<h1 className="text-2xl">Confirmation</h1>
-			<span className="text-gray-600">
+		<div className="mt-16 items-center">
+			<h1 className="text-2xl text-center">Confirmation</h1>
+			<span className="text-gray-600 text-center">
 				Staking returns are subject to market risks. Please read the{" "}
 				<Link href="/terms" className="text-blue-400" isExternal>
 					Terms of Service
@@ -119,38 +139,6 @@ const Confirmation = ({
 			</button>
 			<Collapse isOpen={showValidators}>
 				<div className="mt-6 rounded-xl mt-4">
-					{/* {false && (
-					<h1 className="text-gray-700 text-2xl">Selected Validators</h1>
-				)} */}
-					{/* <div className="flex justify-between items-center">
-					<div className="flex justify-between items-center rounded-full pl-4 border border-gray-200">
-						<span>Estimated Returns</span>
-						<div className="ml-2 px-3 py-2 bg-teal-500 text-white rounded-full">
-							{formatCurrency.methods.formatAmount(
-								Math.trunc(
-									get(transactionState, "returns.currency", 0) *
-										10 ** networkInfo.decimalPlaces
-								),
-								networkInfo
-							)}
-						</div>
-					</div>
-					<div className="flex justify-between items-center rounded-full pl-4 border border-gray-200">
-						<span>Risk Preference</span>
-						<div
-							className={`ml-2 px-4 py-2 text-white rounded-full ${
-								get(transactionState, "riskPreference") === "Low"
-									? "bg-green-400"
-									: get(transactionState, "riskPreference") === "Medium"
-									? "bg-orange-500"
-									: get(transactionState, "riskPreference") === "High" &&
-									  "bg-red-500"
-							}`}
-						>
-							{get(transactionState, "riskPreference")}
-						</div>
-					</div>
-				</div> */}
 					<div className="mt-4 overflow-auto" style={{ height: "12rem" }}>
 						{selectedValidators.map((validator) => (
 							<ValidatorInfo
@@ -217,16 +205,59 @@ const Confirmation = ({
 					<p className="text-gray-800 text-base">Transaction Fee</p>
 				</div>
 				<div className="flex w-1/2 flex-col">
-					<p className="text-xs w-full text-right">13434</p>
-					<p className="text-xs w-full text-right">13434</p>
+					<p className="text-xs w-full text-right">
+						{formatCurrency.methods.formatAmount(transactionFee, networkInfo)}
+					</p>
+					<p className="text-xs w-full text-right">
+						${subFeeCurrency.toFixed(2)}
+					</p>
 				</div>
 			</div>
-			<button
-				className="px-6 py-2 shadow-lg rounded-lg text-white bg-teal-500"
-				onClick={() => onConfirm()}
-			>
-				Confirm
-			</button>
+			<Divider />
+			<div className="ml-2 flex w-full">
+				<div className="flex w-1/2">
+					<p className="text-gray-800 text-base">
+						<strong>Total Amount</strong>
+					</p>
+				</div>
+				<div className="flex w-1/2 flex-col">
+					<p className="text-xs w-full text-right">
+						<strong>
+							{formatCurrency.methods.formatAmount(
+								Math.trunc(stakingAmount * 10 ** networkInfo.decimalPlaces) +
+									transactionFee,
+								networkInfo
+							)}
+						</strong>
+					</p>
+					<p className="text-xs w-full text-right">
+						<strong>${(subCurrency + subFeeCurrency).toFixed(2)}</strong>
+					</p>
+				</div>
+			</div>
+			<div className="mt-6 flex">
+				<Alert
+					status="warning"
+					color="#FDB808"
+					backgroundColor="#FFF4DA"
+					borderRadius="8px"
+				>
+					<AlertIcon name="info-outline" />
+					<AlertDescription color="#FDB808" fontSize="14px">
+						<strong>Warning:</strong> After investing, your funds will be locked
+						and will remain locked after withdrawing (triggering unlock) for
+						approximately <strong>{networkInfo.lockUpPeriod} days</strong>.
+					</AlertDescription>
+				</Alert>
+			</div>
+			<div className="mt-4 w-full text-center">
+				<button
+					className="rounded-full font-semibold text-lg px-10 py-4 bg-teal-500 text-white"
+					onClick={() => onConfirm()}
+				>
+					Invest Now
+				</button>
+			</div>
 			<TermsAndServicePopover
 				tcPopoverOpen={tcPopoverOpen}
 				setTCPopoverOpen={setTCPopoverOpen}

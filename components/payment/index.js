@@ -12,11 +12,9 @@ import {
 	useSelectedNetwork,
 } from "@lib/store";
 import stake from "@lib/stake";
+import getTransactionFee from "@lib/getTransactionFee";
 import { useToast, Spinner } from "@chakra-ui/core";
 import { useRouter } from "next/router";
-import { web3FromAddress } from "@polkadot/extension-dapp";
-import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
-import nominate from "@lib/polkadot/nominate";
 import { trackEvent, Events } from "@lib/analytics";
 import { getNetworkInfo } from "yieldscan.config";
 
@@ -132,6 +130,7 @@ const Payment = () => {
 	const [loading, setLoading] = useState(true);
 	const [transactionHash, setTransactionHash] = useState();
 	const [stakingEvent, setStakingEvent] = useState();
+	const [transactionFee, setTransactionFee] = useState(0);
 	const [stakingLoading, setStakingLoading] = useState(false);
 	const [hasAgreed, setHasAgreed] = useState(false);
 
@@ -146,6 +145,20 @@ const Payment = () => {
 		setLoading(false);
 		// To prevent the user from switching accounts or networks while in the middle of the payment process
 		setHeaderLoading(true);
+		if (stashAccount) {
+			const info = getTransactionFee(
+				stashAccount.address,
+				stashAccount.address,
+				transactionState.stakingAmount,
+				get(bondedAmount, "currency", 0),
+				transactionState.rewardDestination,
+				transactionState.selectedValidators.map((v) => v.stashId),
+				apiInstance,
+				networkInfo
+			).then((info) => {
+				setTransactionFee(info);
+			});
+		}
 	}, []);
 
 	const transact = () => {
@@ -241,9 +254,6 @@ const Payment = () => {
 		);
 	}
 
-	console.log("transactionState");
-	console.log(transactionState.controller);
-
 	return (
 		<div className="mx-auto mb-8 mt-4" style={{ width: "45rem" }}>
 			{!stakingLoading && !transactionHash && !chainError && (
@@ -274,6 +284,7 @@ const Payment = () => {
 							setTransactionState={setTransactionState}
 							hasAgreed={hasAgreed}
 							setHasAgreed={setHasAgreed}
+							transactionFee={transactionFee}
 							onConfirm={transact}
 							networkInfo={networkInfo}
 						/>
