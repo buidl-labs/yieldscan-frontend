@@ -12,6 +12,7 @@ import {
 	useSelectedNetwork,
 } from "@lib/store";
 import stake from "@lib/stake";
+import ConfettiGenerator from "confetti-js";
 import getTransactionFee from "@lib/getTransactionFee";
 import { useToast, Spinner } from "@chakra-ui/core";
 import { useRouter } from "next/router";
@@ -161,6 +162,46 @@ const Payment = () => {
 		}
 	}, []);
 
+	useEffect(() => {
+		if (transactionHash) {
+			const confettiSettings = {
+				target: "my-canvas",
+				max: "80",
+				size: "1",
+				animate: true,
+				props: [
+					"circle",
+					"square",
+					"triangle",
+					"line",
+					{ type: "svg", src: "site/hat.svg", size: 25, weight: 0.2 },
+				],
+				colors: [
+					[165, 104, 246],
+					[230, 61, 135],
+					[0, 199, 228],
+					[253, 214, 126],
+				],
+				clock: "25",
+				rotate: false,
+				width: "1440",
+				height: "789",
+				start_from_edge: false,
+				respawn: true,
+			};
+			const confetti = new ConfettiGenerator(confettiSettings);
+			confetti.render();
+
+			return () => confetti.clear();
+		}
+	}, [transactionHash]);
+
+	useEffect(() => {
+		if (transactionHash) {
+			setTimeout(() => router.push({ pathname: "/overview" }), 5000);
+		}
+	}, [transactionHash]);
+
 	const transact = () => {
 		setStakingLoading(true);
 
@@ -255,88 +296,97 @@ const Payment = () => {
 	}
 
 	return (
-		<div className="mx-auto mb-8 mt-4" style={{ width: "45rem" }}>
-			{!stakingLoading && !transactionHash && !chainError && (
-				<>
-					<div className="mb-10">
-						<button
-							className="flex items-center bg-gray-200 text-gray-900 rounded-full px-2 py-1"
-							onClick={back}
-						>
-							<ChevronLeft className="text-gray-900" />
-							<span className="mr-2">Back</span>
-						</button>
-					</div>
-					{/* <Steps
+		<>
+			{transactionHash && (
+				<canvas id="my-canvas" className="absolute w-full"></canvas>
+			)}
+			<div className="mx-auto mb-8 mt-4" style={{ width: "45rem" }}>
+				{!stakingLoading && !transactionHash && !chainError && (
+					<>
+						<div className="mb-10">
+							<button
+								className="flex items-center bg-gray-200 text-gray-900 rounded-full px-2 py-1"
+								onClick={back}
+							>
+								<ChevronLeft className="text-gray-900" />
+								<span className="mr-2">Back</span>
+							</button>
+						</div>
+						{/* <Steps
 						steps={["Confirmation", "Reward Destination", "Payment"]}
 						currentStep={currentStep}
 					/> */}
-					{currentStep === 0 && (
-						<Confirmation
-							bondedAmount={bondedAmount}
-							stashAccount={stashAccount}
-							accounts={accounts}
-							stakingLoading={stakingLoading}
-							setController={(controller) =>
-								setTransactionState({ controller })
-							}
-							transactionState={transactionState}
-							setTransactionState={setTransactionState}
-							hasAgreed={hasAgreed}
-							setHasAgreed={setHasAgreed}
-							transactionFee={transactionFee}
-							onConfirm={transact}
-							networkInfo={networkInfo}
-						/>
-					)}
-					{currentStep === 1 && (
-						<RewardDestination
-							stashAccount={stashAccount}
-							transactionState={transactionState}
-							setTransactionState={setTransactionState}
-							onConfirm={() => setCurrentStep((step) => step + 1)}
-							networkInfo={networkInfo}
-						/>
-					)}
-					{currentStep === 2 && (
-						<Transaction
-							accounts={accounts}
-							stashAccount={stashAccount}
-							stakingLoading={stakingLoading}
-							transactionState={transactionState}
-							setController={(controller) =>
-								setTransactionState({ controller })
-							}
-							onConfirm={transact}
-							networkInfo={networkInfo}
-						/>
-					)}
-				</>
-			)}
-			{stakingLoading && !chainError && (
-				<div className="mt-6">
-					{/* <h1 className="font-semibold text-xl text-gray-700">Status:</h1> */}
-					<div className="flex items-center justify-between">
-						<span>{stakingEvent}</span>
-						<Spinner className="ml-4" />
+						{currentStep === 0 && (
+							<Confirmation
+								bondedAmount={bondedAmount}
+								stashAccount={stashAccount}
+								accounts={accounts}
+								stakingLoading={stakingLoading}
+								setController={(controller) =>
+									setTransactionState({ controller })
+								}
+								transactionState={transactionState}
+								setTransactionState={setTransactionState}
+								hasAgreed={hasAgreed}
+								setHasAgreed={setHasAgreed}
+								transactionFee={transactionFee}
+								onConfirm={transact}
+								networkInfo={networkInfo}
+							/>
+						)}
+						{currentStep === 1 && (
+							<RewardDestination
+								stashAccount={stashAccount}
+								transactionState={transactionState}
+								setTransactionState={setTransactionState}
+								onConfirm={() => setCurrentStep((step) => step + 1)}
+								networkInfo={networkInfo}
+							/>
+						)}
+						{currentStep === 2 && (
+							<Transaction
+								accounts={accounts}
+								stashAccount={stashAccount}
+								stakingLoading={stakingLoading}
+								transactionState={transactionState}
+								setController={(controller) =>
+									setTransactionState({ controller })
+								}
+								onConfirm={transact}
+								networkInfo={networkInfo}
+							/>
+						)}
+					</>
+				)}
+				{stakingLoading && !chainError && (
+					<div className="mt-6">
+						{/* <h1 className="font-semibold text-xl text-gray-700">Status:</h1> */}
+						<div className="flex flex-col items-center justify-between">
+							<span className="loader"></span>
+							<span className="relative">{stakingEvent}</span>
+							{/* <Spinner className="ml-4" /> */}
+						</div>
 					</div>
-				</div>
-			)}
-			{transactionHash && (
-				<SuccessfullyBonded
-					transactionHash={transactionHash}
-					onConfirm={handleOnClickForSuccessfulTransaction}
-					networkInfo={networkInfo}
-				/>
-			)}
-			{chainError && (
-				<ChainErrorPage
-					// transactionHash={transactionHash}
-					onConfirm={handleOnClickForSuccessfulTransaction}
-					networkInfo={networkInfo}
-				/>
-			)}
-		</div>
+				)}
+				{transactionHash && (
+					<div className="mt-6">
+						{/* <h1 className="font-semibold text-xl text-gray-700">Status:</h1> */}
+						<div className="flex flex-col items-center justify-between">
+							<span className="loader success"></span>
+							<span className="relative">Your transaction was successful!</span>
+							{/* <Spinner className="ml-4" /> */}
+						</div>
+					</div>
+				)}
+				{chainError && (
+					<ChainErrorPage
+						// transactionHash={transactionHash}
+						onConfirm={handleOnClickForSuccessfulTransaction}
+						networkInfo={networkInfo}
+					/>
+				)}
+			</div>
+		</>
 	);
 };
 
