@@ -19,6 +19,7 @@ import WalletDisclaimer from "./WalletDisclaimer";
 import getPolkadotExtensionInfo from "@lib/polkadot-extension";
 import { useAccounts } from "@lib/store";
 import { trackEvent, Events } from "@lib/analytics";
+import { setCookie } from "nookies";
 
 const [useWalletConnect] = create((set) => ({
 	isOpen: false,
