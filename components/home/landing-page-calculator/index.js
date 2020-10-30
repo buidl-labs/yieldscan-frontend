@@ -110,7 +110,7 @@ const LandingPageCalculator = ({
 										rounded="md"
 										pt={6}
 										pb={10}
-										px={8}
+										px={6}
 										mt={2}
 										mb={4}
 										mr={4}
@@ -119,7 +119,7 @@ const LandingPageCalculator = ({
 										value={value}
 										onChange={onChange}
 										className="text-gray-700"
-										fontSize="xl"
+										fontSize={String(inputValue).length > 18 ? "md" : String(inputValue).length > 15 ? "lg" : "xl"}
 										fontWeight="medium"
 										variant="filled"
 										isRequired
@@ -128,7 +128,7 @@ const LandingPageCalculator = ({
 								)}
 							</Rifm>
 							<p
-								className="text-teal-500 text-xs font-semibold absolute z-20 left-0 ml-8 mb-6"
+								className="text-teal-500 text-xs font-semibold absolute z-20 left-0 ml-6 mb-6"
 								style={{ bottom: "3px" }}
 							>
 								$
