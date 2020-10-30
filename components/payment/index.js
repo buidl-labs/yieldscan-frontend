@@ -200,7 +200,7 @@ const Payment = () => {
 					[0, 199, 228],
 					[253, 214, 126],
 				],
-				clock: "150",
+				clock: "200",
 				rotate: true,
 				start_from_edge: true,
 				respawn: true,
