@@ -1,13 +1,12 @@
 const RiskSelect = ({ selected, setSelected }) => {
-	const options = ['Low', 'Medium', 'High'];
+	const options = ["Low", "Medium", "High"];
 	return (
-		<div className="relative flex rounded-full border border-gray-200 py-2 px-2 w-2/3">
-			<div className="absolute left-0 h-100 mx-2 my-2 rounded-full w-1/3 bg-orange-500"></div>
+		<div className="relative flex rounded-full border border-gray-200 py-1 px-1 w-fit-content text-gray-700">
 			{options.map((option) => (
 				<span
 					key={option}
 					className={`
-						w-1/3 font-semibold py-3 flex-center rounded-full cursor-pointer z-50 transition duration-200
+						  py-2 px-6 flex-center rounded-full cursor-pointer z-50 transition duration-200 text-sm
 						${
 							selected === option
 								? option === "Low"
@@ -21,8 +20,6 @@ const RiskSelect = ({ selected, setSelected }) => {
 								? "hover:bg-orange-200 text-gray"
 								: option === "High" && "hover:bg-red-200 text-gray"
 						}
-
-						${option === "Medium" && "mx-2"}
 					`}
 					onClick={() => setSelected(option)}
 				>

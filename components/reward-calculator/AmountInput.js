@@ -10,12 +10,15 @@ const AmountInputDefault = ({ bonded, value, onChange, networkInfo }) => {
 		bonded === undefined ? true : bonded == 0 ? true : false;
 	const [isEditable, setIsEditable] = React.useState(initiallyEditable);
 	const [inputValue, setInputValue] = useState(value.currency);
+	const maxAmount = Math.max(bonded + get(freeAmount, "currency") - 0.1, 0);
+
 	useEffect(() => {
 		if (bonded) {
 			onChange(bonded);
 			setInputValue(Number(Math.max(bonded, 0)));
 		}
 	}, [bonded]);
+
 	const handleChange = (value) => {
 		onChange(value);
 		setInputValue(value);
@@ -25,44 +28,14 @@ const AmountInputDefault = ({ bonded, value, onChange, networkInfo }) => {
 		<div>
 			<div className="flex items-center justify-between w-2/3">
 				<InputGroup className="border border-gray-200 rounded-full">
-					<InputRightElement
-						opacity={isEditable ? "1" : "0.4"}
-						children={
-							<span className="flex -ml-12">
-								{stashAccount && (
-									<button
-										className={`bg-teal-200 text-teal-500 rounded-md px-2 pb-1 ${
-											!isEditable && "opacity-0 cursor-not-allowed"
-										}`}
-										disabled={!isEditable}
-										onClick={() => {
-											const maxAmount = Math.max(
-												bonded + get(freeAmount, "currency") - 0.1,
-												0
-											);
-											handleChange(maxAmount);
-										}}
-									>
-										max
-									</button>
-								)}
-								<span className="ml-2 cursor-not-allowed">
-									{networkInfo.denom}
-								</span>
-							</span>
-						}
-						rounded="full"
-						pt={8}
-						px={12}
-						fontSize="xl"
-					/>
 					<Input
 						type="number"
 						rounded="full"
-						pt={8}
-						pb={12}
-						px={8}
-						pr={20}
+						pt={6}
+						pb={10}
+						px={4}
+						pr={inputValue === maxAmount ? 8: 24}
+						textOverflow="ellipsis"
 						placeholder="0"
 						value={inputValue}
 						onChange={(e) => {
@@ -70,18 +43,51 @@ const AmountInputDefault = ({ bonded, value, onChange, networkInfo }) => {
 							handleChange(value);
 						}}
 						border="none"
-						fontSize="2xl"
+						fontSize="lg"
 						isDisabled={!isEditable}
 						backgroundColor={!isEditable && "gray.200"}
+						color="gray.600"
 					/>
-					<h6 className="absolute z-20 bottom-0 left-0 ml-8 mb-3 text-gray-600 text-sm cursor-not-allowed">
+					<h6
+						className={`absolute z-20 bottom-0 left-0 ml-4 mb-3 text-xs text-gray-600 cursor-not-allowed ${
+							isEditable ? "opacity-1" : "opacity-25"
+						}`}
+					>
 						${formatCurrency.methods.formatNumber(value.subCurrency.toFixed(2))}
 					</h6>
+					<InputRightElement
+						opacity={isEditable ? "1" : "0.4"}
+						children={
+							<span className="flex min-w-fit-content">
+								{stashAccount && inputValue !== maxAmount && (
+									<button
+										className={`bg-teal-200 text-teal-500 rounded-full text-xs px-2 ${
+											!isEditable && "opacity-0 cursor-not-allowed"
+										}`}
+										disabled={!isEditable}
+										onClick={() => {
+											handleChange(maxAmount);
+										}}
+									>
+										max
+									</button>
+								)}
+								<span className="ml-2 text-sm font-medium cursor-not-allowed text-gray-700">
+									{networkInfo.denom}
+								</span>
+							</span>
+						}
+						h="full"
+						rounded="full"
+						fontSize="xl"
+						w="fit-content"
+						px={4}
+					/>
 				</InputGroup>
 			</div>
 			{(bonded && (
 				<button
-					className="mt-4 py-2 px-4 shadow-custom rounded-full text-sm border border-gray-200"
+					className="mt-2 py-2 px-4 shadow-custom rounded-full text-xs border border-gray-200"
 					onClick={() => {
 						if (isEditable) {
 							handleChange(bonded);
@@ -115,17 +121,17 @@ const AmountInputAlreadyBonded = ({ value, bonded, total, onChange }) => (
 						type="number"
 						placeholder="0"
 						defaultValue={value.currency === 0 ? "" : value.currency}
-						className="text-xl outline-none w-24 mr-2"
+						className="outline-none w-24 mr-2"
 						onChange={(e) => {
 							const { value } = e.target;
 							onChange(value === "" ? 0 : Number(value));
 						}}
 					/>
-					<h3 hidden className="text-xl">
+					<h3 hidden className="">
 						KSM
 					</h3>
 				</div>
-				<span hidden className="text-gray-500 text-xs">
+				<span hidden className="text-gray-500">
 					${value.subCurrency}
 				</span>
 			</div>
