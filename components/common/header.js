@@ -21,6 +21,7 @@ import {
 	useDisclosure,
 	Avatar,
 	Image,
+	Spinner,
 } from "@chakra-ui/core";
 import Identicon from "@components/common/Identicon";
 import EditControllerModal from "@components/overview/EditControllerModal";
@@ -125,13 +126,73 @@ const Header = ({ isBase }) => {
 				!accountInfoLoading &&
 				!headerLoading && (
 					<div className="flex">
-						{isNil(stashAccount) ? (
+						{isNil(accounts) ? (
 							<button
 								className="rounded-full border border-gray-300 p-2 px-4 font-semibold text-gray-800 mr-4"
 								onClick={toggle}
 							>
 								Connect Wallet
 							</button>
+						) : isNil(stashAccount) ? (
+							<Popover
+								isOpen={isStashPopoverOpen}
+								onClose={() => setIsStashPopoverOpen(false)}
+								onOpen={() => setIsStashPopoverOpen(true)}
+							>
+								<PopoverTrigger>
+									<button className="rounded-full flex border border-gray-300 p-2 px-4 items-center mr-8">
+										Select Account
+										<ChevronDown size="20px" className="ml-4" />
+									</button>
+								</PopoverTrigger>
+								<PopoverContent
+									zIndex={50}
+									maxWidth="20rem"
+									backgroundColor="gray.700"
+									border="none"
+								>
+									<p className="text-white text-xxs tracking-widest pt-2 pl-2">
+										ACCOUNTS
+									</p>
+									<div className="flex flex-col justify-center my-2 text-white w-full">
+										{accounts.map((account) => (
+											<React.Fragment key={account.address}>
+												<button
+													className="flex items-center rounded px-4 py-2 w-full bg-gray-800 hover:bg-gray-700 hover:text-gray-200"
+													onClick={() => {
+														setStashAccount(account);
+														setIsStashPopoverOpen(false);
+													}}
+												>
+													<Identicon address={account.address} size="2rem" />
+													<span className="flex flex-col items-start w-1/2 ml-2">
+														<span>{account.meta.name}</span>
+														{account.balances ? (
+															<p className="text-xs text-gray-500">
+																{formatCurrency.methods.formatAmount(
+																	account.balances.freeBalance.toNumber() +
+																		account.balances.reservedBalance.toNumber(),
+																	networkInfo
+																)}
+															</p>
+														) : (
+															<Spinner />
+														)}
+													</span>
+													<span className="text-xs text-gray-500 w-1/2 text-right">
+														{account.address.slice(0, 6) +
+															"..." +
+															account.address.slice(-6)}
+													</span>
+												</button>
+												{accountsWithoutCurrent[
+													accountsWithoutCurrent.length - 1
+												] !== account && <hr className="border-gray-700" />}
+											</React.Fragment>
+										))}
+									</div>
+								</PopoverContent>
+							</Popover>
 						) : (
 							<Popover
 								isOpen={isStashPopoverOpen}
@@ -179,13 +240,24 @@ const Header = ({ isBase }) => {
 													}}
 												>
 													<Identicon address={account.address} size="2rem" />
-													<span className="flex flex-col items-start ml-2">
+													<span className="flex flex-col items-start w-1/2 ml-2">
 														<span>{account.meta.name}</span>
-														<span className="text-xs text-gray-500">
-															{account.address.slice(0, 6) +
-																"..." +
-																account.address.slice(-6)}
-														</span>
+														{account.balances ? (
+															<p className="text-xs text-gray-500">
+																{formatCurrency.methods.formatAmount(
+																	account.balances.freeBalance.toNumber() +
+																		account.balances.reservedBalance.toNumber(),
+																	networkInfo
+																)}
+															</p>
+														) : (
+															<Spinner />
+														)}
+													</span>
+													<span className="text-xs text-gray-500 w-1/2 text-right">
+														{account.address.slice(0, 6) +
+															"..." +
+															account.address.slice(-6)}
 													</span>
 												</button>
 												{accountsWithoutCurrent[
