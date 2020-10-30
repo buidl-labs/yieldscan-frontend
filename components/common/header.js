@@ -21,7 +21,6 @@ import {
 	useDisclosure,
 	Avatar,
 	Image,
-	Spinner,
 	IconButton,
 	DrawerOverlay,
 	DrawerContent,
@@ -30,6 +29,8 @@ import {
 	DrawerBody,
 	DrawerFooter,
 	Drawer,
+	Skeleton,
+	Text,
 } from "@chakra-ui/core";
 import Identicon from "@components/common/Identicon";
 import EditControllerModal from "@components/overview/EditControllerModal";
@@ -284,15 +285,19 @@ const Header = ({ isBase }) => {
 																	account.balances.freeBalance.toNumber() +
 																		account.balances.reservedBalance.toNumber(),
 																	networkInfo
-																)}
+																)}{" "}
 																{formatCurrency.methods.formatAmount(
 																	account.balances.freeBalance.toNumber() +
 																		account.balances.reservedBalance.toNumber(),
 																	networkInfo
-																) === "0" && " KSM"}
+																) === "0" && get(networkInfo, "denom")}
 															</p>
 														) : (
-															<Spinner />
+															<div>
+																<Skeleton>
+																	<Text className="text-xxs w-20">Loading...</Text>
+																</Skeleton>
+															</div>
 														)}
 													</span>
 													<span className="text-xs text-gray-500 w-1/2 text-right">
@@ -368,17 +373,26 @@ const Header = ({ isBase }) => {
 												>
 													<Identicon address={account.address} size="2rem" />
 													<span className="flex flex-col items-start w-1/2 ml-2">
-														<span>{account.meta.name}</span>
+														<span className="truncate w-full text-left pr-1">
+															{account.meta.name}
+														</span>
 														{account.balances ? (
 															<p className="text-xs text-gray-500">
 																{formatCurrency.methods.formatAmount(
 																	account.balances.freeBalance.toNumber() +
 																		account.balances.reservedBalance.toNumber(),
 																	networkInfo
-																)}
+																)}{" "}
+																{formatCurrency.methods.formatAmount(
+																	account.balances.freeBalance.toNumber() +
+																		account.balances.reservedBalance.toNumber(),
+																	networkInfo
+																) === "0" && get(networkInfo, "denom")}
 															</p>
 														) : (
-															<Spinner />
+															<Skeleton>
+																<p>Loading...</p>
+															</Skeleton>
 														)}
 													</span>
 													<span className="text-xs text-gray-500 w-1/2 text-right">

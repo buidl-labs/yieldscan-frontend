@@ -62,7 +62,7 @@ const EditControllerModal = ({
 									>
 										<Identicon address={get(account, "address")} size="3rem" />
 										<div className="ml-2 flex flex-col">
-											<p className="text-gray-800 text-base">
+											<p className="text-gray-700 font-medium">
 												{account.meta.name}
 											</p>
 											<p className="text-xs">{account.address}</p>
@@ -116,53 +116,15 @@ const Transaction = ({
 	const stakingAmount = get(transactionState, "stakingAmount", 0);
 
 	return (
-		<div className="mt-10">
-			{/* <div className="text-2xl">Transaction</div>
-			<h3 className="text-lg mt-10 mb-4 ml-2 font-semibold">
-				{controllerEdited && "Stash "} Account
-			</h3>
-			<div className="w-full flex items-center rounded-lg bg-gray-100 px-4 py-4 border border-gray-200">
-				<div className="mr-5">
-					<Identicon address={get(stashAccount, "address")} size="3.25rem" />
-				</div>
-				<div className="flex flex-col text-gray-800">
-					<div>
-						<h3 className="font-semibold text-lg inline">
-							{get(stashAccount, "meta.name")}
-						</h3>
-						{controllerEdited && (
-							<span className="text-xs mx-4 p-1 px-2 font-bold bg-gray-300 text-gray-600 tracking-wide rounded-full">
-								STASH
-							</span>
-						)}
-					</div>
-
-					<p className="text-xs text-gray-600 mt-1">
-						{get(stashAccount, "address")}
-					</p>
-				</div>
-			</div> */}
-
-			<h3 className="text-lg mt-10 mb-4 ml-2 font-semibold">
-				Controller Account
-			</h3>
-			<div className="w-full flex items-center rounded-lg bg-gray-100 px-4 py-4 border border-gray-200">
-				<div className="mr-5">
-					<Identicon
-						address={get(selectedController, "address")}
-						size="3.25rem"
-					/>
-				</div>
-				<div className="flex flex-col text-gray-800">
-					<div>
-						<h3 className="font-semibold text-lg inline">
-							{get(selectedController, "meta.name")}
-						</h3>
-						<span className="text-xs mx-4 p-1 px-2 font-bold bg-gray-300 text-gray-600 tracking-wide rounded-full">
-							CONTROLLER
-						</span>
-					</div>
-					<p className="text-xs text-gray-600 mt-1">
+		<React.Fragment>
+			<h3 className="text-xl font-semibold">Controller</h3>
+			<div className="mr-2 flex items-center rounded-lg bg-gray-100 border border-gray-200 px-3 py-2 mb-2 w-full mt-4">
+				<Identicon address={get(selectedController, "address")} size="3rem" />
+				<div className="ml-2 flex flex-col">
+					<h3 className="font-medium">
+						{get(selectedController, "meta.name")}
+					</h3>
+					<p className="text-xs text-gray-600">
 						{get(selectedController, "address")}
 					</p>
 				</div>
@@ -170,7 +132,7 @@ const Transaction = ({
 
 			<button
 				className={`
-					mt-4 px-3 py-px text-gray-600 border border-gray-300 font-semibold rounded text-sm hover:bg-gray-200 transition duration-200
+					mt-2 px-3 py-px text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-200 transition duration-200
 				`}
 				hidden={editController}
 				onClick={() => setEditController(true)}
@@ -186,24 +148,7 @@ const Transaction = ({
 				setSelectedController={setSelectedController}
 				setControllerEdited={setControllerEdited}
 			/>
-
-			{/* <div className="flex flex-col w-48 border-2 border-gray-300 rounded-lg mt-12 px-4 py-2">
-				<span className="text-teal-500">Amount</span>
-				<span className="text-black text-xl">
-					{formatCurrency.methods.formatAmount(
-						Math.trunc(stakingAmount * 10 ** networkInfo.decimalPlaces),
-						networkInfo
-					)}
-				</span>
-			</div>
-			<button
-				hidden={stakingLoading}
-				className="mt-12 px-12 py-2 shadow-lg rounded-lg text-white bg-teal-500"
-				onClick={onConfirm}
-			>
-				Transact and Stake
-			</button> */}
-		</div>
+		</React.Fragment>
 	);
 };
 
