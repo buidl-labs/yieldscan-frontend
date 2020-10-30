@@ -14,7 +14,7 @@ import {
 import stake from "@lib/stake";
 import ConfettiGenerator from "confetti-js";
 import getTransactionFee from "@lib/getTransactionFee";
-import { useToast, Spinner } from "@chakra-ui/core";
+import { useToast, Spinner, Flex } from "@chakra-ui/core";
 import { useRouter } from "next/router";
 import { trackEvent, Events } from "@lib/analytics";
 import { getNetworkInfo } from "yieldscan.config";
@@ -165,28 +165,20 @@ const Payment = () => {
 	useEffect(() => {
 		if (transactionHash) {
 			const confettiSettings = {
-				target: "my-canvas",
-				max: "80",
+				target: "confetti-holder",
+				max: "150",
 				size: "1",
 				animate: true,
-				props: [
-					"circle",
-					"square",
-					"triangle",
-					"line",
-					{ type: "svg", src: "site/hat.svg", size: 25, weight: 0.2 },
-				],
+				props: ["circle", "square", "triangle", "line"],
 				colors: [
 					[165, 104, 246],
 					[230, 61, 135],
 					[0, 199, 228],
 					[253, 214, 126],
 				],
-				clock: "25",
-				rotate: false,
-				width: "1440",
-				height: "789",
-				start_from_edge: false,
+				clock: "150",
+				rotate: true,
+				start_from_edge: true,
 				respawn: true,
 			};
 			const confetti = new ConfettiGenerator(confettiSettings);
@@ -298,18 +290,18 @@ const Payment = () => {
 	return (
 		<>
 			{transactionHash && (
-				<canvas id="my-canvas" className="absolute w-full"></canvas>
+				<canvas id="confetti-holder" className="absolute w-full"></canvas>
 			)}
-			<div className="mx-auto mb-8 mt-4" style={{ width: "45rem" }}>
+			<div className="mx-auto mb-8 mt-4 px-4 md:px-0 max-w-2xl">
 				{!stakingLoading && !transactionHash && !chainError && (
 					<>
 						<div className="mb-10">
 							<button
-								className="flex items-center bg-gray-200 text-gray-900 rounded-full px-2 py-1"
+								className="flex items-center bg-gray-200 text-gray-600 rounded-full px-2 py-1"
 								onClick={back}
 							>
-								<ChevronLeft className="text-gray-900" />
-								<span className="mr-2">Back</span>
+								<ChevronLeft size={16} className="text-gray-600" />
+								<span className="mx-2 text-sm">Back</span>
 							</button>
 						</div>
 						{/* <Steps
@@ -359,24 +351,16 @@ const Payment = () => {
 					</>
 				)}
 				{stakingLoading && !chainError && (
-					<div className="mt-6">
-						{/* <h1 className="font-semibold text-xl text-gray-700">Status:</h1> */}
-						<div className="flex flex-col items-center justify-between">
-							<span className="loader"></span>
-							<span className="relative">{stakingEvent}</span>
-							{/* <Spinner className="ml-4" /> */}
-						</div>
-					</div>
+					<Flex h="100vh" alignItems="center" justifyContent="center">
+						<span className="loader"></span>
+						<p className="text-gray-700">{stakingEvent}</p>
+					</Flex>
 				)}
 				{transactionHash && (
-					<div className="mt-6">
-						{/* <h1 className="font-semibold text-xl text-gray-700">Status:</h1> */}
-						<div className="flex flex-col items-center justify-between">
-							<span className="loader success"></span>
-							<span className="relative">Your transaction was successful!</span>
-							{/* <Spinner className="ml-4" /> */}
-						</div>
-					</div>
+					<Flex h="100vh" alignItems="center" justifyContent="center">
+						<span className="loader success"></span>
+						<p className="text-gray-700">Your transaction was successful!</p>
+					</Flex>
 				)}
 				{chainError && (
 					<ChainErrorPage

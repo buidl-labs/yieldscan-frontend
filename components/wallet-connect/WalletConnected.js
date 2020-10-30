@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Spinner } from "@chakra-ui/core";
+import { Box, Skeleton, Spinner } from "@chakra-ui/core";
 import Identicon from "@components/common/Identicon";
 import { get } from "lodash";
 import formatCurrency from "@lib/format-currency";
@@ -51,7 +51,9 @@ const WalletConnected = ({
 												) === "0" && " KSM"}
 											</p>
 										) : (
-											<Spinner />
+											<div>
+												<Skeleton w={32}><p className="text-xs">Loading...</p></Skeleton>
+											</div>
 										)}
 									</div>
 									<p className="text-xs w-1/2 text-right">
