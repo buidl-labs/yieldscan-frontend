@@ -226,7 +226,7 @@ const Header = ({ isBase }) => {
 					<div className="flex">
 						{isNil(accounts) ? (
 							<button
-								className="rounded-full border border-gray-300 p-2 px-4 font-semibold text-gray-800 mr-4"
+								className="rounded-full border border-gray-300 p-2 px-4 font-medium text-gray-800 mr-4"
 								onClick={toggle}
 							>
 								Connect Wallet
@@ -238,9 +238,9 @@ const Header = ({ isBase }) => {
 								onOpen={() => setIsStashPopoverOpen(true)}
 							>
 								<PopoverTrigger>
-									<button className="rounded-full flex border border-gray-300 p-2 px-4 items-center mr-8">
+									<button className="rounded-full flex items-center mr-8 font-medium">
 										Select Account
-										<ChevronDown size="20px" className="ml-4" />
+										<ChevronDown size="20px" className="ml-2" />
 									</button>
 								</PopoverTrigger>
 								<PopoverContent
@@ -319,10 +319,10 @@ const Header = ({ isBase }) => {
 									<button className="flex items-center mr-8">
 										<Identicon address={get(stashAccount, "address")} />
 										<div className="cursor-pointer ml-2 text-left">
-											<h3 className="flex items-center text-gray-900 -mb-1">
+											<h3 className="flex items-center text-gray-700 font-medium -mb-1">
 												{get(stashAccount, "meta.name", "")}
 											</h3>
-											<span className="text-gray-500 text-xs">
+											<span className="text-gray-600 text-xs">
 												Transferrable:{" "}
 												{formatCurrency.methods.formatAmount(
 													Math.trunc(
