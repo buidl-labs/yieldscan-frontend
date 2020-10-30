@@ -14,7 +14,7 @@ import {
 import stake from "@lib/stake";
 import ConfettiGenerator from "confetti-js";
 import getTransactionFee from "@lib/getTransactionFee";
-import { useToast, Spinner, Flex } from "@chakra-ui/core";
+import { useToast, Spinner, Flex, Button } from "@chakra-ui/core";
 import { useRouter } from "next/router";
 import { trackEvent, Events } from "@lib/analytics";
 import { getNetworkInfo } from "yieldscan.config";
@@ -80,14 +80,23 @@ const SuccessfullyBonded = ({ transactionHash, onConfirm, networkInfo }) => {
 	);
 };
 
-const ChainErrorPage = ({ onConfirm }) => {
+const ChainErrorPage = ({ onConfirm, back }) => {
 	return (
 		<div className="mx-10 mt-8 mb-20 flex flex-col text-center items-center">
-			<img src="/images/polkadot_alert.png" width="200px" />
-			<h3 className="mt-4 text-2xl">
+			<div className="mb-10 text-left w-full">
+				<button
+					className="flex items-center bg-gray-200 text-gray-600 rounded-full px-2 py-1"
+					onClick={back}
+				>
+					<ChevronLeft size={16} className="text-gray-600" />
+					<span className="mx-2 text-sm">Back</span>
+				</button>
+			</div>
+			<img src="/images/polkadot_alert.png" width="150px" />
+			<h3 className="text-xl font-semibold max-w-sm">
 				Oops. There was an error processing this staking request
 			</h3>
-			<span className="mt-1 px-4 text-sm text-gray-500">
+			<span className="mt-4 px-4 text-sm text-gray-600">
 				If you think this is an error on our part, please share this with the
 				help center and we will do our best to help. We typically respond within
 				2-3 days.
@@ -99,18 +108,32 @@ const ChainErrorPage = ({ onConfirm }) => {
 			>
 				Track this transaction on PolkaScan
 			</a> */}
-			<button
-				className="mt-8 px-24 py-4 bg-teal-500 text-white rounded-lg"
-				// onClick={onConfirm}
-			>
-				Retry
-			</button>
-			<button
-				className="mt-8 px-24 py-4 bg-teal-500 text-white rounded-lg"
-				// onClick={onConfirm}
-			>
-				Share this with the help center
-			</button>
+			<div className="max-w-sm">
+				<Button
+					mt={12}
+					py={6}
+					w="full"
+					variant="solid"
+					variantColor="teal"
+					fontWeight="normal"
+					rounded="lg"
+					onClick={onConfirm}
+				>
+					Retry
+				</Button>
+				<Button
+					mt={4}
+					py={6}
+					w="full"
+					variant="outline"
+					variantColor="teal"
+					fontWeight="normal"
+					rounded="lg"
+					// onClick={onConfirm}
+				>
+					Share this with the help center
+				</Button>
+			</div>
 		</div>
 	);
 };
@@ -124,6 +147,7 @@ const Payment = () => {
 	const { apiInstance } = usePolkadotApi();
 	const [currentStep, setCurrentStep] = useState(0);
 	const [chainError, setChainError] = useState(false);
+	const [loaderError, setLoaderError] = useState(false);
 	const { accounts, stashAccount, bondedAmount } = useAccounts();
 	const { setTransactionState, ...transactionState } = useTransaction();
 	const { setHeaderLoading } = useHeaderLoading();
@@ -147,7 +171,7 @@ const Payment = () => {
 		// To prevent the user from switching accounts or networks while in the middle of the payment process
 		setHeaderLoading(true);
 		if (stashAccount) {
-			const info = getTransactionFee(
+			getTransactionFee(
 				stashAccount.address,
 				stashAccount.address,
 				transactionState.stakingAmount,
@@ -190,7 +214,7 @@ const Payment = () => {
 
 	useEffect(() => {
 		if (transactionHash) {
-			setTimeout(() => router.push({ pathname: "/overview" }), 5000);
+			setTimeout(() => router.push({ pathname: "/overview" }), 2500);
 		}
 	}, [transactionHash]);
 
@@ -207,8 +231,11 @@ const Payment = () => {
 				setStakingEvent(eventInfo.message);
 			},
 			onSuccessfullSigning: (hash) => {
-				setStakingLoading(false);
-				setTransactionHash(hash.message);
+				setLoaderError(false);
+				setTimeout(() => {
+					setTransactionHash(get(hash, "message"));
+					setStakingEvent("Your transaction was successful!");
+				}, 750);
 			},
 			onFinish: (status, message, eventLogs) => {
 				// status = 0 for success, anything else for error code
@@ -220,7 +247,9 @@ const Payment = () => {
 					isClosable: true,
 					duration: 7000,
 				});
-				setStakingLoading(false);
+				setTimeout(() => {
+					setStakingLoading(false);
+				}, 2500);
 
 				if (status === 0) {
 					trackEvent(Events.TRANSACTION_SUCCESS, {
@@ -240,8 +269,17 @@ const Payment = () => {
 					setHeaderLoading(false);
 					// router.replace("/overview");
 				} else {
-					setStakingLoading(false);
-					if (message !== "Cancelled") setChainError(true);
+					if (message !== "Cancelled") {
+						setTimeout(() => {
+							setStakingEvent("Transaction failed");
+							setLoaderError(true);
+						}, 750);
+						setTimeout(() => {
+							setChainError(true);
+							setLoaderError(false);
+							setStakingLoading(false);
+						}, 2500);
+					}
 				}
 			},
 		};
@@ -261,6 +299,11 @@ const Payment = () => {
 				handlers.onFinish(1, error.message);
 			});
 		}
+	};
+
+	const backToConfirmation = () => {
+		setCurrentStep(0);
+		setChainError(false);
 	};
 
 	const back = () => {
@@ -352,20 +395,23 @@ const Payment = () => {
 				)}
 				{stakingLoading && !chainError && (
 					<Flex h="100vh" alignItems="center" justifyContent="center">
-						<span className="loader"></span>
+						<span
+							className={`loader ${
+								loaderError ? "fail" : transactionHash && "success"
+							}`}
+						></span>
 						<p className="text-gray-700">{stakingEvent}</p>
-					</Flex>
-				)}
-				{transactionHash && (
-					<Flex h="100vh" alignItems="center" justifyContent="center">
-						<span className="loader success"></span>
-						<p className="text-gray-700">Your transaction was successful!</p>
 					</Flex>
 				)}
 				{chainError && (
 					<ChainErrorPage
 						// transactionHash={transactionHash}
-						onConfirm={handleOnClickForSuccessfulTransaction}
+						back={backToConfirmation}
+						onConfirm={() => {
+							setStakingLoading(true);
+							setChainError(false);
+							transact();
+						}}
 						networkInfo={networkInfo}
 					/>
 				)}
