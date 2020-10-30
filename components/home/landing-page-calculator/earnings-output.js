@@ -1,4 +1,4 @@
-import { Box, FormLabel, Spinner } from "@chakra-ui/core";
+import { Box, FormLabel, Skeleton } from "@chakra-ui/core";
 import axios from "@lib/axios";
 import calculateReward from "@lib/calculate-reward";
 import {
@@ -140,7 +140,9 @@ const EarningsOutput = ({
 							preserveValue
 						/>
 					) : (
-						<Spinner />
+						<Skeleton>
+							<span>Loading...</span>
+						</Skeleton>
 					)}
 				</h2>
 			</div>
@@ -173,7 +175,9 @@ const EarningsOutput = ({
 					</div>
 				) : (
 					<div className="flex justify-between">
-						<Spinner />
+						<Skeleton>
+							<span>Loading...</span>
+						</Skeleton>
 					</div>
 				)}
 			</div>
@@ -206,7 +210,9 @@ const EarningsOutput = ({
 					</div>
 				) : (
 					<div className="flex justify-between">
-						<Spinner />
+						<Skeleton>
+							<span>Loading...</span>
+						</Skeleton>
 					</div>
 				)}
 			</div>
@@ -239,7 +245,9 @@ const EarningsOutput = ({
 					</div>
 				) : (
 					<div className="flex justify-between">
-						<Spinner />
+						<Skeleton>
+							<span>Loading...</span>
+						</Skeleton>
 					</div>
 				)}
 			</div>
