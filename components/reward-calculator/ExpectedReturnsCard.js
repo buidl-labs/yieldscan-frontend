@@ -16,12 +16,12 @@ const ResultCardInsight = ({
 	supportValue,
 	emptyState,
 }) => (
-	<div className="mt-2 mr-10">
+	<div className="mt-2 mr-8">
 		<div className="flex items-center">
-			<span className="opacity-75 mr-1">{label}</span>
+			<span className="opacity-75 mr-1 text-xs">{label}</span>
 			<Popover trigger="hover">
 				<PopoverTrigger>
-					<HelpCircle size="1rem" cursor="help" strokeOpacity="0.75" />
+					<HelpCircle size="0.75rem" cursor="help" opacity="0.5" fill="white" stroke="#2bcaca" />
 				</PopoverTrigger>
 				<PopoverContent
 					zIndex={50}
@@ -35,11 +35,11 @@ const ResultCardInsight = ({
 			</Popover>
 		</div>
 		{emptyState ? (
-			<h3 className="text-center text-2xl">-</h3>
+			<h3 className="text-center">-</h3>
 		) : (
 			<>
-				<h3 className="text-2xl">{value}</h3>
-				<span className="text-sm">{supportValue}</span>
+				<h3 className="font-medium -mb-1">{value}</h3>
+				<span className="text-xs">{supportValue}</span>
 			</>
 		)}
 	</div>
@@ -66,7 +66,7 @@ const ExpectedReturnsCard = ({
 	return (
 		<>
 			<div className="relative rounded-xl bg-teal-500 shadow-teal text-white p-8">
-				<h1 className="font-semibold text-2xl">Expected Results</h1>
+				<h1 className="font-semibold text-xl">Expected Results</h1>
 				<div className="flex flex-wrap mt-2">
 					<ResultCardInsight
 						label="Estimated Returns"

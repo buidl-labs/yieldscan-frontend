@@ -7,15 +7,17 @@ const TimePeriodInput = ({ value, unit, onChange, onUnitChange }) => {
 				<InputRightElement
 					children={
 						<Select
-							backgroundColor="gray.100"
+							backgroundColor="gray.50"
 							rounded="full"
-							pl={8}
-							pr={12}
+							pl={4}
+							pr={6}
 							width="full"
-							fontSize="1.125rem"
+							fontSize="xs"
 							cursor="pointer"
-							height="3rem"
+							height="1.75rem"
 							border="none"
+							iconSize="0.75rem"
+							color="gray.600"
 							value={unit}
 							onChange={(ev) => onUnitChange(ev.target.value)}
 						>
@@ -26,20 +28,21 @@ const TimePeriodInput = ({ value, unit, onChange, onUnitChange }) => {
 					}
 					width="fit-content"
 					rounded="full"
-					py={8}
+					py={4}
 					px={2}
-					fontSize="xl"
+					fontSize="sm"
 				/>
 				<Input
 					type="number"
+					color="gray.600"
 					rounded="full"
-					py={8}
-					px={8}
+					py={4}
+					px={4}
 					placeholder="0"
 					defaultValue={value === 0 ? null : value}
 					onChange={(ev) => onChange(Number(ev.target.value))}
 					border="none"
-					fontSize="2xl"
+					fontSize="lg"
 				/>
 			</InputGroup>
 			{/* <div className="ml-6">

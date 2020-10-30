@@ -2,16 +2,16 @@ import { Switch } from '@chakra-ui/core';
 
 const CompoundRewardSlider = ({ checked, setChecked }) => {
 	return (
-		<div className="flex">
+		<div className="flex items-center">
 			<Switch
-				size="lg"
+				mb={-1}
 				color="teal"
 				isChecked={checked}
 				onChange={e => setChecked(e.target.checked)}
 			/>
 			<span
 				className={`
-					text-lg font-semibold ml-5
+					text-sm font-semibold ml-2
 					${checked ? 'text-teal-500' : 'text-gray-600'}
 				`}
 			>

@@ -243,17 +243,17 @@ const RewardCalculatorPage = () => {
 		amount == 0;
 
 	return (
-		<div className="flex px-24 pt-12">
+		<div className="flex pt-12">
 			<WalletConnectPopover isOpen={isOpen} networkInfo={networkInfo} />
 			<div>
-				<div className="flex">
+				<div className="flex flex-wrap">
 					<div className="w-1/2">
-						<h1 className="font-semibold text-3xl text-gray-800">
+						<h1 className="font-semibold text-xl text-gray-700">
 							Calculate Returns
 						</h1>
-						<div className="mt-10 mx-2">
-							<h3 className="text-xl text-gray-800">I want to invest:</h3>
-							<div className="mt-3">
+						<div className="mt-8 mx-2">
+							<h3 className="text-gray-700 text-xs">I want to invest:</h3>
+							<div className="mt-2">
 								{stashAccount && amount > totalBalance - 0.1 && (
 									<Alert
 										status="error"
@@ -281,7 +281,7 @@ const RewardCalculatorPage = () => {
 												>
 													<PopoverArrow />
 													<PopoverBody>
-														<span className="text-white">
+														<span className="text-white text-xs">
 															This is to ensure that you have a decent amout of
 															funds in your account to pay transaction fees for
 															claiming rewards, unbonding funds, changing
@@ -293,8 +293,8 @@ const RewardCalculatorPage = () => {
 										</AlertDescription>
 									</Alert>
 								)}
-								<div
-									className="m-2 text-gray-600 text-sm"
+								{/* <div
+									className="my-2 text-gray-600 text-xs"
 									hidden={isNil(stashAccount)}
 								>
 									Transferrable Balance:{" "}
@@ -305,7 +305,7 @@ const RewardCalculatorPage = () => {
 										),
 										networkInfo
 									)}
-								</div>
+								</div> */}
 
 								<AmountInput
 									bonded={get(bondedAmount, "currency")}
@@ -314,13 +314,11 @@ const RewardCalculatorPage = () => {
 									onChange={setAmount}
 								/>
 							</div>
-							<h3 className="text-xl mt-10 text-gray-800">
-								With a risk level:
-							</h3>
-							<div className="mt-3">
+							<h3 className="mt-8 text-gray-700 text-xs">With a risk level:</h3>
+							<div className="mt-2">
 								<RiskSelect selected={risk} setSelected={setRisk} />
 							</div>
-							<h3 className="text-xl mt-10 text-gray-800">
+							<h3 className="mt-8 text-gray-700 text-xs">
 								For the time period:
 							</h3>
 							<Alert
@@ -328,13 +326,14 @@ const RewardCalculatorPage = () => {
 								color="#FDB808"
 								backgroundColor="#FFF4DA"
 								borderRadius="8px"
+								mr={12}
 							>
-								<AlertDescription color="#FDB808">
+								<AlertDescription color="#FDB808" fontSize="xs">
 									Time period is only used for estimating returns. It doesn’t
 									affect the unbonding period of approximately 7 days.
 								</AlertDescription>
 							</Alert>
-							<div className="mt-3">
+							<div className="mt-2">
 								<TimePeriodInput
 									value={timePeriodValue}
 									unit={timePeriodUnit}
@@ -342,14 +341,14 @@ const RewardCalculatorPage = () => {
 									onUnitChange={setTimePeriodUnit}
 								/>
 							</div>
-							<h3 className="text-xl mt-10 text-gray-800">
+							<h3 className="mt-8 text-gray-700 text-xs">
 								Lock rewards for compounding?
 							</h3>
 							{/* <span className="text-sm text-gray-500">
 								Your rewards will be locked for staking over the specified time
 								period
 							</span> */}
-							<div className="mt-3 my-10">
+							<div className="mt-2 my-8">
 								<CompoundRewardSlider
 									checked={compounding}
 									setChecked={setCompounding}
@@ -382,15 +381,17 @@ const RewardCalculatorPage = () => {
 				/> */}
 						<div className="mt-3">
 							<Alert
-								color="#798594"
+								color="gray.500"
 								backgroundColor="white"
 								border="1px solid #E2ECF9"
 								borderRadius="8px"
 							>
-								<AlertIcon name="secureLogo"></AlertIcon>
+								<AlertIcon name="secureLogo" />
 								<div>
-									<AlertTitle>Non-custodial & Secure</AlertTitle>
-									<AlertDescription>
+									<AlertTitle fontWeight="medium" fontSize="sm">
+										Non-custodial & Secure
+									</AlertTitle>
+									<AlertDescription fontSize="xs">
 										We do not own your private keys and cannot access your funds
 										without your confirmation.
 									</AlertDescription>
@@ -398,12 +399,10 @@ const RewardCalculatorPage = () => {
 							</Alert>
 						</div>
 					</div>
-				</div>
-				<Box pos="fixed" w="100%" zIndex={5}>
-					<div className="fixed w-full bg-white bottom-0 p-10 left-0 flex-center">
+					<div className="w-full bg-white bottom-0 p-8 left-0 flex-center">
 						<button
 							className={`
-						rounded-full font-semibold text-lg px-24 py-4 bg-teal-500 text-white
+						rounded-full font-medium px-12 py-3 bg-teal-500 text-white
 						${
 							stashAccount && calculationDisabled
 								? "opacity-75 cursor-not-allowed"
@@ -416,11 +415,11 @@ const RewardCalculatorPage = () => {
 							{isNil(accounts)
 								? "Connect Wallet"
 								: isNil(stashAccount)
-								? "SelectAccount"
+								? "Select Account"
 								: "Invest Now"}
 						</button>
 					</div>
-				</Box>
+				</div>
 				{/* <div className="fixed w-full bg-white bottom-0 p-10 left-0 flex-center">
 					<button
 						className={`

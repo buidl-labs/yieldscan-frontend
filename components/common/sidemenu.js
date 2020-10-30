@@ -10,17 +10,17 @@ const MenuOption = ({ label, Icon, selected = false, href }) => {
 				className={`
 					block
 					${!selected && "hover:text-teal-500 hover:ml-2"}
-					text-lg
 					rounded-full 
 					px-5
 					py-2
 					mb-2 
 					transition-all
 					duration-300 ease-in-out
+					text-sm min-w-fit-content
 					${selected ? "text-teal-500 bg-teal-500 bg-opacity-22" : "text-gray-600"}
 				`}
 			>
-				<Icon size="1.125rem" className="mr-2 mb-px inline" />
+				<Icon size="1rem" className="mr-2 mb-px inline" />
 				<span>{label}</span>
 			</a>
 		</Link>

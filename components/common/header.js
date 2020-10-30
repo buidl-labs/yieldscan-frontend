@@ -22,6 +22,14 @@ import {
 	Avatar,
 	Image,
 	Spinner,
+	IconButton,
+	DrawerOverlay,
+	DrawerContent,
+	DrawerCloseButton,
+	DrawerHeader,
+	DrawerBody,
+	DrawerFooter,
+	Drawer,
 } from "@chakra-ui/core";
 import Identicon from "@components/common/Identicon";
 import EditControllerModal from "@components/overview/EditControllerModal";
@@ -32,6 +40,7 @@ import Link from "next/link";
 import createPolkadotAPIInstance from "@lib/polkadot-api";
 import { getNetworkInfo } from "yieldscan.config";
 import { parseCookies } from "nookies";
+import SideMenu from "./sidemenu";
 
 // TODO: replace this with actual global state
 const currentNetwork = "Not Kusama";
@@ -70,6 +79,13 @@ const Header = ({ isBase }) => {
 	const [isStashPopoverOpen, setIsStashPopoverOpen] = useState(false);
 	const [isNetworkOpen, setIsNetworkOpen] = useState(false);
 	const [isBonded, setIsBonded] = useState(false);
+
+	const {
+		isOpen: navIsOpen,
+		onOpen: navOnOpen,
+		onClose: navOnClose,
+	} = useDisclosure();
+	const btnRef = React.useRef();
 
 	useEffect(() => {
 		if (accounts) {
@@ -123,7 +139,7 @@ const Header = ({ isBase }) => {
 
 	return (
 		<div
-			className={`header flex items-center justify-between ${
+			className={`header flex items-center justify-between text-gray-700 ${
 				!isBase
 					? "border border-bottom border-gray-200"
 					: "max-w-65-rem xl:px-0"
@@ -134,12 +150,70 @@ const Header = ({ isBase }) => {
 				isOpen={editControllerModalOpen}
 				close={closeEditControllerModal}
 			/>
-			<Link href="/">
-				<a className="flex items-center">
-					<Image src="/images/yieldscan-logo.svg" alt="YieldScan Logo" />
-					<span className="ml-2">YieldScan</span>
-				</a>
-			</Link>
+			<div className="flex items-center">
+				{!isBase && (
+					<>
+						<IconButton
+							ref={btnRef}
+							variantColor="gray.600"
+							variant="link"
+							onClick={navOnOpen}
+							icon={Menu}
+							_focus={{ boxShadow: "none" }}
+							mr={4}
+							px={0}
+							display={{ base: "inline", xl: "none" }}
+						/>
+						<Drawer
+							isOpen={navIsOpen}
+							placement="left"
+							onClose={navOnClose}
+							finalFocusRef={btnRef}
+						>
+							<DrawerOverlay />
+							<DrawerContent>
+								<DrawerCloseButton
+									onClick={close}
+									boxShadow="0 0 0 0 #fff"
+									color="gray.400"
+									backgroundColor="gray.100"
+									rounded="1rem"
+								/>
+								<DrawerHeader>
+									<Link href="/">
+										<a className="flex items-center">
+											<Image
+												src="/images/yieldscan-logo.svg"
+												alt="YieldScan Logo"
+											/>
+											<span className="ml-2 text-gray-700 font-medium">
+												YieldScan
+											</span>
+										</a>
+									</Link>
+								</DrawerHeader>
+
+								<DrawerBody px={0}>
+									<SideMenu />
+								</DrawerBody>
+
+								<DrawerFooter>
+									{/* <Button variant="outline" mr={3} onClick={onClose}>
+									Cancel
+								</Button>
+								<Button color="blue">Save</Button> */}
+								</DrawerFooter>
+							</DrawerContent>
+						</Drawer>
+					</>
+				)}
+				<Link href="/">
+					<a className="flex items-center">
+						<Image src="/images/yieldscan-logo.svg" alt="YieldScan Logo" />
+						<span className="ml-2 font-medium">YieldScan</span>
+					</a>
+				</Link>
+			</div>
 			{!accountInfoLoading && !headerLoading && isBase ? (
 				<Link href={Routes.OVERVIEW}>
 					<a className="border border-gray-200 rounded-full py-2 px-4">
