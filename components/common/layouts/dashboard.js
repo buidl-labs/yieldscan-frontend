@@ -194,13 +194,12 @@ const withDashboardLayout = (children) => {
 		<div>
 			<Header />
 			<div className="dashboard-content fixed flex w-full">
-				<div className="h-full hidden xl:block relative sidemenu-container xl:w-2/12 py-8">
+				<div className="h-full hidden xl:block relative sidemenu-container xl:w-2/12 py-8 max-w-xs">
 					<SideMenu />
 				</div>
 
-				<div className="h-full xl:w-10/12 overflow-y-scroll">
+				<div className="h-full px-8 xl:w-10/12 overflow-y-scroll max-w-5xl mx-auto">
 					{children()}
-					<Footer />
 				</div>
 			</div>
 			<style jsx>{`
@@ -210,20 +209,6 @@ const withDashboardLayout = (children) => {
 				.sidemenu-container {
 					background: #f7fbff;
 					z-index: 10;
-				}
-				.core-content {
-					width: calc(100vw - 13rem);
-					animation: fadein 100ms;
-				}
-				@keyframes fadein {
-					from {
-						opacity: 0;
-						transform: scale(0.7);
-					}
-					to {
-						opacity: 1;
-						transform: scale(1);
-					}
 				}
 			`}</style>
 		</div>
