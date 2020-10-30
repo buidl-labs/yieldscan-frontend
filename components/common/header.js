@@ -31,11 +31,13 @@ import Routes from "@lib/routes";
 import Link from "next/link";
 import createPolkadotAPIInstance from "@lib/polkadot-api";
 import { getNetworkInfo } from "yieldscan.config";
+import { parseCookies } from "nookies";
 
 // TODO: replace this with actual global state
 const currentNetwork = "Not Kusama";
 
 const Header = ({ isBase }) => {
+	const cookies = parseCookies();
 	const { selectedNetwork, setSelectedNetwork } = useSelectedNetwork();
 	const { validatorMap, setValidatorMap } = useValidatorData();
 	const { setNominatorsData, setNomLoading } = useNominatorsData();
@@ -82,6 +84,26 @@ const Header = ({ isBase }) => {
 			setAccountsWithoutCurrent(accountsWithoutCurrent);
 		}
 	}, [stashAccount, networkInfo]);
+
+	useEffect(() => {
+		if (
+			(!isNil(cookies.kusamaDefault) || !isNil(cookies.polkadotDefault)) &&
+			!stashAccount &&
+			accounts
+		) {
+			selectedNetwork == "Kusama"
+				? accounts
+						.filter((account) => account.address == cookies.kusamaDefault)
+						.map((account) => {
+							setStashAccount(account);
+						})
+				: accounts
+						.filter((account) => account.address == cookies.polkadotDefault)
+						.map((account) => {
+							setStashAccount(account);
+						});
+		}
+	}, [accounts]);
 
 	useEffect(() => {
 		if (stashAccount) {
@@ -161,6 +183,17 @@ const Header = ({ isBase }) => {
 													className="flex items-center rounded px-4 py-2 w-full bg-gray-800 hover:bg-gray-700 hover:text-gray-200"
 													onClick={() => {
 														setStashAccount(account);
+														selectedNetwork == "Kusama"
+															? setCookie(
+																	null,
+																	"kusamaDefault",
+																	account.address
+															  )
+															: setCookie(
+																	null,
+																	"polkadotDefault",
+																	account.address
+															  );
 														setIsStashPopoverOpen(false);
 													}}
 												>
@@ -236,6 +269,17 @@ const Header = ({ isBase }) => {
 													className="flex items-center rounded px-4 py-2 w-full bg-gray-800 hover:bg-gray-700 hover:text-gray-200"
 													onClick={() => {
 														setStashAccount(account);
+														selectedNetwork == "Kusama"
+															? setCookie(
+																	null,
+																	"kusamaDefault",
+																	account.address
+															  )
+															: setCookie(
+																	null,
+																	"polkadotDefault",
+																	account.address
+															  );
 														setIsStashPopoverOpen(false);
 													}}
 												>
