@@ -79,7 +79,7 @@ const withDashboardLayout = (children) => {
 		// wallet connected state:
 		// when `stashAccount` is selected, fetch ledger for the account and save it.
 		if (stashAccount) {
-			setAccountInfoLoading(true);
+			// setAccountInfoLoading(true);
 			createPolkadotAPIInstance(selectedNetwork).then(async (api) => {
 				setApiInstance(api);
 

@@ -24,10 +24,7 @@ const IntroPage = ({ onConnected, onDisclaimer }) => (
 		</button> */}
 		<span className="mt-6 text-gray-500">
 			{"Using a different wallet? "}
-			<a
-				href="https://github.com/polkadot-js/extension#installation"
-				target="_blank"
-			>
+			<a href="https://yieldscan.upvoty.com/b/yieldscan/" target="_blank">
 				<strong className="text-black-500">Request feature</strong>
 			</a>
 		</span>
