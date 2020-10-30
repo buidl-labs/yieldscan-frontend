@@ -35,6 +35,7 @@ import Identicon from "@components/common/Identicon";
 import EditControllerModal from "@components/overview/EditControllerModal";
 import { useEffect, useState } from "react";
 import formatCurrency from "@lib/format-currency";
+import convertCurrency from "@lib/convert-currency";
 import Routes from "@lib/routes";
 import Link from "next/link";
 import createPolkadotAPIInstance from "@lib/polkadot-api";
@@ -59,6 +60,7 @@ const Header = ({ isBase }) => {
 		accountsWithBalances,
 		stashAccount,
 		freeAmount,
+		setFreeAmount,
 		accountInfoLoading,
 		setStashAccount,
 		setAccounts,
@@ -122,6 +124,55 @@ const Header = ({ isBase }) => {
 	}, [accounts]);
 
 	useEffect(() => {
+		if (accountsWithBalances && stashAccount) {
+			selectedNetwork == "Kusama"
+				? accountsWithBalances
+						.filter((account) => account.address == cookies.kusamaDefault)
+						.map((account) => {
+							setStashAccount(account);
+							if (account.balances) {
+								/**
+								 * `freeBalance` here includes `locked` balance also - that's how polkadot API is currently working
+								 *  so we need to subtract the `bondedBalance``
+								 */
+								const freeAmount = Number(
+									parseInt(account.balances.availableBalance) /
+										Math.pow(10, networkInfo.decimalPlaces)
+								);
+								setFreeAmount({ currency: freeAmount });
+								convertCurrency(freeAmount, networkInfo.denom).then((value) => {
+									setFreeAmount({
+										currency: freeAmount,
+										subCurrency: value,
+									});
+								});
+							}
+						})
+				: accountsWithBalances
+						.filter((account) => account.address == cookies.polkadotDefault)
+						.map((account) => {
+							setStashAccount(account);
+							if (account.balances) {
+								/**
+								 * `freeBalance` here includes `locked` balance also - that's how polkadot API is currently working
+								 *  so we need to subtract the `bondedBalance``
+								 */
+								const freeAmount = Number(
+									parseInt(account.balances.availableBalance) /
+										Math.pow(10, networkInfo.decimalPlaces)
+								);
+								convertCurrency(freeAmount, networkInfo.denom).then((value) => {
+									setFreeAmount({
+										currency: freeAmount,
+										subCurrency: value,
+									});
+								});
+							}
+						});
+		}
+	}, [stashAccount]);
+
+	useEffect(() => {
 		if (stashAccount) {
 			createPolkadotAPIInstance(networkInfo.name).then((api) => {
 				setApiInstance(api);
@@ -136,6 +187,8 @@ const Header = ({ isBase }) => {
 			});
 		}
 	}, [stashAccount, networkInfo]);
+
+	console.log(JSON.stringify(freeAmount));
 
 	return (
 		<div

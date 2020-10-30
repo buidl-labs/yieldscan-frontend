@@ -173,10 +173,10 @@ const withDashboardLayout = (children) => {
 								currency: bondedAmount,
 								subCurrency: bondedAmountInSubCurrency,
 							},
-							freeAmount: {
-								currency: freeAmount,
-								subCurrency: freeAmountInSubCurrency,
-							},
+							// freeAmount: {
+							// 	currency: freeAmount,
+							// 	subCurrency: freeAmountInSubCurrency,
+							// },
 							activeStake: {
 								currency: activeStake,
 								subCurrency: activeStakeInSubCurrency,

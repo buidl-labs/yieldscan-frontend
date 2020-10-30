@@ -92,7 +92,8 @@ const OverviewCards = ({
 											get(activeStake, "currency", 0) *
 												10 ** networkInfo.decimalPlaces
 										)
-									)
+									),
+									networkInfo
 								)}
 							</span>
 						)}

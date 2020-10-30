@@ -142,7 +142,7 @@ const Overview = () => {
 				});
 
 			return () => {
-				unsubscribe();
+				unsubscribe;
 			};
 		}
 	}, [stashAccount, apiInstance]);
@@ -172,57 +172,38 @@ const Overview = () => {
 		}
 	}, [allNominationsData]);
 
-	if (!stashAccount) {
-		return (
-			<div className="flex-center w-full h-full">
-				<div className="flex-center flex-col">
-					<AlertTriangle size="2rem" className="text-orange-500" />
-					<span className="text-gray-600 text-lg mb-10">
-						No account connected!
-					</span>
-					<button
-						className="border border-teal-500 text-teal-500 px-3 py-2 rounded-full"
-						onClick={toggle}
-					>
-						Connect Wallet
-					</button>
-				</div>
-			</div>
-		);
-	}
+	// if (loading || accountInfoLoading || nominationsLoading) {
+	// 	return (
+	// 		<div className="flex-center w-full h-full">
+	// 			<div className="flex-center flex-col">
+	// 				<Spinner size="xl" color="teal.500" thickness="4px" />
+	// 				<span className="text-sm text-gray-600 mt-5">
+	// 					Fetching your data...
+	// 				</span>
+	// 			</div>
+	// 		</div>
+	// 	);
+	// }
 
-	if (loading || accountInfoLoading || nominationsLoading) {
-		return (
-			<div className="flex-center w-full h-full">
-				<div className="flex-center flex-col">
-					<Spinner size="xl" color="teal.500" thickness="4px" />
-					<span className="text-sm text-gray-600 mt-5">
-						Fetching your data...
-					</span>
-				</div>
-			</div>
-		);
-	}
-
-	if (error) {
-		return (
-			<div className="flex-center w-full h-full">
-				<div className="flex-center flex-col">
-					<AlertTriangle size="2rem" className="text-orange-500" />
-					<span className="font-semibold text-red-600 text-lg mb-10">
-						Sorry, no data for your account since you don't have active
-						nominations! :(
-					</span>
-					<span
-						onClick={() => router.replace(Routes.CALCULATOR)}
-						className="text-sm text-gray-600 mt-5 hover:underline cursor-pointer"
-					>
-						Use Reward Calculator to bond more funds and nominate.
-					</span>
-				</div>
-			</div>
-		);
-	}
+	// if (error) {
+	// 	return (
+	// 		<div className="flex-center w-full h-full">
+	// 			<div className="flex-center flex-col">
+	// 				<AlertTriangle size="2rem" className="text-orange-500" />
+	// 				<span className="font-semibold text-red-600 text-lg mb-10">
+	// 					Sorry, no data for your account since you don't have active
+	// 					nominations! :(
+	// 				</span>
+	// 				<span
+	// 					onClick={() => router.replace(Routes.CALCULATOR)}
+	// 					className="text-sm text-gray-600 mt-5 hover:underline cursor-pointer"
+	// 				>
+	// 					Use Reward Calculator to bond more funds and nominate.
+	// 				</span>
+	// 			</div>
+	// 		</div>
+	// 	);
+	// }
 
 	const onEditController = () => {
 		closeRewardDestinationModal();
@@ -234,7 +215,47 @@ const Overview = () => {
 		toggleFundsUpdateModal();
 	};
 
-	return (
+	return !stashAccount ? (
+		<div className="flex-center w-full h-full">
+			<div className="flex-center flex-col">
+				<AlertTriangle size="2rem" className="text-orange-500" />
+				<span className="text-gray-600 text-lg mb-10">
+					No account connected!
+				</span>
+				<button
+					className="border border-teal-500 text-teal-500 px-3 py-2 rounded-full"
+					onClick={toggle}
+				>
+					Connect Wallet
+				</button>
+			</div>
+		</div>
+	) : loading || nominationsLoading ? (
+		<div className="flex-center w-full h-full">
+			<div className="flex-center flex-col">
+				<Spinner size="xl" color="teal.500" thickness="4px" />
+				<span className="text-sm text-gray-600 mt-5">
+					Fetching your data...
+				</span>
+			</div>
+		</div>
+	) : error ? (
+		<div className="flex-center w-full h-full">
+			<div className="flex-center flex-col">
+				<AlertTriangle size="2rem" className="text-orange-500" />
+				<span className="font-semibold text-red-600 text-lg mb-10">
+					Sorry, no data for your account since you don't have active
+					nominations! :(
+				</span>
+				<span
+					onClick={() => router.replace(Routes.CALCULATOR)}
+					className="text-sm text-gray-600 mt-5 hover:underline cursor-pointer"
+				>
+					Use Reward Calculator to bond more funds and nominate.
+				</span>
+			</div>
+		</div>
+	) : (
 		<div className="px-10 py-10">
 			<RewardDestinationModal
 				isOpen={isRewardDestinationModalOpen}
