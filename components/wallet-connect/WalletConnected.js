@@ -34,16 +34,21 @@ const WalletConnected = ({
 									console.log(get(account, "address"))}
 								<div className="ml-2 flex w-full">
 									<div className="ml-2 flex-col w-1/2">
-										<p className="text-gray-800 text-base">
+										<p className="text-gray-700 text-base font-medium">
 											{account.meta.name}
 										</p>
 										{account.balances ? (
-											<p className="text-gray-800 text-base">
+											<p className="text-gray-600 text-sm">
 												{formatCurrency.methods.formatAmount(
 													account.balances.freeBalance.toNumber() +
 														account.balances.reservedBalance.toNumber(),
 													networkInfo
 												)}
+												{formatCurrency.methods.formatAmount(
+													account.balances.freeBalance.toNumber() +
+														account.balances.reservedBalance.toNumber(),
+													networkInfo
+												) === "0" && " KSM"}
 											</p>
 										) : (
 											<Spinner />
