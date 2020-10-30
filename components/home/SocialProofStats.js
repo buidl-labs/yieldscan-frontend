@@ -7,9 +7,9 @@ import Link from "next/link";
 
 const StatCard = ({ stat, description, subText }) => {
 	return (
-		<div className="mb-8 items-center flex flex-col py-8 w-80 pb-10 shadow-custom border border-gray-100 rounded-xl mx-2 bg-white">
-			<h2 className="text-4xl font-semibold">{stat}</h2>
-			<p className="mb-4">{description}</p>
+		<div className="mb-8 items-center flex flex-col py-8 w-64 xl:w-3/12 pb-10 border border-gray-100 rounded-xl mx-2 bg-gray-100">
+			<h2 className="text-3xl font-semibold text-gray-700">{stat}</h2>
+			<p className="mb-4 text-sm text-gray-700">{description}</p>
 			{subText}
 		</div>
 	);
@@ -42,7 +42,7 @@ const SocialProofStats = ({ networkName, networkDenom, networkUrl }) => {
 			.finally(() => {
 				setLoading(false);
 			});
-	}, []);
+	}, [networkUrl]);
 
 	React.useEffect(() => {
 		if (nominatorsData.stats) {
@@ -55,7 +55,7 @@ const SocialProofStats = ({ networkName, networkDenom, networkUrl }) => {
 				networkDenom
 			).then((value) => setTotalRewardsSubCurrency(value));
 		}
-	}, [nominatorsData]);
+	}, [nominatorsData, networkDenom]);
 
 	if (error) {
 		return (
@@ -69,13 +69,13 @@ const SocialProofStats = ({ networkName, networkDenom, networkUrl }) => {
 		);
 	}
 	return (
-		<div className="flex w-full max-w-65-rem mt-32 flex-wrap">
+		<div className="flex w-full max-w-65-rem mt-32 flex-wrap justify-between">
 			<StatCard
 				stat={
 					loading || isNaN(totalAmountStakedSubCurrency) ? (
 						<Spinner />
 					) : (
-						`$${millify(totalAmountStakedSubCurrency)}+`
+						`$ ${millify(totalAmountStakedSubCurrency)}+`
 					)
 				}
 				description={`Invested in staking on ${networkName}`}
@@ -110,7 +110,7 @@ const SocialProofStats = ({ networkName, networkDenom, networkUrl }) => {
 					loading || isNaN(totalRewardsSubCurrency) ? (
 						<Spinner />
 					) : (
-						`$${millify(totalRewardsSubCurrency)}+`
+						`$ ${millify(totalRewardsSubCurrency)}+`
 					)
 				}
 				description="Earned as staking rewards"

@@ -124,8 +124,10 @@ const Header = ({ isBase }) => {
 	return (
 		<div
 			className={`header flex items-center justify-between ${
-				!isBase && "border border-bottom border-gray-200"
-			} bg-white p-8 h-12`}
+				!isBase
+					? "border border-bottom border-gray-200"
+					: "max-w-65-rem xl:px-0"
+			} bg-white px-8 py-8 h-12 mx-auto`}
 		>
 			<WalletConnectPopover isOpen={isOpen} networkInfo={networkInfo} />
 			<EditControllerModal
@@ -330,7 +332,7 @@ const Header = ({ isBase }) => {
 										<img
 											src={`/images/${networkInfo.coinGeckoDenom}-logo.png`}
 											alt={`${networkInfo.coinGeckoDenom}-logo`}
-											className="mr-2 w-6"
+											className="mr-2 w-6 rounded-full"
 										/>
 										<ChevronDown size="20px" />
 									</button>
