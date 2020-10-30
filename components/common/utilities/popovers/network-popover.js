@@ -26,13 +26,14 @@ const NetworkPopover = ({ isExpanded, hasBorder }) => {
 	const { setNominatorsData, setNomLoading } = useNominatorsData();
 	const { setCouncilMembers, setCouncilLoading } = useCouncil();
 	const {
-		filteredAccounts,
+		accounts,
+		accountsWithBalances,
 		stashAccount,
 		freeAmount,
 		accountInfoLoading,
 		setStashAccount,
 		setAccounts,
-		setFilteredAccounts,
+		setAccountsWithBalances,
 		setAccountInfoLoading,
 	} = useAccounts();
 	const { selectedNetwork, setSelectedNetwork } = useSelectedNetwork();
@@ -49,7 +50,7 @@ const NetworkPopover = ({ isExpanded, hasBorder }) => {
 					className={`relative flex items-center rounded-full  ${
 						hasBorder && "border border-gray-300 p-2 px-4"
 					} font-semibold text-gray-800 z-20`}
-					onClick={e => {
+					onClick={(e) => {
 						e.preventDefault();
 						setIsNetworkOpen(!isNetworkOpen);
 					}}
@@ -96,8 +97,8 @@ const NetworkPopover = ({ isExpanded, hasBorder }) => {
 								setCouncilMembers(undefined);
 								setCouncilLoading(true);
 								setStashAccount(null);
-								setAccounts([]);
-								setFilteredAccounts([]);
+								setAccounts(null);
+								setAccountsWithBalances(null);
 								setAccountInfoLoading(false);
 								setSelectedNetwork("Kusama");
 							}
@@ -129,8 +130,8 @@ const NetworkPopover = ({ isExpanded, hasBorder }) => {
 								setCouncilMembers(undefined);
 								setCouncilLoading(true);
 								setStashAccount(null);
-								setAccounts([]);
-								setFilteredAccounts([]);
+								setAccounts(null);
+								setAccountsWithBalances([]);
 								setAccountInfoLoading(false);
 								setSelectedNetwork("Polkadot");
 							}

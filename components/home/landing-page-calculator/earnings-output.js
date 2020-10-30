@@ -1,4 +1,4 @@
-import { Box, FormLabel } from "@chakra-ui/core";
+import { Box, FormLabel, Spinner } from "@chakra-ui/core";
 import axios from "@lib/axios";
 import calculateReward from "@lib/calculate-reward";
 import {
@@ -6,9 +6,9 @@ import {
 	useMonthlyEarning,
 	useDailyEarning,
 	useValidatorData,
-    useTransaction,
+	useTransaction,
 } from "@lib/store";
-import { cloneDeep, get, isNil, keyBy, mapValues } from "lodash";
+import { cloneDeep, get, isNil, keyBy, mapValues, set } from "lodash";
 import { useEffect, useState } from "react";
 import CountUp from "react-countup";
 
@@ -18,31 +18,38 @@ const EarningsOutput = ({
 	inputValue,
 	networkInfo,
 }) => {
-    const transactionState = useTransaction();
+	const transactionState = useTransaction();
 	const [risk, setRisk] = useState(transactionState.riskPreference || "Medium");
-	const yearlyEarning = useYearlyEarning((state) => state.yearlyEarning);
-	const setYearlyEarning = useYearlyEarning((state) => state.setYearlyEarning);
+	const [yearlyEarning, setYearlyEarning] = useState();
+	// const yearlyEarning = useYearlyEarning((state) => state.yearlyEarning);
+	// const setYearlyEarning = useYearlyEarning((state) => state.setYearlyEarning);
 
-	const monthlyEarning = useMonthlyEarning((state) => state.monthlyEarning);
-	const setMonthlyEarning = useMonthlyEarning(
-		(state) => state.setMonthlyEarning
-	);
+	const [monthlyEarning, setMonthlyEarning] = useState();
 
-	const dailyEarning = useDailyEarning((state) => state.dailyEarning);
-	const setDailyEarning = useDailyEarning((state) => state.setDailyEarning);
+	// const monthlyEarning = useMonthlyEarning((state) => state.monthlyEarning);
+	// const setMonthlyEarning = useMonthlyEarning(
+	// 	(state) => state.setMonthlyEarning
+	// );
 
-	const [selectedValidators, setSelectedValidators] = useState({});
+	const [dailyEarning, setDailyEarning] = useState();
+
+	const [selectedValidators, setSelectedValidators] = useState();
 	const { validatorMap, setValidatorMap } = useValidatorData();
 
 	useEffect(() => {
-		if (get(validatorMap, risk)) {
+		if (validatorMap) {
 			const selectedValidators = cloneDeep(validatorMap[risk]);
 			setSelectedValidators(selectedValidators);
 		}
-	}, [validatorMap, risk, setSelectedValidators]);
+	}, [validatorMap]);
 
 	useEffect(() => {
 		if (!validatorMap) {
+			console.log("hello");
+			setYearlyEarning(null);
+			setDailyEarning(null);
+			setMonthlyEarning(null);
+			setSelectedValidators(null);
 			axios.get(`/${networkUrl}/rewards/risk-set`).then(({ data }) => {
 				/**
 				 * `mapValues(keyBy(array), 'value-key')`:
@@ -61,58 +68,60 @@ const EarningsOutput = ({
 		} else {
 			console.info("Using previous validator map.");
 		}
-	}, [networkUrl, validatorMap]);
+	}, [networkInfo]);
 
 	useEffect(() => {
-		const selectedValidatorsList = Object.values(selectedValidators).filter(
-			(v) => !isNil(v)
-		);
-		calculateReward(
-			selectedValidatorsList,
-			inputValue,
-			12,
-			"months",
-			true,
-			networkInfo
-		)
-			.then((result) => {
-				setYearlyEarning(result);
-			})
-			.catch((error) => {
-				// TODO: handle error gracefully with UI toast
-				alert(error);
-			});
-		calculateReward(
-			selectedValidatorsList,
-			inputValue,
-			1,
-			"months",
-			true,
-			networkInfo
-		)
-			.then((result) => {
-				setMonthlyEarning(result);
-			})
-			.catch((error) => {
-				// TODO: handle error gracefully with UI toast
-				alert(error);
-			});
-		calculateReward(
-			selectedValidatorsList,
-			inputValue,
-			1,
-			"days",
-			true,
-			networkInfo
-		)
-			.then((result) => {
-				setDailyEarning(result);
-			})
-			.catch((error) => {
-				// TODO: handle error gracefully with UI toast
-				alert(error);
-			});
-	}, [inputValue, selectedValidators, networkInfo]);
+		if (selectedValidators) {
+			const selectedValidatorsList = Object.values(selectedValidators).filter(
+				(v) => !isNil(v)
+			);
+			calculateReward(
+				selectedValidatorsList,
+				inputValue,
+				12,
+				"months",
+				true,
+				networkInfo
+			)
+				.then((result) => {
+					setYearlyEarning(result);
+				})
+				.catch((error) => {
+					// TODO: handle error gracefully with UI toast
+					alert(error);
+				});
+			calculateReward(
+				selectedValidatorsList,
+				inputValue,
+				1,
+				"months",
+				true,
+				networkInfo
+			)
+				.then((result) => {
+					setMonthlyEarning(result);
+				})
+				.catch((error) => {
+					// TODO: handle error gracefully with UI toast
+					alert(error);
+				});
+			calculateReward(
+				selectedValidatorsList,
+				inputValue,
+				1,
+				"days",
+				true,
+				networkInfo
+			)
+				.then((result) => {
+					setDailyEarning(result);
+				})
+				.catch((error) => {
+					// TODO: handle error gracefully with UI toast
+					alert(error);
+				});
+		}
+	}, [inputValue, selectedValidators]);
 
 	return (
 		<Box minW={320} maxW={500}>
@@ -131,7 +140,7 @@ const EarningsOutput = ({
 							preserveValue
 						/>
 					) : (
-						"Loading..."
+						<Spinner />
 					)}
 				</h2>
 			</div>
@@ -163,7 +172,9 @@ const EarningsOutput = ({
 						</p>
 					</div>
 				) : (
-					<p>Loading...</p>
+					<div className="flex justify-between">
+						<Spinner />
+					</div>
 				)}
 			</div>
 			<div>
@@ -194,7 +205,9 @@ const EarningsOutput = ({
 						</p>
 					</div>
 				) : (
-					<p>Loading...</p>
+					<div className="flex justify-between">
+						<Spinner />
+					</div>
 				)}
 			</div>
 			<div>
@@ -225,7 +238,9 @@ const EarningsOutput = ({
 						</p>
 					</div>
 				) : (
-					<p>Loading...</p>
+					<div className="flex justify-between">
+						<Spinner />
+					</div>
 				)}
 			</div>
 		</Box>
