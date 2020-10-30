@@ -275,7 +275,9 @@ const Header = ({ isBase }) => {
 												>
 													<Identicon address={account.address} size="2rem" />
 													<span className="flex flex-col items-start w-1/2 ml-2">
-														<span>{account.meta.name}</span>
+														<span className="truncate w-full text-left pr-1">
+															{account.meta.name}
+														</span>
 														{account.balances ? (
 															<p className="text-xs text-gray-500">
 																{formatCurrency.methods.formatAmount(
@@ -283,6 +285,11 @@ const Header = ({ isBase }) => {
 																		account.balances.reservedBalance.toNumber(),
 																	networkInfo
 																)}
+																{formatCurrency.methods.formatAmount(
+																	account.balances.freeBalance.toNumber() +
+																		account.balances.reservedBalance.toNumber(),
+																	networkInfo
+																) === "0" && " KSM"}
 															</p>
 														) : (
 															<Spinner />
