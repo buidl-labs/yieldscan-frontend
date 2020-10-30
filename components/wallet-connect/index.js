@@ -108,6 +108,9 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 	const onStashSelected = async (stashAccount) => {
 		if (stashAccount) close();
 		setStashAccount(stashAccount);
+		networkInfo.name == "Kusama"
+			? setCookie(null, "kusamaDefault", account.address)
+			: setCookie(null, "polkadotDefault", account.address);
 	};
 
 	return (
