@@ -58,6 +58,7 @@ const RewardCalculatorPage = () => {
 	const previousValidatorMap = useTransaction((state) => state.validatorMap);
 	const {
 		stashAccount,
+		accounts,
 		freeAmount,
 		bondedAmount,
 		accountInfoLoading,
@@ -412,7 +413,11 @@ const RewardCalculatorPage = () => {
 							disabled={stashAccount && calculationDisabled}
 							onClick={() => (stashAccount ? onPayment() : toggle())}
 						>
-							{stashAccount ? "Stake" : "Connect Wallet"}
+							{isNil(accounts)
+								? "Connect Wallet"
+								: isNil(stashAccount)
+								? "SelectAccount"
+								: "Invest Now"}
 						</button>
 					</div>
 				</Box>
