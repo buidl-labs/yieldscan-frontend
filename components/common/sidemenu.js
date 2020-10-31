@@ -1,7 +1,16 @@
-import { Home, UserCheck, Users, Sliders, Globe } from "react-feather";
+import {
+	Home,
+	UserCheck,
+	Users,
+	Sliders,
+	Globe,
+	ChevronRight,
+} from "react-feather";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Routes from "@lib/routes";
+import { Badge, Collapse } from "@chakra-ui/core";
+import { useState } from "react";
 
 const MenuOption = ({ label, Icon, selected = false, href }) => {
 	return (
@@ -29,39 +38,79 @@ const MenuOption = ({ label, Icon, selected = false, href }) => {
 
 const SideMenu = () => {
 	const router = useRouter();
+	const [showPortfolioTabs, setShowPortfolioTabs] = useState(true);
+	const [showExploreTabs, setShowExploreTabs] = useState(true);
 
 	return (
 		<div className="px-4">
-			<MenuOption
-				label="Overview"
-				Icon={Home}
-				selected={router.pathname === Routes.OVERVIEW}
-				href={Routes.OVERVIEW}
-			/>
-			<MenuOption
-				label="Calculator"
-				Icon={Sliders}
-				selected={router.pathname === Routes.CALCULATOR}
-				href={Routes.CALCULATOR}
-			/>
-			<MenuOption
-				label="Validators"
-				Icon={UserCheck}
-				selected={router.pathname === Routes.VALIDATORS}
-				href={Routes.VALIDATORS}
-			/>
-			<MenuOption
-				label="Nominators"
-				Icon={Users}
-				selected={router.pathname === Routes.NOMINATORS}
-				href={Routes.NOMINATORS}
-			/>
-			<MenuOption
-				label="Governance"
-				Icon={Globe}
-				selected={router.pathname === Routes.GOVERNANCE}
-				href={Routes.GOVERNANCE}
-			/>
+			<button
+				className="flex items-center text-gray-600 text-xs mt-2 text-transform uppercase tracking-widest"
+				onClick={() => setShowPortfolioTabs(!showPortfolioTabs)}
+			>
+				<ChevronRight
+					size={16}
+					className={`transition ease-in-out duration-500 mr-2 ${
+						showPortfolioTabs && "transform rotate-90"
+					}`}
+				/>
+				Portfolio
+			</button>
+			<Collapse mt={4} mb={8} isOpen={showPortfolioTabs}>
+				<MenuOption
+					label="Overview"
+					Icon={Home}
+					selected={router.pathname === Routes.OVERVIEW}
+					href={Routes.OVERVIEW}
+				/>
+				<MenuOption
+					label="Calculator"
+					Icon={Sliders}
+					selected={router.pathname === Routes.CALCULATOR}
+					href={Routes.CALCULATOR}
+				/>
+			</Collapse>
+			<button
+				className="flex items-center text-gray-600 text-xs mt-2 text-transform uppercase tracking-widest"
+				onClick={() => setShowExploreTabs(!showExploreTabs)}
+			>
+				<ChevronRight
+					size={16}
+					className={`transition ease-in-out duration-500 mr-2 ${
+						showExploreTabs && "transform rotate-90"
+					}`}
+				/>
+				Explore
+				<Badge
+					ml={2}
+					textTransform="lowercase"
+					fontWeight="normal"
+					color="white"
+					bg="red.400"
+					fontSize="10px"
+				>
+					unaudited
+				</Badge>
+			</button>
+			<Collapse mt={4} mb={8} isOpen={showExploreTabs}>
+				<MenuOption
+					label="Validators"
+					Icon={UserCheck}
+					selected={router.pathname === Routes.VALIDATORS}
+					href={Routes.VALIDATORS}
+				/>
+				<MenuOption
+					label="Nominators"
+					Icon={Users}
+					selected={router.pathname === Routes.NOMINATORS}
+					href={Routes.NOMINATORS}
+				/>
+				<MenuOption
+					label="Governance"
+					Icon={Globe}
+					selected={router.pathname === Routes.GOVERNANCE}
+					href={Routes.GOVERNANCE}
+				/>
+			</Collapse>
 		</div>
 	);
 };
