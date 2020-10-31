@@ -131,7 +131,7 @@ const NetworkPopover = ({ isExpanded, hasBorder }) => {
 								setCouncilLoading(true);
 								setStashAccount(null);
 								setAccounts(null);
-								setAccountsWithBalances([]);
+								setAccountsWithBalances(null);
 								setAccountInfoLoading(false);
 								setSelectedNetwork("Polkadot");
 							}

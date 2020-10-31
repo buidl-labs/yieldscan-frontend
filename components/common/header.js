@@ -189,8 +189,6 @@ const Header = ({ isBase }) => {
 		}
 	}, [stashAccount, networkInfo]);
 
-	console.log(JSON.stringify(freeAmount));
-
 	return (
 		<div
 			className={`header flex items-center justify-between text-gray-700 ${
@@ -348,7 +346,9 @@ const Header = ({ isBase }) => {
 														) : (
 															<div>
 																<Skeleton>
-																	<Text className="text-xxs w-20">Loading...</Text>
+																	<Text className="text-xxs w-20">
+																		Loading...
+																	</Text>
 																</Skeleton>
 															</div>
 														)}
@@ -518,6 +518,7 @@ const Header = ({ isBase }) => {
 													setCouncilMembers(undefined);
 													setCouncilLoading(true);
 													setStashAccount(null);
+													setFreeAmount(null);
 													setAccounts(null);
 													setAccountsWithBalances(null);
 													setAccountInfoLoading(false);
@@ -551,8 +552,9 @@ const Header = ({ isBase }) => {
 													setCouncilMembers(undefined);
 													setCouncilLoading(true);
 													setStashAccount(null);
+													setFreeAmount(null);
 													setAccounts(null);
-													setAccountsWithBalances([]);
+													setAccountsWithBalances(null);
 													setAccountInfoLoading(false);
 													setSelectedNetwork("Polkadot");
 												}
