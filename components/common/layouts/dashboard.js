@@ -79,7 +79,7 @@ const withDashboardLayout = (children) => {
 		// wallet connected state:
 		// when `stashAccount` is selected, fetch ledger for the account and save it.
 		if (stashAccount) {
-			// setAccountInfoLoading(true);
+			setAccountInfoLoading(true);
 			createPolkadotAPIInstance(selectedNetwork).then(async (api) => {
 				setApiInstance(api);
 
@@ -173,10 +173,10 @@ const withDashboardLayout = (children) => {
 								currency: bondedAmount,
 								subCurrency: bondedAmountInSubCurrency,
 							},
-							// freeAmount: {
-							// 	currency: freeAmount,
-							// 	subCurrency: freeAmountInSubCurrency,
-							// },
+							freeAmount: {
+								currency: freeAmount,
+								subCurrency: freeAmountInSubCurrency,
+							},
 							activeStake: {
 								currency: activeStake,
 								subCurrency: activeStakeInSubCurrency,
@@ -184,6 +184,7 @@ const withDashboardLayout = (children) => {
 							unlockingBalances,
 							accountInfoLoading: false,
 						});
+						setAccountInfoLoading(false);
 					}
 				);
 			});

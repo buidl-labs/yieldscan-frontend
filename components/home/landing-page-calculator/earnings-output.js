@@ -45,7 +45,6 @@ const EarningsOutput = ({
 
 	useEffect(() => {
 		if (!validatorMap) {
-			console.log("hello");
 			setYearlyEarning(null);
 			setDailyEarning(null);
 			setMonthlyEarning(null);

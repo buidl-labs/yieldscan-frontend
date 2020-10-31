@@ -221,19 +221,6 @@ const RewardCalculatorPage = () => {
 		router.push(`${Routes.VALIDATORS}?advanced=true`);
 	};
 
-	if (accountInfoLoading || loading) {
-		return (
-			<div className="flex-center w-full h-full">
-				<div className="flex-center flex-col">
-					<Spinner size="xl" color="teal.500" thickness="4px" />
-					<span className="text-sm text-gray-600 mt-5">
-						Instantiating API and fetching data...
-					</span>
-				</div>
-			</div>
-		);
-	}
-
 	const totalBalance =
 		get(bondedAmount, "currency", 0) + get(freeAmount, "currency", 0);
 	const calculationDisabled =
@@ -242,7 +229,16 @@ const RewardCalculatorPage = () => {
 		(amount || 0) > totalBalance - 0.1 ||
 		amount == 0;
 
-	return (
+	return accountInfoLoading || loading ? (
+		<div className="flex-center w-full h-full">
+			<div className="flex-center flex-col">
+				<Spinner size="xl" color="teal.500" thickness="4px" />
+				<span className="text-sm text-gray-600 mt-5">
+					Instantiating API and fetching data...
+				</span>
+			</div>
+		</div>
+	) : (
 		<div className="flex pt-12">
 			<WalletConnectPopover isOpen={isOpen} networkInfo={networkInfo} />
 			<div>
