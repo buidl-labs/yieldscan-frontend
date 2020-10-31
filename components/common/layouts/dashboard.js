@@ -20,8 +20,10 @@ const Header = dynamic(
 );
 
 import { getNetworkInfo } from "yieldscan.config";
+import { Alert, AlertIcon, CloseButton } from "@chakra-ui/core";
 
 const withDashboardLayout = (children) => {
+	const [showBetaMessage, setShowBetaMessage] = React.useState(true);
 	const { setApiInstance } = usePolkadotApi();
 	const { selectedNetwork, setSelectedNetwork } = useSelectedNetwork();
 	const networkInfo = getNetworkInfo(selectedNetwork);
@@ -199,6 +201,11 @@ const withDashboardLayout = (children) => {
 				</div>
 
 				<div className="h-full px-8 xl:w-10/12 overflow-y-scroll max-w-5xl mx-auto">
+					{showBetaMessage && <Alert status="info" color="blue.500" rounded="lg" mt={4}>
+						<AlertIcon />
+						This platform is currently in beta. Please proceed with discretion.
+						<CloseButton position="absolute" right="8px" top="8px" onClick={() => setShowBetaMessage(false)} />
+					</Alert>}
 					{children()}
 				</div>
 			</div>
