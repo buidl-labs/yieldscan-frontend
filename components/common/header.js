@@ -31,6 +31,7 @@ import {
 	Drawer,
 	Skeleton,
 	Text,
+	Badge,
 } from "@chakra-ui/core";
 import Identicon from "@components/common/Identicon";
 import EditControllerModal from "@components/overview/EditControllerModal";
@@ -240,8 +241,17 @@ const Header = ({ isBase }) => {
 												src="/images/yieldscan-logo.svg"
 												alt="YieldScan Logo"
 											/>
-											<span className="ml-2 text-gray-700 font-medium">
+											<span className="ml-2 font-medium flex items-center">
 												YieldScan
+												<Badge
+													ml={2}
+													textTransform="lowercase"
+													fontWeight="normal"
+													color="white"
+													bg="blue.400"
+												>
+													beta
+												</Badge>
 											</span>
 										</a>
 									</Link>
@@ -264,7 +274,18 @@ const Header = ({ isBase }) => {
 				<Link href="/">
 					<a className="flex items-center">
 						<Image src="/images/yieldscan-logo.svg" alt="YieldScan Logo" />
-						<span className="ml-2 font-medium">YieldScan</span>
+						<span className="ml-2 font-medium flex items-center">
+							YieldScan
+							<Badge
+								ml={2}
+								textTransform="lowercase"
+								fontWeight="normal"
+								color="white"
+								bg="blue.400"
+							>
+								beta
+							</Badge>
+						</span>
 					</a>
 				</Link>
 			</div>
@@ -348,7 +369,9 @@ const Header = ({ isBase }) => {
 														) : (
 															<div>
 																<Skeleton>
-																	<Text className="text-xxs w-20">Loading...</Text>
+																	<Text className="text-xxs w-20">
+																		Loading...
+																	</Text>
 																</Skeleton>
 															</div>
 														)}
