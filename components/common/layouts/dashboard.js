@@ -20,8 +20,11 @@ const Header = dynamic(
 );
 
 import { getNetworkInfo } from "yieldscan.config";
+import { Alert, AlertIcon, CloseButton } from "@chakra-ui/core";
+import SideMenuFooter from "../side-menu-footer";
 
 const withDashboardLayout = (children) => {
+	const [showBetaMessage, setShowBetaMessage] = React.useState(true);
 	const { setApiInstance } = usePolkadotApi();
 	const { selectedNetwork, setSelectedNetwork } = useSelectedNetwork();
 	const networkInfo = getNetworkInfo(selectedNetwork);
@@ -194,12 +197,28 @@ const withDashboardLayout = (children) => {
 	return () => (
 		<div>
 			<Header />
-			<div className="dashboard-content fixed flex w-full">
-				<div className="h-full hidden xl:block relative sidemenu-container xl:w-2/12 py-8 max-w-xs">
+			<div className="dashboard-content fixed flex relative w-full">
+				<div className="h-full hidden xl:block sidemenu-container xl:w-2/12 py-8 max-w-xs">
 					<SideMenu />
+					<div className="absolute bottom-0 pb-8">
+						<SideMenuFooter />
+					</div>
 				</div>
 
 				<div className="h-full px-8 xl:w-10/12 overflow-y-scroll max-w-5xl mx-auto">
+					{showBetaMessage && (
+						<Alert status="info" color="blue.500" rounded="lg" mt={4}>
+							<AlertIcon />
+							This platform is currently in beta. Please proceed with
+							discretion.
+							<CloseButton
+								position="absolute"
+								right="8px"
+								top="8px"
+								onClick={() => setShowBetaMessage(false)}
+							/>
+						</Alert>
+					)}
 					{children()}
 				</div>
 			</div>

@@ -45,6 +45,7 @@ import createPolkadotAPIInstance from "@lib/polkadot-api";
 import { getNetworkInfo } from "yieldscan.config";
 import { parseCookies } from "nookies";
 import SideMenu from "./sidemenu";
+import SideMenuFooter from "./side-menu-footer";
 
 // TODO: replace this with actual global state
 const currentNetwork = "Not Kusama";
@@ -261,11 +262,8 @@ const Header = ({ isBase }) => {
 									<SideMenu />
 								</DrawerBody>
 
-								<DrawerFooter>
-									{/* <Button variant="outline" mr={3} onClick={onClose}>
-									Cancel
-								</Button>
-								<Button color="blue">Save</Button> */}
+								<DrawerFooter px={0}>
+									<SideMenuFooter />
 								</DrawerFooter>
 							</DrawerContent>
 						</Drawer>

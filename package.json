@@ -40,6 +40,7 @@
 		"react-device-detect": "^1.13.1",
 		"react-dom": "16.13.1",
 		"react-feather": "^2.0.8",
+		"react-icons": "^3.11.0",
 		"react-konva": "^16.13.0-3",
 		"react-marquee-slider": "^1.1.2",
 		"react-scroll": "^1.8.1",
