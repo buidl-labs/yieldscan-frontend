@@ -1,4 +1,4 @@
-import { noop, get } from "lodash";
+import { noop, get, isNil } from "lodash";
 import { Plus, Minus, Clock } from "react-feather";
 import { Popover, PopoverTrigger, PopoverContent } from "@chakra-ui/core";
 import formatCurrency from "@lib/format-currency";
@@ -35,13 +35,15 @@ const OverviewCards = ({
 	const [expectedAPR, setExpectedAPR] = React.useState(0);
 
 	React.useEffect(() => {
-		apiInstance.query.staking.payee(stashAccount.address).then((payee) => {
-			if (payee.isStaked) setCompounding(true);
-			else {
-				setCompounding(false);
-			}
-		});
-	}, [stashAccount]);
+		if (!isNil(apiInstance)) {
+			apiInstance.query.staking.payee(stashAccount.address).then((payee) => {
+				if (payee.isStaked) setCompounding(true);
+				else {
+					setCompounding(false);
+				}
+			});
+		}
+	}, [stashAccount, apiInstance]);
 	React.useEffect(() => {
 		if (stats.totalAmountStaked) {
 			convertCurrency(

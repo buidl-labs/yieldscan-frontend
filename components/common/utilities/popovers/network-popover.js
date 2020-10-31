@@ -11,6 +11,7 @@ import {
 	usePolkadotApi,
 	useSelectedNetwork,
 	useValidatorData,
+	useOverviewData,
 } from "@lib/store";
 import { setCookie } from "nookies";
 import { useState } from "react";
@@ -30,6 +31,7 @@ const NetworkPopover = ({ isExpanded, hasBorder }) => {
 		accountsWithBalances,
 		stashAccount,
 		freeAmount,
+		setFreeAmount,
 		accountInfoLoading,
 		setStashAccount,
 		setAccounts,
@@ -91,12 +93,16 @@ const NetworkPopover = ({ isExpanded, hasBorder }) => {
 							if (selectedNetwork !== "Kusama") {
 								setApiInstance(null);
 								setValidatorMap(undefined);
+								setValidators(undefined);
+								setUserData(null);
+								setAllNominations(null);
 								// setNominatorsData(undefined);
 								setNomLoading(true);
 								setCookie(null, "networkName", "Kusama");
 								setCouncilMembers(undefined);
 								setCouncilLoading(true);
 								setStashAccount(null);
+								setFreeAmount(null);
 								setAccounts(null);
 								setAccountsWithBalances(null);
 								setAccountInfoLoading(false);
@@ -124,12 +130,16 @@ const NetworkPopover = ({ isExpanded, hasBorder }) => {
 							if (selectedNetwork !== "Polkadot") {
 								setApiInstance(null);
 								setValidatorMap(undefined);
+								setValidators(undefined);
+								setUserData(null);
+								setAllNominations(null);
 								// setNominatorsData(undefined);
 								setNomLoading(true);
 								setCookie(null, "networkName", "Polkadot");
 								setCouncilMembers(undefined);
 								setCouncilLoading(true);
 								setStashAccount(null);
+								setFreeAmount(null);
 								setAccounts(null);
 								setAccountsWithBalances(null);
 								setAccountInfoLoading(false);

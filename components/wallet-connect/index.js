@@ -78,7 +78,7 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 				// TODO: handle error properly using UI toast
 				alert(error);
 			});
-	}, []);
+	}, [networkInfo]);
 
 	const onConnected = () => {
 		getPolkadotExtensionInfo()
