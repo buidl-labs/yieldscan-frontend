@@ -12,24 +12,32 @@ import Routes from "@lib/routes";
 import { Badge, Collapse } from "@chakra-ui/core";
 import { useState } from "react";
 
-const MenuOption = ({ label, Icon, selected = false, href }) => {
+const MenuOption = ({
+	label,
+	Icon,
+	selected = false,
+	href,
+	isExternal = false,
+}) => {
 	return (
 		<Link href={href}>
 			<a
+				target={isExternal && "_blank"}
 				className={`
 					block
-					${!selected && "hover:text-teal-500 hover:ml-2"}
-					rounded-full 
+					${!selected && "hover:ml-2"}
+					rounded 
 					px-5
 					py-2
 					mb-2 
 					transition-all
 					duration-300 ease-in-out
 					text-sm min-w-fit-content
-					${selected ? "text-teal-500 bg-teal-500 bg-opacity-22" : "text-gray-600"}
+					hover:bg-gray-400 hover:bg-opacity-22
+					${selected ? "text-teal-500" : "text-gray-600"}
 				`}
 			>
-				<Icon size="1rem" className="mr-2 mb-px inline" />
+				{Icon && <Icon size="1rem" className="mr-2 mb-px inline" />}
 				<span>{label}</span>
 			</a>
 		</Link>
@@ -87,6 +95,8 @@ const SideMenu = () => {
 					color="white"
 					bg="red.400"
 					fontSize="10px"
+					rounded="full"
+					px={2}
 				>
 					unaudited
 				</Badge>
@@ -116,3 +126,5 @@ const SideMenu = () => {
 };
 
 export default SideMenu;
+
+export { MenuOption };
