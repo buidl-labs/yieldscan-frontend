@@ -308,20 +308,16 @@ const Validators = () => {
 			: openPaymentPopover();
 	};
 
-	if (loading || accountInfoLoading) {
-		return (
-			<div className="flex-center w-full h-full">
-				<div className="flex-center flex-col">
-					<Spinner size="xl" color="teal.500" thickness="4px" />
-					<span className="text-sm text-gray-600 mt-5">
-						Fetching validators...
-					</span>
-				</div>
+	return loading || accountInfoLoading ? (
+		<div className="flex-center w-full h-full">
+			<div className="flex-center flex-col">
+				<Spinner size="xl" color="teal.500" thickness="4px" />
+				<span className="text-sm text-gray-600 mt-5">
+					Fetching validators...
+				</span>
 			</div>
-		);
-	}
-
-	return (
+		</div>
+	) : (
 		<div className="relative h-full px-10 py-5">
 			{advancedMode && (
 				<div className="mb-4">

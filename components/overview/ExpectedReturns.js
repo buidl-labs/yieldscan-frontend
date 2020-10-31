@@ -1,4 +1,5 @@
 import React from "react";
+import { isNil } from "lodash";
 import convertCurrency from "@lib/convert-currency";
 import formatCurrency from "@lib/format-currency";
 import calculateReward from "@lib/calculate-reward";
@@ -37,13 +38,15 @@ const ExpectedReturns = ({ stats, validators, networkInfo }) => {
 	};
 
 	React.useEffect(() => {
-		apiInstance.query.staking.payee(stashAccount.address).then((payee) => {
-			if (payee.isStaked) setCompounding(true);
-			else {
-				setCompounding(false);
-			}
-		});
-	}, [stashAccount]);
+		if (!isNil(apiInstance)) {
+			apiInstance.query.staking.payee(stashAccount.address).then((payee) => {
+				if (payee.isStaked) setCompounding(true);
+				else {
+					setCompounding(false);
+				}
+			});
+		}
+	}, [stashAccount, apiInstance]);
 
 	React.useEffect(() => {
 		if (validators && stats.totalAmountStaked) {

@@ -5,7 +5,13 @@ import NominationsTable from "./NominationsTable";
 import ExpectedReturns from "./ExpectedReturns";
 import { Spinner, useDisclosure, useToast } from "@chakra-ui/core";
 import axios from "@lib/axios";
-import { useAccounts, usePolkadotApi, useSelectedNetwork } from "@lib/store";
+import {
+	useAccounts,
+	usePolkadotApi,
+	useSelectedNetwork,
+	useOverviewData,
+	useValidatorData,
+} from "@lib/store";
 import { useWalletConnect } from "@components/wallet-connect";
 import { get, noop } from "lodash";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
@@ -35,6 +41,7 @@ const Overview = () => {
 		stashAccount,
 		bondedAmount,
 		activeStake,
+		setFreeAmount,
 		unlockingBalances,
 		accountInfoLoading,
 	} = useAccounts();
@@ -42,9 +49,13 @@ const Overview = () => {
 	const [loading, setLoading] = useState(true);
 	const [nominationsLoading, setNominationsLoading] = useState(true); // work-around :(
 	const [error, setError] = useState(false);
-	const [userData, setUserData] = useState();
-	const [allNominationsData, setAllNominations] = useState([]);
-	const [validators, setValidators] = useState();
+	const {
+		userData,
+		setUserData,
+		allNominationsData,
+		setAllNominations,
+	} = useOverviewData();
+	const { validators, setValidators } = useValidatorData();
 	const [validatorsLoading, setValidatorsLoading] = useState(true);
 	const [fundsUpdateModalType, setFundsUpdateModalType] = useState();
 	const [selectedTab, setSelectedTab] = useState(Tabs.NOMINATIONS);
@@ -92,7 +103,7 @@ const Overview = () => {
 					setError(true);
 				})
 				.finally(() => {
-					setLoading(false);
+					// setLoading(false);
 				});
 
 			let unsubscribe = noop;
@@ -145,7 +156,7 @@ const Overview = () => {
 				unsubscribe;
 			};
 		}
-	}, [stashAccount, apiInstance]);
+	}, [stashAccount, apiInstance, selectedNetwork]);
 
 	useEffect(() => {
 		if (!validators) {
@@ -256,110 +267,114 @@ const Overview = () => {
 			</div>
 		</div>
 	) : (
-		<div className="px-10 py-10">
-			<RewardDestinationModal
-				isOpen={isRewardDestinationModalOpen}
-				close={closeRewardDestinationModal}
-				onEditController={onEditController}
-			/>
-			<EditControllerModal
-				isOpen={editControllerModalOpen}
-				close={closeEditControllerModal}
-				networkInfo={networkInfo}
-			/>
-			<FundsUpdate
-				isOpen={fundsUpdateModalOpen}
-				close={closeFundsUpdateModal}
-				type={fundsUpdateModalType}
-				nominations={allNominationsData}
-				bondedAmount={bondedAmount}
-				networkInfo={networkInfo}
-			/>
-			<EditValidators
-				isOpen={editValidatorModalOpen}
-				close={closeEditValidatorsModal}
-				validators={validators}
-				validatorsLoading={validatorsLoading}
-				currentValidators={allNominationsData}
-				onChill={() => {
-					closeEditValidatorsModal();
-					setTimeout(() => toggleChillAlert(), 500);
-				}}
-				networkInfo={networkInfo}
-			/>
-			<ChillAlert isOpen={chillAlertOpen} close={closeChillAlert} />
-			<OverviewCards
-				stats={userData.stats}
-				bondedAmount={bondedAmount}
-				activeStake={activeStake}
-				validators={userData.validatorsInfo}
-				unlockingBalances={unlockingBalances}
-				bondFunds={() => openFundsUpdateModal("bond")}
-				unbondFunds={() => openFundsUpdateModal("unbond")}
-				openRewardDestinationModal={toggleRewardDestinationModal}
-				networkInfo={networkInfo}
-			/>
-			<div className="mt-10 flex">
-				<div className="w-8/12 mr-8">
-					<div className="flex justify-between items-center">
-						<div className="flex items-center">
-							<h3 className="text-2xl">
-								{/* {selectedTab === Tabs.NOMINATIONS ? "All" : "Active"}{" "} */}
-								My validators
-							</h3>
-							{selectedTab === Tabs.NOMINATIONS && (
+		userData && (
+			<div className="px-10 py-10">
+				<RewardDestinationModal
+					isOpen={isRewardDestinationModalOpen}
+					close={closeRewardDestinationModal}
+					onEditController={onEditController}
+				/>
+				<EditControllerModal
+					isOpen={editControllerModalOpen}
+					close={closeEditControllerModal}
+					networkInfo={networkInfo}
+				/>
+				<FundsUpdate
+					isOpen={fundsUpdateModalOpen}
+					close={closeFundsUpdateModal}
+					type={fundsUpdateModalType}
+					nominations={allNominationsData}
+					bondedAmount={bondedAmount}
+					networkInfo={networkInfo}
+				/>
+				<EditValidators
+					isOpen={editValidatorModalOpen}
+					close={closeEditValidatorsModal}
+					validators={validators}
+					validatorsLoading={validatorsLoading}
+					currentValidators={allNominationsData}
+					onChill={() => {
+						closeEditValidatorsModal();
+						setTimeout(() => toggleChillAlert(), 500);
+					}}
+					networkInfo={networkInfo}
+				/>
+				<ChillAlert isOpen={chillAlertOpen} close={closeChillAlert} />
+				<OverviewCards
+					stats={userData.stats}
+					bondedAmount={bondedAmount}
+					activeStake={activeStake}
+					validators={userData.validatorsInfo}
+					unlockingBalances={unlockingBalances}
+					bondFunds={() => openFundsUpdateModal("bond")}
+					unbondFunds={() => openFundsUpdateModal("unbond")}
+					openRewardDestinationModal={toggleRewardDestinationModal}
+					networkInfo={networkInfo}
+				/>
+				<div className="mt-10 flex">
+					<div className="w-8/12 mr-8">
+						<div className="flex justify-between items-center">
+							<div className="flex items-center">
+								<h3 className="text-2xl">
+									{/* {selectedTab === Tabs.NOMINATIONS ? "All" : "Active"}{" "} */}
+									My validators
+								</h3>
+								{selectedTab === Tabs.NOMINATIONS && (
+									<button
+										className="flex items-center text-gray-600 mr-5 p-1"
+										onClick={toggleEditValidatorsModal}
+									>
+										<Edit2 size="20px" className="ml-2" />
+									</button>
+								)}
+							</div>
+							<div className="flex items-center">
 								<button
-									className="flex items-center text-gray-600 mr-5 p-1"
-									onClick={toggleEditValidatorsModal}
+									className={
+										selectedTab === Tabs.NOMINATIONS
+											? "text-gray-900 mx-2"
+											: "text-gray-500 mx-2"
+									}
+									onClick={() => setSelectedTab(Tabs.NOMINATIONS)}
 								>
-									<Edit2 size="20px" className="ml-2" />
+									Selected
 								</button>
-							)}
+								<button
+									className={
+										selectedTab === Tabs.ACTIVE_VALIDATORS
+											? "text-gray-900 mx-2"
+											: "text-gray-500 mx-2"
+									}
+									onClick={() => setSelectedTab(Tabs.ACTIVE_VALIDATORS)}
+								>
+									Active
+								</button>
+							</div>
 						</div>
-						<div className="flex items-center">
-							<button
-								className={
-									selectedTab === Tabs.NOMINATIONS
-										? "text-gray-900 mx-2"
-										: "text-gray-500 mx-2"
-								}
-								onClick={() => setSelectedTab(Tabs.NOMINATIONS)}
-							>
-								Selected
-							</button>
-							<button
-								className={
-									selectedTab === Tabs.ACTIVE_VALIDATORS
-										? "text-gray-900 mx-2"
-										: "text-gray-500 mx-2"
-								}
-								onClick={() => setSelectedTab(Tabs.ACTIVE_VALIDATORS)}
-							>
-								Active
-							</button>
-						</div>
+						{selectedTab === Tabs.ACTIVE_VALIDATORS ? (
+							<NominationsTable
+								validators={userData.validatorsInfo}
+								networkInfo={networkInfo}
+							/>
+						) : (
+							allNominationsData && (
+								<AllNominations
+									nominations={allNominationsData}
+									networkInfo={networkInfo}
+								/>
+							)
+						)}
 					</div>
-					{selectedTab === Tabs.ACTIVE_VALIDATORS ? (
-						<NominationsTable
+					<div className="w-4/12">
+						<ExpectedReturns
+							stats={userData.stats}
 							validators={userData.validatorsInfo}
 							networkInfo={networkInfo}
 						/>
-					) : (
-						<AllNominations
-							nominations={allNominationsData}
-							networkInfo={networkInfo}
-						/>
-					)}
-				</div>
-				<div className="w-4/12">
-					<ExpectedReturns
-						stats={userData.stats}
-						validators={userData.validatorsInfo}
-						networkInfo={networkInfo}
-					/>
+					</div>
 				</div>
 			</div>
-		</div>
+		)
 	);
 };
 
