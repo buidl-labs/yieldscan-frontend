@@ -5,6 +5,7 @@ import formatCurrency from "@lib/format-currency";
 import convertCurrency from "@lib/convert-currency";
 import { useAccounts, usePolkadotApi } from "@lib/store";
 import calculateReward from "@lib/calculate-reward";
+import EarningsOutput from "./EarningsOutput";
 
 const OverviewCards = ({
 	stats,
@@ -79,12 +80,13 @@ const OverviewCards = ({
 	return (
 		<div className="flex justify-between items-center">
 			<div
-				className="bg-gray-100 min-h-12-rem py-4 px-8 flex flex-col justify-center rounded-xl"
-				style={{ width: "30%" }}
+				className="bg-white min-h-12-rem py-4 px-8 text-center flex flex-col justify-center shadow-custom rounded-xl"
+				// style={{ width: "30%" }}
 			>
-				<div className="flex items-center justify-between">
+				<div className="flex flex-col items-center justify-between">
+					<p className="semi-heading mt-40">Your investment</p>
 					<div>
-						{get(activeStake, "currency", 0) !==
+						{/* {get(activeStake, "currency", 0) !==
 							get(bondedAmount, "currency", 0) && (
 							<span className="text-sm bg-gray-200 text-gray-700 px-4 py-1 rounded-lg">
 								Active stake:{" "}
@@ -98,8 +100,8 @@ const OverviewCards = ({
 									networkInfo
 								)}
 							</span>
-						)}
-						<h1 className="text-3xl text-teal-500 font-semibold">
+						)} */}
+						<h1 className="big-heading">
 							{formatCurrency.methods.formatAmount(
 								Math.trunc(
 									Number(
@@ -111,7 +113,7 @@ const OverviewCards = ({
 							)}
 						</h1>
 						{totalAmountStakedFiat && (
-							<h3 className="text-gray-500">
+							<h3 className="text-teal-500 text-2xl">
 								$
 								{stats.totalAmountStaked === get(bondedAmount, "currency", 0)
 									? formatCurrency.methods.formatNumber(
@@ -123,22 +125,22 @@ const OverviewCards = ({
 							</h3>
 						)}
 					</div>
-					<div className="flex flex-col">
+					<div className="flex">
 						<button
-							className="rounded-full text-white bg-teal-500 p-1"
+							className="confirm rounded-lg mt-40 mb-40 text-white bg-teal-500 p-1"
 							onClick={bondFunds}
 						>
-							<Plus />
+							Invest more
 						</button>
 						<button
-							className="mt-2 rounded-full text-white bg-teal-500 p-1"
+							className="confirm rounded-lg mt-40 mb-40 border-teal border-solid-1 bg-white text-teal-500 p-1"
 							onClick={unbondFunds}
 						>
-							<Minus />
+							Withdraw
 						</button>
 					</div>
 				</div>
-				<div className="mt-8 flex justify-between items-center">
+				{/* <div className="mt-8 flex justify-between items-center">
 					<h5 className="text-gray-800">Bonded</h5>
 					<div className="flex items-center">
 						<Popover trigger="hover">
@@ -179,38 +181,23 @@ const OverviewCards = ({
 							</PopoverContent>
 						</Popover>
 					</div>
-				</div>
+				</div> */}
 			</div>
-			<div
+			{/* <div
 				className="bg-gray-100 min-h-12-rem py-4 px-8 flex flex-col justify-center rounded-xl"
 				style={{ width: "30%" }}
 			>
 				<h1 className="text-3xl text-teal-500 font-semibold">
-					{/* {formatCurrency.methods.formatAmount(
-						Math.trunc(Number(stats.estimatedRewards || 0) * 10 ** networkInfo.decimalPlaces)
-					)} */}
 					{expectedAPR}%
 				</h1>
 				<h3 className="text-gray-500">
-					{/* $
-					{formatCurrency.methods.formatNumber(
-						estimatedRewardsFiat.toFixed(2)
-					) || 0.0} */}
 					for active nominations
 				</h3>
-				{/* {estimatedRewardsFiat && (
-					<h3 className="text-gray-500">
-						$
-						{formatCurrency.methods.formatNumber(
-							estimatedRewardsFiat.toFixed(2)
-						) || 0.0}
-					</h3>
-				)} */}
 				<div className="mt-8 flex justify-between items-center">
 					<h5 className="text-gray-800">Estimated APR</h5>
 				</div>
-			</div>
-			<div
+			</div> */}
+			{/* <div
 				className="shadow-teal bg-teal-500 text-white rounded-xl min-h-12-rem py-4 px-8 flex flex-col justify-center"
 				style={{ width: "30%" }}
 			>
@@ -238,7 +225,16 @@ const OverviewCards = ({
 						Payment Destination
 					</button>
 				</div>
-			</div>
+			</div> */}
+			{activeStake && (
+				<EarningsOutput
+					networkDenom={networkInfo.denom}
+					networkUrl={networkInfo.coinGeckoDenom}
+					networkInfo={networkInfo}
+					validators={validators.filter((validator) => validator.isElected)}
+					inputValue={activeStake}
+				/>
+			)}
 		</div>
 	);
 };

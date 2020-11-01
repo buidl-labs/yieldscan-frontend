@@ -116,6 +116,19 @@ input[type="number"] {
 	);
 }
 
+.semi-heading {
+	font-weight: 600;
+	font-size: 18px;
+	color: #35475c;
+}
+
+.big-heading {
+	font-weight: bold;
+	font-size: 36px;
+	line-height: 150%;
+	color: #35475c;
+}
+
 .-z-index-1 {
 	z-index: -10;
 }
@@ -127,16 +140,42 @@ input[type="number"] {
 	font-size: 0.5rem;
 }
 
+.confirm {
+	height: 51px;
+	width: 180px;
+	margin: 7px;
+}
+
+.mt-40 {
+	margin-top: 40px;
+}
+
+.mb-40 {
+	margin-bottom: 40px;
+}
+
+.border-solid-1 {
+	border: 1px solid;
+}
+
 .shadow-teal {
 	filter: drop-shadow(0px 4px 24px rgba(43, 202, 202, 0.25));
 }
 
 .shadow-custom {
-	box-shadow: 0px 4px 20px rgba(53, 71, 92, 0.04);
+	box-shadow: 0px 4px 20px rgba(53, 71, 92, 0.06);
 }
 
 .top-25-vh {
 	top: 25vh;
+}
+
+.text-tweet {
+	color: #1da1f2;
+	font-size: 16px;
+	line-height: 150%;
+	font-weight: 600;
+	align-items: center;
 }
 
 .left-50 {

@@ -110,8 +110,8 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 		if (stashAccount) close();
 		setStashAccount(stashAccount);
 		networkInfo.name == "Kusama"
-			? setCookie(null, "kusamaDefault", account.address)
-			: setCookie(null, "polkadotDefault", account.address);
+			? setCookie(null, "kusamaDefault", stashAccount.address)
+			: setCookie(null, "polkadotDefault", stashAccount.address);
 	};
 
 	return (
