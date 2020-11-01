@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Edit2, AlertTriangle } from "react-feather";
+import { Edit2, AlertTriangle, ChevronRight } from "react-feather";
 import OverviewCards from "./OverviewCards";
 import NominationsTable from "./NominationsTable";
 import ExpectedReturns from "./ExpectedReturns";
-import { Spinner, useDisclosure, useToast } from "@chakra-ui/core";
+import { Spinner, useDisclosure, useToast, Collapse } from "@chakra-ui/core";
 import axios from "@lib/axios";
 import {
 	useAccounts,
@@ -56,8 +56,10 @@ const Overview = () => {
 		setAllNominations,
 	} = useOverviewData();
 	const { validators, setValidators } = useValidatorData();
+	const [showValidators, setShowValidators] = useState(false);
 	const [validatorsLoading, setValidatorsLoading] = useState(true);
 	const [fundsUpdateModalType, setFundsUpdateModalType] = useState();
+	const handleValToggle = () => setShowValidators(!showValidators);
 	const [selectedTab, setSelectedTab] = useState(Tabs.NOMINATIONS);
 	const {
 		isOpen: isRewardDestinationModalOpen,
@@ -313,65 +315,78 @@ const Overview = () => {
 				/>
 				<div className="mt-10 flex">
 					<div className="w-8/12 mr-8">
-						<div className="flex justify-between items-center">
-							<div className="flex items-center">
-								<h3 className="text-2xl">
-									{/* {selectedTab === Tabs.NOMINATIONS ? "All" : "Active"}{" "} */}
-									My validators
-								</h3>
-								{selectedTab === Tabs.NOMINATIONS && (
-									<button
-										className="flex items-center text-gray-600 mr-5 p-1"
-										onClick={toggleEditValidatorsModal}
-									>
-										<Edit2 size="20px" className="ml-2" />
-									</button>
-								)}
-							</div>
-							<div className="flex items-center">
-								<button
-									className={
-										selectedTab === Tabs.NOMINATIONS
-											? "text-gray-900 mx-2"
-											: "text-gray-500 mx-2"
-									}
-									onClick={() => setSelectedTab(Tabs.NOMINATIONS)}
-								>
-									Selected
-								</button>
-								<button
-									className={
-										selectedTab === Tabs.ACTIVE_VALIDATORS
-											? "text-gray-900 mx-2"
-											: "text-gray-500 mx-2"
-									}
-									onClick={() => setSelectedTab(Tabs.ACTIVE_VALIDATORS)}
-								>
-									Active
-								</button>
-							</div>
-						</div>
-						{selectedTab === Tabs.ACTIVE_VALIDATORS ? (
-							<NominationsTable
-								validators={userData.validatorsInfo}
-								networkInfo={networkInfo}
+						<button
+							onClick={handleValToggle}
+							className="flex text-gray-600 text-xs mt-4"
+						>
+							<ChevronRight
+								size={16}
+								className={`transition ease-in-out duration-500 mr-2 ${
+									showValidators && "transform rotate-90"
+								}`}
 							/>
-						) : (
-							allNominationsData && (
-								<AllNominations
-									nominations={allNominationsData}
+							{showValidators ? "Hide" : "See your"} validators
+						</button>
+						<Collapse isOpen={showValidators}>
+							<div className="flex justify-between items-center">
+								{/* <div className="flex items-center">
+									<h3 className="text-2xl">
+										My validators
+									</h3>
+									{selectedTab === Tabs.NOMINATIONS && (
+										<button
+											className="flex items-center text-gray-600 mr-5 p-1"
+											onClick={toggleEditValidatorsModal}
+										>
+											<Edit2 size="20px" className="ml-2" />
+										</button>
+									)}
+								</div> */}
+								<div className="flex items-center">
+									<button
+										className={
+											selectedTab === Tabs.NOMINATIONS
+												? "text-gray-900 mx-2"
+												: "text-gray-500 mx-2"
+										}
+										onClick={() => setSelectedTab(Tabs.NOMINATIONS)}
+									>
+										Selected
+									</button>
+									<button
+										className={
+											selectedTab === Tabs.ACTIVE_VALIDATORS
+												? "text-gray-900 mx-2"
+												: "text-gray-500 mx-2"
+										}
+										onClick={() => setSelectedTab(Tabs.ACTIVE_VALIDATORS)}
+									>
+										Active
+									</button>
+								</div>
+							</div>
+							{selectedTab === Tabs.ACTIVE_VALIDATORS ? (
+								<NominationsTable
+									validators={userData.validatorsInfo}
 									networkInfo={networkInfo}
 								/>
-							)
-						)}
+							) : (
+								allNominationsData && (
+									<AllNominations
+										nominations={allNominationsData}
+										networkInfo={networkInfo}
+									/>
+								)
+							)}
+						</Collapse>
 					</div>
-					<div className="w-4/12">
+					{/* <div className="w-4/12">
 						<ExpectedReturns
 							stats={userData.stats}
 							validators={userData.validatorsInfo}
 							networkInfo={networkInfo}
 						/>
-					</div>
+					</div> */}
 				</div>
 			</div>
 		)
