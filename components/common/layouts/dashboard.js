@@ -207,7 +207,7 @@ const withDashboardLayout = (children) => {
 
 				<div className="h-full px-8 xl:w-10/12 overflow-y-scroll max-w-5xl mx-auto">
 					{showBetaMessage && (
-						<Alert status="info" color="blue.500" rounded="lg" mt={4}>
+						<Alert status="info" color="blue.500" rounded="lg" mt={4} fontSize="sm">
 							<AlertIcon />
 							This platform is currently in beta. Please proceed with
 							discretion.

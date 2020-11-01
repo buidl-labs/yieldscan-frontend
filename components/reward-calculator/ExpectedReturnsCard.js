@@ -26,7 +26,7 @@ const ResultCardInsight = ({
 				<PopoverContent
 					zIndex={50}
 					_focus={{ outline: "none" }}
-					bg="gray.700"
+					bg="gray.600"
 					border="none"
 				>
 					<PopoverArrow />
@@ -93,7 +93,7 @@ const ExpectedReturnsCard = ({
 						}
 						emptyState={!result.returns}
 						popoverContent={
-							<span className="text-sm text-white bg-gray-800">
+							<p className="text-xs text-white text-center">
 								These returns are calculated for your entered stake amount, time
 								period and risk preference. To learn about how we calculate
 								these returns{" "}
@@ -105,7 +105,7 @@ const ExpectedReturnsCard = ({
 									click here
 								</a>
 								.
-							</span>
+							</p>
 						}
 					/>
 					<ResultCardInsight
@@ -133,11 +133,11 @@ const ExpectedReturnsCard = ({
 						}
 						emptyState={!result.returns}
 						popoverContent={
-							<span className="text-sm text-white">
+							<p className="text-xs text-white text-center">
 								This is the estimated value of your staking portfolio based on
-								your inputs. This is the sum of your staking amount and your
+								your inputs. It is the sum of your staking amount and your
 								expected returns.
-							</span>
+							</p>
 						}
 					/>
 					<ResultCardInsight
@@ -153,10 +153,10 @@ const ExpectedReturnsCard = ({
 						}
 						emptyState={isNil(result.yieldPercentage)}
 						popoverContent={
-							<span className="text-sm text-white">
+							<p className="text-xs text-white text-center">
 								This is the expected percentage return for the time period you
-								input.
-							</span>
+								entered.
+							</p>
 						}
 					/>
 				</div>

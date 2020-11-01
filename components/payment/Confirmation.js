@@ -11,14 +11,20 @@ import {
 	Alert,
 	AlertDescription,
 	AlertIcon,
+	useDisclosure,
+	List,
+	ListItem,
+	ListIcon,
+	Flex,
 } from "@chakra-ui/core";
-import { ChevronRight, ChevronDown } from "react-feather";
+import { ChevronRight, ChevronDown, Circle } from "react-feather";
 import Identicon from "@components/common/Identicon";
 import formatCurrency from "@lib/format-currency";
 import Transaction from "./Transaction";
 import convertCurrency from "@lib/convert-currency";
 import RewardDestination from "./RewardDestination";
 import TermsAndServicePopover from "@components/payment/TermsOfService";
+import { GlossaryModal, HelpPopover } from "@components/reward-calculator";
 
 const ValidatorInfo = ({
 	name,
@@ -81,6 +87,8 @@ const Confirmation = ({
 		subCurrency: get(bondedAmount, "subCurrency", 0),
 	};
 
+	const { isOpen, onOpen, onClose } = useDisclosure();
+
 	const [tcPopoverOpen, setTCPopoverOpen] = useState(false);
 	const [showValidators, setShowValidators] = useState(false);
 	const [subCurrency, setSubCurrency] = useState(0);
@@ -108,9 +116,89 @@ const Confirmation = ({
 
 	return (
 		<div className="mt-8 items-center text-gray-700">
+			<GlossaryModal
+				isOpen={isOpen}
+				onClose={onClose}
+				header="Investment Risks"
+				maxWidth="lg"
+				content={
+					<List spacing={8} px={8} color="gray.600">
+						<ListItem>
+							<Flex>
+								<span>
+									<ListIcon
+										icon={Circle}
+										size="12px"
+										color="teal.500"
+										fill="teal.500"
+									/>
+								</span>
+								<p>Capital risk of due to volatility of token price.</p>
+							</Flex>
+						</ListItem>
+						<ListItem>
+							<Flex>
+								<span>
+									<ListIcon
+										icon={Circle}
+										size="12px"
+										color="teal.500"
+										fill="teal.500"
+									/>
+								</span>
+								<p>
+									There is an{" "}
+									<HelpPopover
+										zIndex={9999}
+										placement="top"
+										popoverTrigger={
+											<span className="underline cursor-help">
+												unbonding period
+											</span>
+										}
+										content={
+											<p className="text-white text-xs">
+												After staking, your investment amount is "frozen" as
+												collateral for earning rewards. Whenever you decide to
+												withdraw these funds, you would first need to wait for
+												them to "unbond". This waiting duration is called the
+												unbonding period and it can vary from network to
+												network.
+											</p>
+										}
+									/>{" "}
+									of 28 days on Polkadot, 7 days on Kusama.
+								</p>
+							</Flex>
+						</ListItem>
+						<ListItem>
+							<Flex>
+								<span>
+									<ListIcon
+										icon={Circle}
+										size="12px"
+										color="teal.500"
+										fill="teal.500"
+									/>
+								</span>
+								<p>
+									Although YieldScan mitigates this by assigning risk scores to
+									validators and giving users the option to choose the level of
+									risk they are comfortable with, funds could still get slashed
+									if nominated validators misbehave.
+								</p>
+							</Flex>
+						</ListItem>
+					</List>
+				}
+			/>
 			<h1 className="text-2xl font-semibold text-center">Confirmation</h1>
 			<p className="text-gray-600 text-sm text-center">
-				Staking returns are subject to market risks. <br />
+				Staking returns are subject to{" "}
+				<span className="underline cursor-pointer" onClick={onOpen}>
+					Investment Risks
+				</span>
+				. <br />
 				Please read the{" "}
 				<Link href="/terms" className="text-blue-400" isExternal>
 					Terms of Service
@@ -127,7 +215,7 @@ const Confirmation = ({
 			</div>
 			<button
 				onClick={handleValToggle}
-				className="flex text-gray-600 text-xs mt-4"
+				className="flex text-gray-600 text-xs mt-4 items-center"
 			>
 				<ChevronRight
 					size={16}
@@ -135,7 +223,15 @@ const Confirmation = ({
 						showValidators && "transform rotate-90"
 					}`}
 				/>
-				{showValidators ? "Hide" : "Show"} suggested validators
+				{showValidators ? "Hide" : "Show"} suggested validators{" "}
+				<HelpPopover
+					content={
+						<p className="text-white text-xs">
+							The list of most rewarding validators, selected based on your
+							investment amount and risk preference.
+						</p>
+					}
+				/>
 			</button>
 			<Collapse isOpen={showValidators}>
 				<div className="mt-2 rounded-xl mb-8">
@@ -157,7 +253,7 @@ const Confirmation = ({
 			</Collapse>
 
 			<button
-				className="flex text-gray-600 text-xs mt-2"
+				className="flex text-gray-600 text-xs mt-2 items-center"
 				onClick={handleAdvPrefsToggle}
 			>
 				<ChevronRight
@@ -204,7 +300,18 @@ const Confirmation = ({
 				</div>
 
 				<div className="flex justify-between mt-4">
-					<p className="text-gray-700 text-xs">Transaction Fee</p>
+					<div className="text-xs text-gray-700 flex items-center">
+						<p>Transaction Fee</p>
+						<HelpPopover
+							content={
+								<p className="text-xs text-white">
+									This fee is used to pay for the resources used for processing
+									the transaction on the blockchain network. YieldScan doesn’t
+									profit from this fee in any way.
+								</p>
+							}
+						/>
+					</div>
 
 					<div className="flex flex-col">
 						<p className="text-sm font-semibold text-right">

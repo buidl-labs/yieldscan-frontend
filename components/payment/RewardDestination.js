@@ -4,6 +4,7 @@ import { CheckCircle, Circle } from "react-feather";
 import Identicon from "@components/common/Identicon";
 import formatCurrency from "@lib/format-currency";
 import { Icon } from "@chakra-ui/core";
+import { HelpPopover } from "@components/reward-calculator";
 
 const RewardDestination = ({
 	stashAccount,
@@ -31,7 +32,19 @@ const RewardDestination = ({
 
 	return (
 		<div className="mt-10">
-			<div className="text-xl font-semibold">Reward Destination</div>
+			<div className="flex items-center">
+				<h2 className="text-xl font-semibold">Reward Destination</h2>
+				<HelpPopover
+					content={
+						<p className="text-white text-xs">
+							If you don't want to lock your reward for compounding and are
+							using distinct stash and controller accounts for staking, then you
+							can use this option to select the account where you would like the
+							rewards to be credited.
+						</p>
+					}
+				/>
+			</div>
 			<p className="text-gray-600 text-sm md:pr-8" hidden={!compounding}>
 				You chose to lock your rewards for compounding. For compounding, the
 				funds can only be locked in your stash account

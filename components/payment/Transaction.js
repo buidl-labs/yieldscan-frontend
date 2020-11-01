@@ -9,8 +9,10 @@ import {
 	ModalBody,
 	ModalCloseButton,
 	ModalHeader,
+	useDisclosure,
 } from "@chakra-ui/core";
 import formatCurrency from "@lib/format-currency";
+import { GlossaryModal, HelpPopover } from "@components/reward-calculator";
 
 const EditControllerModal = ({
 	isOpen,
@@ -107,6 +109,7 @@ const Transaction = ({
 	const compounding = get(transactionState, "compounding", true);
 	const [selectedController, setSelectedController] = useState(stashAccount);
 	const [controllerEdited, setControllerEdited] = useState(false);
+	const {isOpen, onClose, onOpen} = useDisclosure()
 
 	useEffect(() => {
 		setController(selectedController.address);
@@ -117,7 +120,33 @@ const Transaction = ({
 
 	return (
 		<React.Fragment>
-			<h3 className="text-xl font-semibold">Controller</h3>
+			<GlossaryModal
+				isOpen={isOpen}
+				onClose={onClose}
+				header="Stash Account"
+				content={
+					<p className="text-sm px-8">
+						This account holds funds bonded for staking, but delegates some
+						functions to a Controller. As a result, you may actively participate
+						with a Stash key kept in a cold wallet, meaning it stays offline all
+						the time.
+					</p>
+				}
+			/>
+			<div className="flex items-center">
+				<h3 className="text-xl font-semibold">Controller</h3>
+				<HelpPopover
+					content={
+						<p className="text-white text-xs">
+							This account acts on behalf of the{" "}
+							<span className="underline cursor-pointer" onClick={onOpen}>stash account</span>, signalling decisions
+							about nominating and validating and also sets preferences like
+							payout account. It only needs enough funds to pay transaction
+							fees.
+						</p>
+					}
+				/>
+			</div>
 			<div className="mr-2 flex items-center rounded-lg bg-gray-100 border border-gray-200 px-3 py-2 mb-2 w-full mt-4">
 				<Identicon address={get(selectedController, "address")} size="3rem" />
 				<div className="ml-2 flex flex-col">
