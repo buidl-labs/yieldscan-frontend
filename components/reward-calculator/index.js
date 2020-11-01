@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import axios from "@lib/axios";
 import RiskSelect from "./RiskSelect";
 import AmountInput from "./AmountInput";
-import ValidatorsList from "./ValidatorsList";
 import TimePeriodInput from "./TimePeriodInput";
 import ExpectedReturnsCard from "./ExpectedReturnsCard";
 import CompoundRewardSlider from "./CompoundRewardSlider";
@@ -27,19 +26,25 @@ import {
 	AlertDescription,
 	AlertIcon,
 	AlertTitle,
-	Box,
+	Modal,
+	ModalBody,
+	ModalCloseButton,
+	ModalContent,
+	ModalHeader,
+	ModalOverlay,
 	Popover,
 	PopoverArrow,
 	PopoverBody,
 	PopoverContent,
 	PopoverTrigger,
 	Spinner,
+	useDisclosure,
 } from "@chakra-ui/core";
 import Routes from "@lib/routes";
 import { trackEvent, Events } from "@lib/analytics";
 import convertCurrency from "@lib/convert-currency";
-import formatCurrency from "@lib/format-currency";
 import { getNetworkInfo } from "yieldscan.config";
+import { HelpCircle } from "react-feather";
 
 const trackRewardCalculatedEvent = debounce((eventData) => {
 	trackEvent(Events.REWARD_CALCULATED, eventData);
@@ -51,11 +56,20 @@ const RewardCalculatorPage = () => {
 	const networkInfo = getNetworkInfo(selectedNetwork);
 
 	const { isOpen, toggle } = useWalletConnect();
+	const {
+		isOpen: isRiskGlossaryOpen,
+		onClose: onRiskGlossaryClose,
+		onOpen: onRiskGlossaryOpen,
+	} = useDisclosure();
+	const {
+		isOpen: isUnbondingGlossaryOpen,
+		onClose: onUnbondingGlossaryClose,
+		onOpen: onUnbondingGlossaryOpen,
+	} = useDisclosure();
 	const setTransactionState = useTransaction(
 		(state) => state.setTransactionState
 	);
 	const transactionState = useTransaction();
-	const previousValidatorMap = useTransaction((state) => state.validatorMap);
 	const {
 		stashAccount,
 		accounts,
@@ -64,12 +78,7 @@ const RewardCalculatorPage = () => {
 		accountInfoLoading,
 	} = useAccounts();
 	const { setHeaderLoading } = useHeaderLoading();
-	const {
-		isPaymentPopoverOpen,
-		togglePaymentPopover,
-		closePaymentPopover,
-		openPaymentPopover,
-	} = usePaymentPopover();
+	const { isPaymentPopoverOpen, closePaymentPopover } = usePaymentPopover();
 
 	const [loading, setLoading] = useState(false);
 	const [amount, setAmount] = useState(transactionState.stakingAmount || 1000);
@@ -241,6 +250,42 @@ const RewardCalculatorPage = () => {
 	) : (
 		<div className="flex pt-12">
 			<WalletConnectPopover isOpen={isOpen} networkInfo={networkInfo} />
+			<GlossaryModal
+				isOpen={isRiskGlossaryOpen}
+				onClose={onRiskGlossaryClose}
+				header="Risk Score"
+				content={
+					<p className="text-gray-700 text-sm px-8">
+						Risk score is calculated based on 6 on-chain variables (
+						<span className="italic">
+							own stake, other stake, no. of backers, no. of slashes and no. of
+							eras validated
+						</span>
+						), where no. of slashes carry the highest weight.{" "}
+						<a
+							className="underline"
+							href="https://github.com/buidl-labs/yieldscan-frontend/wiki/Risk-score-logic"
+							target="_blank"
+						>
+							Learn more
+						</a>
+					</p>
+				}
+			/>
+			<GlossaryModal
+				isOpen={isUnbondingGlossaryOpen}
+				onClose={onUnbondingGlossaryClose}
+				header="Unbonding Period"
+				content={
+					<p className="text-gray-700 text-sm px-8">
+						After staking, your investment amount is "frozen" as collateral for
+						earning rewards. Whenever you decide to withdraw these funds, you
+						would first need to wait for them to "unbond". This waiting duration
+						is called the unbonding period and it can vary from network to
+						network.
+					</p>
+				}
+			/>
 			<div>
 				<div className="flex flex-wrap">
 					<div className="w-1/2">
@@ -272,7 +317,7 @@ const RewardCalculatorPage = () => {
 												<PopoverContent
 													zIndex={50}
 													_focus={{ outline: "none" }}
-													bg="gray.700"
+													bg="gray.600"
 													border="none"
 												>
 													<PopoverArrow />
@@ -289,19 +334,6 @@ const RewardCalculatorPage = () => {
 										</AlertDescription>
 									</Alert>
 								)}
-								{/* <div
-									className="my-2 text-gray-600 text-xs"
-									hidden={isNil(stashAccount)}
-								>
-									Transferrable Balance:{" "}
-									{formatCurrency.methods.formatAmount(
-										Math.trunc(
-											get(freeAmount, "currency", 0) *
-												10 ** networkInfo.decimalPlaces
-										),
-										networkInfo
-									)}
-								</div> */}
 
 								<AmountInput
 									bonded={get(bondedAmount, "currency")}
@@ -310,11 +342,28 @@ const RewardCalculatorPage = () => {
 									onChange={setAmount}
 								/>
 							</div>
-							<h3 className="mt-8 text-gray-700 text-xs">With a risk level:</h3>
+							<div className="flex mt-8 items-center">
+								<h3 className="text-gray-700 text-xs">With a risk level:</h3>
+								<HelpPopover
+									content={
+										<p className="text-white text-xs">
+											Risk levels are an abstraction over the risk scores we
+											assign to validators. If you're unsure, choose "Medium".{" "}
+											<span
+												onClick={onRiskGlossaryOpen}
+												className="underline cursor-pointer"
+											>
+												How are risk scores calculated?
+											</span>
+										</p>
+									}
+								/>
+							</div>
 							<div className="mt-2">
 								<RiskSelect selected={risk} setSelected={setRisk} />
 							</div>
-							<h3 className="mt-8 text-gray-700 text-xs">
+
+							<h3 className="text-gray-700 mt-8 text-xs">
 								For the time period:
 							</h3>
 							<Alert
@@ -323,10 +372,19 @@ const RewardCalculatorPage = () => {
 								backgroundColor="#FFF4DA"
 								borderRadius="8px"
 								mr={12}
+								mt={2}
+								mb={4}
 							>
 								<AlertDescription color="#FDB808" fontSize="xs">
 									Time period is only used for estimating returns. It doesn’t
-									affect the unbonding period of approximately 7 days.
+									affect the{" "}
+									<span
+										className="underline cursor-pointer"
+										onClick={onUnbondingGlossaryOpen}
+									>
+										unbonding period
+									</span>{" "}
+									of approximately 7 days.
 								</AlertDescription>
 							</Alert>
 							<div className="mt-2">
@@ -337,9 +395,29 @@ const RewardCalculatorPage = () => {
 									onUnitChange={setTimePeriodUnit}
 								/>
 							</div>
-							<h3 className="mt-8 text-gray-700 text-xs">
-								Lock rewards for compounding?
-							</h3>
+							<div className="flex mt-8 items-center">
+								<h3 className="text-gray-700 text-xs">
+									Lock rewards for compounding?
+								</h3>
+								<HelpPopover
+									content={
+										<p className="text-white text-xs">
+											If you choose not to lock your rewards, then your newly
+											minted rewards will be transferrable by default. However,
+											this would mean lower earnings over longer period of time.
+											Please note that locking of your capital investment is
+											independent of this. See{" "}
+											<span
+												onClick={onUnbondingGlossaryOpen}
+												className="underline cursor-pointer"
+											>
+												unbonding period
+											</span>{" "}
+											for more info.
+										</p>
+									}
+								/>
+							</div>
 							{/* <span className="text-sm text-gray-500">
 								Your rewards will be locked for staking over the specified time
 								period
@@ -366,21 +444,13 @@ const RewardCalculatorPage = () => {
 							networkInfo={networkInfo}
 							onPayment={onPayment}
 						/>
-						{/* <ValidatorsList
-					// disableList={!amount || !timePeriodValue || !risk}
-					stakingAmount={amount}
-					validators={get(validatorMap, "total", [])}
-					selectedValidators={selectedValidators}
-					setSelectedValidators={setSelectedValidators}
-					onAdvancedSelection={onAdvancedSelection}
-					networkInfo={networkInfo}
-				/> */}
 						<div className="mt-3">
 							<Alert
 								color="gray.500"
 								backgroundColor="white"
 								border="1px solid #E2ECF9"
 								borderRadius="8px"
+								zIndex={1}
 							>
 								<AlertIcon name="secureLogo" />
 								<div>
@@ -454,3 +524,54 @@ const RewardCalculatorPage = () => {
 };
 
 export default RewardCalculatorPage;
+
+const GlossaryModal = ({ isOpen, onClose, header, content, maxWidth="md" }) => {
+	return (
+		<Modal
+			isOpen={isOpen}
+			onClose={onClose}
+			isCentered
+			closeOnEsc={true}
+			closeOnOverlayClick={true}
+		>
+			<ModalOverlay />
+			<ModalContent rounded="1rem" maxWidth={maxWidth} pt={4} pb={12}>
+				<ModalHeader>
+					<h3 className="px-3 text-2xl text-center text-gray-700">{header}</h3>
+				</ModalHeader>
+				<ModalCloseButton
+					onClick={onClose}
+					boxShadow="0 0 0 0 #fff"
+					color="gray.400"
+					backgroundColor="gray.100"
+					rounded="1rem"
+					mt={4}
+					mr={4}
+				/>
+				<ModalBody>{content}</ModalBody>
+			</ModalContent>
+		</Modal>
+	);
+};
+
+const HelpPopover = ({ popoverTrigger, content, placement = "right", iconSize="12px", zIndex=50 }) => {
+	return (
+		<Popover trigger="hover" placement={placement} usePortal>
+			<PopoverTrigger>
+				{popoverTrigger ? popoverTrigger : <HelpCircle size={iconSize} className="text-gray-700 ml-2 cursor-help" />}
+			</PopoverTrigger>
+			<PopoverContent
+				rounded="lg"
+				zIndex={zIndex}
+				_focus={{ outline: "none" }}
+				bg="gray.600"
+				border="none"
+			>
+				<PopoverArrow />
+				<PopoverBody>{content}</PopoverBody>
+			</PopoverContent>
+		</Popover>
+	);
+};
+
+export { GlossaryModal, HelpPopover };
