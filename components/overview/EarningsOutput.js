@@ -1,6 +1,9 @@
-import { Box, FormLabel, Skeleton, Divider } from "@chakra-ui/core";
+import { Box, FormLabel, Skeleton, Divider, Image } from "@chakra-ui/core";
 import axios from "@lib/axios";
 import calculateReward from "@lib/calculate-reward";
+import getRewards from "@lib/getRewards";
+import getClaimableRewards from "@lib/getClaimableRewards";
+import formatCurrency from "@lib/format-currency";
 import {
 	useYearlyEarning,
 	useMonthlyEarning,
@@ -12,23 +15,30 @@ import { cloneDeep, get, isNil, keyBy, mapValues, set } from "lodash";
 import { useEffect, useState } from "react";
 import CountUp from "react-countup";
 import { Twitter } from "react-feather";
+import convertCurrency from "@lib/convert-currency";
+import getErasHistoric from "@lib/getErasHistoric";
 
 const EarningsOutput = ({
 	networkDenom,
 	networkUrl,
 	inputValue,
+	apiInstance,
 	validators,
+	address,
 	networkInfo,
 }) => {
 	const transactionState = useTransaction();
 	const [risk, setRisk] = useState(transactionState.riskPreference || "Medium");
 	const [yearlyEarning, setYearlyEarning] = useState();
+	const [totalEarnings, setTotalEarnings] = useState();
 	// const yearlyEarning = useYearlyEarning((state) => state.yearlyEarning);
 	// const setYearlyEarning = useYearlyEarning((state) => state.setYearlyEarning);
 
 	const [monthlyEarning, setMonthlyEarning] = useState();
 
 	const [tweet, setTweet] = useState();
+	const [claimableRewards, setClaimableRewards] = useState();
+	const [erasHistoric, setErasHistoric] = useState();
 
 	// const monthlyEarning = useMonthlyEarning((state) => state.monthlyEarning);
 	// const setMonthlyEarning = useMonthlyEarning(
@@ -46,6 +56,40 @@ const EarningsOutput = ({
 			setSelectedValidators(selectedValidators);
 		}
 	}, [validatorMap]);
+
+	useEffect(() => {
+		if (!totalEarnings) {
+			getRewards(address, networkInfo).then((data) => {
+				const total = data.reduce((a, b) => a + parseInt(b.amount), 0);
+				convertCurrency(
+					total / Math.pow(10, networkInfo.decimalPlaces),
+					networkInfo.denom
+				).then((value) =>
+					setTotalEarnings({
+						currency: total,
+						subCurrency: value,
+					})
+				);
+			});
+		}
+	}, [networkInfo]);
+
+	// useEffect(() => {
+	// 	if (!erasHistoric && address) {
+	// 		getErasHistoric(apiInstance, setErasHistoric);
+	// 	}
+	// }, [networkInfo, address]);
+	// useEffect(() => {
+	// 	if (!claimableRewards && erasHistoric && address) {
+	// 		getClaimableRewards(
+	// 			address,
+	// 			networkInfo,
+	// 			apiInstance,
+	// 			erasHistoric,
+	// 			setClaimableRewards
+	// 		);
+	// 	}
+	// }, [networkInfo, erasHistoric, address]);
 
 	useEffect(() => {
 		if (!validatorMap) {
@@ -84,19 +128,11 @@ const EarningsOutput = ({
 		}
 	}, [yearlyEarning]);
 
-	console.log(inputValue);
-	console.log(inputValue);
-
 	useEffect(() => {
-		console.log("hello1");
 		if (validators) {
-			console.log("hello");
-			console.log(validators);
 			const selectedValidatorsList = Object.values(validators).filter(
 				(v) => !isNil(v)
 			);
-			console.log("selectedValidatorsList");
-			console.log(selectedValidatorsList);
 			calculateReward(
 				selectedValidatorsList,
 				inputValue.currency,
@@ -145,15 +181,75 @@ const EarningsOutput = ({
 		}
 	}, [inputValue, validators]);
 
-	console.log("outside");
-
-	console.log("yearlyEarning");
-	console.log(yearlyEarning);
-
 	return (
 		<Box minW={320} maxW={500}>
-			<div>
-				<FormLabel fontSize="xs" className="text-gray-700">
+			<div className="flex">
+				<Image
+					src="/images/earnings-dollar-sign.png"
+					alt="dollar-sign"
+					w={8}
+					h={8}
+				/>
+				<p className="semi-heading ml-2 mt-1">Earnings</p>
+			</div>
+			{false && (
+				<div className="claim-rewards">
+					<FormLabel fontSize="ss" className="text-gray-700">
+						Claimable Earnings
+					</FormLabel>
+					<h2 className="text-2xl text-gray-700 font-bold">
+						{!isNil(totalEarnings) ? (
+							<>
+								<div className="flex justify-between">
+									{formatCurrency.methods.formatAmount(
+										totalEarnings.currency,
+										networkInfo
+									)}
+								</div>
+								<div className="text-sm font-medium text-teal-500">
+									$
+									{formatCurrency.methods.formatNumber(
+										totalEarnings.subCurrency.toFixed(2)
+									)}
+								</div>
+							</>
+						) : (
+							<Skeleton>
+								<span>Loading...</span>
+							</Skeleton>
+						)}
+					</h2>
+				</div>
+			)}
+			<div className="mt-4">
+				<FormLabel fontSize="ss" className="text-gray-700">
+					7 day earnings
+				</FormLabel>
+				<h2 className="text-2xl text-gray-700 font-bold">
+					{!isNil(totalEarnings) ? (
+						<>
+							<div className="flex justify-between">
+								{formatCurrency.methods.formatAmount(
+									totalEarnings.currency,
+									networkInfo
+								)}
+							</div>
+							<div className="text-sm font-medium text-teal-500">
+								$
+								{formatCurrency.methods.formatNumber(
+									totalEarnings.subCurrency.toFixed(2)
+								)}
+							</div>
+						</>
+					) : (
+						<Skeleton>
+							<span>Loading...</span>
+						</Skeleton>
+					)}
+				</h2>
+			</div>
+			<div className="mt-4">
+				<FormLabel fontSize="ss" className="text-gray-700">
 					Estimated Earnings
 				</FormLabel>
 				<h2 className="text-2xl text-gray-700 font-bold">
@@ -187,7 +283,7 @@ const EarningsOutput = ({
 			</div>
 			<div>
 				<FormLabel fontSize="xs" className="text-gray-700" mt={8}>
-					Yearly Earning
+					Yearly
 				</FormLabel>
 				{!isNil(yearlyEarning) ? (
 					<div className="flex justify-between">
@@ -235,7 +331,7 @@ const EarningsOutput = ({
 			</div>
 			<div>
 				<FormLabel fontSize="xs" className="text-gray-700" mt={6}>
-					Monthly Earning
+					Monthly
 				</FormLabel>
 				{!isNil(monthlyEarning) ? (
 					<div className="flex justify-between">
@@ -283,7 +379,7 @@ const EarningsOutput = ({
 			</div>
 			<div>
 				<FormLabel fontSize="xs" className="text-gray-700" mt={6}>
-					Daily Earning
+					Daily
 				</FormLabel>
 				{!isNil(dailyEarning) ? (
 					<div className="flex justify-between">

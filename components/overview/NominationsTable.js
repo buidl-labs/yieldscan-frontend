@@ -32,14 +32,17 @@ const ValidatorCard = ({
 	onProfile = noop,
 	networkInfo,
 }) => {
+	const displayName = name
+		? name.length > 13
+			? name.slice(0, 5) + "..." + name.slice(-5)
+			: name
+		: stashId.slice(0, 5) + "..." + stashId.slice(-5);
 	return (
-		<div className="flex items-center justify-between rounded-lg border border-gray-200 py-2 mb-2">
-			<div className="flex items-center ml-8">
-				<Identicon address={stashId} size="3rem" />
+		<div className="flex items-center justify-between rounded-lg border border-gray-200 py-2 w-full mb-2">
+			<div className="flex items-center ml-4">
+				<Identicon address={stashId} size="2rem" />
 				<div className="text-gray-700 cursor-pointer ml-2" onClick={onProfile}>
-					<span className="font-semibold">
-						{name || stashId.slice(0, 6) + "..." + stashId.slice(-6) || "-"}
-					</span>
+					<span className="text-xs font-semibold">{displayName}</span>
 					<div className="flex items-center">
 						<span className="text-xs mr-2">View Profile</span>
 						<ExternalLink size="12px" />
@@ -47,7 +50,7 @@ const ValidatorCard = ({
 				</div>
 			</div>
 			{/* <StatusTag status="active" /> */}
-			<div className="flex">
+			<div className="flex mr-2">
 				<div className="flex flex-col">
 					<span className="text-xs text-gray-500 font-semibold">
 						Risk Score
@@ -56,22 +59,20 @@ const ValidatorCard = ({
 						<RiskTag risk={riskScore} />
 					</div>
 				</div>
-				<div className="flex flex-col mx-8">
-					<span className="text-xs text-gray-500 font-semibold">
-						Staked Amount
-					</span>
-					<h3 className="text-lg">
+				<div className="flex flex-col mx-2">
+					<span className="text-xs text-gray-500 font-semibold">Stake</span>
+					<h3>
 						{formatCurrency.methods.formatAmount(
 							Math.trunc(stakedAmount * 10 ** networkInfo.decimalPlaces),
 							networkInfo
 						)}
 					</h3>
 				</div>
-				<div className="flex flex-col mr-8">
+				<div className="flex flex-col mr-2">
 					<span className="text-xs text-gray-500 font-semibold">
 						Estimated Reward <sup>*</sup>
 					</span>
-					<h3 className="text-lg">
+					<h3>
 						{formatCurrency.methods.formatAmount(
 							Math.trunc(estimatedReward * 10 ** networkInfo.decimalPlaces),
 							networkInfo
@@ -100,7 +101,7 @@ const ValidatorCard = ({
 const NominationsTable = ({ validators, networkInfo }) => {
 	return (
 		<div>
-			<div className="table-container overflow-y-scroll mt-5 py-4">
+			<div className="py-2 flex items-center flex-wrap max-h-25-rem overflow-y-scroll">
 				{validators
 					.filter((validator) => validator.isElected)
 					.map((validator) => (

@@ -2,6 +2,7 @@ import { noop } from "lodash";
 import { ExternalLink } from "react-feather";
 import Identicon from "@components/common/Identicon";
 import Routes from "@lib/routes";
+import formatCurrency from "@lib/format-currency";
 import RiskTag from "@components/reward-calculator/RiskTag";
 
 const ValidatorCard = ({
@@ -9,17 +10,22 @@ const ValidatorCard = ({
 	stashId,
 	riskScore,
 	commission,
+	totalStake,
+	networkInfo,
 	nominators,
 	onProfile = noop,
 }) => {
+	const displayName = name
+		? name.length > 13
+			? name.slice(0, 5) + "..." + name.slice(-5)
+			: name
+		: stashId.slice(0, 5) + "..." + stashId.slice(-5);
 	return (
 		<div className="flex items-center justify-between rounded-lg border border-gray-200 py-2 w-full mb-2">
-			<div className="flex items-center ml-8">
-				<Identicon address={stashId} size="3rem" />
+			<div className="flex items-center ml-4">
+				<Identicon address={stashId} size="2rem" />
 				<div className="text-gray-700 cursor-pointer ml-2" onClick={onProfile}>
-					<span className="font-semibold">
-						{name || stashId.slice(0, 6) + "..." + stashId.slice(-6) || "-"}
-					</span>
+					<span className="text-xs font-semibold">{displayName}</span>
 					<div className="flex items-center">
 						<span className="text-xs mr-2">View Profile</span>
 						<ExternalLink size="12px" />
@@ -28,12 +34,12 @@ const ValidatorCard = ({
 			</div>
 			{/* <StatusTag status="active" /> */}
 			<div className="flex">
-				<div className="flex flex-col mx-8">
+				{/* <div className="flex flex-col mx-8">
 					<span className="text-xs text-gray-500 font-semibold">
 						Nominators
 					</span>
-					<h3 className="text-lg">{nominators}</h3>
-				</div>
+					<h3 className="text-xg">{nominators}</h3>
+				</div> */}
 				<div className="flex flex-col">
 					<span className="text-xs text-gray-500 font-semibold">
 						Risk Score
@@ -42,11 +48,22 @@ const ValidatorCard = ({
 						<RiskTag risk={riskScore} />
 					</div>
 				</div>
-				<div className="flex flex-col mx-8">
+				<div className="flex flex-col mx-2">
 					<span className="text-xs text-gray-500 font-semibold">
 						Commission
 					</span>
-					<h3 className="text-lg">{commission}%</h3>
+					<h3>{commission}%</h3>
+				</div>
+				<div className="flex flex-col mx-2">
+					<span className="text-xs text-gray-500 font-semibold">
+						Total Stake
+					</span>
+					<h3>
+						{formatCurrency.methods.formatAmount(
+							totalStake * Math.pow(10, networkInfo.decimalPlaces),
+							networkInfo
+						)}
+					</h3>
 				</div>
 			</div>
 			{false && (
@@ -67,12 +84,12 @@ const ValidatorCard = ({
 	);
 };
 
-const AllNominations = ({ nominations = [] }) => {
+const AllNominations = ({ nominations = [], networkInfo }) => {
 	const onProfile = (validator) =>
 		window.open(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`, "_blank");
 
 	return (
-		<div className="py-2 flex items-center flex-wrap h-full max-h-25-rem overflow-y-scroll">
+		<div className="py-2 flex items-center flex-wrap max-h-25-rem overflow-y-scroll">
 			{nominations.map((nomination) => (
 				<ValidatorCard
 					key={nomination.stashId}
@@ -81,6 +98,8 @@ const AllNominations = ({ nominations = [] }) => {
 					riskScore={nomination.riskScore.toFixed(2)}
 					commission={nomination.commission}
 					nominators={nomination.numOfNominators}
+					totalStake={nomination.totalStake}
+					networkInfo={networkInfo}
 					onProfile={() => onProfile(nomination)}
 				/>
 			))}

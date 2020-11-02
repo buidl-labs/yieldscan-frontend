@@ -5,12 +5,12 @@ import formatCurrency from "@lib/format-currency";
 import convertCurrency from "@lib/convert-currency";
 import { useAccounts, usePolkadotApi } from "@lib/store";
 import calculateReward from "@lib/calculate-reward";
-import EarningsOutput from "./EarningsOutput";
 
 const OverviewCards = ({
 	stats,
 	bondedAmount,
 	activeStake,
+	address,
 	validators,
 	unlockingBalances = [],
 	openRewardDestinationModal = noop,
@@ -226,15 +226,6 @@ const OverviewCards = ({
 					</button>
 				</div>
 			</div> */}
-			{activeStake && (
-				<EarningsOutput
-					networkDenom={networkInfo.denom}
-					networkUrl={networkInfo.coinGeckoDenom}
-					networkInfo={networkInfo}
-					validators={validators.filter((validator) => validator.isElected)}
-					inputValue={activeStake}
-				/>
-			)}
 		</div>
 	);
 };
