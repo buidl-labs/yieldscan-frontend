@@ -23,69 +23,19 @@ import Routes from "@lib/routes";
 import Identicon from "@components/common/Identicon";
 import ChainErrorPage from "@components/overview/ChainErrorPage";
 import SuccessfullyBonded from "@components/overview/SuccessfullyBonded";
+import AmountInput from "./AmountInput";
 import axios from "@lib/axios";
+import AmountConfirmation from "./AmountConfirmation";
 import convertCurrency from "@lib/convert-currency";
-
-const ValidatorCard = ({
-	name,
-	stashId,
-	riskScore,
-	stakedAmount,
-	estimatedReward,
-	onProfile = noop,
-	networkInfo,
-}) => (
-	<div className="flex justify-around items-center py-2 my-2 rounded-lg cursor-pointer border border-gray-300">
-		<div className="flex">
-			<Identicon address={stashId} size="2.5rem" />
-			<div
-				className="ml-2 text-gray-700 w-48 truncate cursor-pointer"
-				onClick={onProfile}
-			>
-				<span className="text-sm font-semibold">
-					{name
-						? name.length > 16
-							? name.slice(0, 6) + "..." + name.slice(-6)
-							: name
-						: stashId.slice(0, 6) + "..." + stashId.slice(-6) || "-"}
-				</span>
-				<div className="flex items-center">
-					<span className="text-xs mr-2">View Profile</span>
-					<ExternalLink size="12px" />
-				</div>
-			</div>
-		</div>
-
-		<div className="flex flex-col">
-			<span className="text-xs text-gray-500 font-semibold">Risk Score</span>
-			<div className="rounded-full font-semibold">
-				<RiskTag risk={Number(riskScore.toFixed(2))} />
-			</div>
-		</div>
-		<div className="flex flex-col">
-			<span className="text-xs text-gray-500 font-semibold">Total Staked</span>
-			<h3 className="text-lg">
-				{stakedAmount.toFixed(1)} {networkInfo.denom}
-			</h3>
-		</div>
-		<div className="flex flex-col">
-			<span className="text-xs text-gray-500 font-semibold">
-				Estimated Pool Reward
-			</span>
-			<h3 className="text-lg">
-				{estimatedReward.toFixed(4)} {networkInfo.denom}
-			</h3>
-		</div>
-	</div>
-);
 
 const FundsUpdate = withSlideIn(
 	({ styles, type, close, nominations, bondedAmount, networkInfo }) => {
 		const toast = useToast();
 		const { stashAccount, freeAmount } = useAccounts();
 		const { apiInstance } = usePolkadotApi();
-		const [amount, setAmount] = useState();
-		const [subCurrency, setSubCurrency] = useState("");
+		const [currentStep, setCurrentStep] = useState(0);
+		const [amount, setAmount] = useState(0);
+		const [subCurrency, setSubCurrency] = useState(0);
 		const [compounding, setCompounding] = useState(false);
 		const [validators, setValidators] = useState([]);
 		const [updatingFunds, setUpdatingFunds] = useState(false);
@@ -103,7 +53,22 @@ const FundsUpdate = withSlideIn(
 		const [totalStakingAmountFiat, setTotalStakingAmountFiat] = useState(0);
 		const [validatorsLoading, setValidatorsLoading] = useState(true);
 		const [errMessage, setErrMessage] = useState();
-		const title = `${type === "bond" ? "Bond Additional" : "Unbond"} Funds`;
+		const title = `${type === "bond" ? "Invest more" : "Withdraw"}`;
+		const subTitle = `${
+			type === "bond"
+				? "I want to invest additional funds of"
+				: "I want to withdraw"
+		}`;
+
+		const handlePopoverClose = () => {
+			close();
+			setCurrentStep(0);
+			setProcessComplete(false);
+		};
+
+		const handleOnClickProceed = () => {
+			setCurrentStep(1);
+		};
 
 		useEffect(() => {
 			setValidatorsLoading(true);
@@ -167,25 +132,17 @@ const FundsUpdate = withSlideIn(
 		}, [amount, totalStakingAmount]);
 
 		useEffect(() => {
-			if (type === "unbond" && amount >= get(bondedAmount, "currency", 0)) {
+			if (type === "unbond" && amount > get(bondedAmount, "currency", 0)) {
 				setCalculationDisabled(true);
 			} else if (
 				type === "bond" &&
-				amount >= get(freeAmount, "currency", 0) - 0.1
+				amount > get(freeAmount, "currency", 0) - 0.1
 			) {
 				setCalculationDisabled(true);
 			} else if (amount === 0 || amount === undefined || amount === "") {
 				setCalculationDisabled(true);
 			} else setCalculationDisabled(false);
 		}, [amount]);
-
-		// const setAmount = (value) => {
-		// 	if (value < 0) return;
-		// 	if (type === "unbond" && value >= get(bondedAmount, "currency", 0))
-		// 		return;
-		// 	if (type === "bond" && value >= get(freeAmount, "currency", 0)) return;
-		// 	_setAmount(value === "" ? "" : Number(value));
-		// };
 
 		const onConfirm = () => {
 			setUpdatingFunds(true);
@@ -254,16 +211,27 @@ const FundsUpdate = withSlideIn(
 				isCentered
 				closeOnOverlayClick={closeOnOverlayClick}
 				closeOnEsc={closeOnOverlayClick}
+				size={currentStep == 0 ? "md" : "xl"}
 			>
 				<ModalOverlay />
-				<ModalContent rounded="lg" maxWidth="90vw" height="84vh" {...styles}>
-					{!updatingFunds && !processComplete && !chainError && (
+				<ModalContent rounded="lg" {...styles}>
+					{/* {!updatingFunds && !processComplete && !chainError && (
 						<ModalHeader>
 							<h1>{title}</h1>
 						</ModalHeader>
+					)} */}
+					{closeOnOverlayClick && (
+						<ModalCloseButton
+							onClick={handlePopoverClose}
+							boxShadow="0 0 0 0 #fff"
+							color="gray.400"
+							backgroundColor="gray.100"
+							rounded="1rem"
+							mt={4}
+							mr={4}
+						/>
 					)}
-					{closeOnOverlayClick && <ModalCloseButton onClick={close} />}
-					<ModalBody px="4rem">
+					<ModalBody px="2rem">
 						{validatorsLoading ? (
 							<div className="flex-center w-full h-full">
 								<div className="flex-center flex-col">
@@ -274,57 +242,26 @@ const FundsUpdate = withSlideIn(
 								</div>
 							</div>
 						) : (
-							<div>
-								{!updatingFunds && !processComplete && !chainError && (
+							<div className="w-full h-full">
+								{currentStep == 0 && !processComplete && !chainError && (
 									<>
-										<div className="flex justify-around">
-											<div className="border border-gray-200 p-10 rounded-lg text-gray-800 pr-8">
-												<div>
-													<h3 className="text-xl">Currently Bonded</h3>
-													<h1 className="text-3xl">
-														{formatCurrency.methods.formatAmount(
-															Math.trunc(
-																Number(
-																	(get(bondedAmount, "currency", 0) || 0) *
-																		10 ** networkInfo.decimalPlaces
-																)
-															),
-															networkInfo
-														)}
-													</h1>
-													<span className="text-lg text-gray-600">
-														$
-														{formatCurrency.methods.formatNumber(
-															get(bondedAmount, "subCurrency", 0).toFixed(2)
-														)}
-													</span>
-												</div>
-												<div className="mt-10">
-													<h3>{title}</h3>
-													<span
-														className="text-gray-700 text-xs mb-2 ml-px"
-														hidden={type === "unbond"}
-													>
-														Free Balance:{" "}
-														{formatCurrency.methods.formatAmount(
-															Math.trunc(
-																Number(
-																	(get(freeAmount, "currency", 0) || 0) *
-																		10 ** networkInfo.decimalPlaces
-																)
-															),
-															networkInfo
-														)}
-													</span>
+										<div className="flex flex-col">
+											<h3 className="mt-4 text-2xl text-gray-700 font-semibold">
+												{title}
+											</h3>
+											<div className="flex-center w-full h-full">
+												<div className="mt-10 w-full">
 													<div
-														className="rounded-lg px-5 py-2 text-sm bg-red-200 text-red-600 my-4"
+														className="rounded-lg px-5 py-2 text-sm bg-red-200 text-red-600"
 														hidden={
 															!calculationDisabled || !amount || amount == 0
 														}
 													>
 														<span hidden={type === "bond"}>
-															We cannot unbond this amount since this is greater
-															than bondedAmount.{" "}
+															You cannot withdraw this amount since it either
+															exceeds your current investment value or doesn’t
+															leave enough funds in your account for paying the
+															transaction fees.{" "}
 														</span>
 														<span hidden={type === "unbond"}>
 															We cannot stake this amount since you need to
@@ -332,127 +269,92 @@ const FundsUpdate = withSlideIn(
 															{networkInfo.denom} in your account at all times.{" "}
 														</span>
 													</div>
-													<div className="flex items-center border border-gray-200 rounded-lg my-4">
-														<div className="flex flex-col">
-															<input
-																type="number"
-																className={`
-													rounded outline-none p-2 text-lg rounded-lg
-													${type === "bond" ? "text-teal-500" : "text-red-500"}
-												`}
-																placeholder="Enter amount"
-																value={amount}
-																onChange={(ev) => setAmount(ev.target.value)}
-															/>
-															<span className="text-sm text-gray-600 ml-2">
-																$
-																{subCurrency &&
-																	formatCurrency.methods.formatNumber(
-																		subCurrency.toFixed(2)
-																	)}
-															</span>
-														</div>
-														<span
-															className={`${
-																type === "bond"
-																	? "text-teal-500"
-																	: "text-red-500"
-															} mx-2`}
-														>
-															{networkInfo.denom}
+													<div className="flex justify-between">
+														<span className="text-gray-700 text-xs">
+															{subTitle}
 														</span>
-													</div>
-												</div>
-												<div className="mt-10">
-													<h3 className="text-xl">Total Staking Amount</h3>
-													<h1 className="text-3xl">
-														{formatCurrency.methods.formatAmount(
-															Math.trunc(
-																Number(
-																	(totalStakingAmount || 0) *
-																		10 ** networkInfo.decimalPlaces
-																)
-															),
-															networkInfo
-														)}
-													</h1>
-													<span className="text-lg text-gray-600">
-														$
-														{formatCurrency.methods.formatNumber(
-															totalStakingAmountFiat.toFixed(2)
-														)}
-													</span>
-												</div>
-											</div>
-
-											<div className="border border-gray-200 rounded-lg w-2/3">
-												<div className="flex justify-between items-center px-4 py-2 text-gray-700">
-													<h3 className="tracking-widest">VALIDATORS</h3>
-													{/* {estimatedReturns && (
-												<div className="flex items-center">
-													<span className="mr-2 text-sm">
-														Estimated Annual Returns
-													</span>
-													<div className="py-1 px-2 flex flex-col rounded-lg border border-teal-500 w-40">
-														<h3 className="text-teal-500">
+														<span
+															className="text-gray-700 text-xxs mt-2"
+															hidden={type === "unbond"}
+														>
+															Available Balance:{" "}
 															{formatCurrency.methods.formatAmount(
 																Math.trunc(
-																	Number(estimatedReturns.currency || 0) *
-																		10 ** networkInfo.decimalPlaces
-																)
+																	Number(
+																		(get(freeAmount, "currency", 0) || 0) *
+																			10 ** networkInfo.decimalPlaces
+																	)
+																),
+																networkInfo
 															)}
-														</h3>
-														<span className="text-gray-600 text-sm">
-															$
-															{formatCurrency.methods.formatNumber(
-																estimatedReturns.subCurrency.toFixed(2)
+														</span>
+														<span
+															className="text-gray-700 text-xxs mt-2"
+															hidden={type === "bond"}
+														>
+															Current Investment:{" "}
+															{formatCurrency.methods.formatAmount(
+																Math.trunc(
+																	Number(
+																		(get(bondedAmount, "currency", 0) || 0) *
+																			10 ** networkInfo.decimalPlaces
+																	)
+																),
+																networkInfo
 															)}
 														</span>
 													</div>
-												</div>
-											)} */}
-												</div>
-												<div className="validator-table overflow-y-scroll px-4">
-													{validators.map((validator) => (
-														<ValidatorCard
-															key={validator.stashId}
-															name={validator.name}
-															stashId={validator.stashId}
-															riskScore={validator.riskScore}
-															stakedAmount={validator.totalStake}
-															estimatedReward={validator.estimatedPoolReward}
-															onProfile={() =>
-																window.open(
-																	`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`,
-																	"_blank"
-																)
-															}
+													<div className="flex flex-col">
+														<AmountInput
+															bonded={get(bondedAmount, "currency")}
+															value={{
+																currency: amount,
+																subCurrency: subCurrency,
+															}}
 															networkInfo={networkInfo}
+															type={type}
+															onChange={setAmount}
 														/>
-													))}
+													</div>
 												</div>
 											</div>
-										</div>
-										<div className="flex-center">
-											<Button
-												px="8"
-												py="2"
-												mt="5"
-												rounded="0.5rem"
-												backgroundColor="teal.500"
-												color="white"
-												onClick={onConfirm}
-												isDisabled={calculationDisabled}
-												isLoading={updatingFunds}
-											>
-												Confirm
-											</Button>
+											<div className="flex-center">
+												<button
+													className={`rounded-full font-medium px-12 py-3 ${
+														calculationDisabled
+															? "bg-gray-700 opacity-25 cursor-not-allowed"
+															: "bg-teal-500 opacity-100 cursor-pointer"
+													} mt-40 mb-40 text-white`}
+													onClick={handleOnClickProceed}
+													disabled={amount > freeAmount.currency || !amount}
+													// isLoading={updatingFunds}
+												>
+													Proceed
+												</button>
+											</div>
 										</div>
 									</>
 								)}
+								{currentStep === 1 &&
+									!updatingFunds &&
+									!processComplete &&
+									!chainError && (
+										<AmountConfirmation
+											amount={amount}
+											subCurrency={subCurrency}
+											type={type}
+											close={close}
+											stashId={stashAccount.address}
+											nominations={nominations}
+											handlePopoverClose={handlePopoverClose}
+											bondedAmount={bondedAmount}
+											networkInfo={networkInfo}
+											api={apiInstance}
+											onConfirm={onConfirm}
+										/>
+									)}
 								{updatingFunds && !processComplete && !chainError && (
 									<div className="mt-6">
-										{/* <h1 className="font-semibold text-xl text-gray-700">Status:</h1> */}
 										<div className="flex items-center justify-between">
 											<span>{stakingEvent}</span>
 											<Spinner className="ml-4" />
