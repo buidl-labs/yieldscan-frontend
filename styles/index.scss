@@ -166,6 +166,11 @@ input[type="number"] {
 	box-shadow: 0px 4px 20px rgba(53, 71, 92, 0.06);
 }
 
+.white-space-nowrap {
+	white-space: nowrap;
+	overflow: hidden;
+}
+
 .top-25-vh {
 	top: 25vh;
 }

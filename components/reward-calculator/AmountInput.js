@@ -34,7 +34,7 @@ const AmountInputDefault = ({ bonded, value, onChange, networkInfo }) => {
 						pt={6}
 						pb={10}
 						px={4}
-						pr={inputValue === maxAmount ? 8: 24}
+						pr={inputValue === maxAmount ? 8 : 24}
 						textOverflow="ellipsis"
 						placeholder="0"
 						value={inputValue}
