@@ -19,9 +19,11 @@ const OverviewCards = ({
 	networkInfo,
 }) => {
 	const totalUnlockingBalance = formatCurrency.methods.formatAmount(
-		unlockingBalances.reduce(
-			(total, balanceInfo) => total + balanceInfo.value,
-			0
+		Math.trunc(
+			unlockingBalances.reduce(
+				(total, balanceInfo) => total + balanceInfo.value,
+				0
+			)
 		),
 		networkInfo
 	);

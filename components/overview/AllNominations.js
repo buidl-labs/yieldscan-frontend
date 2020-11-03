@@ -60,7 +60,7 @@ const ValidatorCard = ({
 					</span>
 					<h3>
 						{formatCurrency.methods.formatAmount(
-							totalStake * Math.pow(10, networkInfo.decimalPlaces),
+							Math.trunc(totalStake * Math.pow(10, networkInfo.decimalPlaces)),
 							networkInfo
 						)}
 					</h3>
