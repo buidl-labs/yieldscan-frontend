@@ -354,13 +354,17 @@ const Header = ({ isBase }) => {
 														{account.balances ? (
 															<p className="text-xs text-gray-500">
 																{formatCurrency.methods.formatAmount(
-																	account.balances.freeBalance.toNumber() +
-																		account.balances.reservedBalance.toNumber(),
+																	Math.trunc(
+																		account.balances.freeBalance.toNumber() +
+																			account.balances.reservedBalance.toNumber()
+																	),
 																	networkInfo
 																)}{" "}
 																{formatCurrency.methods.formatAmount(
-																	account.balances.freeBalance.toNumber() +
-																		account.balances.reservedBalance.toNumber(),
+																	Math.trunc(
+																		account.balances.freeBalance.toNumber() +
+																			account.balances.reservedBalance.toNumber()
+																	),
 																	networkInfo
 																) === "0" && get(networkInfo, "denom")}
 															</p>

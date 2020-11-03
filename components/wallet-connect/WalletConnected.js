@@ -40,19 +40,25 @@ const WalletConnected = ({
 										{account.balances ? (
 											<p className="text-gray-600 text-sm">
 												{formatCurrency.methods.formatAmount(
-													account.balances.freeBalance.toNumber() +
-														account.balances.reservedBalance.toNumber(),
+													Math.trunc(
+														account.balances.freeBalance.toNumber() +
+															account.balances.reservedBalance.toNumber()
+													),
 													networkInfo
 												)}
 												{formatCurrency.methods.formatAmount(
-													account.balances.freeBalance.toNumber() +
-														account.balances.reservedBalance.toNumber(),
+													Math.trunc(
+														account.balances.freeBalance.toNumber() +
+															account.balances.reservedBalance.toNumber()
+													),
 													networkInfo
 												) === "0" && " KSM"}
 											</p>
 										) : (
 											<div>
-												<Skeleton w={32}><p className="text-xs">Loading...</p></Skeleton>
+												<Skeleton w={32}>
+													<p className="text-xs">Loading...</p>
+												</Skeleton>
 											</div>
 										)}
 									</div>

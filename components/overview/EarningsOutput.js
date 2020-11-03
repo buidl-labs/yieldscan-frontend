@@ -202,7 +202,7 @@ const EarningsOutput = ({
 							<>
 								<div className="flex justify-between">
 									{formatCurrency.methods.formatAmount(
-										totalEarnings.currency,
+										Math.trunc(totalEarnings.currency),
 										networkInfo
 									)}
 								</div>
@@ -230,7 +230,7 @@ const EarningsOutput = ({
 						<>
 							<div className="flex justify-between">
 								{formatCurrency.methods.formatAmount(
-									totalEarnings.currency,
+									Math.trunc(totalEarnings.currency),
 									networkInfo
 								)}
 							</div>

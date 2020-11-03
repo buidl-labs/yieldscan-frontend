@@ -315,7 +315,10 @@ const Confirmation = ({
 
 					<div className="flex flex-col">
 						<p className="text-sm font-semibold text-right">
-							{formatCurrency.methods.formatAmount(transactionFee, networkInfo)}
+							{formatCurrency.methods.formatAmount(
+								Math.trunc(transactionFee),
+								networkInfo
+							)}
 						</p>
 						<p className="text-xs text-right text-gray-600">
 							${subFeeCurrency.toFixed(2)}

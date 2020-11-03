@@ -76,7 +76,10 @@ const AmountConfirmation = ({
 						</span>
 						<h3 className="text-2xl white-space-nowrap">
 							{formatCurrency.methods.formatAmount(
-								bondedAmount.currency * Math.pow(10, networkInfo.decimalPlaces),
+								Math.trunc(
+									bondedAmount.currency *
+										Math.pow(10, networkInfo.decimalPlaces)
+								),
 								networkInfo
 							)}
 						</h3>
@@ -133,7 +136,10 @@ const AmountConfirmation = ({
 
 					<div className="flex flex-col">
 						<p className="text-sm text-right">
-							{formatCurrency.methods.formatAmount(transactionFee, networkInfo)}
+							{formatCurrency.methods.formatAmount(
+								Math.trunc(transactionFee),
+								networkInfo
+							)}
 						</p>
 						<p className="text-xs text-right text-gray-600">
 							${subFeeCurrency.toFixed(2)}
@@ -152,7 +158,7 @@ const AmountConfirmation = ({
 										networkInfo
 								  )
 								: formatCurrency.methods.formatAmount(
-										transactionFee,
+										Math.trunc(transactionFee),
 										networkInfo
 								  )}
 						</p>
