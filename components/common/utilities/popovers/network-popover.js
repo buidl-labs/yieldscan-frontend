@@ -23,7 +23,8 @@ const currentNetwork = "Not Kusama";
 
 const NetworkPopover = ({ isExpanded, hasBorder }) => {
 	const { setApiInstance } = usePolkadotApi();
-	const { setValidatorMap } = useValidatorData();
+	const { setValidatorMap, setValidators } = useValidatorData();
+	const { setUserData, setAllNominations } = useOverviewData();
 	const { setNominatorsData, setNomLoading } = useNominatorsData();
 	const { setCouncilMembers, setCouncilLoading } = useCouncil();
 	const {
