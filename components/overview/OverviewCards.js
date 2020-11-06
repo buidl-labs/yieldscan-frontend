@@ -99,16 +99,9 @@ const OverviewCards = ({
 								networkInfo
 							)}
 						</h1>
-						{totalAmountStakedFiat && (
+						{bondedAmount && (
 							<h3 className="text-teal-500 text-2xl">
-								$
-								{stats.totalAmountStaked === get(bondedAmount, "currency", 0)
-									? formatCurrency.methods.formatNumber(
-											totalAmountStakedFiat.toFixed(2)
-									  ) || 0.0
-									: formatCurrency.methods.formatNumber(
-											get(bondedAmount, "subCurrency", 0).toFixed(2)
-									  ) || 0.0}
+								${get(bondedAmount, "subCurrency")}
 							</h3>
 						)}
 					</div>
