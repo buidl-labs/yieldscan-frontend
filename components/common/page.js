@@ -34,7 +34,14 @@ const Page = ({ title, children, layoutProvider }) => {
 		trackEvent(Events.PAGE_VIEW, { path: window.location.pathname });
 	}, []);
 
-	return <div>{layoutedChild()}</div>;
+	return (
+		<React.Fragment>
+			<Head>
+				<title>{title} - YieldScan</title>
+			</Head>
+			<div>{layoutedChild()}</div>
+		</React.Fragment>
+	);
 };
 
 export default Page;

@@ -12,7 +12,7 @@ const SettingsComponent = dynamic(
 );
 
 const Settings = () => (
-	<Page title="Home" layoutProvider={withDashboardLayout}>
+	<Page title="Settings" layoutProvider={withDashboardLayout}>
 		{() => <SettingsComponent />}
 	</Page>
 );
