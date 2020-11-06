@@ -19,96 +19,109 @@ const ValidatorCard = ({
 	toggleSelected = noop,
 	onProfile = noop,
 	networkInfo,
-}) => (
-	<div
-		className={`
-			flex justify-between items-center py-3 my-1 w-full min-w-65-rem rounded-lg cursor-pointer transition-all duration-300
+}) => {
+	const displayName = name
+		? name.length > 13
+			? name.slice(0, 5) + "..." + name.slice(-5)
+			: name
+		: stashId.slice(0, 5) + "..." + stashId.slice(-5);
+	return (
+		<div
+			className={`
+			flex justify-between items-center py-3 my-1 rounded-lg cursor-pointer transition-all duration-300
 			${
 				selected
 					? "border-teal-500 border-4 shadow-teal"
 					: "border-2 border-gray-200 transform hover:scale-102"
 			}
 		`}
-		onClick={toggleSelected}
-	>
-		<div className="ml-4 mr-2 flex items-center">
-			<Check
-				size="1.75rem"
-				className={`p-1 mr-2 rounded-full text-white bg-opacity-0 ${
-					selected && "bg-teal-500 bg-opacity-100"
-				}`}
-				strokeWidth="4px"
-			/>
-			<Identicon address={stashId} />
-			<div
-				className="ml-2 text-gray-900 truncate"
-				onClick={(ev) => {
-					ev.stopPropagation();
-					onProfile();
-				}}
-			>
-				<span className="font-semibold text-sm">
-					{name || stashId.slice(0, 6) + "..." + stashId.slice(-6) || "-"}
-				</span>
-				<div className="flex items-center">
-					<span className="text-xs mr-2">View Profile</span>
-					<ExternalLink size="12px" />
+			onClick={toggleSelected}
+		>
+			<div className="ml-4 mr-2 flex items-center">
+				<Check
+					size="1.5rem"
+					className={`p-1 mr-2 rounded-full text-white bg-opacity-0 ${
+						selected && "bg-teal-500 bg-opacity-100"
+					}`}
+					strokeWidth="4px"
+				/>
+				<Identicon address={stashId} />
+				<div
+					className="ml-2 text-gray-900 truncate"
+					onClick={(ev) => {
+						ev.stopPropagation();
+						onProfile();
+					}}
+				>
+					<span className="font-semibold text-sm">{displayName}</span>
+					<div className="flex items-center">
+						<span className="text-xs mr-2">View Profile</span>
+						<ExternalLink size="12px" />
+					</div>
+				</div>
+			</div>
+			<div className="ml-2 mr-4 flex items-center justify-between min-w-40-rem">
+				<div className="flex flex-col w-20">
+					<span className="text-xs text-gray-500 font-semibold">
+						Nominators
+					</span>
+					<h3 className="text-base">
+						{formatCurrency.methods.formatNumber(nominators)}
+					</h3>
+				</div>
+				<div className="flex flex-col w-20">
+					<span className="text-xs text-gray-500 font-semibold">
+						Risk Score
+					</span>
+					<div className="rounded-full font-semibold">
+						<RiskTag risk={riskScore} />
+					</div>
+				</div>
+				<div className="flex flex-col w-32">
+					<span className="text-xs text-gray-500 font-semibold">Own Stake</span>
+					<h3 className="text-base">
+						{!isNaN(ownStake) &&
+							formatCurrency.methods.formatAmount(
+								Math.trunc((ownStake || 0) * 10 ** networkInfo.decimalPlaces),
+								networkInfo
+							)}
+					</h3>
+				</div>
+				<div className="flex flex-col w-32">
+					<span className="text-xs text-gray-500 font-semibold">
+						Other Stake
+					</span>
+					<h3 className="text-base">
+						{!isNaN(otherStake) &&
+							formatCurrency.methods.formatAmount(
+								Math.trunc((otherStake || 0) * 10 ** networkInfo.decimalPlaces),
+								networkInfo
+							)}
+					</h3>
+				</div>
+				<div className="flex flex-col w-20">
+					<span className="text-xs text-gray-500 font-semibold">
+						Commission
+					</span>
+					<h3 className="text-base">{commission}%</h3>
+				</div>
+				<div className="flex flex-col w-32">
+					<span className="text-xs text-gray-500 font-semibold">
+						Estimated Returns <sup>*</sup>
+					</span>
+					<h3 className="text-base">
+						{formatCurrency.methods.formatAmount(
+							Math.trunc(
+								(returnsPer100KSM || 0) * 10 ** networkInfo.decimalPlaces
+							),
+							networkInfo
+						)}
+					</h3>
 				</div>
 			</div>
 		</div>
-		<div className="ml-2 mr-4 flex items-center justify-between min-w-40-rem">
-			<div className="flex flex-col w-20">
-				<span className="text-xs text-gray-500 font-semibold">Nominators</span>
-				<h3 className="text-base">
-					{formatCurrency.methods.formatNumber(nominators)}
-				</h3>
-			</div>
-			<div className="flex flex-col w-20">
-				<span className="text-xs text-gray-500 font-semibold">Risk Score</span>
-				<div className="rounded-full font-semibold">
-					<RiskTag risk={riskScore} />
-				</div>
-			</div>
-			<div className="flex flex-col w-32">
-				<span className="text-xs text-gray-500 font-semibold">Own Stake</span>
-				<h3 className="text-base">
-					{!isNaN(ownStake) &&
-						formatCurrency.methods.formatAmount(
-							Math.trunc((ownStake || 0) * 10 ** networkInfo.decimalPlaces),
-							networkInfo
-						)}
-				</h3>
-			</div>
-			<div className="flex flex-col w-32">
-				<span className="text-xs text-gray-500 font-semibold">Other Stake</span>
-				<h3 className="text-base">
-					{!isNaN(otherStake) &&
-						formatCurrency.methods.formatAmount(
-							Math.trunc((otherStake || 0) * 10 ** networkInfo.decimalPlaces),
-							networkInfo
-						)}
-				</h3>
-			</div>
-			<div className="flex flex-col w-20">
-				<span className="text-xs text-gray-500 font-semibold">Commission</span>
-				<h3 className="text-base">{commission}%</h3>
-			</div>
-			<div className="flex flex-col w-32">
-				<span className="text-xs text-gray-500 font-semibold">
-					Estimated Returns <sup>*</sup>
-				</span>
-				<h3 className="text-base">
-					{formatCurrency.methods.formatAmount(
-						Math.trunc(
-							(returnsPer100KSM || 0) * 10 ** networkInfo.decimalPlaces
-						),
-						networkInfo
-					)}
-				</h3>
-			</div>
-		</div>
-	</div>
-);
+	);
+};
 
 const ValidatorsTable = ({
 	validators,
@@ -135,7 +148,7 @@ const ValidatorsTable = ({
 
 	return (
 		<div>
-			<div className="mt-5 mb-2 table-container px-6 pb-16 overflow-y-scroll">
+			<div className="mt-5 mb-2 table-container px-3 pb-16 overflow-y-scroll">
 				{validators.map((validator) => (
 					<ValidatorCard
 						key={validator.stashId}
