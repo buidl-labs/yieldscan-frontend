@@ -88,7 +88,7 @@ const SideMenu = () => {
 					}`}
 				/>
 				Explore
-				<Badge
+				{/* <Badge
 					ml={2}
 					textTransform="lowercase"
 					fontWeight="normal"
@@ -99,7 +99,7 @@ const SideMenu = () => {
 					px={2}
 				>
 					unaudited
-				</Badge>
+				</Badge> */}
 			</button>
 			<Collapse mt={4} mb={8} isOpen={showExploreTabs}>
 				<MenuOption
