@@ -64,12 +64,16 @@ const EarningsOutput = ({
 				convertCurrency(
 					total / Math.pow(10, networkInfo.decimalPlaces),
 					networkInfo.denom
-				).then((value) =>
-					setTotalEarnings({
-						currency: total,
-						subCurrency: value,
-					})
-				);
+				)
+					.then((value) =>
+						setTotalEarnings({
+							currency: total,
+							subCurrency: value,
+						})
+					)
+					.catch((err) => {
+						console.error(err);
+					});
 			});
 		}
 	}, [networkInfo]);
