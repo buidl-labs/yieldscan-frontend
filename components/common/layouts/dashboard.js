@@ -205,7 +205,7 @@ const withDashboardLayout = (children) => {
 					</div>
 				</div>
 
-				<div className="h-full px-8 xl:w-10/12 overflow-y-scroll max-w-5xl mx-auto">
+				<div className="h-full px-8 xl:w-10/12 overflow-y-scroll .max-w-screen-sm mx-auto">
 					{showBetaMessage && (
 						<Alert
 							status="info"

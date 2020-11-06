@@ -21,7 +21,13 @@ const ResultCardInsight = ({
 			<span className="opacity-75 mr-1 text-xs">{label}</span>
 			<Popover trigger="hover">
 				<PopoverTrigger>
-					<HelpCircle size="0.75rem" cursor="help" opacity="0.5" fill="white" stroke="#2bcaca" />
+					<HelpCircle
+						size="0.75rem"
+						cursor="help"
+						opacity="0.5"
+						fill="white"
+						stroke="#2bcaca"
+					/>
 				</PopoverTrigger>
 				<PopoverContent
 					zIndex={50}
@@ -67,79 +73,81 @@ const ExpectedReturnsCard = ({
 		<>
 			<div className="relative rounded-xl bg-teal-500 shadow-teal text-white p-8">
 				<h1 className="font-semibold text-xl">Expected Results</h1>
-				<div className="flex flex-wrap mt-2">
-					<ResultCardInsight
-						label="Estimated Returns"
-						value={
-							<CountUp
-								end={returns.currency || 0}
-								duration={0.5}
-								decimals={3}
-								separator=","
-								suffix={` ${networkInfo.denom}`}
-								preserveValue
-							/>
-						}
-						supportValue={
-							<CountUp
-								end={returns.subCurrency || 0}
-								duration={0.5}
-								decimals={2}
-								separator=","
-								prefix="$"
-								suffix=" USD"
-								preserveValue
-							/>
-						}
-						emptyState={!result.returns}
-						popoverContent={
-							<p className="text-xs text-white text-center">
-								These returns are calculated for your entered stake amount, time
-								period and risk preference. To learn about how we calculate
-								these returns{" "}
-								<a
-									href="https://github.com/buidl-labs/yieldscan-frontend/wiki/Returns-Calculation-Mechanism"
-									target="_blank"
-									className="underline"
-								>
-									click here
-								</a>
-								.
-							</p>
-						}
-					/>
-					<ResultCardInsight
-						label="Estimated Portfolio Value"
-						value={
-							<CountUp
-								end={portfolio.currency || 0}
-								duration={0.5}
-								decimals={3}
-								separator=","
-								suffix={` ${networkInfo.denom}`}
-								preserveValue
-							/>
-						}
-						supportValue={
-							<CountUp
-								end={portfolio.subCurrency || 0}
-								duration={0.5}
-								decimals={2}
-								separator=","
-								prefix="$"
-								suffix=" USD"
-								preserveValue
-							/>
-						}
-						emptyState={!result.returns}
-						popoverContent={
-							<p className="text-xs text-white text-center">
-								This is the estimated value of your staking portfolio based on
-								your inputs. It is the sum of your staking amount and your
-								expected returns.
-							</p>
-						}
-					/>
+				<div className="flex flex-col mt-2">
+					<div className="flex mt-2">
+						<ResultCardInsight
+							label="Estimated Returns"
+							value={
+								<CountUp
+									end={returns.currency || 0}
+									duration={0.5}
+									decimals={3}
+									separator=","
+									suffix={` ${networkInfo.denom}`}
+									preserveValue
+								/>
+							}
+							supportValue={
+								<CountUp
+									end={returns.subCurrency || 0}
+									duration={0.5}
+									decimals={2}
+									separator=","
+									prefix="$"
+									suffix=" USD"
+									preserveValue
+								/>
+							}
+							emptyState={!result.returns}
+							popoverContent={
+								<p className="text-xs text-white text-center">
+									These returns are calculated for your entered stake amount,
+									time period and risk preference. To learn about how we
+									calculate these returns{" "}
+									<a
+										href="https://github.com/buidl-labs/yieldscan-frontend/wiki/Returns-Calculation-Mechanism"
+										target="_blank"
+										className="underline"
+									>
+										click here
+									</a>
+									.
+								</p>
+							}
+						/>
+						<ResultCardInsight
+							label="Estimated Portfolio Value"
+							value={
+								<CountUp
+									end={portfolio.currency || 0}
+									duration={0.5}
+									decimals={3}
+									separator=","
+									suffix={` ${networkInfo.denom}`}
+									preserveValue
+								/>
+							}
+							supportValue={
+								<CountUp
+									end={portfolio.subCurrency || 0}
+									duration={0.5}
+									decimals={2}
+									separator=","
+									prefix="$"
+									suffix=" USD"
+									preserveValue
+								/>
+							}
+							emptyState={!result.returns}
+							popoverContent={
+								<p className="text-xs text-white text-center">
+									This is the estimated value of your staking portfolio based on
+									your inputs. It is the sum of your staking amount and your
+									expected returns.
+								</p>
+							}
+						/>
+					</div>
 					<ResultCardInsight
 						label="Estimated Yield"
 						value={

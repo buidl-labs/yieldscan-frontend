@@ -248,7 +248,7 @@ const RewardCalculatorPage = () => {
 			</div>
 		</div>
 	) : (
-		<div className="flex pt-12">
+		<div className="flex pt-12 px-10">
 			<WalletConnectPopover isOpen={isOpen} networkInfo={networkInfo} />
 			<GlossaryModal
 				isOpen={isRiskGlossaryOpen}
@@ -525,7 +525,13 @@ const RewardCalculatorPage = () => {
 
 export default RewardCalculatorPage;
 
-const GlossaryModal = ({ isOpen, onClose, header, content, maxWidth="md" }) => {
+const GlossaryModal = ({
+	isOpen,
+	onClose,
+	header,
+	content,
+	maxWidth = "md",
+}) => {
 	return (
 		<Modal
 			isOpen={isOpen}
@@ -554,11 +560,24 @@ const GlossaryModal = ({ isOpen, onClose, header, content, maxWidth="md" }) => {
 	);
 };
 
-const HelpPopover = ({ popoverTrigger, content, placement = "right", iconSize="12px", zIndex=50 }) => {
+const HelpPopover = ({
+	popoverTrigger,
+	content,
+	placement = "right",
+	iconSize = "12px",
+	zIndex = 50,
+}) => {
 	return (
 		<Popover trigger="hover" placement={placement} usePortal>
 			<PopoverTrigger>
-				{popoverTrigger ? popoverTrigger : <HelpCircle size={iconSize} className="text-gray-700 ml-2 cursor-help" />}
+				{popoverTrigger ? (
+					popoverTrigger
+				) : (
+					<HelpCircle
+						size={iconSize}
+						className="text-gray-700 ml-2 cursor-help"
+					/>
+				)}
 			</PopoverTrigger>
 			<PopoverContent
 				rounded="lg"
