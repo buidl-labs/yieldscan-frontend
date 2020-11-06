@@ -1,4 +1,12 @@
-import { Box, FormLabel, Skeleton, Divider, Image } from "@chakra-ui/core";
+import {
+	Box,
+	FormLabel,
+	Skeleton,
+	Divider,
+	Image,
+	Alert,
+	AlertDescription,
+} from "@chakra-ui/core";
 import axios from "@lib/axios";
 import calculateReward from "@lib/calculate-reward";
 import getRewards from "@lib/getRewards";
@@ -10,6 +18,7 @@ import {
 	useDailyEarning,
 	useValidatorData,
 	useTransaction,
+	useTransactionHash,
 } from "@lib/store";
 import { cloneDeep, get, isNil, keyBy, mapValues, set } from "lodash";
 import { useEffect, useState } from "react";
@@ -31,6 +40,7 @@ const EarningsOutput = ({
 	const [risk, setRisk] = useState(transactionState.riskPreference || "Medium");
 	const [yearlyEarning, setYearlyEarning] = useState();
 	const [totalEarnings, setTotalEarnings] = useState();
+	const { transactionHash } = useTransactionHash();
 	// const yearlyEarning = useYearlyEarning((state) => state.yearlyEarning);
 	// const setYearlyEarning = useYearlyEarning((state) => state.setYearlyEarning);
 
@@ -252,6 +262,26 @@ const EarningsOutput = ({
 					)}
 				</h2>
 			</div>
+			{transactionHash && (
+				<div className="mt-4 flex">
+					<Alert
+						status="warning"
+						color="#FDB808"
+						backgroundColor="#FFF4DA"
+						borderRadius="8px"
+					>
+						<AlertDescription color="#FDB808" fontSize="12px">
+							<p>
+								Your staking investment will start earning returns in
+								approximately {(2 * 24) / networkInfo.erasPerDay} hours.
+							</p>
+							<p className="mt-4">
+								We recommend bookmarking this tab and checking back soon.
+							</p>
+						</AlertDescription>
+					</Alert>
+				</div>
+			)}
 			<div className="mt-4">
 				<FormLabel fontSize="ss" className="text-gray-700">
 					Estimated Earnings

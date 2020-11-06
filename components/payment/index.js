@@ -10,6 +10,7 @@ import {
 	usePolkadotApi,
 	useHeaderLoading,
 	useSelectedNetwork,
+	useTransactionHash,
 } from "@lib/store";
 import stake from "@lib/stake";
 import ConfettiGenerator from "confetti-js";
@@ -153,7 +154,7 @@ const Payment = () => {
 	const { setHeaderLoading } = useHeaderLoading();
 
 	const [loading, setLoading] = useState(true);
-	const [transactionHash, setTransactionHash] = useState();
+	const { transactionHash, setTransactionHash } = useTransactionHash();
 	const [stakingEvent, setStakingEvent] = useState();
 	const [transactionFee, setTransactionFee] = useState(0);
 	const [stakingLoading, setStakingLoading] = useState(false);
