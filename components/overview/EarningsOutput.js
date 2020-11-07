@@ -239,7 +239,11 @@ const EarningsOutput = ({
 				<FormLabel fontSize="ss" className="text-gray-700">
 					7 day earnings
 				</FormLabel>
-				<h2 className="text-2xl text-gray-700 font-bold">
+				<h2
+					className={`text-2xl ${
+						validators.length !== 0 ? "text-gray-700" : "text-light-gray"
+					} font-bold`}
+				>
 					{!isNil(totalEarnings) ? (
 						<>
 							<div className="flex justify-between">
