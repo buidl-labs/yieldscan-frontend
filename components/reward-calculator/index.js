@@ -157,7 +157,6 @@ const RewardCalculatorPage = () => {
 
 					trackRewardCalculatedEvent({
 						userInputs: {
-							selectedValidatorsList,
 							amount,
 							timePeriodValue,
 							timePeriodUnit,

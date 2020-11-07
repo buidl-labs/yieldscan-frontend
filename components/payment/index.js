@@ -163,7 +163,8 @@ const Payment = () => {
 	useEffect(() => {
 		trackEvent(Events.PAYMENT_STEP_UPDATED, {
 			step: currentStep,
-			transactionState,
+			stakingAmount: get(transactionState, "stakingAmount"),
+			riskPreference: get(transactionState, "riskPreference"),
 		});
 	}, [currentStep]);
 
@@ -224,7 +225,8 @@ const Payment = () => {
 
 		trackEvent(Events.INTENT_TRANSACTON, {
 			transactionType: !!transactionState.stakingAmount ? "STAKE" : "NOMINATE",
-			transactionState,
+			stakingAmount: get(transactionState, "stakingAmount"),
+			riskPreference: get(transactionState, "riskPreference"),
 		});
 
 		const handlers = {
@@ -254,13 +256,15 @@ const Payment = () => {
 
 				if (status === 0) {
 					trackEvent(Events.TRANSACTION_SUCCESS, {
-						transactionState,
+						stakingAmount: get(transactionState, "stakingAmount"),
+						riskPreference: get(transactionState, "riskPreference"),
 						successMessage: message,
 					});
 				} else {
 					trackEvent(Events.TRANSACTION_FAILED, {
-						transactionState,
-						successMessage: message,
+						stakingAmount: get(transactionState, "stakingAmount"),
+						riskPreference: get(transactionState, "riskPreference"),
+						errorMessage: message,
 						eventLogs,
 					});
 				}
