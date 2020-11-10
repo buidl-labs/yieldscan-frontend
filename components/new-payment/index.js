@@ -126,7 +126,7 @@ const PaymentPopover = ({
 		setStakingLoading(true);
 		setCloseOnOverlayClick(false);
 
-		trackEvent(Events.INTENT_TRANSACTON, {
+		trackEvent(Events.INTENT_TRANSACTION, {
 			transactionType: !!transactionState.stakingAmount ? "STAKE" : "NOMINATE",
 			stakingAmount: get(transactionState, "stakingAmount"),
 			riskPreference: get(transactionState, "riskPreference"),

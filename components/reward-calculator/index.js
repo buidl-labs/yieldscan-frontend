@@ -154,17 +154,6 @@ const RewardCalculatorPage = () => {
 			)
 				.then((result) => {
 					setResult(result);
-
-					trackRewardCalculatedEvent({
-						userInputs: {
-							amount,
-							timePeriodValue,
-							timePeriodUnit,
-							compounding,
-							bondedAmount,
-						},
-						result,
-					});
 				})
 				.catch((error) => {
 					// TODO: handle error gracefully with UI toast
@@ -189,17 +178,20 @@ const RewardCalculatorPage = () => {
 
 		if (eventType) {
 			trackEvent(eventType, {
-				appState: {
-					stakingAmount: amount,
-					riskPreference: risk,
-					timePeriodValue,
-					timePeriodUnit,
-					compounding,
-					returns: _returns,
-					yieldPercentage: _yieldPercentage,
-					// selectedValidators: selectedValidatorsList,
-					// validatorMap
-				},
+				investmentAmount: `${amount} ${get(
+					networkInfo,
+					"denom"
+				)} ($${subCurrency})`,
+				riskPreference: risk,
+				timePeriod: `${timePeriodValue} ${timePeriodUnit}`,
+				compounding,
+				returns: `${get(_returns, "currency")} ${get(
+					networkInfo,
+					"denom"
+				)} ($${get(_returns, "subCurrency")})`,
+				yieldPercentage: `${_yieldPercentage}%`,
+				// selectedValidators: selectedValidatorsList,
+				// validatorMap
 			});
 		}
 
@@ -339,6 +331,7 @@ const RewardCalculatorPage = () => {
 									value={{ currency: amount, subCurrency: subCurrency }}
 									networkInfo={networkInfo}
 									onChange={setAmount}
+									trackRewardCalculatedEvent={trackRewardCalculatedEvent}
 								/>
 							</div>
 							<div className="flex mt-8 items-center">
@@ -359,7 +352,11 @@ const RewardCalculatorPage = () => {
 								/>
 							</div>
 							<div className="mt-2">
-								<RiskSelect selected={risk} setSelected={setRisk} />
+								<RiskSelect
+									selected={risk}
+									setSelected={setRisk}
+									trackRewardCalculatedEvent={trackRewardCalculatedEvent}
+								/>
 							</div>
 
 							<h3 className="text-gray-700 mt-8 text-xs">
@@ -392,6 +389,7 @@ const RewardCalculatorPage = () => {
 									unit={timePeriodUnit}
 									onChange={setTimePeriod}
 									onUnitChange={setTimePeriodUnit}
+									trackRewardCalculatedEvent={trackRewardCalculatedEvent}
 								/>
 							</div>
 							<div className="flex mt-8 items-center">
@@ -425,6 +423,7 @@ const RewardCalculatorPage = () => {
 								<CompoundRewardSlider
 									checked={compounding}
 									setChecked={setCompounding}
+									trackRewardCalculatedEvent={trackRewardCalculatedEvent}
 								/>
 							</div>
 						</div>
@@ -475,7 +474,14 @@ const RewardCalculatorPage = () => {
 						}
 					`}
 							disabled={stashAccount && calculationDisabled}
-							onClick={() => (stashAccount ? onPayment() : toggle())}
+							onClick={() => {
+								isNil(accounts)
+									? trackEvent(Events.INTENT_CONNECT_WALLET)
+									: isNil(stashAccount)
+									? trackEvent(Events.INTENT_ACCOUNT_SELECTION)
+									: trackEvent(Events.CALCULATOR_CTA_CLICK);
+								stashAccount ? onPayment() : toggle();
+							}}
 						>
 							{isNil(accounts)
 								? "Connect Wallet"

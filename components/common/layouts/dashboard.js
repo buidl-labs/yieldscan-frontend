@@ -8,9 +8,9 @@ import {
 } from "@lib/store";
 import createPolkadotAPIInstance from "@lib/polkadot-api";
 import convertCurrency from "@lib/convert-currency";
-import { isNil, pick } from "lodash";
+import { get, isNil, pick } from "lodash";
 import { useEffect } from "react";
-import { trackEvent, Events } from "@lib/analytics";
+import { trackEvent, Events, setUserProperties } from "@lib/analytics";
 import Footer from "../footer";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 
@@ -34,6 +34,7 @@ const withDashboardLayout = (children) => {
 		stashAccount,
 		setAccountInfoLoading,
 		setAccountState,
+		accountsWithBalances,
 	} = useAccounts((state) =>
 		pick(state, [
 			"accounts",
@@ -41,6 +42,7 @@ const withDashboardLayout = (children) => {
 			"stashAccount",
 			"setAccountInfoLoading",
 			"setAccountState",
+			"accountsWithBalances",
 		])
 	);
 	const { stakingAmount, setTransactionState } = useTransaction((state) =>
@@ -160,11 +162,13 @@ const withDashboardLayout = (children) => {
 						}
 
 						const setStateAndTrack = (details) => {
-							trackEvent(Events.USER_ACCOUNT_SELECTION, {
-								user: {
-									...details,
-									stashId: address,
-								},
+							setUserProperties({
+								selectedStashId: address,
+								bondedAmount: `${get(details, "bondedAmount.currency")} ${get(
+									networkInfo,
+									"denom"
+								)} ($${get(details, "bondedAmount.subCurrency")})`,
+								accounts: accountsWithBalances,
 							});
 							setAccountState(details);
 						};

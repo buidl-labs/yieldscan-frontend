@@ -18,7 +18,7 @@ import WalletConnected from "./WalletConnected";
 import WalletDisclaimer from "./WalletDisclaimer";
 import getPolkadotExtensionInfo from "@lib/polkadot-extension";
 import { useAccounts } from "@lib/store";
-import { trackEvent, Events } from "@lib/analytics";
+import { trackEvent, Events, setUserProperties } from "@lib/analytics";
 import { setCookie } from "nookies";
 
 const [useWalletConnect] = create((set) => ({
@@ -49,13 +49,10 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 	const [state, setState] = useState(WalletConnectStates.INTRO);
 
 	useEffect(() => {
-		trackEvent(Events.INTENT_CONNECT_WALLET);
-	}, []);
-
-	useEffect(() => {
 		getPolkadotExtensionInfo()
 			.then(({ isExtensionAvailable, accounts = [] }) => {
 				if (!isExtensionAvailable) {
+					setUserProperties({ hasExtension: false });
 				} else {
 					if (!accounts.length)
 						throw new Error("Couldn't find any stash or unnassigned accounts.");
@@ -68,10 +65,7 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 					});
 					setState(WalletConnectStates.CONNECTED);
 					setAccounts(accounts);
-
-					trackEvent(Events.WALLET_CONNECTED, {
-						userAccounts: accounts.map((account) => account.address),
-					});
+					setUserProperties({hasExtension: true})
 				}
 			})
 			.catch((error) => {
@@ -95,10 +89,6 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 				});
 				setState(WalletConnectStates.CONNECTED);
 				setAccounts(accounts);
-
-				trackEvent(Events.WALLET_CONNECTED, {
-					userAccounts: accounts.map((account) => account.address),
-				});
 			})
 			.catch((error) => {
 				// TODO: handle error properly using UI toast
