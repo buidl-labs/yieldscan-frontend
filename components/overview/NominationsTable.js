@@ -28,6 +28,7 @@ const ValidatorCard = ({
 	stashId,
 	riskScore,
 	stakedAmount,
+	commission,
 	estimatedReward,
 	onProfile = noop,
 	networkInfo,
@@ -58,6 +59,12 @@ const ValidatorCard = ({
 					<div className="rounded-full font-semibold">
 						<RiskTag risk={riskScore} />
 					</div>
+				</div>
+				<div className="flex flex-col mx-2">
+					<span className="text-xs text-gray-500 font-semibold">
+						Commission
+					</span>
+					<h3>{commission} %</h3>
 				</div>
 				<div className="flex flex-col mx-2">
 					<span className="text-xs text-gray-500 font-semibold">Stake</span>
@@ -109,6 +116,7 @@ const NominationsTable = ({ validators, networkInfo }) => {
 							key={validator.stashId}
 							name={validator.name}
 							stashId={validator.stashId}
+							commission={validator.commission}
 							riskScore={Number((validator.riskScore || 0).toFixed(2))}
 							stakedAmount={Number(validator.nomStake || 0)}
 							estimatedReward={Number(validator.estimatedReward || 0)}
