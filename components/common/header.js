@@ -437,6 +437,7 @@ const Header = ({ isBase }) => {
 													className="flex items-center rounded px-4 py-2 w-full bg-gray-800 hover:bg-gray-700 hover:text-gray-200"
 													onClick={() => {
 														setStashAccount(account);
+														setTransactionHash(null);
 														selectedNetwork == "Kusama"
 															? setCookie(
 																	null,
