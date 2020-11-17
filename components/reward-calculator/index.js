@@ -384,7 +384,7 @@ const RewardCalculatorPage = () => {
 									>
 										unbonding period
 									</span>{" "}
-									of approximately 7 days.
+									of approximately {networkInfo.lockUpPeriod} days.
 								</AlertDescription>
 							</Alert>
 							<div className="mt-2">
