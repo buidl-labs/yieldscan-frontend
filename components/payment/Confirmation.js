@@ -25,6 +25,94 @@ import convertCurrency from "@lib/convert-currency";
 import RewardDestination from "./RewardDestination";
 import TermsAndServicePopover from "@components/payment/TermsOfService";
 import { GlossaryModal, HelpPopover } from "@components/reward-calculator";
+import RiskTag from "@components/reward-calculator/RiskTag";
+const ValidatorCard = ({
+	name,
+	stashId,
+	riskScore,
+	commission,
+	totalStake,
+	networkInfo,
+	estimatedReward,
+	nominators,
+	onProfile = noop,
+}) => {
+	const displayName = name
+		? name.length > 13
+			? name.slice(0, 5) + "..." + name.slice(-5)
+			: name
+		: stashId.slice(0, 5) + "..." + stashId.slice(-5);
+	return (
+		<div className="flex items-center justify-between rounded-lg border border-gray-200 py-2 w-full mb-2">
+			<div className="flex items-center ml-4">
+				<Identicon address={stashId} size="2rem" />
+				<div className="text-gray-700 cursor-pointer ml-2" onClick={onProfile}>
+					<span className="text-xs font-semibold">{displayName}</span>
+					{/* <div className="flex items-center">
+						<span className="text-xs mr-2">View Profile</span>
+						<ExternalLink size="12px" />
+					</div> */}
+				</div>
+			</div>
+			{/* <StatusTag status="active" /> */}
+			<div className="flex">
+				{/* <div className="flex flex-col mx-8">
+					<span className="text-xs text-gray-500 font-semibold">
+						Nominators
+					</span>
+					<h3 className="text-xg">{nominators}</h3>
+				</div> */}
+				<div className="flex flex-col">
+					<span className="text-xs text-gray-500 font-semibold">
+						Risk Score
+					</span>
+					<div className="rounded-full font-semibold">
+						<RiskTag risk={riskScore} />
+					</div>
+				</div>
+				<div className="flex flex-col items-center mx-2">
+					<span className="text-xs text-gray-500 font-semibold">
+						Nominators
+					</span>
+					<h3>{nominators}</h3>
+				</div>
+				<div className="flex flex-col items-center mx-2">
+					<span className="text-xs text-gray-500 font-semibold">
+						Commission
+					</span>
+					<h3>{commission}%</h3>
+				</div>
+				<div className="flex flex-col items-center mx-2">
+					<span className="text-xs text-gray-500 font-semibold">
+						Returns/100 {networkInfo.denom}'s
+					</span>
+					<h3>
+						{formatCurrency.methods.formatAmount(
+							Math.trunc(
+								estimatedReward * Math.pow(10, networkInfo.decimalPlaces)
+							),
+							networkInfo
+						)}
+					</h3>
+				</div>
+			</div>
+			{false && (
+				<button className="flex items-center justify-between border-2 border-orange-500 rounded-lg py-1 px-3">
+					<Star
+						className="text-orange-500 mr-2"
+						fill="#F5B100"
+						size="20px"
+						strokeWidth="2px"
+					/>
+					<div className="flex flex-col items-center">
+						<span className="text-sm text-gray-900">Claim Rewards</span>
+						<span className="text-xs text-gray-700">3 days left</span>
+					</div>
+				</button>
+			)}
+		</div>
+	);
+};
 
 const ValidatorInfo = ({
 	name,
@@ -237,15 +325,17 @@ const Confirmation = ({
 				<div className="mt-2 rounded-xl mb-8">
 					<div className="mb-4 overflow-auto" style={{ height: "12rem" }}>
 						{selectedValidators.map((validator) => (
-							<ValidatorInfo
+							<ValidatorCard
 								key={validator.stashId}
-								name={validator.name || validator.stashId}
+								name={validator.name}
 								stashId={validator.stashId}
-								riskScore={validator.riskScore}
-								amountPerValidator={Number(
-									stakingAmount / selectedValidators.length
-								)}
+								riskScore={validator.riskScore.toFixed(2)}
+								commission={validator.commission}
+								nominators={validator.numOfNominators}
+								totalStake={validator.totalStake}
+								estimatedReward={Number(validator.rewardsPer100KSM)}
 								networkInfo={networkInfo}
+								onProfile={() => onProfile(validator)}
 							/>
 						))}
 					</div>
