@@ -1,4 +1,4 @@
-const RiskSelect = ({ selected, setSelected }) => {
+const RiskSelect = ({ selected, setSelected, trackRewardCalculatedEvent }) => {
 	const options = ["Low", "Medium", "High"];
 	return (
 		<div className="relative flex rounded-full border border-gray-200 py-1 px-1 w-fit-content text-gray-700">

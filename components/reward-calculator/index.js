@@ -331,6 +331,7 @@ const RewardCalculatorPage = () => {
 									value={{ currency: amount, subCurrency: subCurrency }}
 									networkInfo={networkInfo}
 									onChange={setAmount}
+									trackRewardCalculatedEvent={trackRewardCalculatedEvent}
 								/>
 							</div>
 							<div className="flex mt-8 items-center">
@@ -351,7 +352,11 @@ const RewardCalculatorPage = () => {
 								/>
 							</div>
 							<div className="mt-2">
-								<RiskSelect selected={risk} setSelected={setRisk} />
+								<RiskSelect
+									selected={risk}
+									setSelected={setRisk}
+									trackRewardCalculatedEvent={trackRewardCalculatedEvent}
+								/>
 							</div>
 
 							<h3 className="text-gray-700 mt-8 text-xs">
@@ -384,6 +389,7 @@ const RewardCalculatorPage = () => {
 									unit={timePeriodUnit}
 									onChange={setTimePeriod}
 									onUnitChange={setTimePeriodUnit}
+									trackRewardCalculatedEvent={trackRewardCalculatedEvent}
 								/>
 							</div>
 							<div className="flex mt-8 items-center">
@@ -417,6 +423,7 @@ const RewardCalculatorPage = () => {
 								<CompoundRewardSlider
 									checked={compounding}
 									setChecked={setCompounding}
+									trackRewardCalculatedEvent={trackRewardCalculatedEvent}
 								/>
 							</div>
 						</div>

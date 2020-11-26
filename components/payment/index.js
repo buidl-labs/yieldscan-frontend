@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { ChevronRight, ChevronLeft } from "react-feather";
-import { get } from "lodash";
+import { get, map, size } from "lodash";
 import Confirmation from "./Confirmation";
 import RewardDestination from "./RewardDestination";
 import Transaction from "./Transaction";
@@ -160,13 +160,13 @@ const Payment = () => {
 	const [stakingLoading, setStakingLoading] = useState(false);
 	const [hasAgreed, setHasAgreed] = useState(false);
 
-	useEffect(() => {
-		trackEvent(Events.PAYMENT_STEP_UPDATED, {
-			step: currentStep,
-			stakingAmount: get(transactionState, "stakingAmount"),
-			riskPreference: get(transactionState, "riskPreference"),
-		});
-	}, [currentStep]);
+	// useEffect(() => {
+	// 	trackEvent(Events.PAYMENT_STEP_UPDATED, {
+	// 		step: currentStep,
+	// 		stakingAmount: get(transactionState, "stakingAmount"),
+	// 		riskPreference: get(transactionState, "riskPreference"),
+	// 	});
+	// }, [currentStep]);
 
 	useEffect(() => {
 		setLoading(false);
@@ -223,10 +223,17 @@ const Payment = () => {
 	const transact = () => {
 		setStakingLoading(true);
 
-		trackEvent(Events.INTENT_TRANSACTON, {
+		trackEvent(Events.INTENT_TRANSACTION, {
 			transactionType: !!transactionState.stakingAmount ? "STAKE" : "NOMINATE",
 			stakingAmount: get(transactionState, "stakingAmount"),
 			riskPreference: get(transactionState, "riskPreference"),
+			selectedValidators: map(
+				get(transactionState, "selectedValidators"),
+				(val) => get(val, "stashId")
+			),
+			numOfSelectedValidators: size(
+				get(transactionState, "selectedValidators")
+			),
 		});
 
 		const handlers = {
@@ -234,11 +241,19 @@ const Payment = () => {
 				setStakingEvent(eventInfo.message);
 			},
 			onSuccessfullSigning: (hash) => {
+				const transactionHash = get(hash, "message");
 				setLoaderError(false);
 				setTimeout(() => {
-					setTransactionHash(get(hash, "message"));
+					setTransactionHash(transactionHash);
 					setStakingEvent("Your transaction was successful!");
 				}, 750);
+				trackEvent(Events.TRANSACTION_SENT, {
+					hash: get(hash, "message"),
+					url: `https://${get(
+						networkInfo,
+						"coinGeckoDenom"
+					)}.subscan.io/block/${transactionHash}`,
+				});
 			},
 			onFinish: (status, message, eventLogs) => {
 				// status = 0 for success, anything else for error code
