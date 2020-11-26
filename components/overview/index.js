@@ -289,23 +289,19 @@ const Overview = () => {
 			<ChillAlert isOpen={chillAlertOpen} close={closeChillAlert} />
 			<div className="flex-col">
 				<div className="flex">
-					<div className="flex w-1/2">
-						<div className="w-full">
-							<OverviewCards
-								stats={isNil(userData) ? null : userData.stats}
-								bondedAmount={bondedAmount}
-								address={stashAccount.address}
-								activeStake={activeStake}
-								validators={isNil(userData) ? null : userData.validatorsInfo}
-								unlockingBalances={unlockingBalances}
-								bondFunds={() => openFundsUpdateModal("bond")}
-								unbondFunds={() => openFundsUpdateModal("unbond")}
-								openRewardDestinationModal={toggleRewardDestinationModal}
-								networkInfo={networkInfo}
-							/>
-						</div>
-					</div>
-					<div className="flex ml-8 w-1/2">
+					<OverviewCards
+						stats={isNil(userData) ? null : userData.stats}
+						bondedAmount={bondedAmount}
+						address={stashAccount.address}
+						activeStake={activeStake}
+						validators={isNil(userData) ? null : userData.validatorsInfo}
+						unlockingBalances={unlockingBalances}
+						bondFunds={() => openFundsUpdateModal("bond")}
+						unbondFunds={() => openFundsUpdateModal("unbond")}
+						openRewardDestinationModal={toggleRewardDestinationModal}
+						networkInfo={networkInfo}
+					/>
+					<div className="flex ml-20 w-1/2">
 						{activeStake && validators && (
 							<EarningsOutput
 								networkDenom={networkInfo.denom}
