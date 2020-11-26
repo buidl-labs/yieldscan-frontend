@@ -89,7 +89,7 @@ const AllNominations = ({ nominations = [], networkInfo }) => {
 		window.open(`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`, "_blank");
 
 	return (
-		<div className="py-2 flex items-center flex-wrap max-h-25-rem overflow-y-scroll">
+		<div className="py-2 flex items-center flex-wrap">
 			{nominations.map((nomination) => (
 				<ValidatorCard
 					key={nomination.stashId}
