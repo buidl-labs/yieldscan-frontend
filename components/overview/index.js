@@ -91,6 +91,7 @@ const Overview = () => {
 		setLoading(true);
 		setError(false);
 		setAllNominations(null);
+		setUserData(null);
 		if (get(stashAccount, "address") && apiInstance) {
 			const kusamaAddress = encodeAddress(
 				decodeAddress(stashAccount.address),

@@ -19,7 +19,7 @@ const CompoundRewardSlider = ({
 			<span
 				className={`
 					text-sm font-semibold ml-2
-					${checked ? "text-teal-500" : "text-gray-600"}
+					${checked ? 'text-teal-500' : 'text-gray-600'}
 				`}
 			>
 				{checked ? "Yes" : "No"}

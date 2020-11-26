@@ -42,7 +42,6 @@ const withDashboardLayout = (children) => {
 			"stashAccount",
 			"setAccountInfoLoading",
 			"setAccountState",
-			"accountsWithBalances",
 		])
 	);
 	const { stakingAmount, setTransactionState } = useTransaction((state) =>

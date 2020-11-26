@@ -122,11 +122,28 @@ input[type="number"] {
 	color: #35475c;
 }
 
+.semi-heading-gray {
+	font-weight: 600;
+	font-size: 18px;
+	color: #b8b8b8;
+}
+
 .big-heading {
 	font-weight: bold;
 	font-size: 36px;
 	line-height: 150%;
 	color: #35475c;
+}
+.big-heading-gray {
+	font-weight: bold;
+	font-size: 36px;
+	line-height: 150%;
+	color: #b8b8b8;
+}
+
+.text-light-gray {
+	color: #b8b8b8;
+	font-weight: 700;
 }
 
 .-z-index-1 {

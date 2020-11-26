@@ -120,13 +120,7 @@ const LandingPageCalculator = ({
 										value={value}
 										onChange={onChange}
 										className="text-gray-700"
-										fontSize={
-											String(inputValue).length > 18
-												? "md"
-												: String(inputValue).length > 15
-												? "lg"
-												: "xl"
-										}
+										fontSize={String(inputValue).length > 18 ? "md" : String(inputValue).length > 15 ? "lg" : "xl"}
 										fontWeight="medium"
 										variant="filled"
 										isRequired

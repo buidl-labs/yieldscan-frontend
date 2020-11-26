@@ -4,6 +4,7 @@ import {
 	usePolkadotApi,
 	useSelectedNetwork,
 	useValidatorData,
+	useTransactionHash,
 	useNominatorsData,
 	useOverviewData,
 	useCouncil,
@@ -55,6 +56,7 @@ const Header = ({ isBase }) => {
 	const { selectedNetwork, setSelectedNetwork } = useSelectedNetwork();
 	const { setValidators, setValidatorMap } = useValidatorData();
 	const { setUserData, setAllNominations } = useOverviewData();
+	const { setTransactionHash } = useTransactionHash();
 	const { setNominatorsData, setNomLoading } = useNominatorsData();
 	const { setCouncilMembers, setCouncilLoading } = useCouncil();
 	const networkInfo = getNetworkInfo(selectedNetwork);
@@ -435,6 +437,7 @@ const Header = ({ isBase }) => {
 													className="flex items-center rounded px-4 py-2 w-full bg-gray-800 hover:bg-gray-700 hover:text-gray-200"
 													onClick={() => {
 														setStashAccount(account);
+														setTransactionHash(null);
 														selectedNetwork == "Kusama"
 															? setCookie(
 																	null,
@@ -544,6 +547,7 @@ const Header = ({ isBase }) => {
 													setNomLoading(true);
 													setCookie(null, "networkName", "Kusama");
 													setCouncilMembers(undefined);
+													setTransactionHash(null);
 													setCouncilLoading(true);
 													setStashAccount(null);
 													setFreeAmount(null);
@@ -581,6 +585,7 @@ const Header = ({ isBase }) => {
 													setNomLoading(true);
 													setCookie(null, "networkName", "Polkadot");
 													setCouncilMembers(undefined);
+													setTransactionHash(null);
 													setCouncilLoading(true);
 													setStashAccount(null);
 													setFreeAmount(null);

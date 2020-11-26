@@ -5,6 +5,7 @@ import formatCurrency from "@lib/format-currency";
 import convertCurrency from "@lib/convert-currency";
 import { useAccounts, usePolkadotApi } from "@lib/store";
 import calculateReward from "@lib/calculate-reward";
+import { HelpPopover } from "@components/reward-calculator";
 
 const OverviewCards = ({
 	stats,
@@ -31,6 +32,12 @@ const OverviewCards = ({
 	const { apiInstance } = usePolkadotApi();
 	const { stashAccount } = useAccounts();
 	const [compounding, setCompounding] = React.useState(false);
+
+	const isActivelyStaking = isNil(validators)
+		? false
+		: validators.filter((validator) => validator.isElected).length !== 0
+		? true
+		: false;
 
 	const [totalAmountStakedFiat, setTotalAmountStakedFiat] = React.useState();
 	const [earningsFiat, setEarningsFiat] = React.useState();
@@ -88,17 +95,33 @@ const OverviewCards = ({
 				<div className="flex flex-col items-center justify-between">
 					<p className="semi-heading mt-40">Your investment</p>
 					<div>
-						<h1 className="big-heading">
-							{formatCurrency.methods.formatAmount(
-								Math.trunc(
-									Number(
-										get(bondedAmount, "currency", 0) *
-											10 ** networkInfo.decimalPlaces
-									)
-								),
-								networkInfo
+						<div className="flex">
+							<h1
+								className={`${
+									isActivelyStaking ? "big-heading" : "big-heading-gray"
+								}`}
+							>
+								{formatCurrency.methods.formatAmount(
+									Math.trunc(
+										Number(
+											get(bondedAmount, "currency", 0) *
+												10 ** networkInfo.decimalPlaces
+										)
+									),
+									networkInfo
+								)}
+							</h1>
+							{!isActivelyStaking && (
+								<HelpPopover
+									content={
+										<p className="text-xs text-white">
+											Currently you are not earning any rewards on your
+											investment.
+										</p>
+									}
+								/>
 							)}
-						</h1>
+						</div>
 						{bondedAmount && (
 							<h3 className="text-teal-500 text-2xl">
 								${get(bondedAmount, "subCurrency")}

@@ -331,7 +331,6 @@ const RewardCalculatorPage = () => {
 									value={{ currency: amount, subCurrency: subCurrency }}
 									networkInfo={networkInfo}
 									onChange={setAmount}
-									trackRewardCalculatedEvent={trackRewardCalculatedEvent}
 								/>
 							</div>
 							<div className="flex mt-8 items-center">
@@ -352,11 +351,7 @@ const RewardCalculatorPage = () => {
 								/>
 							</div>
 							<div className="mt-2">
-								<RiskSelect
-									selected={risk}
-									setSelected={setRisk}
-									trackRewardCalculatedEvent={trackRewardCalculatedEvent}
-								/>
+								<RiskSelect selected={risk} setSelected={setRisk} />
 							</div>
 
 							<h3 className="text-gray-700 mt-8 text-xs">
@@ -380,7 +375,7 @@ const RewardCalculatorPage = () => {
 									>
 										unbonding period
 									</span>{" "}
-									of approximately 7 days.
+									of approximately {networkInfo.lockUpPeriod} days.
 								</AlertDescription>
 							</Alert>
 							<div className="mt-2">
@@ -389,7 +384,6 @@ const RewardCalculatorPage = () => {
 									unit={timePeriodUnit}
 									onChange={setTimePeriod}
 									onUnitChange={setTimePeriodUnit}
-									trackRewardCalculatedEvent={trackRewardCalculatedEvent}
 								/>
 							</div>
 							<div className="flex mt-8 items-center">
@@ -423,7 +417,6 @@ const RewardCalculatorPage = () => {
 								<CompoundRewardSlider
 									checked={compounding}
 									setChecked={setCompounding}
-									trackRewardCalculatedEvent={trackRewardCalculatedEvent}
 								/>
 							</div>
 						</div>
@@ -474,14 +467,7 @@ const RewardCalculatorPage = () => {
 						}
 					`}
 							disabled={stashAccount && calculationDisabled}
-							onClick={() => {
-								isNil(accounts)
-									? trackEvent(Events.INTENT_CONNECT_WALLET)
-									: isNil(stashAccount)
-									? trackEvent(Events.INTENT_ACCOUNT_SELECTION)
-									: trackEvent(Events.CALCULATOR_CTA_CLICK);
-								stashAccount ? onPayment() : toggle();
-							}}
+							onClick={() => (stashAccount ? onPayment() : toggle())}
 						>
 							{isNil(accounts)
 								? "Connect Wallet"
