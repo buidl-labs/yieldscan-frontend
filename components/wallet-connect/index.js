@@ -53,6 +53,7 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 	}, []);
 
 	useEffect(() => {
+		console.log("triggered");
 		getPolkadotExtensionInfo()
 			.then(({ isExtensionAvailable, accounts = [] }) => {
 				if (!isExtensionAvailable) {
