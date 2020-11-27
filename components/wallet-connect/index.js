@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import create from "zustand";
+import { isNil } from "lodash";
 import { ChevronLeft } from "react-feather";
 import {
 	Modal,
@@ -19,7 +20,7 @@ import WalletDisclaimer from "./WalletDisclaimer";
 import getPolkadotExtensionInfo from "@lib/polkadot-extension";
 import { useAccounts } from "@lib/store";
 import { trackEvent, Events } from "@lib/analytics";
-import { setCookie } from "nookies";
+import { setCookie, parseCookies } from "nookies";
 
 const [useWalletConnect] = create((set) => ({
 	isOpen: false,
@@ -36,27 +37,35 @@ const WalletConnectStates = {
 	IMPORT: "import",
 };
 
-const WalletConnectPopover = ({ styles, networkInfo }) => {
+const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 	const { isOpen, close } = useWalletConnect();
 	const [ledgerLoading, setLedgerLoading] = useState(false);
+	const [extensionEvent, setExtensionEvent] = useState();
 	const {
 		accounts,
+		stashAccount,
 		accountsWithBalances,
 		setAccounts,
 		setStashAccount,
 		setAccountState,
 	} = useAccounts();
-	const [state, setState] = useState(WalletConnectStates.INTRO);
+	const [state, setState] = useState("");
+
+	const handlers = {
+		onEvent: (eventInfo) => {
+			setExtensionEvent(eventInfo.message);
+		},
+	};
 
 	useEffect(() => {
 		trackEvent(Events.INTENT_CONNECT_WALLET);
 	}, []);
 
 	useEffect(() => {
-		console.log("triggered");
-		getPolkadotExtensionInfo()
+		getPolkadotExtensionInfo(handlers)
 			.then(({ isExtensionAvailable, accounts = [] }) => {
 				if (!isExtensionAvailable) {
+					setState(WalletConnectStates.INTRO);
 				} else {
 					if (!accounts.length)
 						throw new Error("Couldn't find any stash or unnassigned accounts.");
@@ -67,7 +76,7 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 							networkInfo.addressPrefix
 						);
 					});
-					setState(WalletConnectStates.CONNECTED);
+					// setState(WalletConnectStates.CONNECTED);
 					setAccounts(accounts);
 
 					trackEvent(Events.WALLET_CONNECTED, {
@@ -80,6 +89,30 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 				alert(error);
 			});
 	}, [networkInfo]);
+
+	useEffect(() => {
+		let previousAccountAvailable = false;
+		if (!stashAccount && accounts) {
+			if (!isNil(cookies.kusamaDefault) || !isNil(cookies.polkadotDefault)) {
+				networkInfo.name == "Kusama"
+					? accounts
+							.filter((account) => account.address == cookies.kusamaDefault)
+							.map((account) => {
+								previousAccountAvailable = true;
+								setStashAccount(account);
+							})
+					: accounts
+							.filter((account) => account.address == cookies.polkadotDefault)
+							.map((account) => {
+								previousAccountAvailable = true;
+								setStashAccount(account);
+							});
+			}
+			if (!previousAccountAvailable) {
+				setState(WalletConnectStates.CONNECTED);
+			} else close();
+		}
+	}, [accounts]);
 
 	const onConnected = () => {
 		getPolkadotExtensionInfo()
@@ -171,7 +204,7 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 							<div className="flex-center flex-col">
 								<Spinner size="xl" color="teal.500" thickness="4px" />
 								<span className="text-sm text-gray-600 mt-5">
-									Fetching your accounts...
+									{extensionEvent}
 								</span>
 							</div>
 						</div>
@@ -189,23 +222,6 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 							/>
 						)
 					)}
-					{/* {state === WalletConnectStates.DISCLAIMER && (
-						<WalletDisclaimer
-							onCreate={() => setState(WalletConnectStates.CREATE)}
-						/>
-					)}
-					{state === WalletConnectStates.CREATE && (
-						<CreateWallet
-							onPrevious={() => setState(WalletConnectStates.DISCLAIMER)}
-							onNext={() => setState(WalletConnectStates.IMPORT)}
-						/>
-					)}
-					{state === WalletConnectStates.IMPORT && (
-						<ImportAccount
-							onPrevious={() => setState(WalletConnectStates.CREATE)}
-							onNext={() => setState(WalletConnectStates.CONNECTED)}
-						/>
-					)} */}
 				</ModalBody>
 			</ModalContent>
 		</Modal>

@@ -30,8 +30,8 @@ const WalletConnected = ({
 								onClick={() => onStashSelected(account)}
 							>
 								<Identicon address={get(account, "address")} size="3rem" />
-								{selectedAccount === account &&
-									console.log(get(account, "address"))}
+								{/* {selectedAccount === account &&
+									console.log(get(account, "address"))} */}
 								<div className="ml-2 flex w-full">
 									<div className="ml-2 flex-col w-1/2">
 										<p className="text-gray-700 text-base font-medium">
