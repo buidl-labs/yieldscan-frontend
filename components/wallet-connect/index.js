@@ -33,7 +33,6 @@ const WalletConnectStates = {
 
 const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 	const { isOpen, close } = useWalletConnect();
-	const [ledgerLoading, setLedgerLoading] = useState(false);
 	const [extensionEvent, setExtensionEvent] = useState();
 	const {
 		accounts,
@@ -107,32 +106,6 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 		}
 	}, [accounts]);
 
-	const onConnected = () => {
-		getPolkadotExtensionInfo()
-			.then(({ isExtensionAvailable, accounts = [] }) => {
-				if (!isExtensionAvailable) throw new Error("Extension not available.");
-				if (!accounts.length)
-					throw new Error("Couldn't find any stash or unnassigned accounts.");
-
-				accounts.map((x) => {
-					x.address = encodeAddress(
-						decodeAddress(x.address.toString()),
-						networkInfo.addressPrefix
-					);
-				});
-				setState(WalletConnectStates.CONNECTED);
-				setAccounts(accounts);
-
-				trackEvent(Events.WALLET_CONNECTED, {
-					userAccounts: accounts.map((account) => account.address),
-				});
-			})
-			.catch((error) => {
-				// TODO: handle error properly using UI toast
-				alert(error);
-			});
-	};
-
 	const onStashSelected = async (stashAccount) => {
 		if (stashAccount) close();
 		setStashAccount(stashAccount);
@@ -188,10 +161,7 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 				/>
 				<ModalBody>
 					{state === WalletConnectStates.REJECTED ? (
-						<RejectedPage
-							onConnected={onConnected}
-							onDisclaimer={() => setState(WalletConnectStates.DISCLAIMER)}
-						/>
+						<RejectedPage />
 					) : !accounts ? (
 						<div className="flex-center w-full h-full min-h-26-rem">
 							<div className="flex-center flex-col">
@@ -209,7 +179,6 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 										? accountsWithBalances
 										: accounts
 								}
-								ledgerLoading={ledgerLoading}
 								onStashSelected={onStashSelected}
 								networkInfo={networkInfo}
 							/>

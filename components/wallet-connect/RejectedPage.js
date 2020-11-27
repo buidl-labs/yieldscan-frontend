@@ -1,4 +1,4 @@
-const RejectedPage = ({ onConnected, onDisclaimer }) => (
+const RejectedPage = () => (
 	<div className="pb-12 flex flex-col text-center items-center">
 		<img src="/images/polkadot-wallet-connect.png" width="200px" />
 		<h3 className="mt-4 text-xl font-semibold px-20 text-gray-700">
@@ -27,12 +27,6 @@ const RejectedPage = ({ onConnected, onDisclaimer }) => (
 			Try restarting your browser or you can also toggle the extension on/off
 			from browser's extension settings.
 		</span>
-		{/* <button
-			className="mt-2 px-12 py-4 bg-white text-teal-500 rounded-lg border border-teal-500"
-			onClick={onDisclaimer}
-		>
-			Create a wallet for my account
-		</button> */}
 		<span className="mt-4 text-sm text-gray-600">
 			Using a different wallet?{" "}
 			<a
