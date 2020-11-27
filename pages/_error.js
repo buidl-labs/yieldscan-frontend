@@ -1,6 +1,7 @@
 import NextErrorComponent from "next/error";
 import * as Sentry from "@sentry/node";
 import Link from "next/link";
+import { get } from "lodash";
 
 const MyError = ({ statusCode, hasGetInitialPropsRun, err }) => {
 	if (!hasGetInitialPropsRun && err) {
@@ -68,7 +69,7 @@ MyError.getInitialProps = async ({ res, err, asPath }) => {
 	//    Boundary. Read more about what types of exceptions are caught by Error
 	//    Boundaries: https://reactjs.org/docs/error-boundaries.html
 
-	if (res?.statusCode === 404) {
+	if (get(res, "statusCode") === 404) {
 		// Opinionated: do not record an exception in Sentry for 404
 		return { statusCode: 404 };
 	}
