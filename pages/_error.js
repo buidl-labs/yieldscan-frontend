@@ -1,6 +1,7 @@
 import NextErrorComponent from "next/error";
 import * as Sentry from "@sentry/node";
 import Link from "next/link";
+import { get } from "lodash";
 
 const MyError = ({ statusCode, hasGetInitialPropsRun, err }) => {
 	if (!hasGetInitialPropsRun && err) {
@@ -26,21 +27,25 @@ const MyError = ({ statusCode, hasGetInitialPropsRun, err }) => {
 					</a>
 				</Link>
 				{/* {!hasGetInitialPropsRun && err ? ( */}
-					<button
-						className="border border-teal-500 bg-white rounded-full px-10 py-2 mt-2 text-teal-500 self-start"
-						onClick={() =>
-							Sentry.showReportDialog({
-								eventId: Sentry.captureException(err),
-							})
-						}
-					>
-						Report feedback
-					</button>
+				<button
+					className="border border-teal-500 bg-white rounded-full px-10 py-2 mt-2 text-teal-500 self-start"
+					onClick={() =>
+						Sentry.showReportDialog({
+							eventId: Sentry.captureException(err),
+						})
+					}
+				>
+					Report feedback
+				</button>
 				{/* ) : (
 					""
 				)} */}
 			</div>
-			<img src="images/404.svg" alt="404 - Lost Astronaut" className="-ml-16 w-5/12 opacity-50"></img>
+			<img
+				src="images/404.svg"
+				alt="404 - Lost Astronaut"
+				className="-ml-16 w-5/12 opacity-50"
+			></img>
 		</div>
 	);
 };
@@ -68,7 +73,7 @@ MyError.getInitialProps = async ({ res, err, asPath }) => {
 	//    Boundary. Read more about what types of exceptions are caught by Error
 	//    Boundaries: https://reactjs.org/docs/error-boundaries.html
 
-	if (res?.statusCode === 404) {
+	if (get(res, "statusCode") === 404) {
 		// Opinionated: do not record an exception in Sentry for 404
 		return { statusCode: 404 };
 	}
