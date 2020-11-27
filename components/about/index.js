@@ -1,16 +1,19 @@
 import {
 	Avatar,
 	Box,
-	Button,
-	Icon,
+	Flex,
 	Image,
 	Link,
+	Popover,
+	PopoverArrow,
+	PopoverBody,
+	PopoverContent,
+	PopoverTrigger,
 	SimpleGrid,
 	Stack,
 	Text,
 } from "@chakra-ui/core";
 import Footer from "@components/common/footer";
-import { GitHub, Globe, Twitter } from "react-feather";
 import {
 	FaGithub,
 	FaGlobe,
@@ -18,7 +21,6 @@ import {
 	FaQuoteLeft,
 	FaTwitter,
 } from "react-icons/fa";
-import { IoIosGlobe, IoLogoGithub, IoLogoTwitter } from "react-icons/io";
 
 const members = [
 	{
@@ -51,6 +53,21 @@ const members = [
 		url: "https://github.com/prastut",
 		linked_in: "prastut",
 		role: "Advisor",
+	},
+];
+
+const contributors = [
+	{
+		avatar_url:
+			"https://avatars1.githubusercontent.com/u/6816349?s=400&u=57c6da8e57015d5a1d4768fc0290e0b785ab06b0&v=4",
+		name: "Abhinav Thukral",
+		url: "https://github.com/AbhinavThukral97",
+	},
+	{
+		avatar_url:
+			"https://avatars1.githubusercontent.com/u/22184427?s=400&u=3aa937cb3ba837591bc92cce04fc1bc019ca79a9&v=4",
+		name: "Akshat Bhargava",
+		url: "https://github.com/akshatbhargava123",
 	},
 ];
 
@@ -131,6 +148,39 @@ const Member = ({ member }) => {
 	);
 };
 
+const Contributor = ({ contributor }) => {
+	const { avatar_url: avatarUrl, name, url } = contributor;
+	return (
+		<Popover trigger="hover" placement="top" usePortal>
+			<PopoverTrigger>
+				<Link
+					href={url}
+					mx={6}
+					mb={4}
+					rounded="full"
+					transition="ease-in 0.125s"
+					isExternal
+					_focus={{ boxShadow: "none" }}
+					_hover={{ transform: "scale(1.1)" }}
+				>
+					<Avatar size="lg" name={name} src={avatarUrl} />
+				</Link>
+			</PopoverTrigger>
+			<PopoverContent
+				rounded="lg"
+				_focus={{ outline: "none" }}
+				bg="gray.600"
+				border="none"
+				w="fit-content"
+				color="white"
+			>
+				<PopoverArrow />
+				<PopoverBody>{name}</PopoverBody>
+			</PopoverContent>
+		</Popover>
+	);
+};
+
 const About = () => {
 	return (
 		<div className="pt-24 w-full min-h-full px-4 sm:px-8 md:px-12 lg:px-20 xl:px-32 flex flex-col items-center">
@@ -139,7 +189,7 @@ const About = () => {
 				We are BUIDL-ers
 			</h1>
 			<Text maxW="56ch" mx="auto" fontSize="lg" color="gray.600">
-				We like building, especially sans the pressure of business viability.
+				We like building, especially to help humanity get to the future faster.
 			</Text>
 			<p className="inline-flex items-center font-medium text-gray-700 text-xs mt-6">
 				Project YieldScan's team is a part of{" "}
@@ -183,9 +233,19 @@ const About = () => {
 				DeFi is the future and YieldScan is our attempt to distribute it
 				equally.
 			</Text>
+			<Stack spacing={8} mt={{ base: "40px", md: "100px" }}>
+				<h1 className="text-3xl text-gray-700 font-bold text-center mt-20 mb-16">
+					💖 Project Contributors
+				</h1>
+				<Flex flexWrap="wrap" justifyContent="center" maxW="lg" mx="auto">
+					{contributors.map((contributor) => (
+						<Contributor key={contributor.name} contributor={contributor} />
+					))}
+				</Flex>
+			</Stack>
 			<div className="w-screen bg-teal-500 py-8 flex justify-center items-center mt-32">
 				<p className="text-2xl text-white mr-8">
-					Looking to help humanity get to the future faster?
+					Looking to build the future?
 				</p>
 				<Link
 					href="https://buidllabs.io/careers/"
