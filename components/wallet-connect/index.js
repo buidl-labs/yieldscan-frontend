@@ -12,15 +12,12 @@ import {
 	Spinner,
 } from "@chakra-ui/core";
 import { encodeAddress, decodeAddress } from "@polkadot/util-crypto";
-import IntroPage from "./Intro";
-import CreateWallet from "./CreateWallet";
-import ImportAccount from "./ImportAccount";
-import WalletConnected from "./WalletConnected";
-import WalletDisclaimer from "./WalletDisclaimer";
+import RejectedPage from "./RejectedPage";
+import SelectAccount from "./SelectAccount";
 import getPolkadotExtensionInfo from "@lib/polkadot-extension";
 import { useAccounts } from "@lib/store";
 import { trackEvent, Events } from "@lib/analytics";
-import { setCookie, parseCookies } from "nookies";
+import { setCookie } from "nookies";
 
 const [useWalletConnect] = create((set) => ({
 	isOpen: false,
@@ -30,11 +27,8 @@ const [useWalletConnect] = create((set) => ({
 }));
 
 const WalletConnectStates = {
-	INTRO: "intro",
+	REJECTED: "rejected",
 	CONNECTED: "connected",
-	DISCLAIMER: "disclaimer",
-	CREATE: "create",
-	IMPORT: "import",
 };
 
 const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
@@ -47,7 +41,6 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 		accountsWithBalances,
 		setAccounts,
 		setStashAccount,
-		setAccountState,
 	} = useAccounts();
 	const [state, setState] = useState("");
 
@@ -65,7 +58,7 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 		getPolkadotExtensionInfo(handlers)
 			.then(({ isExtensionAvailable, accounts = [] }) => {
 				if (!isExtensionAvailable) {
-					setState(WalletConnectStates.INTRO);
+					setState(WalletConnectStates.REJECTED);
 				} else {
 					if (!accounts.length)
 						throw new Error("Couldn't find any stash or unnassigned accounts.");
@@ -159,7 +152,7 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 			<ModalOverlay />
 			<ModalContent
 				rounded="lg"
-				maxWidth={state === WalletConnectStates.INTRO ? "33rem" : "40rem"}
+				maxWidth={state === WalletConnectStates.REJECTED ? "33rem" : "40rem"}
 				{...styles}
 				py={4}
 			>
@@ -171,7 +164,7 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 					].includes(state) ? (
 						<div
 							className="text-sm flex-center px-2 py-1 text-gray-700 bg-gray-200 rounded-xl w-40 font-normal cursor-pointer"
-							onClick={() => setState(WalletConnectStates.INTRO)}
+							onClick={() => setState(WalletConnectStates.REJECTED)}
 						>
 							<ChevronLeft />
 							<span>Wallet Connect</span>
@@ -194,8 +187,8 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 					mr={4}
 				/>
 				<ModalBody>
-					{state === WalletConnectStates.INTRO ? (
-						<IntroPage
+					{state === WalletConnectStates.REJECTED ? (
+						<RejectedPage
 							onConnected={onConnected}
 							onDisclaimer={() => setState(WalletConnectStates.DISCLAIMER)}
 						/>
@@ -210,7 +203,7 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 						</div>
 					) : (
 						state === WalletConnectStates.CONNECTED && (
-							<WalletConnected
+							<SelectAccount
 								accounts={
 									accountsWithBalances !== null
 										? accountsWithBalances
