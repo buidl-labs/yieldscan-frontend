@@ -204,7 +204,7 @@ const Header = ({ isBase }) => {
 					: "max-w-65-rem xl:px-0"
 			} bg-white px-8 py-8 h-12 mx-auto`}
 		>
-			{!isBase && isOpen && (
+			{!isBase && (isOpen || !isNil(cookies.isAuthorized)) && (
 				<WalletConnectPopover
 					isOpen={isOpen}
 					networkInfo={networkInfo}
