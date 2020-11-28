@@ -65,7 +65,7 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 					});
 					setState(WalletConnectStates.CONNECTED);
 					setAccounts(accounts);
-					setUserProperties({hasExtension: true})
+					setUserProperties({ hasExtension: true });
 				}
 			})
 			.catch((error) => {
@@ -127,8 +127,12 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 		if (stashAccount) close();
 		setStashAccount(stashAccount);
 		networkInfo.name == "Kusama"
-			? setCookie(null, "kusamaDefault", stashAccount.address)
-			: setCookie(null, "polkadotDefault", stashAccount.address);
+			? setCookie(null, "kusamaDefault", stashAccount.address, {
+					maxAge: 7 * 24 * 60 * 60,
+			  })
+			: setCookie(null, "polkadotDefault", stashAccount.address, {
+					maxAge: 7 * 24 * 60 * 60,
+			  });
 	};
 
 	return (
