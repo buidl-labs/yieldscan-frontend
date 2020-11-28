@@ -4,7 +4,7 @@ import Identicon from "@components/common/Identicon";
 import { get } from "lodash";
 import formatCurrency from "@lib/format-currency";
 
-const WalletConnected = ({
+const SelectAccount = ({
 	accounts,
 	onStashSelected,
 	ledgerLoading,
@@ -94,4 +94,4 @@ const WalletConnected = ({
 	);
 };
 
-export default WalletConnected;
+export default SelectAccount;
