@@ -165,7 +165,7 @@ const withDashboardLayout = (children) => {
 
 						const setStateAndTrack = (details) => {
 							setUserProperties({
-								selectedStashId: address,
+								stashId: address,
 								bondedAmount: `${get(details, "bondedAmount.currency")} ${get(
 									networkInfo,
 									"denom"
