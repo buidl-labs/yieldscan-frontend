@@ -13,10 +13,7 @@ import {
 } from "@chakra-ui/core";
 import { encodeAddress, decodeAddress } from "@polkadot/util-crypto";
 import RejectedPage from "./RejectedPage";
-import CreateWallet from "./CreateWallet";
-import ImportAccount from "./ImportAccount";
 import SelectAccount from "./SelectAccount";
-import WalletDisclaimer from "./WalletDisclaimer";
 import getPolkadotExtensionInfo from "@lib/polkadot-extension";
 import { useAccounts } from "@lib/store";
 import { trackEvent, Events, setUserProperties } from "@lib/analytics";
@@ -36,7 +33,6 @@ const WalletConnectStates = {
 
 const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 	const { isOpen, close } = useWalletConnect();
-	const [ledgerLoading, setLedgerLoading] = useState(false);
 	const [extensionEvent, setExtensionEvent] = useState();
 	const {
 		accounts,
@@ -104,28 +100,6 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 		}
 	}, [accounts]);
 
-	const onConnected = () => {
-		getPolkadotExtensionInfo(handlers)
-			.then(({ isExtensionAvailable, accounts = [] }) => {
-				if (!isExtensionAvailable) throw new Error("Extension not available.");
-				if (!accounts.length)
-					throw new Error("Couldn't find any stash or unnassigned accounts.");
-
-				accounts.map((x) => {
-					x.address = encodeAddress(
-						decodeAddress(x.address.toString()),
-						networkInfo.addressPrefix
-					);
-				});
-				setState(WalletConnectStates.CONNECTED);
-				setAccounts(accounts);
-			})
-			.catch((error) => {
-				// TODO: handle error properly using UI toast
-				alert(error);
-			});
-	};
-
 	const onStashSelected = async (stashAccount) => {
 		if (stashAccount) close();
 		setStashAccount(stashAccount);
@@ -185,10 +159,7 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 				/>
 				<ModalBody>
 					{state === WalletConnectStates.REJECTED ? (
-						<RejectedPage
-							onConnected={onConnected}
-							onDisclaimer={() => setState(WalletConnectStates.DISCLAIMER)}
-						/>
+						<RejectedPage />
 					) : !accounts ? (
 						<div className="flex-center w-full h-full min-h-26-rem">
 							<div className="flex-center flex-col">
@@ -206,29 +177,11 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 										? accountsWithBalances
 										: accounts
 								}
-								ledgerLoading={ledgerLoading}
 								onStashSelected={onStashSelected}
 								networkInfo={networkInfo}
 							/>
 						)
 					)}
-					{/* {state === WalletConnectStates.DISCLAIMER && (
-						<WalletDisclaimer
-							onCreate={() => setState(WalletConnectStates.CREATE)}
-						/>
-					)}
-					{state === WalletConnectStates.CREATE && (
-						<CreateWallet
-							onPrevious={() => setState(WalletConnectStates.DISCLAIMER)}
-							onNext={() => setState(WalletConnectStates.IMPORT)}
-						/>
-					)}
-					{state === WalletConnectStates.IMPORT && (
-						<ImportAccount
-							onPrevious={() => setState(WalletConnectStates.CREATE)}
-							onNext={() => setState(WalletConnectStates.CONNECTED)}
-						/>
-					)} */}
 				</ModalBody>
 			</ModalContent>
 		</Modal>

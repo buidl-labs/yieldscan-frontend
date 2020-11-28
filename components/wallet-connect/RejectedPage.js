@@ -1,4 +1,4 @@
-const RejectedPage = ({ onConnected, onDisclaimer }) => (
+const RejectedPage = () => (
 	<div className="pb-12 flex flex-col text-center items-center">
 		<img src="/images/polkadot-wallet-connect.png" width="200px" />
 		<h3 className="mt-4 text-xl font-semibold px-20 text-gray-700">
