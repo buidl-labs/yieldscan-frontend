@@ -203,7 +203,9 @@ const Header = ({ isBase }) => {
 					: "max-w-65-rem xl:px-0"
 			} bg-white px-8 py-8 h-12 mx-auto`}
 		>
-			<WalletConnectPopover isOpen={isOpen} networkInfo={networkInfo} />
+			{!isBase && (
+				<WalletConnectPopover isOpen={isOpen} networkInfo={networkInfo} />
+			)}
 			<EditControllerModal
 				isOpen={editControllerModalOpen}
 				close={closeEditControllerModal}
