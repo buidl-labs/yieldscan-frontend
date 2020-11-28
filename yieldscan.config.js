@@ -16,6 +16,7 @@ export const networks = [
 		nodeWs: "wss://rpc.polkadot.io",
 		erasPerDay: 1,
 		lockUpPeriod: 28,
+		about: "Polkadot is a heterogeneous multi‑chain technology.",
 	},
 	{
 		id: "kusama-cc3",
@@ -28,6 +29,7 @@ export const networks = [
 		nodeWs: "wss://kusama-rpc.polkadot.io",
 		erasPerDay: 4,
 		lockUpPeriod: 7,
+		about: "Kusama is an early, unaudited, and unrefined release of Polkadot.",
 	},
 	{
 		id: "westend",
