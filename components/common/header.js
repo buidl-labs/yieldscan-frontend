@@ -110,25 +110,26 @@ const Header = ({ isBase }) => {
 		}
 	}, [stashAccount, networkInfo]);
 
-	useEffect(() => {
-		if (
-			(!isNil(cookies.kusamaDefault) || !isNil(cookies.polkadotDefault)) &&
-			!stashAccount &&
-			accounts
-		) {
-			selectedNetwork == "Kusama"
-				? accounts
-						.filter((account) => account.address == cookies.kusamaDefault)
-						.map((account) => {
-							setStashAccount(account);
-						})
-				: accounts
-						.filter((account) => account.address == cookies.polkadotDefault)
-						.map((account) => {
-							setStashAccount(account);
-						});
-		}
-	}, [accounts]);
+	// Moved the below section to walletConnectPopover
+	// useEffect(() => {
+	// 	if (
+	// 		(!isNil(cookies.kusamaDefault) || !isNil(cookies.polkadotDefault)) &&
+	// 		!stashAccount &&
+	// 		accounts
+	// 	) {
+	// 		selectedNetwork == "Kusama"
+	// 			? accounts
+	// 					.filter((account) => account.address == cookies.kusamaDefault)
+	// 					.map((account) => {
+	// 						setStashAccount(account);
+	// 					})
+	// 			: accounts
+	// 					.filter((account) => account.address == cookies.polkadotDefault)
+	// 					.map((account) => {
+	// 						setStashAccount(account);
+	// 					});
+	// 	}
+	// }, [accounts]);
 
 	useEffect(() => {
 		if (accountsWithBalances && stashAccount) {
@@ -204,7 +205,11 @@ const Header = ({ isBase }) => {
 			} bg-white px-8 py-8 h-12 mx-auto`}
 		>
 			{!isBase && isOpen && (
-				<WalletConnectPopover isOpen={isOpen} networkInfo={networkInfo} />
+				<WalletConnectPopover
+					isOpen={isOpen}
+					networkInfo={networkInfo}
+					cookies={cookies}
+				/>
 			)}
 			<EditControllerModal
 				isOpen={editControllerModalOpen}

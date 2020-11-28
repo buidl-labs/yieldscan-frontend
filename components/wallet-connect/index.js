@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import create from "zustand";
+import { isNil } from "lodash";
 import { ChevronLeft } from "react-feather";
 import {
 	Modal,
@@ -19,7 +20,7 @@ import WalletDisclaimer from "./WalletDisclaimer";
 import getPolkadotExtensionInfo from "@lib/polkadot-extension";
 import { useAccounts } from "@lib/store";
 import { trackEvent, Events, setUserProperties } from "@lib/analytics";
-import { setCookie } from "nookies";
+import { setCookie, parseCookies } from "nookies";
 
 const [useWalletConnect] = create((set) => ({
 	isOpen: false,
@@ -36,22 +37,31 @@ const WalletConnectStates = {
 	IMPORT: "import",
 };
 
-const WalletConnectPopover = ({ styles, networkInfo }) => {
+const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 	const { isOpen, close } = useWalletConnect();
 	const [ledgerLoading, setLedgerLoading] = useState(false);
+	const [extensionEvent, setExtensionEvent] = useState();
 	const {
 		accounts,
+		stashAccount,
 		accountsWithBalances,
 		setAccounts,
 		setStashAccount,
 		setAccountState,
 	} = useAccounts();
-	const [state, setState] = useState(WalletConnectStates.INTRO);
+	const [state, setState] = useState("");
+
+	const handlers = {
+		onEvent: (eventInfo) => {
+			setExtensionEvent(eventInfo.message);
+		},
+	};
 
 	useEffect(() => {
-		getPolkadotExtensionInfo()
+		getPolkadotExtensionInfo(handlers)
 			.then(({ isExtensionAvailable, accounts = [] }) => {
 				if (!isExtensionAvailable) {
+					setState(WalletConnectStates.INTRO);
 					setUserProperties({ hasExtension: false });
 				} else {
 					if (!accounts.length)
@@ -63,7 +73,7 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 							networkInfo.addressPrefix
 						);
 					});
-					setState(WalletConnectStates.CONNECTED);
+					// setState(WalletConnectStates.CONNECTED);
 					setAccounts(accounts);
 					setUserProperties({ hasExtension: true });
 				}
@@ -75,34 +85,31 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 	}, [networkInfo]);
 
 	useEffect(() => {
-		getPolkadotExtensionInfo()
-			.then(({ isExtensionAvailable, accounts = [] }) => {
-				if (!isExtensionAvailable) {
-					setUserProperties({ hasExtension: false });
-				} else {
-					if (!accounts.length)
-						throw new Error("Couldn't find any stash or unnassigned accounts.");
-
-					accounts.map((x) => {
-						x.address = encodeAddress(
-							decodeAddress(x.address.toString()),
-							networkInfo.addressPrefix
-						);
-					});
-					setState(WalletConnectStates.CONNECTED);
-					setAccounts(accounts);
-
-					setUserProperties({ hasExtension: true });
-				}
-			})
-			.catch((error) => {
-				// TODO: handle error properly using UI toast
-				alert(error);
-			});
-	}, [networkInfo]);
+		let previousAccountAvailable = false;
+		if (!stashAccount && accounts) {
+			if (!isNil(cookies.kusamaDefault) || !isNil(cookies.polkadotDefault)) {
+				networkInfo.name == "Kusama"
+					? accounts
+							.filter((account) => account.address == cookies.kusamaDefault)
+							.map((account) => {
+								previousAccountAvailable = true;
+								setStashAccount(account);
+							})
+					: accounts
+							.filter((account) => account.address == cookies.polkadotDefault)
+							.map((account) => {
+								previousAccountAvailable = true;
+								setStashAccount(account);
+							});
+			}
+			if (!previousAccountAvailable) {
+				setState(WalletConnectStates.CONNECTED);
+			} else close();
+		}
+	}, [accounts]);
 
 	const onConnected = () => {
-		getPolkadotExtensionInfo()
+		getPolkadotExtensionInfo(handlers)
 			.then(({ isExtensionAvailable, accounts = [] }) => {
 				if (!isExtensionAvailable) throw new Error("Extension not available.");
 				if (!accounts.length)
@@ -191,7 +198,7 @@ const WalletConnectPopover = ({ styles, networkInfo }) => {
 							<div className="flex-center flex-col">
 								<Spinner size="xl" color="teal.500" thickness="4px" />
 								<span className="text-sm text-gray-600 mt-5">
-									Fetching your accounts...
+									{extensionEvent}
 								</span>
 							</div>
 						</div>

@@ -9,19 +9,24 @@ const IntroPage = ({ onConnected, onDisclaimer }) => (
 			accounts. It allows you to securely sign transactions using these accounts
 			while maintaining complete control over your funds.
 		</span>
+		<span className="mt-4 px-4 text-xs text-gray-700 font-semibold">
+			Extension not installed?
+		</span>
 		<a
-			className="mt-12 px-16 py-3 bg-teal-500 text-white rounded-full"
+			className="mt-2 px-16 py-3 bg-teal-500 text-white rounded-full"
 			href="https://github.com/polkadot-js/extension#installation"
 			target="_blank"
 		>
 			Install extension
 		</a>
-		{/* <button
-			className="mt-2 px-12 py-4 bg-white text-teal-500 rounded-lg border border-teal-500"
-			onClick={onDisclaimer}
-		>
-			Create a wallet for my account
-		</button> */}
+		<span className="mt-4 px-4 text-xl text-gray-700 font-semibold">or</span>
+		<span className="mt-4 px-4 text-xs text-gray-700 font-semibold">
+			Accidently rejected the request for permission?
+		</span>
+		<span className="mt-2 px-4 text-sm text-gray-700">
+			Try restarting your browser or you can also toggle the extension on/off
+			from browser's extension settings.
+		</span>
 		<span className="mt-4 text-sm text-gray-600">
 			Using a different wallet?{" "}
 			<a
