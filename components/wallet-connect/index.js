@@ -18,6 +18,7 @@ import getPolkadotExtensionInfo from "@lib/polkadot-extension";
 import { useAccounts } from "@lib/store";
 import { trackEvent, Events, setUserProperties } from "@lib/analytics";
 import { setCookie } from "nookies";
+import RecoverAuthInfo from "./RecoverAuthInfo";
 
 const [useWalletConnect] = create((set) => ({
 	isOpen: false,
@@ -29,6 +30,7 @@ const [useWalletConnect] = create((set) => ({
 const WalletConnectStates = {
 	REJECTED: "rejected",
 	CONNECTED: "connected",
+	RECOVERAUTH: "recover",
 };
 
 const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
@@ -113,6 +115,10 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 			  });
 	};
 
+	const handleRecoveryAuth = () => {
+		setState(WalletConnectStates.RECOVERAUTH);
+	};
+
 	return (
 		<Modal
 			isOpen={isOpen}
@@ -160,7 +166,9 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 				/>
 				<ModalBody>
 					{state === WalletConnectStates.REJECTED ? (
-						<RejectedPage />
+						<RejectedPage handleRecoveryAuth={handleRecoveryAuth} />
+					) : state === WalletConnectStates.RECOVERAUTH ? (
+						<RecoverAuthInfo />
 					) : !accounts ? (
 						<div className="flex-center w-full h-full min-h-26-rem">
 							<div className="flex-center flex-col">
