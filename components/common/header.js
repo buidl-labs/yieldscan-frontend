@@ -340,12 +340,14 @@ const Header = ({ isBase }) => {
 															? setCookie(
 																	null,
 																	"kusamaDefault",
-																	account.address
+																	account.address,
+																	{ maxAge: 7 * 24 * 60 * 60 }
 															  )
 															: setCookie(
 																	null,
 																	"polkadotDefault",
-																	account.address
+																	account.address,
+																	{ maxAge: 7 * 24 * 60 * 60 }
 															  );
 														setIsStashPopoverOpen(false);
 													}}
@@ -444,12 +446,14 @@ const Header = ({ isBase }) => {
 															? setCookie(
 																	null,
 																	"kusamaDefault",
-																	account.address
+																	account.address,
+																	{ maxAge: 7 * 24 * 60 * 60 }
 															  )
 															: setCookie(
 																	null,
 																	"polkadotDefault",
-																	account.address
+																	account.address,
+																	{ maxAge: 7 * 24 * 60 * 60 }
 															  );
 														setIsStashPopoverOpen(false);
 													}}
@@ -547,7 +551,9 @@ const Header = ({ isBase }) => {
 													setAllNominations(null);
 													// setNominatorsData(undefined);
 													setNomLoading(true);
-													setCookie(null, "networkName", "Kusama");
+													setCookie(null, "networkName", "Kusama", {
+														maxAge: 7 * 24 * 60 * 60,
+													});
 													setCouncilMembers(undefined);
 													setTransactionHash(null);
 													setCouncilLoading(true);
@@ -585,7 +591,9 @@ const Header = ({ isBase }) => {
 													setAllNominations(null);
 													// setNominatorsData(undefined);
 													setNomLoading(true);
-													setCookie(null, "networkName", "Polkadot");
+													setCookie(null, "networkName", "Polkadot", {
+														maxAge: 7 * 24 * 60 * 60,
+													});
 													setCouncilMembers(undefined);
 													setTransactionHash(null);
 													setCouncilLoading(true);
