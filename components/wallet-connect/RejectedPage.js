@@ -1,4 +1,4 @@
-const IntroPage = ({ onConnected, onDisclaimer }) => (
+const RejectedPage = ({ onConnected, onDisclaimer }) => (
 	<div className="pb-12 flex flex-col text-center items-center">
 		<img src="/images/polkadot-wallet-connect.png" width="200px" />
 		<h3 className="mt-4 text-xl font-semibold px-20 text-gray-700">
@@ -40,4 +40,4 @@ const IntroPage = ({ onConnected, onDisclaimer }) => (
 	</div>
 );
 
-export default IntroPage;
+export default RejectedPage;
