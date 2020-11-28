@@ -13,6 +13,7 @@ import {
 	useHeaderLoading,
 	usePaymentPopover,
 	useSelectedNetwork,
+	useTransactionHash,
 	useValidatorData,
 } from "@lib/store";
 import { PaymentPopover } from "@components/new-payment";
@@ -51,6 +52,7 @@ const RewardCalculatorPage = () => {
 	const router = useRouter();
 	const { selectedNetwork } = useSelectedNetwork();
 	const networkInfo = getNetworkInfo(selectedNetwork);
+	const { transactionHash, setTransactionHash } = useTransactionHash();
 
 	const { toggle } = useWalletConnect();
 	const {
@@ -207,6 +209,7 @@ const RewardCalculatorPage = () => {
 
 	const onPayment = async () => {
 		updateTransactionState(Events.INTENT_STAKING);
+		if (transactionHash) setTransactionHash(null);
 		router.push("/payment", "/payment", "shallow");
 		// get(bondedAmount, "currency", 0) === 0
 		// 	? router.push("/payment", "/payment", "shallow")
