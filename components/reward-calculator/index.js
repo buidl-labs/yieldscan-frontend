@@ -6,10 +6,7 @@ import AmountInput from "./AmountInput";
 import TimePeriodInput from "./TimePeriodInput";
 import ExpectedReturnsCard from "./ExpectedReturnsCard";
 import CompoundRewardSlider from "./CompoundRewardSlider";
-import {
-	WalletConnectPopover,
-	useWalletConnect,
-} from "@components/wallet-connect";
+import { useWalletConnect } from "@components/wallet-connect";
 import {
 	useAccounts,
 	useTransaction,
@@ -55,7 +52,7 @@ const RewardCalculatorPage = () => {
 	const { selectedNetwork } = useSelectedNetwork();
 	const networkInfo = getNetworkInfo(selectedNetwork);
 
-	const { isOpen, toggle } = useWalletConnect();
+	const { toggle } = useWalletConnect();
 	const {
 		isOpen: isRiskGlossaryOpen,
 		onClose: onRiskGlossaryClose,
@@ -240,7 +237,6 @@ const RewardCalculatorPage = () => {
 		</div>
 	) : (
 		<div className="flex pt-12 px-10">
-			<WalletConnectPopover isOpen={isOpen} networkInfo={networkInfo} />
 			<GlossaryModal
 				isOpen={isRiskGlossaryOpen}
 				onClose={onRiskGlossaryClose}
