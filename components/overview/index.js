@@ -256,7 +256,7 @@ const Overview = () => {
 			</div>
 		</div>
 	) : (
-		<div className="px-10 py-10 w-full h-full">
+		<div className="py-10 w-full h-full">
 			<RewardDestinationModal
 				isOpen={isRewardDestinationModalOpen}
 				close={closeRewardDestinationModal}
@@ -290,23 +290,19 @@ const Overview = () => {
 			<ChillAlert isOpen={chillAlertOpen} close={closeChillAlert} />
 			<div className="flex-col">
 				<div className="flex">
-					<div className="flex w-1/2 mr-8">
-						<div className="w-full">
-							<OverviewCards
-								stats={isNil(userData) ? null : userData.stats}
-								bondedAmount={bondedAmount}
-								address={stashAccount.address}
-								activeStake={activeStake}
-								validators={isNil(userData) ? null : userData.validatorsInfo}
-								unlockingBalances={unlockingBalances}
-								bondFunds={() => openFundsUpdateModal("bond")}
-								unbondFunds={() => openFundsUpdateModal("unbond")}
-								openRewardDestinationModal={toggleRewardDestinationModal}
-								networkInfo={networkInfo}
-							/>
-						</div>
-					</div>
-					<div className="flex ml-8 w-1/2">
+					<OverviewCards
+						stats={isNil(userData) ? null : userData.stats}
+						bondedAmount={bondedAmount}
+						address={stashAccount.address}
+						activeStake={activeStake}
+						validators={isNil(userData) ? null : userData.validatorsInfo}
+						unlockingBalances={unlockingBalances}
+						bondFunds={() => openFundsUpdateModal("bond")}
+						unbondFunds={() => openFundsUpdateModal("unbond")}
+						openRewardDestinationModal={toggleRewardDestinationModal}
+						networkInfo={networkInfo}
+					/>
+					<div className="flex ml-20 w-1/2">
 						{activeStake && validators && (
 							<EarningsOutput
 								networkDenom={networkInfo.denom}
@@ -330,7 +326,7 @@ const Overview = () => {
 					<div className="flex flex-col h-full mb-2">
 						<button
 							onClick={handleValToggle}
-							className="flex text-gray-600 text-xs mt-4"
+							className="flex text-gray-600 text-xs mt-12"
 						>
 							<ChevronRight
 								size={16}
@@ -341,8 +337,7 @@ const Overview = () => {
 							{showValidators ? "Hide" : "See your"} validators
 						</button>
 						<Collapse isOpen={showValidators}>
-							<div className="flex justify-between items-center">
-								{/* <div className="flex items-center">
+							{/* <div className="flex items-center">
 									<h3 className="text-2xl">
 										My validators
 									</h3>
@@ -355,28 +350,27 @@ const Overview = () => {
 										</button>
 									)}
 								</div> */}
-								<div className="flex items-center">
-									<button
-										className={
-											selectedTab === Tabs.NOMINATIONS
-												? "text-gray-900 mx-2"
-												: "text-gray-500 mx-2"
-										}
-										onClick={() => setSelectedTab(Tabs.NOMINATIONS)}
-									>
-										Selected
-									</button>
-									<button
-										className={
-											selectedTab === Tabs.ACTIVE_VALIDATORS
-												? "text-gray-900 mx-2"
-												: "text-gray-500 mx-2"
-										}
-										onClick={() => setSelectedTab(Tabs.ACTIVE_VALIDATORS)}
-									>
-										Active
-									</button>
-								</div>
+							<div className="flex items-center mt-4 mb-2">
+								<button
+									className={
+										selectedTab === Tabs.NOMINATIONS
+											? "text-gray-900 mx-2"
+											: "text-gray-500 mx-2"
+									}
+									onClick={() => setSelectedTab(Tabs.NOMINATIONS)}
+								>
+									Selected
+								</button>
+								<button
+									className={
+										selectedTab === Tabs.ACTIVE_VALIDATORS
+											? "text-gray-900 mx-2"
+											: "text-gray-500 mx-2"
+									}
+									onClick={() => setSelectedTab(Tabs.ACTIVE_VALIDATORS)}
+								>
+									Active
+								</button>
 							</div>
 							{selectedTab === Tabs.ACTIVE_VALIDATORS ? (
 								<NominationsTable

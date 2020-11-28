@@ -9,10 +9,12 @@ import Testimonials from "./testimonials";
 import FAQs from "./FAQs";
 import SupportedNetworks from "./SupportedNetworks";
 import { ArrowUp, ChevronRight } from "react-feather";
+import { useRouter } from "next/router";
 
 window.setImmediate = (cb) => cb();
 
 const HomePage = () => {
+	const router = useRouter();
 	const { selectedNetwork } = useSelectedNetwork();
 	const networkInfo = getNetworkInfo(selectedNetwork);
 	const { stakingAmount, setStakingAmount } = useTransaction();
@@ -41,7 +43,7 @@ const HomePage = () => {
 	return (
 		<div className="pt-12 w-full min-h-full px-4 sm:px-8 md:px-12 lg:px-20 xl:px-32 flex flex-col items-center">
 			<button
-				className={`fixed bottom-0 z-20 mb-8 px-4 py-2 bg-gray-700 rounded-full text-white flex items-center justify-center transition ease-in-out duration-500 ${
+				className={`fixed bottom-0 z-20 mb-24 px-4 py-2 bg-gray-700 rounded-full text-white flex items-center justify-center transition ease-in-out duration-500 ${
 					showScroll ? "opacity-75 hover:opacity-100" : "opacity-0"
 				}`}
 				onClick={scrollToTop}

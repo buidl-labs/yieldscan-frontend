@@ -126,9 +126,10 @@ const PaymentPopover = ({
 		setStakingLoading(true);
 		setCloseOnOverlayClick(false);
 
-		trackEvent(Events.INTENT_TRANSACTON, {
+		trackEvent(Events.INTENT_TRANSACTION, {
 			transactionType: !!transactionState.stakingAmount ? "STAKE" : "NOMINATE",
-			transactionState,
+			stakingAmount: get(transactionState, "stakingAmount"),
+			riskPreference: get(transactionState, "riskPreference"),
 		});
 
 		const handlers = {
@@ -154,13 +155,15 @@ const PaymentPopover = ({
 
 				if (status === 0) {
 					trackEvent(Events.TRANSACTION_SUCCESS, {
-						transactionState,
+						stakingAmount: get(transactionState, "stakingAmount"),
+						riskPreference: get(transactionState, "riskPreference"),
 						successMessage: message,
 					});
 				} else {
 					trackEvent(Events.TRANSACTION_FAILED, {
-						transactionState,
-						successMessage: message,
+						stakingAmount: get(transactionState, "stakingAmount"),
+						riskPreference: get(transactionState, "riskPreference"),
+						errorMessage: message,
 						eventLogs,
 					});
 				}

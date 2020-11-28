@@ -16,7 +16,7 @@ import RejectedPage from "./RejectedPage";
 import SelectAccount from "./SelectAccount";
 import getPolkadotExtensionInfo from "@lib/polkadot-extension";
 import { useAccounts } from "@lib/store";
-import { trackEvent, Events } from "@lib/analytics";
+import { trackEvent, Events, setUserProperties } from "@lib/analytics";
 import { setCookie } from "nookies";
 
 const [useWalletConnect] = create((set) => ({
@@ -50,14 +50,37 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 	};
 
 	useEffect(() => {
-		trackEvent(Events.INTENT_CONNECT_WALLET);
-	}, []);
+		getPolkadotExtensionInfo()
+			.then(({ isExtensionAvailable, accounts = [] }) => {
+				if (!isExtensionAvailable) {
+					setUserProperties({ hasExtension: false });
+				} else {
+					if (!accounts.length)
+						throw new Error("Couldn't find any stash or unnassigned accounts.");
+
+					accounts.map((x) => {
+						x.address = encodeAddress(
+							decodeAddress(x.address.toString()),
+							networkInfo.addressPrefix
+						);
+					});
+					setState(WalletConnectStates.CONNECTED);
+					setAccounts(accounts);
+					setUserProperties({hasExtension: true})
+				}
+			})
+			.catch((error) => {
+				// TODO: handle error properly using UI toast
+				alert(error);
+			});
+	}, [networkInfo]);
 
 	useEffect(() => {
 		getPolkadotExtensionInfo(handlers)
 			.then(({ isExtensionAvailable, accounts = [] }) => {
 				if (!isExtensionAvailable) {
 					setState(WalletConnectStates.REJECTED);
+					setUserProperties({ hasExtension: false });
 				} else {
 					setCookie(null, "isAuthorized", true);
 					if (!accounts.length)
@@ -72,9 +95,7 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 					// setState(WalletConnectStates.CONNECTED);
 					setAccounts(accounts);
 
-					trackEvent(Events.WALLET_CONNECTED, {
-						userAccounts: accounts.map((account) => account.address),
-					});
+					setUserProperties({ hasExtension: true });
 				}
 			})
 			.catch((error) => {

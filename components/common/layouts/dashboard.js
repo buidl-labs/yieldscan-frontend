@@ -8,9 +8,9 @@ import {
 } from "@lib/store";
 import createPolkadotAPIInstance from "@lib/polkadot-api";
 import convertCurrency from "@lib/convert-currency";
-import { isNil, pick } from "lodash";
+import { get, includes, isNil, pick } from "lodash";
 import { useEffect } from "react";
-import { trackEvent, Events } from "@lib/analytics";
+import { trackEvent, Events, setUserProperties } from "@lib/analytics";
 import Footer from "../footer";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 
@@ -22,8 +22,11 @@ const Header = dynamic(
 import { getNetworkInfo } from "yieldscan.config";
 import { Alert, AlertIcon, CloseButton } from "@chakra-ui/core";
 import SideMenuFooter from "../side-menu-footer";
+import { useRouter } from "next/router";
+import Routes from "@lib/routes";
 
 const withDashboardLayout = (children) => {
+	const router = useRouter();
 	const [showBetaMessage, setShowBetaMessage] = React.useState(true);
 	const { setApiInstance } = usePolkadotApi();
 	const { selectedNetwork, setSelectedNetwork } = useSelectedNetwork();
@@ -34,6 +37,7 @@ const withDashboardLayout = (children) => {
 		stashAccount,
 		setAccountInfoLoading,
 		setAccountState,
+		accountsWithBalances,
 	} = useAccounts((state) =>
 		pick(state, [
 			"accounts",
@@ -160,11 +164,13 @@ const withDashboardLayout = (children) => {
 						}
 
 						const setStateAndTrack = (details) => {
-							trackEvent(Events.USER_ACCOUNT_SELECTION, {
-								user: {
-									...details,
-									stashId: address,
-								},
+							setUserProperties({
+								stashId: address,
+								bondedAmount: `${get(details, "bondedAmount.currency")} ${get(
+									networkInfo,
+									"denom"
+								)} ($${get(details, "bondedAmount.subCurrency")})`,
+								accounts: accountsWithBalances,
 							});
 							setAccountState(details);
 						};
@@ -205,34 +211,43 @@ const withDashboardLayout = (children) => {
 					</div>
 				</div>
 
-				<div className="h-full px-8 xl:w-10/12 overflow-y-scroll .max-w-screen-sm mx-auto">
-					{showBetaMessage && (
-						<Alert
-							status="info"
-							color="blue.500"
-							rounded="lg"
-							mt={4}
-							fontSize="sm"
-							justifyContent="center"
-							flex
-						>
-							<AlertIcon />
-							This platform is currently in beta. Please proceed with
-							discretion.
-							<CloseButton
-								position="absolute"
-								right="8px"
-								top="8px"
-								onClick={() => setShowBetaMessage(false)}
-							/>
-						</Alert>
-					)}
-					{children()}
+				<div className="h-full px-8 overflow-y-scroll  mx-auto w-full">
+					<div
+						className={`mx-auto h-full ${
+							includes(
+								[Routes.OVERVIEW, Routes.CALCULATOR],
+								get(router, "pathname")
+							) ? "max-w-screen-lg" : "max-w-screen-xl"
+						}`}
+					>
+						{showBetaMessage && (
+							<Alert
+								status="info"
+								color="blue.500"
+								rounded="lg"
+								mt={4}
+								fontSize="sm"
+								justifyContent="center"
+								flex
+							>
+								<AlertIcon />
+								This platform is currently in beta. Please proceed with
+								discretion.
+								<CloseButton
+									position="absolute"
+									right="8px"
+									top="8px"
+									onClick={() => setShowBetaMessage(false)}
+								/>
+							</Alert>
+						)}
+						{children()}
+					</div>
 				</div>
 			</div>
 			<style jsx>{`
 				.dashboard-content {
-					height: calc(100vh - 4rem);
+					height: calc(100vh - 4.125rem);
 				}
 				.sidemenu-container {
 					background: #f7fbff;

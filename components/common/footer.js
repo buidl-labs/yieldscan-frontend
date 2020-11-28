@@ -26,6 +26,9 @@ const Footer = () => {
 					</p>
 					<div className="flex items-center flex-wrap">
 						<div>
+							<Link href="/about">
+								<a className="mr-8 hover:text-teal-500">About Us</a>
+							</Link>
 							<Link href="/privacy">
 								<a className="mr-8 hover:text-teal-500">Privacy</a>
 							</Link>
