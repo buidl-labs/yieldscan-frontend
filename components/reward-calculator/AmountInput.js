@@ -19,7 +19,7 @@ const AmountInputDefault = ({
 	const maxAmount = Math.max(
 		bonded + get(freeAmount, "currency") - 0.1,
 		0
-	).toFixed(4);
+	);
 
 	useEffect(() => {
 		if (bonded) {

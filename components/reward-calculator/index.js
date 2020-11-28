@@ -42,6 +42,7 @@ import { trackEvent, Events } from "@lib/analytics";
 import convertCurrency from "@lib/convert-currency";
 import { getNetworkInfo } from "yieldscan.config";
 import { HelpCircle } from "react-feather";
+import formatCurrency from "@lib/format-currency";
 
 const trackRewardCalculatedEvent = debounce((eventData) => {
 	trackEvent(Events.REWARD_CALCULATED, eventData);
@@ -295,8 +296,13 @@ const RewardCalculatorPage = () => {
 											Insufficient Balance
 										</AlertTitle>
 										<AlertDescription color="red.500">
-											{`We cannot stake this amount since we recommend maintaining a
-									minimum balance of 0.1 ${networkInfo.denom} in your account at all times.`}{" "}
+											{`You need an additional of ${formatCurrency.methods.formatAmount(
+												Math.trunc(
+													Number(amount - (totalBalance - 0.1)) *
+														10 ** networkInfo.decimalPlaces
+												),
+												networkInfo
+											)} to proceed further.`}{" "}
 											<Popover trigger="hover" usePortal>
 												<PopoverTrigger>
 													<span className="underline cursor-help">Why?</span>
