@@ -147,6 +147,7 @@ const Payment = () => {
 	const networkInfo = getNetworkInfo(selectedNetwork);
 	const { apiInstance } = usePolkadotApi();
 	const [currentStep, setCurrentStep] = useState(0);
+	const [isSuccessful, setIsSuccessful] = useState(false);
 	const [chainError, setChainError] = useState(false);
 	const [loaderError, setLoaderError] = useState(false);
 	const { accounts, stashAccount, bondedAmount } = useAccounts();
@@ -189,7 +190,7 @@ const Payment = () => {
 	}, []);
 
 	useEffect(() => {
-		if (transactionHash) {
+		if (transactionHash && isSuccessful) {
 			const confettiSettings = {
 				target: "confetti-holder",
 				max: "150",
@@ -212,13 +213,13 @@ const Payment = () => {
 
 			return () => confetti.clear();
 		}
-	}, [transactionHash]);
+	}, [transactionHash, isSuccessful]);
 
 	useEffect(() => {
-		if (transactionHash) {
-			setTimeout(() => router.push({ pathname: "/overview" }), 2500);
+		if (transactionHash && isSuccessful) {
+			setTimeout(() => router.push({ pathname: "/overview" }), 5000);
 		}
-	}, [transactionHash]);
+	}, [transactionHash, isSuccessful]);
 
 	const transact = () => {
 		setStakingLoading(true);
@@ -245,7 +246,9 @@ const Payment = () => {
 				setLoaderError(false);
 				setTimeout(() => {
 					setTransactionHash(transactionHash);
-					setStakingEvent("Your transaction was successful!");
+					setStakingEvent(
+						"Your transaction is successfully sent to the network!"
+					);
 				}, 750);
 				trackEvent(Events.TRANSACTION_SENT, {
 					hash: get(hash, "message"),
@@ -257,6 +260,10 @@ const Payment = () => {
 			},
 			onFinish: (status, message, eventLogs) => {
 				// status = 0 for success, anything else for error code
+				if (status === 0) {
+					setStakingEvent("Your transaction was successful");
+					setIsSuccessful(true);
+				}
 				toast({
 					title: status === 0 ? "Successful!" : "Error!",
 					status: status === 0 ? "success" : "error",
@@ -352,7 +359,7 @@ const Payment = () => {
 
 	return (
 		<>
-			{transactionHash && (
+			{transactionHash && isSuccessful && (
 				<canvas id="confetti-holder" className="absolute w-full"></canvas>
 			)}
 			<div className="mx-auto mb-8 mt-4 px-4 md:px-0 max-w-2xl">
@@ -417,7 +424,9 @@ const Payment = () => {
 					<Flex h="100vh" alignItems="center" justifyContent="center">
 						<span
 							className={`loader ${
-								loaderError ? "fail" : transactionHash && "success"
+								loaderError
+									? "fail"
+									: transactionHash && isSuccessful && "success"
 							}`}
 						></span>
 						<p className="text-gray-700">{stakingEvent}</p>
