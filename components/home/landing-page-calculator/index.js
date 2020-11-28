@@ -120,7 +120,13 @@ const LandingPageCalculator = ({
 										value={value}
 										onChange={onChange}
 										className="text-gray-700"
-										fontSize={String(inputValue).length > 18 ? "md" : String(inputValue).length > 15 ? "lg" : "xl"}
+										fontSize={
+											String(inputValue).length > 18
+												? "md"
+												: String(inputValue).length > 15
+												? "lg"
+												: "xl"
+										}
 										fontWeight="medium"
 										variant="filled"
 										isRequired
@@ -144,7 +150,7 @@ const LandingPageCalculator = ({
 							About the network
 						</FormLabel>
 						<p className="text-sm text-gray-600 w-80">
-							Kusama is an early, unaudited, and unrefined release of Polkadot.
+							{networkInfo.about ? networkInfo.about + " " : ""}
 							The market cap is{" "}
 							<span className="text-teal-500">
 								{marketCap
