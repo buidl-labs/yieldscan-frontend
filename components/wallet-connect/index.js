@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import create from "zustand";
-import { isNil } from "lodash";
 import { ChevronLeft } from "react-feather";
 import {
 	Modal,
@@ -12,8 +11,11 @@ import {
 	Spinner,
 } from "@chakra-ui/core";
 import { encodeAddress, decodeAddress } from "@polkadot/util-crypto";
-import RejectedPage from "./RejectedPage";
-import SelectAccount from "./SelectAccount";
+import IntroPage from "./Intro";
+import CreateWallet from "./CreateWallet";
+import ImportAccount from "./ImportAccount";
+import WalletConnected from "./WalletConnected";
+import WalletDisclaimer from "./WalletDisclaimer";
 import getPolkadotExtensionInfo from "@lib/polkadot-extension";
 import { useAccounts } from "@lib/store";
 import { trackEvent, Events, setUserProperties } from "@lib/analytics";
@@ -27,27 +29,24 @@ const [useWalletConnect] = create((set) => ({
 }));
 
 const WalletConnectStates = {
-	REJECTED: "rejected",
+	INTRO: "intro",
 	CONNECTED: "connected",
+	DISCLAIMER: "disclaimer",
+	CREATE: "create",
+	IMPORT: "import",
 };
 
-const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
+const WalletConnectPopover = ({ styles, networkInfo }) => {
 	const { isOpen, close } = useWalletConnect();
-	const [extensionEvent, setExtensionEvent] = useState();
+	const [ledgerLoading, setLedgerLoading] = useState(false);
 	const {
 		accounts,
-		stashAccount,
 		accountsWithBalances,
 		setAccounts,
 		setStashAccount,
+		setAccountState,
 	} = useAccounts();
-	const [state, setState] = useState("");
-
-	const handlers = {
-		onEvent: (eventInfo) => {
-			setExtensionEvent(eventInfo.message);
-		},
-	};
+	const [state, setState] = useState(WalletConnectStates.INTRO);
 
 	useEffect(() => {
 		getPolkadotExtensionInfo()
@@ -76,13 +75,11 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 	}, [networkInfo]);
 
 	useEffect(() => {
-		getPolkadotExtensionInfo(handlers)
+		getPolkadotExtensionInfo()
 			.then(({ isExtensionAvailable, accounts = [] }) => {
 				if (!isExtensionAvailable) {
-					setState(WalletConnectStates.REJECTED);
 					setUserProperties({ hasExtension: false });
 				} else {
-					setCookie(null, "isAuthorized", true);
 					if (!accounts.length)
 						throw new Error("Couldn't find any stash or unnassigned accounts.");
 
@@ -92,7 +89,7 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 							networkInfo.addressPrefix
 						);
 					});
-					// setState(WalletConnectStates.CONNECTED);
+					setState(WalletConnectStates.CONNECTED);
 					setAccounts(accounts);
 
 					setUserProperties({ hasExtension: true });
@@ -104,29 +101,27 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 			});
 	}, [networkInfo]);
 
-	useEffect(() => {
-		let previousAccountAvailable = false;
-		if (!stashAccount && accounts) {
-			if (!isNil(cookies.kusamaDefault) || !isNil(cookies.polkadotDefault)) {
-				networkInfo.name == "Kusama"
-					? accounts
-							.filter((account) => account.address == cookies.kusamaDefault)
-							.map((account) => {
-								previousAccountAvailable = true;
-								setStashAccount(account);
-							})
-					: accounts
-							.filter((account) => account.address == cookies.polkadotDefault)
-							.map((account) => {
-								previousAccountAvailable = true;
-								setStashAccount(account);
-							});
-			}
-			if (!previousAccountAvailable) {
+	const onConnected = () => {
+		getPolkadotExtensionInfo()
+			.then(({ isExtensionAvailable, accounts = [] }) => {
+				if (!isExtensionAvailable) throw new Error("Extension not available.");
+				if (!accounts.length)
+					throw new Error("Couldn't find any stash or unnassigned accounts.");
+
+				accounts.map((x) => {
+					x.address = encodeAddress(
+						decodeAddress(x.address.toString()),
+						networkInfo.addressPrefix
+					);
+				});
 				setState(WalletConnectStates.CONNECTED);
-			} else close();
-		}
-	}, [accounts]);
+				setAccounts(accounts);
+			})
+			.catch((error) => {
+				// TODO: handle error properly using UI toast
+				alert(error);
+			});
+	};
 
 	const onStashSelected = async (stashAccount) => {
 		if (stashAccount) close();
@@ -147,7 +142,7 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 			<ModalOverlay />
 			<ModalContent
 				rounded="lg"
-				maxWidth={state === WalletConnectStates.REJECTED ? "33rem" : "40rem"}
+				maxWidth={state === WalletConnectStates.INTRO ? "33rem" : "40rem"}
 				{...styles}
 				py={4}
 			>
@@ -159,7 +154,7 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 					].includes(state) ? (
 						<div
 							className="text-sm flex-center px-2 py-1 text-gray-700 bg-gray-200 rounded-xl w-40 font-normal cursor-pointer"
-							onClick={() => setState(WalletConnectStates.REJECTED)}
+							onClick={() => setState(WalletConnectStates.INTRO)}
 						>
 							<ChevronLeft />
 							<span>Wallet Connect</span>
@@ -182,30 +177,51 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 					mr={4}
 				/>
 				<ModalBody>
-					{state === WalletConnectStates.REJECTED ? (
-						<RejectedPage />
+					{state === WalletConnectStates.INTRO ? (
+						<IntroPage
+							onConnected={onConnected}
+							onDisclaimer={() => setState(WalletConnectStates.DISCLAIMER)}
+						/>
 					) : !accounts ? (
 						<div className="flex-center w-full h-full min-h-26-rem">
 							<div className="flex-center flex-col">
 								<Spinner size="xl" color="teal.500" thickness="4px" />
 								<span className="text-sm text-gray-600 mt-5">
-									{extensionEvent}
+									Fetching your accounts...
 								</span>
 							</div>
 						</div>
 					) : (
 						state === WalletConnectStates.CONNECTED && (
-							<SelectAccount
+							<WalletConnected
 								accounts={
 									accountsWithBalances !== null
 										? accountsWithBalances
 										: accounts
 								}
+								ledgerLoading={ledgerLoading}
 								onStashSelected={onStashSelected}
 								networkInfo={networkInfo}
 							/>
 						)
 					)}
+					{/* {state === WalletConnectStates.DISCLAIMER && (
+						<WalletDisclaimer
+							onCreate={() => setState(WalletConnectStates.CREATE)}
+						/>
+					)}
+					{state === WalletConnectStates.CREATE && (
+						<CreateWallet
+							onPrevious={() => setState(WalletConnectStates.DISCLAIMER)}
+							onNext={() => setState(WalletConnectStates.IMPORT)}
+						/>
+					)}
+					{state === WalletConnectStates.IMPORT && (
+						<ImportAccount
+							onPrevious={() => setState(WalletConnectStates.CREATE)}
+							onNext={() => setState(WalletConnectStates.CONNECTED)}
+						/>
+					)} */}
 				</ModalBody>
 			</ModalContent>
 		</Modal>

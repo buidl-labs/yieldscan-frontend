@@ -240,7 +240,7 @@ const RewardCalculatorPage = () => {
 		</div>
 	) : (
 		<div className="flex pt-12 px-10">
-			{/* <WalletConnectPopover isOpen={isOpen} networkInfo={networkInfo} /> */}
+			<WalletConnectPopover isOpen={isOpen} networkInfo={networkInfo} />
 			<GlossaryModal
 				isOpen={isRiskGlossaryOpen}
 				onClose={onRiskGlossaryClose}

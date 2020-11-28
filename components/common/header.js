@@ -110,26 +110,25 @@ const Header = ({ isBase }) => {
 		}
 	}, [stashAccount, networkInfo]);
 
-	// Moved the below section to walletConnectPopover
-	// useEffect(() => {
-	// 	if (
-	// 		(!isNil(cookies.kusamaDefault) || !isNil(cookies.polkadotDefault)) &&
-	// 		!stashAccount &&
-	// 		accounts
-	// 	) {
-	// 		selectedNetwork == "Kusama"
-	// 			? accounts
-	// 					.filter((account) => account.address == cookies.kusamaDefault)
-	// 					.map((account) => {
-	// 						setStashAccount(account);
-	// 					})
-	// 			: accounts
-	// 					.filter((account) => account.address == cookies.polkadotDefault)
-	// 					.map((account) => {
-	// 						setStashAccount(account);
-	// 					});
-	// 	}
-	// }, [accounts]);
+	useEffect(() => {
+		if (
+			(!isNil(cookies.kusamaDefault) || !isNil(cookies.polkadotDefault)) &&
+			!stashAccount &&
+			accounts
+		) {
+			selectedNetwork == "Kusama"
+				? accounts
+						.filter((account) => account.address == cookies.kusamaDefault)
+						.map((account) => {
+							setStashAccount(account);
+						})
+				: accounts
+						.filter((account) => account.address == cookies.polkadotDefault)
+						.map((account) => {
+							setStashAccount(account);
+						});
+		}
+	}, [accounts]);
 
 	useEffect(() => {
 		if (accountsWithBalances && stashAccount) {
@@ -204,13 +203,7 @@ const Header = ({ isBase }) => {
 					: "max-w-65-rem xl:px-0"
 			} bg-white px-8 py-8 h-12 mx-auto`}
 		>
-			{!isBase && (isOpen || !isNil(cookies.isAuthorized)) && (
-				<WalletConnectPopover
-					isOpen={isOpen}
-					networkInfo={networkInfo}
-					cookies={cookies}
-				/>
-			)}
+			<WalletConnectPopover isOpen={isOpen} networkInfo={networkInfo} />
 			<EditControllerModal
 				isOpen={editControllerModalOpen}
 				close={closeEditControllerModal}
@@ -345,18 +338,12 @@ const Header = ({ isBase }) => {
 															? setCookie(
 																	null,
 																	"kusamaDefault",
-																	account.address,
-																	{
-																		maxAge: 7 * 24 * 60 * 60,
-																	}
+																	account.address
 															  )
 															: setCookie(
 																	null,
 																	"polkadotDefault",
-																	account.address,
-																	{
-																		maxAge: 7 * 24 * 60 * 60,
-																	}
+																	account.address
 															  );
 														setIsStashPopoverOpen(false);
 													}}
@@ -455,18 +442,12 @@ const Header = ({ isBase }) => {
 															? setCookie(
 																	null,
 																	"kusamaDefault",
-																	account.address,
-																	{
-																		maxAge: 7 * 24 * 60 * 60,
-																	}
+																	account.address
 															  )
 															: setCookie(
 																	null,
 																	"polkadotDefault",
-																	account.address,
-																	{
-																		maxAge: 7 * 24 * 60 * 60,
-																	}
+																	account.address
 															  );
 														setIsStashPopoverOpen(false);
 													}}
@@ -564,9 +545,7 @@ const Header = ({ isBase }) => {
 													setAllNominations(null);
 													// setNominatorsData(undefined);
 													setNomLoading(true);
-													setCookie(null, "networkName", "Kusama", {
-														maxAge: 7 * 24 * 60 * 60,
-													});
+													setCookie(null, "networkName", "Kusama");
 													setCouncilMembers(undefined);
 													setTransactionHash(null);
 													setCouncilLoading(true);
@@ -604,9 +583,7 @@ const Header = ({ isBase }) => {
 													setAllNominations(null);
 													// setNominatorsData(undefined);
 													setNomLoading(true);
-													setCookie(null, "networkName", "Polkadot", {
-														maxAge: 7 * 24 * 60 * 60,
-													});
+													setCookie(null, "networkName", "Polkadot");
 													setCouncilMembers(undefined);
 													setTransactionHash(null);
 													setCouncilLoading(true);

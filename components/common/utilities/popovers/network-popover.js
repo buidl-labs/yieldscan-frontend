@@ -99,9 +99,7 @@ const NetworkPopover = ({ isExpanded, hasBorder }) => {
 								setAllNominations(null);
 								// setNominatorsData(undefined);
 								setNomLoading(true);
-								setCookie(null, "networkName", "Kusama", {
-									maxAge: 7 * 24 * 60 * 60,
-								});
+								setCookie(null, "networkName", "Kusama");
 								setCouncilMembers(undefined);
 								setCouncilLoading(true);
 								setStashAccount(null);
@@ -138,9 +136,7 @@ const NetworkPopover = ({ isExpanded, hasBorder }) => {
 								setAllNominations(null);
 								// setNominatorsData(undefined);
 								setNomLoading(true);
-								setCookie(null, "networkName", "Polkadot", {
-									maxAge: 7 * 24 * 60 * 60,
-								});
+								setCookie(null, "networkName", "Polkadot");
 								setCouncilMembers(undefined);
 								setCouncilLoading(true);
 								setStashAccount(null);
