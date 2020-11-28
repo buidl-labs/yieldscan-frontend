@@ -246,7 +246,7 @@ const Overview = () => {
 				</button>
 			</div>
 		</div>
-	) : loading || nominationsLoading ? (
+	) : loading || nominationsLoading || isNil(bondedAmount) ? (
 		<div className="flex-center w-full h-full">
 			<div className="flex-center flex-col">
 				<Spinner size="xl" color="teal.500" thickness="4px" />
