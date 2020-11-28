@@ -1,6 +1,12 @@
 import { Select, Input, InputRightElement, InputGroup } from "@chakra-ui/core";
 
-const TimePeriodInput = ({ value, unit, onChange, onUnitChange }) => {
+const TimePeriodInput = ({
+	value,
+	unit,
+	onChange,
+	onUnitChange,
+	trackRewardCalculatedEvent,
+}) => {
 	return (
 		<div className="flex items-center justify-between w-2/3">
 			<InputGroup className="border border-gray-200 rounded-full">
@@ -19,7 +25,14 @@ const TimePeriodInput = ({ value, unit, onChange, onUnitChange }) => {
 							iconSize="0.75rem"
 							color="gray.600"
 							value={unit}
-							onChange={(ev) => onUnitChange(ev.target.value)}
+							onChange={(ev) => {
+								onUnitChange(ev.target.value);
+								trackRewardCalculatedEvent({
+									timePeriod: `${value === 0 ? null : value} ${
+										ev.target.value
+									}`,
+								});
+							}}
 						>
 							<option value="eras">eras</option>
 							<option value="days">days</option>
@@ -40,7 +53,12 @@ const TimePeriodInput = ({ value, unit, onChange, onUnitChange }) => {
 					px={4}
 					placeholder="0"
 					defaultValue={value === 0 ? null : value}
-					onChange={(ev) => onChange(Number(ev.target.value))}
+					onChange={(ev) => {
+						onChange(Number(ev.target.value));
+						trackRewardCalculatedEvent({
+							timePeriod: `${Number(ev.target.value)} ${unit}`,
+						});
+					}}
 					border="none"
 					fontSize="lg"
 				/>

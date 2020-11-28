@@ -26,6 +26,7 @@ import RewardDestination from "./RewardDestination";
 import TermsAndServicePopover from "@components/payment/TermsOfService";
 import { GlossaryModal, HelpPopover } from "@components/reward-calculator";
 import RiskTag from "@components/reward-calculator/RiskTag";
+import { Events, trackEvent } from "@lib/analytics";
 const ValidatorCard = ({
 	name,
 	stashId,
@@ -181,9 +182,21 @@ const Confirmation = ({
 	const [showValidators, setShowValidators] = useState(false);
 	const [subCurrency, setSubCurrency] = useState(0);
 	const [subFeeCurrency, setFeeSubCurrency] = useState(0);
-	const handleValToggle = () => setShowValidators(!showValidators);
+	const handleValToggle = () => {
+		const _showValidators = !showValidators;
+		trackEvent(Events.TOGGLE_VALIDATORS, {
+			suggestedValidators: _showValidators ? "show" : "hide",
+		});
+		setShowValidators(_showValidators);
+	};
 	const [showAdvPrefs, setShowAdvPrefs] = useState(false);
-	const handleAdvPrefsToggle = () => setShowAdvPrefs(!showAdvPrefs);
+	const handleAdvPrefsToggle = () => {
+		const _showAdvPrefs = !showAdvPrefs;
+		trackEvent(Events.TOGGLE_ADV_PREFS, {
+			advPrefs: _showAdvPrefs ? "show" : "hide",
+		});
+		setShowAdvPrefs(_showAdvPrefs);
+	};
 
 	useEffect(() => {
 		convertCurrency(stakingAmount, networkInfo.denom).then(

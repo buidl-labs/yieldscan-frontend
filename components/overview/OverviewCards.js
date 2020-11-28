@@ -87,18 +87,15 @@ const OverviewCards = ({
 	}, [stats, compounding]);
 
 	return (
-		<div className="flex justify-between items-center h-full">
-			<div
-				className="bg-white min-h-12-rem py-4 px-8 text-center flex flex-col justify-center shadow-custom rounded-xl h-full"
-				// style={{ width: "30%" }}
-			>
+		<div className="flex justify-between items-center h-auto w-full max-w-lg text-gray-700">
+			<div className="bg-white min-h-12-rem py-4 px-8 text-center flex flex-col justify-center shadow-custom rounded-xl h-full w-full">
 				<div className="flex flex-col items-center justify-between">
-					<p className="semi-heading mt-40">Your investment</p>
+					<p className="font-medium mt-40">Your investment</p>
 					<div>
 						<div className="flex">
 							<h1
-								className={`${
-									isActivelyStaking ? "big-heading" : "big-heading-gray"
+								className={`text-4xl font-bold ${
+									isActivelyStaking ? "text-gray-700" : "text-gray-600"
 								}`}
 							>
 								{formatCurrency.methods.formatAmount(
@@ -123,8 +120,11 @@ const OverviewCards = ({
 							)}
 						</div>
 						{bondedAmount && (
-							<h3 className="text-teal-500 text-2xl">
-								${get(bondedAmount, "subCurrency")}
+							<h3 className="text-teal-500 text-xl font-medium">
+								$
+								{formatCurrency.methods.formatNumber(
+									get(bondedAmount, "subCurrency").toFixed(2)
+								)}
 							</h3>
 						)}
 					</div>

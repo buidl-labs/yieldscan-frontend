@@ -9,10 +9,12 @@ import Testimonials from "./testimonials";
 import FAQs from "./FAQs";
 import SupportedNetworks from "./SupportedNetworks";
 import { ArrowUp, ChevronRight } from "react-feather";
+import { useRouter } from "next/router";
 
 window.setImmediate = (cb) => cb();
 
 const HomePage = () => {
+	const router = useRouter();
 	const { selectedNetwork } = useSelectedNetwork();
 	const networkInfo = getNetworkInfo(selectedNetwork);
 	const { stakingAmount, setStakingAmount } = useTransaction();

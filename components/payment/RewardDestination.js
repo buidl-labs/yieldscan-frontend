@@ -5,6 +5,7 @@ import Identicon from "@components/common/Identicon";
 import formatCurrency from "@lib/format-currency";
 import { Icon } from "@chakra-ui/core";
 import { HelpPopover } from "@components/reward-calculator";
+import { Events, setUserProperties, trackEvent } from "@lib/analytics";
 
 const RewardDestination = ({
 	stashAccount,
@@ -25,8 +26,14 @@ const RewardDestination = ({
 			setTransactionState({
 				rewardDestination: destination === "Stash" ? 1 : 2,
 			});
+			setUserProperties({
+				rewardDestination: `${destination}, not compounding`,
+			});
 		} else {
 			setTransactionState({ rewardDestination: 0 });
+			setUserProperties({
+				rewardDestination: `${destination}, compounding`,
+			});
 		}
 	}, [destination]);
 
@@ -61,7 +68,12 @@ const RewardDestination = ({
 							}  px-6 py-6 mb-2
 							${accountType === destination && "border-teal-500"}
 						`}
-						onClick={() => (!compounding ? setDestination(accountType) : null)}
+						onClick={() => {
+							if (!compounding) {
+								setDestination(accountType);
+								trackEvent(Events.ADV_PREFS_EDIT, { rewardDestination: accountType });
+							}
+						}}
 					>
 						{destination === accountType ? (
 							<Icon name="check-circle" mr={2} size={8} color="teal.500" />

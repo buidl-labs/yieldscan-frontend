@@ -108,7 +108,7 @@ const ValidatorCard = ({
 const NominationsTable = ({ validators, networkInfo }) => {
 	return (
 		<div>
-			<div className="py-2 flex items-center flex-wrap max-h-25-rem overflow-y-scroll">
+			<div className="py-2 flex items-center flex-wrap">
 				{validators
 					.filter((validator) => validator.isElected)
 					.map((validator) => (

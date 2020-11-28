@@ -7,9 +7,9 @@ import {
 } from "@lib/store";
 import createPolkadotAPIInstance from "@lib/polkadot-api";
 import convertCurrency from "@lib/convert-currency";
-import { isNil, pick } from "lodash";
+import { get, isNil, pick } from "lodash";
 import { useEffect } from "react";
-import { trackEvent, Events } from "@lib/analytics";
+import { trackEvent, Events, setUserProperties } from "@lib/analytics";
 import Footer from "../footer";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 
@@ -26,6 +26,7 @@ const withBaseLayout = (children) => {
 	const networkInfo = getNetworkInfo(selectedNetwork);
 	const {
 		accounts,
+		accountsWithBalances,
 		setAccountsWithBalances,
 		stashAccount,
 		setAccountInfoLoading,
@@ -33,6 +34,7 @@ const withBaseLayout = (children) => {
 	} = useAccounts((state) =>
 		pick(state, [
 			"accounts",
+			"accountsWithBalances",
 			"setAccountsWithBalances",
 			"stashAccount",
 			"setAccountInfoLoading",
@@ -155,11 +157,13 @@ const withBaseLayout = (children) => {
 						}
 
 						const setStateAndTrack = (details) => {
-							trackEvent(Events.USER_ACCOUNT_SELECTION, {
-								user: {
-									...details,
-									stashId: address,
-								},
+							setUserProperties({
+								stashId: address,
+								bondedAmount: `${get(details, "bondedAmount.currency")} ${get(
+									networkInfo,
+									"denom"
+								)} ($${get(details, "bondedAmount.subCurrency")})`,
+								// accounts: accountsWithBalances,
 							});
 							setAccountState(details);
 						};

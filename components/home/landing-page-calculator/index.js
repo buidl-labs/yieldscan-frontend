@@ -1,5 +1,6 @@
 import { Box, Button, FormLabel, Input, InputGroup } from "@chakra-ui/core";
 import NetworkPopover from "@components/common/utilities/popovers/network-popover";
+import { Events, trackEvent } from "@lib/analytics";
 import axios from "@lib/axios";
 import { useTransaction } from "@lib/store";
 import { useRouter } from "next/router";
@@ -12,7 +13,7 @@ const LandingPageCalculator = ({
 	setInputValue,
 	networkUrl,
 	networkDenom,
-	networkInfo
+	networkInfo,
 }) => {
 	const router = useRouter();
 
@@ -192,7 +193,9 @@ const LandingPageCalculator = ({
 					}}
 					onClick={() => {
 						setStakingAmount(inputValue);
-						router.push({ pathname: "/reward-calculator" });
+						trackEvent(Events.LANDING_CTA_CLICK, {
+							investmentAmount: `${inputValue} ${networkDenom}`,
+						}).then(() => router.push({ pathname: "/reward-calculator" }));
 					}}
 					isDisabled={isNaN(inputValue) || Number(inputValue) <= 0}
 				>

@@ -4,7 +4,13 @@ import { useAccounts } from "@lib/store";
 import { get } from "lodash";
 import { useState, useEffect } from "react";
 
-const AmountInputDefault = ({ bonded, value, onChange, networkInfo }) => {
+const AmountInputDefault = ({
+	bonded,
+	value,
+	onChange,
+	networkInfo,
+	trackRewardCalculatedEvent,
+}) => {
 	const { freeAmount, stashAccount } = useAccounts();
 	const initiallyEditable =
 		bonded === undefined ? true : bonded == 0 ? true : false;
@@ -25,6 +31,9 @@ const AmountInputDefault = ({ bonded, value, onChange, networkInfo }) => {
 	const handleChange = (value) => {
 		onChange(value);
 		setInputValue(value);
+		trackRewardCalculatedEvent({
+			investmentAmount: `${value} ${networkInfo.denom}`,
+		});
 	};
 
 	return (
@@ -157,7 +166,7 @@ const AmountInputAlreadyBonded = ({ value, bonded, total, onChange }) => (
 	</div>
 );
 
-const AmountInput = ({ value, bonded, networkInfo, onChange }) => {
+const AmountInput = ({ value, bonded, networkInfo, onChange, trackRewardCalculatedEvent }) => {
 	return (
 		<div className="w-4/5">
 			{/* {get(bonded, 'currency') ? (
@@ -176,6 +185,7 @@ const AmountInput = ({ value, bonded, networkInfo, onChange }) => {
 				bonded={bonded}
 				onChange={onChange}
 				networkInfo={networkInfo}
+				trackRewardCalculatedEvent={trackRewardCalculatedEvent}
 			/>
 		</div>
 	);

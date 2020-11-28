@@ -196,7 +196,7 @@ const EarningsOutput = ({
 	}, [inputValue, validators]);
 
 	return (
-		<Box minW={320} maxW={500}>
+		<Box minW={320} w="full">
 			<div className="flex">
 				<Image
 					src="/images/earnings-dollar-sign.png"
@@ -204,14 +204,16 @@ const EarningsOutput = ({
 					w={8}
 					h={8}
 				/>
-				<p className="semi-heading ml-2 mt-1">Earnings</p>
+				<p className="font-semibold text-base text-gray-700 ml-2 mt-1">
+					Earnings
+				</p>
 			</div>
 			{false && (
-				<div className="claim-rewards">
-					<FormLabel fontSize="ss" className="text-gray-700">
+				<div className="bg-gray-100 rounded-lg mt-4 py-4 px-8">
+					<FormLabel fontSize="sm" className="font-medium text-gray-700">
 						Claimable Earnings
 					</FormLabel>
-					<h2 className="text-2xl text-gray-700 font-bold">
+					<h2 className="text-xl text-gray-700 font-bold">
 						{!isNil(totalEarnings) ? (
 							<>
 								<div className="flex justify-between">
@@ -236,17 +238,17 @@ const EarningsOutput = ({
 				</div>
 			)}
 			<div className="mt-4">
-				<FormLabel fontSize="ss" className="text-gray-700">
+				<FormLabel fontSize="sm" className="font-medium text-gray-700">
 					7 day earnings
 				</FormLabel>
 				<h2
-					className={`text-2xl ${
+					className={`${
 						validators.length !== 0 ? "text-gray-700" : "text-light-gray"
 					} font-bold`}
 				>
 					{!isNil(totalEarnings) ? (
 						<>
-							<div className="flex justify-between">
+							<div className="text-xl justify-between text">
 								{formatCurrency.methods.formatAmount(
 									Math.trunc(totalEarnings.currency),
 									networkInfo
@@ -286,11 +288,11 @@ const EarningsOutput = ({
 					</Alert>
 				</div>
 			)}
-			<div className="mt-4">
-				<FormLabel fontSize="ss" className="text-gray-700">
+			<div className="mt-8">
+				<FormLabel fontSize="sm" className="font-medium text-gray-700">
 					Estimated Earnings
 				</FormLabel>
-				<h2 className="text-2xl text-gray-700 font-bold">
+				<h2 className="text-xl text-gray-700 font-bold">
 					{!isNil(yearlyEarning) ? (
 						<div className="flex justify-between">
 							<CountUp
@@ -302,14 +304,18 @@ const EarningsOutput = ({
 								preserveValue
 							/>
 							<a
-								className="twitter-share-button mt-2"
+								className="twitter-share-button mt-2 flex text-sm font-medium justify-center items-center"
+								style={{ color: "#1DA1F2" }}
 								href={tweet}
 								target="_blank"
 							>
-								<div className="flex text-tweet">
-									<Twitter className="mr-2" size="16px" color="#1DA1F2" />
-									Tweet APR
-								</div>
+								<Twitter
+									className="mr-2"
+									size="16px"
+									color="#1DA1F2"
+									strokeWidth="2.5"
+								/>
+								<p className="mb-1">Tweet APR</p>
 							</a>
 						</div>
 					) : (
@@ -336,7 +342,7 @@ const EarningsOutput = ({
 							/>
 						</p>
 						<div className="flex">
-							<p className="text-sm font-medium text-teal-500">
+							<p className="text-sm font-medium text-teal-500 mr-2">
 								<CountUp
 									end={get(yearlyEarning, "returns.subCurrency") || 0}
 									duration={0.5}
@@ -347,7 +353,7 @@ const EarningsOutput = ({
 								/>
 							</p>
 							<Divider orientation="vertical" />
-							<p className="text-sm font-medium text-teal-500">
+							<p className="text-sm text-gray-600 w-12 text-right">
 								<CountUp
 									end={get(yearlyEarning, "yieldPercentage") || 0}
 									duration={0.5}
@@ -384,7 +390,7 @@ const EarningsOutput = ({
 							/>
 						</p>
 						<div className="flex">
-							<p className="text-sm font-medium text-teal-500">
+							<p className="text-sm font-medium text-teal-500 mr-2">
 								<CountUp
 									end={get(monthlyEarning, "returns.subCurrency") || 0}
 									duration={0.5}
@@ -395,7 +401,7 @@ const EarningsOutput = ({
 								/>
 							</p>
 							<Divider orientation="vertical" />
-							<p className="text-sm font-medium text-teal-500">
+							<p className="text-sm text-gray-600 w-12 text-right">
 								<CountUp
 									end={get(monthlyEarning, "yieldPercentage") || 0}
 									duration={0.5}
@@ -432,7 +438,7 @@ const EarningsOutput = ({
 							/>
 						</p>
 						<div className="flex">
-							<p className="text-sm font-medium text-teal-500">
+							<p className="text-sm font-medium text-teal-500 mr-2">
 								<CountUp
 									end={get(dailyEarning, "returns.subCurrency") || 0}
 									duration={0.5}
@@ -443,7 +449,7 @@ const EarningsOutput = ({
 								/>
 							</p>
 							<Divider orientation="vertical" />
-							<p className="text-sm font-medium text-teal-500">
+							<p className="text-sm text-gray-600 w-12 text-right">
 								<CountUp
 									end={get(dailyEarning, "yieldPercentage") || 0}
 									duration={0.5}

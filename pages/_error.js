@@ -27,21 +27,25 @@ const MyError = ({ statusCode, hasGetInitialPropsRun, err }) => {
 					</a>
 				</Link>
 				{/* {!hasGetInitialPropsRun && err ? ( */}
-					<button
-						className="border border-teal-500 bg-white rounded-full px-10 py-2 mt-2 text-teal-500 self-start"
-						onClick={() =>
-							Sentry.showReportDialog({
-								eventId: Sentry.captureException(err),
-							})
-						}
-					>
-						Report feedback
-					</button>
+				<button
+					className="border border-teal-500 bg-white rounded-full px-10 py-2 mt-2 text-teal-500 self-start"
+					onClick={() =>
+						Sentry.showReportDialog({
+							eventId: Sentry.captureException(err),
+						})
+					}
+				>
+					Report feedback
+				</button>
 				{/* ) : (
 					""
 				)} */}
 			</div>
-			<img src="images/404.svg" alt="404 - Lost Astronaut" className="-ml-16 w-5/12 opacity-50"></img>
+			<img
+				src="images/404.svg"
+				alt="404 - Lost Astronaut"
+				className="-ml-16 w-5/12 opacity-50"
+			></img>
 		</div>
 	);
 };

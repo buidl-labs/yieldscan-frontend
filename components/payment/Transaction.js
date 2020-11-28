@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/core";
 import formatCurrency from "@lib/format-currency";
 import { GlossaryModal, HelpPopover } from "@components/reward-calculator";
+import { Events, setUserProperties, trackEvent } from "@lib/analytics";
 
 const EditControllerModal = ({
 	isOpen,
@@ -57,6 +58,9 @@ const EditControllerModal = ({
 								transition-all duration-300 ease-in-out
 							`}
 										onClick={() => {
+											setUserProperties({
+												controllerId: get(account, "address"),
+											});
 											setSelectedController(account);
 											setControllerEdited(true);
 											onClose();
@@ -109,7 +113,7 @@ const Transaction = ({
 	const compounding = get(transactionState, "compounding", true);
 	const [selectedController, setSelectedController] = useState(stashAccount);
 	const [controllerEdited, setControllerEdited] = useState(false);
-	const {isOpen, onClose, onOpen} = useDisclosure()
+	const { isOpen, onClose, onOpen } = useDisclosure();
 
 	useEffect(() => {
 		setController(selectedController.address);
@@ -139,10 +143,12 @@ const Transaction = ({
 					content={
 						<p className="text-white text-xs">
 							This account acts on behalf of the{" "}
-							<span className="underline cursor-pointer" onClick={onOpen}>stash account</span>, signalling decisions
-							about nominating and validating and also sets preferences like
-							payout account. It only needs enough funds to pay transaction
-							fees.
+							<span className="underline cursor-pointer" onClick={onOpen}>
+								stash account
+							</span>
+							, signalling decisions about nominating and validating and also
+							sets preferences like payout account. It only needs enough funds
+							to pay transaction fees.
 						</p>
 					}
 				/>
@@ -164,17 +170,32 @@ const Transaction = ({
 					mt-2 px-3 py-px text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-200 transition duration-200
 				`}
 				hidden={editController}
-				onClick={() => setEditController(true)}
+				onClick={() => {
+					trackEvent(Events.ADV_PREFS_EDIT, {
+						editController: "Open edit controller popup",
+					});
+					setEditController(true);
+				}}
 			>
 				Edit Controller
 			</button>
 
 			<EditControllerModal
 				isOpen={editController}
-				onClose={() => setEditController(false)}
+				onClose={() => {
+					trackEvent(Events.ADV_PREFS_EDIT, {
+						editController: "Close edit controller popup",
+					});
+					setEditController(false);
+				}}
 				accounts={accounts}
 				selectedController={selectedController}
-				setSelectedController={setSelectedController}
+				setSelectedController={(controller) => {
+					trackEvent(Events.ADV_PREFS_EDIT, {
+						editController: `Set ${get(controller, "address")} as controller`,
+					});
+					setSelectedController(controller);
+				}}
 				setControllerEdited={setControllerEdited}
 			/>
 		</React.Fragment>
