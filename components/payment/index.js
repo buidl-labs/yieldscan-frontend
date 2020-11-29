@@ -247,7 +247,7 @@ const Payment = () => {
 				setTimeout(() => {
 					setTransactionHash(transactionHash);
 					setStakingEvent(
-						"Your transaction is successfully sent to the network!"
+						"Your transaction is sent to the network. Awaiting confirmation..."
 					);
 				}, 750);
 				trackEvent(Events.TRANSACTION_SENT, {
