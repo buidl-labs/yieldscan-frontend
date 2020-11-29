@@ -47,6 +47,7 @@ import { getNetworkInfo } from "yieldscan.config";
 import { parseCookies } from "nookies";
 import SideMenu from "./sidemenu";
 import SideMenuFooter from "./side-menu-footer";
+import ProgressiveImage from "react-progressive-image";
 
 // TODO: replace this with actual global state
 const currentNetwork = "Not Kusama";
@@ -247,10 +248,16 @@ const Header = ({ isBase }) => {
 								<DrawerHeader>
 									<Link href="/">
 										<a className="flex items-center">
-											<Image
+											{/* <Image
 												src="/images/yieldscan-logo.svg"
 												alt="YieldScan Logo"
-											/>
+											/> */}
+											<ProgressiveImage
+												src="/images/yieldscan-logo.svg"
+												placeholder="/favicon-32x32.png"
+											>
+												{(src) => <img src={src} alt="an image" />}
+											</ProgressiveImage>
 											<span className="ml-2 font-medium flex items-center">
 												YieldScan
 												<Badge
@@ -280,7 +287,20 @@ const Header = ({ isBase }) => {
 				)}
 				<Link href="/">
 					<a className="flex items-center">
-						<Image src="/images/yieldscan-logo.svg" alt="YieldScan Logo" />
+						{/* <Image src="/images/yieldscan-logo.svg" alt="YieldScan Logo" /> */}
+						<ProgressiveImage
+							src="/images/yieldscan-logo.svg"
+							placeholder="/images/../favicon-16x16.png"
+						>
+							{(src) => (
+								<img
+									src={src}
+									alt="Yieldscan Logo"
+									width="41px"
+									height="41px"
+								/>
+							)}
+						</ProgressiveImage>
 						<span className="ml-2 font-medium flex items-center">
 							YieldScan
 							<Badge
