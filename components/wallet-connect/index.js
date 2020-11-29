@@ -130,7 +130,7 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 			<ModalOverlay />
 			<ModalContent
 				rounded="lg"
-				maxWidth={state === WalletConnectStates.REJECTED ? "33rem" : "40rem"}
+				maxWidth={state === WalletConnectStates.REJECTED ? "lg" : "xl"}
 				{...styles}
 				py={4}
 			>

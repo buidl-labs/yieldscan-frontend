@@ -17,12 +17,12 @@ const RejectedPage = ({ handleRecoveryAuth }) => (
 			Install extension
 		</a>
 		<span
-			className="mt-4 px-4 text-xs text-gray-500 underline cursor-pointer"
+			className="mt-2 px-4 text-xs text-gray-600 underline cursor-pointer"
 			onClick={handleRecoveryAuth}
 		>
 			Accidently rejected the permission request?
 		</span>
-		<span className="mt-4 text-sm text-gray-600">
+		<span className="mt-6 text-sm text-gray-600">
 			Using a different wallet?{" "}
 			<a
 				className="text-gray-700 font-semibold"
