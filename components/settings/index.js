@@ -7,6 +7,18 @@ const Settings = () => {
 	return (
 		<div className="pt-12 text-gray-700">
 			<h1 className="font-semibold text-xl">Settings</h1>
+			<section id="preferences" className="mt-12">
+				<h3 className="font-medium text-sm">Preferences</h3>
+				<Divider />
+				<div className="flex flex-col">
+					<button
+						onClick={() => window.Metomic.raise()}
+						className="flex justify-between px-2 text-sm py-2 my-1 rounded-lg hover:text-teal-500 hover:bg-gray-400 hover:bg-opacity-22"
+					>
+						Manage cookies <ChevronRight />
+					</button>
+				</div>
+			</section>
 			<section id="community" className="mt-12">
 				<h3 className="font-medium text-sm">Join Our Community</h3>
 				<Divider />
