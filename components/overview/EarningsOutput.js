@@ -199,7 +199,10 @@ const EarningsOutput = ({
 	return (
 		<Box minW={320} w="full">
 			<div className="flex">
-				<ProgressiveImage src="/images/earnings-dollar-sign.png">
+				<ProgressiveImage
+					src="/images/dollar-sign.svg"
+					placeholder="/images/dollar-sign.jpg"
+				>
 					{(src) => (
 						<img src={src} alt="dollar-sign" width="32px" height="32px" />
 					)}
