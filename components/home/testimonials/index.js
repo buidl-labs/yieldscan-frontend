@@ -4,34 +4,28 @@ import { times } from "lodash";
 import { useEffect, useState } from "react";
 import Marquee, { Motion, randomIntFromInterval } from "react-marquee-slider";
 
-const fakeData = [
+const testimonialData = [
 	{
-		name: "Dr. Gavid Wood",
-		avatar: "https://bit.ly/dan-abramov",
-		designation: "President & Founder, Web3 Foundation",
+		name: "Chris Hutchinson",
+		avatar: "/images/chris-hutchinson.png",
+		designation: "Head of Global Community, Web3 Foundation",
 		comment:
-			"Enim laboris ullamco quis ullamco proident occaecat et deserunt eiusmod pariatur aliquip nulla minim officia. Id minim ut sit aliquip minim aute ex. Excepteur et ipsum consequat aliqua excepteur. Enim laboris ullamco quis ullamco proident occaecat et deserunt eiusmod pariatu sit.",
+			"Yieldscan has a very intuitive approach making it easy to select which validators to nominate with. Making staking simple for new users is a big deal, this tool does just that.",
 	},
 	{
-		name: "David Hawig",
-		avatar: "https://bit.ly/ryan-florence",
-		designation: "Head of Grants, Web3 Foundation",
+		name: "Ruben Russel",
+		avatar: "/images/ruben-russel.png",
+		designation:
+			"Co-founder, Caribbean Blockchain Network & former PolkaDAO community manager",
 		comment:
-			"Enim laboris ullamco quis ullamco proident occaecat et deserunt eiusmod pariatur aliquip nulla minim officia. Id minim ut sit aliquip minim aute ex. Excepteur et ipsum consequat aliqua excepteur. Enim laboris ullamco quis ullamco proident occaecat et deserunt eiusmod pariatu sit.",
-	},
-	{
-		name: "Bruno Skvorc",
-		avatar: "https://bit.ly/kent-c-dodds",
-		designation: "Technical Educator, Web3 Foundation",
-		comment:
-			"Enim laboris ullamco quis ullamco proident occaecat et deserunt eiusmod pariatur aliquip nulla minim officia. Id minim ut sit aliquip minim aute ex. Excepteur et ipsum consequat aliqua excepteur. Enim laboris ullamco quis ullamco proident occaecat et deserunt eiusmod pariatu sit.",
+			"Yieldscan is a powerful Polkadot & Kusama analytical tool, assisting its user to make valuable calculated decisions when staking your KSM or DOT tokens. It is easy, useful and fun!",
 	},
 	{
 		name: "Baroque",
-		avatar: "https://bit.ly/prosper-baba",
-		designation: null,
+		avatar: "/images/baroque.png",
+		designation: "Polkadot & Kusama community member",
 		comment:
-			"Enim laboris ullamco quis ullamco proident occaecat et deserunt eiusmod pariatur aliquip nulla minim officia. Id minim ut sit aliquip minim aute ex.",
+			"The yield calculator to optimise risk to reward on staking is superb. Ultimately yieldscan has value and provides great utility for stakers and nominators.",
 	},
 ];
 
@@ -52,7 +46,7 @@ const Testimonials = () => {
 				See what our users are saying
 			</h1>
 			<Marquee velocity={isPaused ? 0 : 30} className="justify-start flex">
-				{fakeData.map(({ name, avatar, designation, comment }) => (
+				{testimonialData.map(({ name, avatar, designation, comment }) => (
 					<Box
 						key={name}
 						p={8}
