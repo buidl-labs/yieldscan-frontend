@@ -52,6 +52,11 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 	};
 
 	useEffect(() => {
+		if (typeof window !== undefined) {
+			trackEvent(Events.INTENT_CONNECT_WALLET, {
+				path: window.location.pathname,
+			});
+		}
 		getPolkadotExtensionInfo(handlers)
 			.then(({ isExtensionAvailable, accounts = [] }) => {
 				if (!isExtensionAvailable) {
@@ -89,15 +94,30 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 							.map((account) => {
 								previousAccountAvailable = true;
 								setStashAccount(account);
+								if (typeof window !== undefined) {
+									trackEvent(Events.ACCOUNT_SELECTED, {
+										path: window.location.pathname,
+									});
+								}
 							})
 					: accounts
 							.filter((account) => account.address == cookies.polkadotDefault)
 							.map((account) => {
 								previousAccountAvailable = true;
 								setStashAccount(account);
+								if (typeof window !== undefined) {
+									trackEvent(Events.ACCOUNT_SELECTED, {
+										path: window.location.pathname,
+									});
+								}
 							});
 			}
 			if (!previousAccountAvailable) {
+				if (typeof window !== undefined) {
+					trackEvent(Events.INTENT_ACCOUNT_SELECTION, {
+						path: window.location.pathname,
+					});
+				}
 				setState(WalletConnectStates.CONNECTED);
 			} else close();
 		}
@@ -105,6 +125,11 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 
 	const onStashSelected = async (stashAccount) => {
 		if (stashAccount) close();
+		if (typeof window !== undefined) {
+			trackEvent(Events.ACCOUNT_SELECTED, {
+				path: window.location.pathname,
+			});
+		}
 		setStashAccount(stashAccount);
 		networkInfo.name == "Kusama"
 			? setCookie(null, "kusamaDefault", stashAccount.address, {
