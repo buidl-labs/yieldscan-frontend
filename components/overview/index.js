@@ -242,7 +242,7 @@ const Overview = () => {
 					className="border border-teal-500 text-teal-500 px-3 py-2 rounded-full"
 					onClick={toggle}
 				>
-					{isNil(accounts) ? "Connect Wallet" : "Select"}
+					{isNil(accounts) ? "Connect Wallet" : "Select Account"}
 				</button>
 			</div>
 		</div>
