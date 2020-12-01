@@ -107,6 +107,8 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 								if (typeof window !== undefined) {
 									trackEvent(Events.ACCOUNT_SELECTED, {
 										path: window.location.pathname,
+										address: account,
+										network: networkInfo.name,
 									});
 								}
 							})
@@ -118,6 +120,8 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 								if (typeof window !== undefined) {
 									trackEvent(Events.ACCOUNT_SELECTED, {
 										path: window.location.pathname,
+										address: account,
+										network: networkInfo.name,
 									});
 								}
 							});
@@ -138,6 +142,8 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 		if (typeof window !== undefined) {
 			trackEvent(Events.ACCOUNT_SELECTED, {
 				path: window.location.pathname,
+				address: stashAccount,
+				network: networkInfo.name,
 			});
 		}
 		setStashAccount(stashAccount);
