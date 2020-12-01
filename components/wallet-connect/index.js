@@ -61,9 +61,19 @@ const WalletConnectPopover = ({ styles, networkInfo, cookies }) => {
 			.then(({ isExtensionAvailable, accounts = [] }) => {
 				if (!isExtensionAvailable) {
 					setState(WalletConnectStates.REJECTED);
+					if (typeof window !== undefined) {
+						trackEvent(Events.AUTH_REJECTED, {
+							path: window.location.pathname,
+						});
+					}
 					setUserProperties({ hasExtension: false });
 				} else {
 					setCookie(null, "isAuthorized", true);
+					if (typeof window !== undefined) {
+						trackEvent(Events.AUTH_ALLOWED, {
+							path: window.location.pathname,
+						});
+					}
 					if (!accounts.length)
 						throw new Error("Couldn't find any stash or unnassigned accounts.");
 
