@@ -22,7 +22,7 @@ const MenuOption = ({
 	return (
 		<Link href={href}>
 			<a
-				target={isExternal && "_blank"}
+				target={isExternal ? "_blank" : "_self"}
 				className={`
 					block
 					${!selected && "hover:ml-2"}
