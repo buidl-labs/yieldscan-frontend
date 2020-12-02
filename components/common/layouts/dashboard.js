@@ -28,7 +28,7 @@ import Routes from "@lib/routes";
 const withDashboardLayout = (children) => {
 	const router = useRouter();
 	const [showBetaMessage, setShowBetaMessage] = React.useState(true);
-	const { setApiInstance } = usePolkadotApi();
+	const { apiInstance, setApiInstance } = usePolkadotApi();
 	const { selectedNetwork, setSelectedNetwork } = useSelectedNetwork();
 	const networkInfo = getNetworkInfo(selectedNetwork);
 	const {
@@ -53,7 +53,7 @@ const withDashboardLayout = (children) => {
 
 	useEffect(() => {
 		if (accounts && accounts.length > 0) {
-			createPolkadotAPIInstance(selectedNetwork)
+			createPolkadotAPIInstance(selectedNetwork, apiInstance)
 				.then(async (api) => {
 					setApiInstance(api);
 					const queries = accounts.map((account) => [
@@ -87,116 +87,120 @@ const withDashboardLayout = (children) => {
 		// when `stashAccount` is selected, fetch ledger for the account and save it.
 		if (stashAccount) {
 			setAccountInfoLoading(true);
-			createPolkadotAPIInstance(selectedNetwork).then(async (api) => {
-				setApiInstance(api);
+			createPolkadotAPIInstance(selectedNetwork, apiInstance).then(
+				async (api) => {
+					setApiInstance(api);
 
-				const { address } = stashAccount;
+					const { address } = stashAccount;
 
-				api.queryMulti(
-					[
-						[api.query.staking.bonded, address], // check if `stashAccount` already has bonded on some controller
-						[api.query.system.account, address],
-					],
-					async ([controller, accountQueryResult]) => {
-						let isController = false;
-						const {
-							data: { free: freeBalance, miscFrozen: lockedBalance },
-						} = accountQueryResult;
-						const unlockingBalances = [];
-
-						let bondedAmount = 0,
-							bondedAmountInSubCurrency = 0,
-							freeAmount = 0,
-							freeAmountInSubCurrency = 0,
-							activeStake = 0,
-							activeStakeInSubCurrency = 0;
-
-						if (controller.isNone) {
-							const ledgerQueryResult = await api.query.staking.ledger(address);
-							if (ledgerQueryResult.isSome) isController = true;
-						}
-						if (controller.isSome) {
-							const ledgerQueryResult = await api.query.staking.ledger(
-								controller.toString()
-							);
+					api.queryMulti(
+						[
+							[api.query.staking.bonded, address], // check if `stashAccount` already has bonded on some controller
+							[api.query.system.account, address],
+						],
+						async ([controller, accountQueryResult]) => {
+							let isController = false;
 							const {
-								value: { unlocking, total, active },
-							} = ledgerQueryResult;
-							if (unlocking && !unlocking.isEmpty && unlocking.length > 0) {
-								unlocking.forEach((unlockingBalance) => {
-									const { era, value } = unlockingBalance;
-									unlockingBalances.push({
-										era: Number(era.toString()),
-										value: Number(value.toString()),
+								data: { free: freeBalance, miscFrozen: lockedBalance },
+							} = accountQueryResult;
+							const unlockingBalances = [];
+
+							let bondedAmount = 0,
+								bondedAmountInSubCurrency = 0,
+								freeAmount = 0,
+								freeAmountInSubCurrency = 0,
+								activeStake = 0,
+								activeStakeInSubCurrency = 0;
+
+							if (controller.isNone) {
+								const ledgerQueryResult = await api.query.staking.ledger(
+									address
+								);
+								if (ledgerQueryResult.isSome) isController = true;
+							}
+							if (controller.isSome) {
+								const ledgerQueryResult = await api.query.staking.ledger(
+									controller.toString()
+								);
+								const {
+									value: { unlocking, total, active },
+								} = ledgerQueryResult;
+								if (unlocking && !unlocking.isEmpty && unlocking.length > 0) {
+									unlocking.forEach((unlockingBalance) => {
+										const { era, value } = unlockingBalance;
+										unlockingBalances.push({
+											era: Number(era.toString()),
+											value: Number(value.toString()),
+										});
 									});
-								});
+								}
+
+								bondedAmount = Number(
+									parseInt(total) / 10 ** networkInfo.decimalPlaces
+								);
+								bondedAmountInSubCurrency = await convertCurrency(
+									bondedAmount,
+									networkInfo.denom
+								);
+								activeStake = Number(
+									parseInt(active) / 10 ** networkInfo.decimalPlaces
+								);
+								activeStakeInSubCurrency = await convertCurrency(
+									activeStake,
+									networkInfo.denom
+								);
 							}
 
-							bondedAmount = Number(
-								parseInt(total) / 10 ** networkInfo.decimalPlaces
-							);
-							bondedAmountInSubCurrency = await convertCurrency(
-								bondedAmount,
-								networkInfo.denom
-							);
-							activeStake = Number(
-								parseInt(active) / 10 ** networkInfo.decimalPlaces
-							);
-							activeStakeInSubCurrency = await convertCurrency(
-								activeStake,
-								networkInfo.denom
-							);
-						}
+							if (freeBalance) {
+								/**
+								 * `freeBalance` here includes `locked` balance also - that's how polkadot API is currently working
+								 *  so we need to subtract the `bondedBalance``
+								 */
+								freeAmount = Number(
+									parseInt(freeBalance) / 10 ** networkInfo.decimalPlaces -
+										bondedAmount
+								);
+								freeAmountInSubCurrency = await convertCurrency(
+									freeAmount,
+									networkInfo.denom
+								);
+							}
 
-						if (freeBalance) {
-							/**
-							 * `freeBalance` here includes `locked` balance also - that's how polkadot API is currently working
-							 *  so we need to subtract the `bondedBalance``
-							 */
-							freeAmount = Number(
-								parseInt(freeBalance) / 10 ** networkInfo.decimalPlaces -
-									bondedAmount
-							);
-							freeAmountInSubCurrency = await convertCurrency(
-								freeAmount,
-								networkInfo.denom
-							);
-						}
+							const setStateAndTrack = (details) => {
+								setUserProperties({
+									stashId: address,
+									bondedAmount: `${get(details, "bondedAmount.currency")} ${get(
+										networkInfo,
+										"denom"
+									)} ($${get(details, "bondedAmount.subCurrency")})`,
+									accounts: accountsWithBalances,
+								});
+								setAccountState(details);
+							};
 
-						const setStateAndTrack = (details) => {
-							setUserProperties({
-								stashId: address,
-								bondedAmount: `${get(details, "bondedAmount.currency")} ${get(
-									networkInfo,
-									"denom"
-								)} ($${get(details, "bondedAmount.subCurrency")})`,
-								accounts: accountsWithBalances,
+							setStateAndTrack({
+								isController,
+								ledgerExists: !!controller,
+								bondedAmount: {
+									currency: bondedAmount,
+									subCurrency: bondedAmountInSubCurrency,
+								},
+								freeAmount: {
+									currency: freeAmount,
+									subCurrency: freeAmountInSubCurrency,
+								},
+								activeStake: {
+									currency: activeStake,
+									subCurrency: activeStakeInSubCurrency,
+								},
+								unlockingBalances,
+								accountInfoLoading: false,
 							});
-							setAccountState(details);
-						};
-
-						setStateAndTrack({
-							isController,
-							ledgerExists: !!controller,
-							bondedAmount: {
-								currency: bondedAmount,
-								subCurrency: bondedAmountInSubCurrency,
-							},
-							freeAmount: {
-								currency: freeAmount,
-								subCurrency: freeAmountInSubCurrency,
-							},
-							activeStake: {
-								currency: activeStake,
-								subCurrency: activeStakeInSubCurrency,
-							},
-							unlockingBalances,
-							accountInfoLoading: false,
-						});
-						setAccountInfoLoading(false);
-					}
-				);
-			});
+							setAccountInfoLoading(false);
+						}
+					);
+				}
+			);
 		}
 	}, [stashAccount]);
 
@@ -217,7 +221,9 @@ const withDashboardLayout = (children) => {
 							includes(
 								[Routes.OVERVIEW, Routes.CALCULATOR, Routes.SETTINGS],
 								get(router, "pathname")
-							) ? "max-w-screen-lg" : "max-w-screen-xl"
+							)
+								? "max-w-screen-lg"
+								: "max-w-screen-xl"
 						}`}
 					>
 						{showBetaMessage && (

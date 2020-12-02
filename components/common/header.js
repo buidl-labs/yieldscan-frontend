@@ -61,7 +61,7 @@ const Header = ({ isBase }) => {
 	const { setNominatorsData, setNomLoading } = useNominatorsData();
 	const { setCouncilMembers, setCouncilLoading } = useCouncil();
 	const networkInfo = getNetworkInfo(selectedNetwork);
-	const { setApiInstance } = usePolkadotApi();
+	const { apiInstance, setApiInstance } = usePolkadotApi();
 	const { isOpen, toggle } = useWalletConnect();
 	const {
 		accounts,
@@ -183,7 +183,7 @@ const Header = ({ isBase }) => {
 
 	useEffect(() => {
 		if (stashAccount) {
-			createPolkadotAPIInstance(networkInfo.name).then((api) => {
+			createPolkadotAPIInstance(networkInfo.name, apiInstance).then((api) => {
 				setApiInstance(api);
 				api.query.staking
 					.bonded(stashAccount.address)
