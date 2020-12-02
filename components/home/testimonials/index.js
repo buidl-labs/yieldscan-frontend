@@ -45,7 +45,7 @@ const Testimonials = () => {
 			<h1 className="text-3xl text-gray-700 font-bold text-center mb-16">
 				See what our users are saying
 			</h1>
-			<Marquee velocity={isPaused ? 0 : 30} className="justify-start flex">
+			<Marquee velocity={isPaused ? 0 : 30}>
 				{testimonialData.map(({ name, avatar, designation, comment }) => (
 					<Box
 						key={name}
