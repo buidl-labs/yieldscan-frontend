@@ -20,7 +20,7 @@ import { trackEvent, Events, setUserProperties } from "@lib/analytics";
 import { setCookie } from "nookies";
 import RecoverAuthInfo from "./RecoverAuthInfo";
 
-const [useWalletConnect] = create((set) => ({
+const useWalletConnect = create((set) => ({
 	isOpen: false,
 	toggle: () => set((state) => ({ isOpen: !state.isOpen })),
 	close: () => set(() => ({ isOpen: false })),

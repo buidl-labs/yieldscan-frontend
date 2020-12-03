@@ -366,7 +366,6 @@ const Validators = () => {
 						pl={4}
 						width="14rem"
 						cursor="pointer"
-						defaultValue="rewardsPer100KSM"
 						value={sortKey}
 						onChange={(ev) => setSortKey(ev.target.value)}
 					>
