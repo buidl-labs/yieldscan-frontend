@@ -37,7 +37,7 @@ const MenuOption = ({
 					${selected ? "text-teal-500" : "text-gray-600"}
 				`}
 			>
-				{Icon && <Icon size="1rem" className="mr-2 mb-px inline" />}
+				{Icon && <Icon className="mr-2 mb-px inline" />}
 				<span>{label}</span>
 			</a>
 		</Link>

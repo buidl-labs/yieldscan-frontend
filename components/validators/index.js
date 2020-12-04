@@ -422,7 +422,7 @@ const Validators = () => {
 						`}
 						onClick={() => setFilterPanelOpen(!filterPanelOpen)}
 					>
-						<Filter size="1rem" className="mr-2" />
+						<Filter size="16" className="mr-2" />
 						<span>Filter</span>
 					</button>
 				</div>

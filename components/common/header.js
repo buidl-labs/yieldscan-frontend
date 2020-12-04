@@ -243,7 +243,6 @@ const Header = ({ isBase }) => {
 									boxShadow="0 0 0 0 #fff"
 									color="gray.400"
 									backgroundColor="gray.100"
-									rounded="1rem"
 								/>
 								<DrawerHeader>
 									<Link href="/">
