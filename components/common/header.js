@@ -376,7 +376,7 @@ const Header = ({ isBase }) => {
 														setIsStashPopoverOpen(false);
 													}}
 												>
-													<Identicon address={account.address} size="2rem" />
+													<Identicon address={account.address} size="32" />
 													<span className="flex flex-col items-start w-1/2 ml-2">
 														<span className="truncate w-full text-left pr-1">
 															{account.meta.name}
@@ -482,7 +482,7 @@ const Header = ({ isBase }) => {
 														setIsStashPopoverOpen(false);
 													}}
 												>
-													<Identicon address={account.address} size="2rem" />
+													<Identicon address={account.address} size="32" />
 													<span className="flex flex-col items-start w-1/2 ml-2">
 														<span className="truncate w-full text-left pr-1">
 															{account.meta.name}
