@@ -221,7 +221,7 @@ const Header = ({ isBase }) => {
 					<>
 						<IconButton
 							ref={btnRef}
-							variantColor="gray.600"
+							colorScheme="gray"
 							variant="link"
 							onClick={navOnOpen}
 							icon={Menu}
