@@ -138,7 +138,7 @@ const EarningsOutput = ({
 				2
 			)}% APR by investing on the ${
 				networkInfo.twitterUrl
-			} through @yieldscan. What are you waiting for? \nCheck your expected earnings on https://yieldscan.onrender.com/reward-calculator and share it here.`;
+			} through @yield_scan. What are you waiting for? \nCheck your expected earnings on https://yieldscan.onrender.com/reward-calculator and share it here.`;
 			setTweet("https://twitter.com/intent/tweet?text=" + escape(msg));
 		}
 	}, [yearlyEarning]);
