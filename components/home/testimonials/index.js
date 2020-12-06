@@ -27,11 +27,25 @@ const testimonialData = [
 		comment:
 			"The yield calculator to optimise risk to reward on staking is superb. Ultimately yieldscan has value and provides great utility for stakers and nominators.",
 	},
+	{
+		name: "Enea Arllai",
+		avatar: "/images/enea-arllai.jpg",
+		designation: "Polkadot & Kusama community member",
+		comment:
+			"As a novice in the Polkadot and Kusama ecosystems, it can be an extremely daunting introduction to the new world of parachains and relay chains, epoch periods, choosing validators, working the substrate portal, learning new terminology etc. Yieldscan brings state-of-the-art analytics to take the pressure off some of the Staking confusion and makes the general user’s experience one to remember!",
+	},
+	{
+		name: "Dave Ramico",
+		avatar: "/images/dave-ramico.jpg",
+		designation: "PolkaDAO member",
+		comment:
+			"Yieldscan allows me to keep on top of my validator selection quickly and efficiently, leaving me more time to make Kusama pottery!",
+	},
 ];
 
 const Testimonials = () => {
-    const [users, setUsers] = useState([]);
-    const [isPaused, setIsPaused] = useState(false);
+	const [users, setUsers] = useState([]);
+	const [isPaused, setIsPaused] = useState(false);
 	// useEffect(() => {
 	// 	axios
 	// 		.get("https://dummyapi.io/data/api/user?limit=10", {
@@ -52,13 +66,13 @@ const Testimonials = () => {
 						p={8}
 						pb={12}
 						mx={8}
-                        maxW={400}
+						maxW={400}
 						textAlign="center"
 						rounded={20}
 						className="shadow-custom"
-                        border="1px solid #E2ECF9"
-                        onPointerOver={() => setIsPaused(true)}
-                        onPointerLeave={() => setIsPaused(false)}
+						border="1px solid #E2ECF9"
+						onPointerOver={() => setIsPaused(true)}
+						onPointerLeave={() => setIsPaused(false)}
 					>
 						<Avatar name={name} src={avatar} size="lg" />
 						<h2 className="text-2xl text-gray-700 font-bold">{name}</h2>
