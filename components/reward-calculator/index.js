@@ -6,16 +6,14 @@ import AmountInput from "./AmountInput";
 import TimePeriodInput from "./TimePeriodInput";
 import ExpectedReturnsCard from "./ExpectedReturnsCard";
 import CompoundRewardSlider from "./CompoundRewardSlider";
-import {
-	WalletConnectPopover,
-	useWalletConnect,
-} from "@components/wallet-connect";
+import { useWalletConnect } from "@components/wallet-connect";
 import {
 	useAccounts,
 	useTransaction,
 	useHeaderLoading,
 	usePaymentPopover,
 	useSelectedNetwork,
+	useTransactionHash,
 	useValidatorData,
 } from "@lib/store";
 import { PaymentPopover } from "@components/new-payment";
@@ -45,6 +43,7 @@ import { trackEvent, Events } from "@lib/analytics";
 import convertCurrency from "@lib/convert-currency";
 import { getNetworkInfo } from "yieldscan.config";
 import { HelpCircle } from "react-feather";
+import formatCurrency from "@lib/format-currency";
 
 const trackRewardCalculatedEvent = debounce((eventData) => {
 	trackEvent(Events.REWARD_CALCULATED, eventData);
@@ -54,8 +53,9 @@ const RewardCalculatorPage = () => {
 	const router = useRouter();
 	const { selectedNetwork } = useSelectedNetwork();
 	const networkInfo = getNetworkInfo(selectedNetwork);
+	const { transactionHash, setTransactionHash } = useTransactionHash();
 
-	const { isOpen, toggle } = useWalletConnect();
+	const { toggle } = useWalletConnect();
 	const {
 		isOpen: isRiskGlossaryOpen,
 		onClose: onRiskGlossaryClose,
@@ -210,6 +210,7 @@ const RewardCalculatorPage = () => {
 
 	const onPayment = async () => {
 		updateTransactionState(Events.INTENT_STAKING);
+		if (transactionHash) setTransactionHash(null);
 		router.push("/payment", "/payment", "shallow");
 		// get(bondedAmount, "currency", 0) === 0
 		// 	? router.push("/payment", "/payment", "shallow")
@@ -240,7 +241,6 @@ const RewardCalculatorPage = () => {
 		</div>
 	) : (
 		<div className="flex pt-12 px-10">
-			<WalletConnectPopover isOpen={isOpen} networkInfo={networkInfo} />
 			<GlossaryModal
 				isOpen={isRiskGlossaryOpen}
 				onClose={onRiskGlossaryClose}
@@ -299,8 +299,13 @@ const RewardCalculatorPage = () => {
 											Insufficient Balance
 										</AlertTitle>
 										<AlertDescription color="red.500">
-											{`We cannot stake this amount since we recommend maintaining a
-									minimum balance of 0.1 ${networkInfo.denom} in your account at all times.`}{" "}
+											{`You need an additional of ${formatCurrency.methods.formatAmount(
+												Math.trunc(
+													Number(amount - (totalBalance - 0.1)) *
+														10 ** networkInfo.decimalPlaces
+												),
+												networkInfo
+											)} to proceed further.`}{" "}
 											<Popover trigger="hover" usePortal>
 												<PopoverTrigger>
 													<span className="underline cursor-help">Why?</span>

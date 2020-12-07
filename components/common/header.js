@@ -47,6 +47,7 @@ import { getNetworkInfo } from "yieldscan.config";
 import { parseCookies } from "nookies";
 import SideMenu from "./sidemenu";
 import SideMenuFooter from "./side-menu-footer";
+import ProgressiveImage from "react-progressive-image";
 
 // TODO: replace this with actual global state
 const currentNetwork = "Not Kusama";
@@ -110,25 +111,26 @@ const Header = ({ isBase }) => {
 		}
 	}, [stashAccount, networkInfo]);
 
-	useEffect(() => {
-		if (
-			(!isNil(cookies.kusamaDefault) || !isNil(cookies.polkadotDefault)) &&
-			!stashAccount &&
-			accounts
-		) {
-			selectedNetwork == "Kusama"
-				? accounts
-						.filter((account) => account.address == cookies.kusamaDefault)
-						.map((account) => {
-							setStashAccount(account);
-						})
-				: accounts
-						.filter((account) => account.address == cookies.polkadotDefault)
-						.map((account) => {
-							setStashAccount(account);
-						});
-		}
-	}, [accounts]);
+	// Moved the below section to walletConnectPopover
+	// useEffect(() => {
+	// 	if (
+	// 		(!isNil(cookies.kusamaDefault) || !isNil(cookies.polkadotDefault)) &&
+	// 		!stashAccount &&
+	// 		accounts
+	// 	) {
+	// 		selectedNetwork == "Kusama"
+	// 			? accounts
+	// 					.filter((account) => account.address == cookies.kusamaDefault)
+	// 					.map((account) => {
+	// 						setStashAccount(account);
+	// 					})
+	// 			: accounts
+	// 					.filter((account) => account.address == cookies.polkadotDefault)
+	// 					.map((account) => {
+	// 						setStashAccount(account);
+	// 					});
+	// 	}
+	// }, [accounts]);
 
 	useEffect(() => {
 		if (accountsWithBalances && stashAccount) {
@@ -203,7 +205,13 @@ const Header = ({ isBase }) => {
 					: "max-w-65-rem xl:px-0"
 			} bg-white px-8 py-8 h-12 mx-auto`}
 		>
-			<WalletConnectPopover isOpen={isOpen} networkInfo={networkInfo} />
+			{!isBase && (isOpen || !isNil(cookies.isAuthorized)) && (
+				<WalletConnectPopover
+					isOpen={isOpen}
+					networkInfo={networkInfo}
+					cookies={cookies}
+				/>
+			)}
 			<EditControllerModal
 				isOpen={editControllerModalOpen}
 				close={closeEditControllerModal}
@@ -240,10 +248,16 @@ const Header = ({ isBase }) => {
 								<DrawerHeader>
 									<Link href="/">
 										<a className="flex items-center">
-											<Image
+											{/* <Image
 												src="/images/yieldscan-logo.svg"
 												alt="YieldScan Logo"
-											/>
+											/> */}
+											<ProgressiveImage
+												src="/images/yieldscan-logo.svg"
+												placeholder="/favicon-32x32.png"
+											>
+												{(src) => <img src={src} alt="an image" />}
+											</ProgressiveImage>
 											<span className="ml-2 font-medium flex items-center">
 												YieldScan
 												<Badge
@@ -273,7 +287,20 @@ const Header = ({ isBase }) => {
 				)}
 				<Link href="/">
 					<a className="flex items-center">
-						<Image src="/images/yieldscan-logo.svg" alt="YieldScan Logo" />
+						{/* <Image src="/images/yieldscan-logo.svg" alt="YieldScan Logo" /> */}
+						<ProgressiveImage
+							src="/images/yieldscan-logo.svg"
+							placeholder="/images/../favicon-16x16.png"
+						>
+							{(src) => (
+								<img
+									src={src}
+									alt="Yieldscan Logo"
+									width="41px"
+									height="41px"
+								/>
+							)}
+						</ProgressiveImage>
 						<span className="ml-2 font-medium flex items-center">
 							YieldScan
 							<Badge
@@ -338,12 +365,14 @@ const Header = ({ isBase }) => {
 															? setCookie(
 																	null,
 																	"kusamaDefault",
-																	account.address
+																	account.address,
+																	{ maxAge: 7 * 24 * 60 * 60 }
 															  )
 															: setCookie(
 																	null,
 																	"polkadotDefault",
-																	account.address
+																	account.address,
+																	{ maxAge: 7 * 24 * 60 * 60 }
 															  );
 														setIsStashPopoverOpen(false);
 													}}
@@ -442,12 +471,14 @@ const Header = ({ isBase }) => {
 															? setCookie(
 																	null,
 																	"kusamaDefault",
-																	account.address
+																	account.address,
+																	{ maxAge: 7 * 24 * 60 * 60 }
 															  )
 															: setCookie(
 																	null,
 																	"polkadotDefault",
-																	account.address
+																	account.address,
+																	{ maxAge: 7 * 24 * 60 * 60 }
 															  );
 														setIsStashPopoverOpen(false);
 													}}
@@ -545,7 +576,9 @@ const Header = ({ isBase }) => {
 													setAllNominations(null);
 													// setNominatorsData(undefined);
 													setNomLoading(true);
-													setCookie(null, "networkName", "Kusama");
+													setCookie(null, "networkName", "Kusama", {
+														maxAge: 7 * 24 * 60 * 60,
+													});
 													setCouncilMembers(undefined);
 													setTransactionHash(null);
 													setCouncilLoading(true);
@@ -583,7 +616,9 @@ const Header = ({ isBase }) => {
 													setAllNominations(null);
 													// setNominatorsData(undefined);
 													setNomLoading(true);
-													setCookie(null, "networkName", "Polkadot");
+													setCookie(null, "networkName", "Polkadot", {
+														maxAge: 7 * 24 * 60 * 60,
+													});
 													setCouncilMembers(undefined);
 													setTransactionHash(null);
 													setCouncilLoading(true);

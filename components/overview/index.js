@@ -39,6 +39,7 @@ const Overview = () => {
 	const { apiInstance } = usePolkadotApi();
 	const {
 		stashAccount,
+		accounts,
 		bondedAmount,
 		activeStake,
 		setFreeAmount,
@@ -235,17 +236,17 @@ const Overview = () => {
 			<div className="flex-center flex-col">
 				<AlertTriangle size="2rem" className="text-orange-500" />
 				<span className="text-gray-600 text-lg mb-10">
-					No account connected!
+					No account {isNil(accounts) ? "connected" : "selected"}!
 				</span>
 				<button
 					className="border border-teal-500 text-teal-500 px-3 py-2 rounded-full"
 					onClick={toggle}
 				>
-					Connect Wallet
+					{isNil(accounts) ? "Connect Wallet" : "Select Account"}
 				</button>
 			</div>
 		</div>
-	) : loading || nominationsLoading ? (
+	) : loading || nominationsLoading || isNil(bondedAmount) ? (
 		<div className="flex-center w-full h-full">
 			<div className="flex-center flex-col">
 				<Spinner size="xl" color="teal.500" thickness="4px" />

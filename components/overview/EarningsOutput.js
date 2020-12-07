@@ -26,6 +26,7 @@ import CountUp from "react-countup";
 import { Twitter } from "react-feather";
 import convertCurrency from "@lib/convert-currency";
 import getErasHistoric from "@lib/getErasHistoric";
+import ProgressiveImage from "react-progressive-image";
 
 const EarningsOutput = ({
 	networkDenom,
@@ -137,7 +138,7 @@ const EarningsOutput = ({
 				2
 			)}% APR by investing on the ${
 				networkInfo.twitterUrl
-			} through @yieldscan. What are you waiting for? \nCheck your expected earnings on https://yieldscan.onrender.com/reward-calculator and share it here.`;
+			} through @yield_scan. What are you waiting for? \nCheck your expected earnings on https://yieldscan.onrender.com/reward-calculator and share it here.`;
 			setTweet("https://twitter.com/intent/tweet?text=" + escape(msg));
 		}
 	}, [yearlyEarning]);
@@ -198,12 +199,14 @@ const EarningsOutput = ({
 	return (
 		<Box minW={320} w="full">
 			<div className="flex">
-				<Image
-					src="/images/earnings-dollar-sign.png"
-					alt="dollar-sign"
-					w={8}
-					h={8}
-				/>
+				<ProgressiveImage
+					src="/images/dollar-sign.svg"
+					placeholder="/images/dollar-sign.jpg"
+				>
+					{(src) => (
+						<img src={src} alt="dollar-sign" width="32px" height="32px" />
+					)}
+				</ProgressiveImage>
 				<p className="font-semibold text-base text-gray-700 ml-2 mt-1">
 					Earnings
 				</p>

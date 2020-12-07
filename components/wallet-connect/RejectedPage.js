@@ -1,4 +1,4 @@
-const IntroPage = ({ onConnected, onDisclaimer }) => (
+const RejectedPage = ({ handleRecoveryAuth }) => (
 	<div className="pb-12 flex flex-col text-center items-center">
 		<img src="/images/polkadot-wallet-connect.png" width="200px" />
 		<h3 className="mt-4 text-xl font-semibold px-20 text-gray-700">
@@ -16,13 +16,13 @@ const IntroPage = ({ onConnected, onDisclaimer }) => (
 		>
 			Install extension
 		</a>
-		{/* <button
-			className="mt-2 px-12 py-4 bg-white text-teal-500 rounded-lg border border-teal-500"
-			onClick={onDisclaimer}
+		<span
+			className="mt-2 px-4 text-xs text-gray-600 underline cursor-pointer"
+			onClick={handleRecoveryAuth}
 		>
-			Create a wallet for my account
-		</button> */}
-		<span className="mt-4 text-sm text-gray-600">
+			Accidently rejected the permission request?
+		</span>
+		<span className="mt-6 text-sm text-gray-600">
 			Using a different wallet?{" "}
 			<a
 				className="text-gray-700 font-semibold"
@@ -35,4 +35,4 @@ const IntroPage = ({ onConnected, onDisclaimer }) => (
 	</div>
 );
 
-export default IntroPage;
+export default RejectedPage;

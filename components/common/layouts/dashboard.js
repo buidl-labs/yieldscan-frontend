@@ -215,7 +215,7 @@ const withDashboardLayout = (children) => {
 					<div
 						className={`mx-auto h-full ${
 							includes(
-								[Routes.OVERVIEW, Routes.CALCULATOR],
+								[Routes.OVERVIEW, Routes.CALCULATOR, Routes.SETTINGS],
 								get(router, "pathname")
 							) ? "max-w-screen-lg" : "max-w-screen-xl"
 						}`}
