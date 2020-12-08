@@ -10,7 +10,7 @@ const SupportedNetworks = () => {
 			</h1>
 			<div className="flex justify-center">
 				{supportedNetworks.map((network) => (
-					<div className="mx-12 mb-16">
+					<div key={network} className="mx-12 mb-16">
 						<img
 							src={`/images/${network}-logo.png`}
 							alt={`${network}-logo`}
