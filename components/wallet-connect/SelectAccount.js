@@ -40,7 +40,7 @@ const SelectAccount = ({ accounts, onStashSelected, networkInfo }) => {
 															account.balances.reservedBalance.toNumber()
 													),
 													networkInfo
-												) === "0" && " KSM"}
+												) === "0" && ` ${networkInfo.denom}`}
 											</p>
 										) : (
 											<div>
