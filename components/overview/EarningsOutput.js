@@ -136,9 +136,11 @@ const EarningsOutput = ({
 		if (yearlyEarning) {
 			const msg = `I am earning ${yearlyEarning.yieldPercentage.toFixed(
 				2
-			)}% APR by investing on the ${
+			)}% APR by staking on ${
 				networkInfo.twitterUrl
-			} through @yieldscan. What are you waiting for? \nCheck your expected earnings on https://yieldscan.onrender.com/reward-calculator and share it here.`;
+			} through @yield_scan - created by @buidllabs. What are you waiting for?
+			\nStake on https://yieldscan.onrender.com/ and be a part of @Polkadot & @kusamanetwork today!
+			\nDon't forget to tweet your APR! #YieldScan $DOT $KSM`;
 			setTweet("https://twitter.com/intent/tweet?text=" + escape(msg));
 		}
 	}, [yearlyEarning]);
