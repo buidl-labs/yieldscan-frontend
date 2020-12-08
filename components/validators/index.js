@@ -30,6 +30,7 @@ import {
 	useAccounts,
 	usePaymentPopover,
 	useSelectedNetwork,
+	useTransactionHash,
 	useValidatorData,
 } from "@lib/store";
 import calculateReward from "@lib/calculate-reward";
@@ -43,6 +44,7 @@ import { useRouter } from "next/router";
 import axios from "@lib/axios";
 import { getNetworkInfo } from "yieldscan.config";
 import convertCurrency from "@lib/convert-currency";
+import { trackEvent, Events } from "@lib/analytics";
 
 const DEFAULT_FILTER_OPTIONS = {
 	numOfNominators: { min: "", max: "" },
@@ -64,6 +66,7 @@ const Validators = () => {
 		accountInfoLoading,
 	} = useAccounts();
 	const { validatorMap, setValidatorMap } = useValidatorData();
+	const { transactionHash, setTransactionHash } = useTransactionHash();
 	const { isOpen, onClose, onToggle } = useDisclosure();
 	const transactionState = useTransaction((state) => {
 		let _returns = get(result, "returns"),
@@ -281,12 +284,30 @@ const Validators = () => {
 		compounding,
 	]);
 
-	const updateTransactionState = () => {
+	const updateTransactionState = (eventType = "") => {
 		let _returns = get(result, "returns"),
 			_yieldPercentage = get(result, "yieldPercentage");
 		const selectedValidatorsList = Object.values(selectedValidatorsMap).filter(
 			(v) => !isNil(v)
 		);
+
+		if (eventType) {
+			trackEvent(eventType, {
+				investmentAmount: `${amount} ${get(
+					networkInfo,
+					"denom"
+				)} ($${subCurrency})`,
+				timePeriod: `${timePeriodValue} ${timePeriodUnit}`,
+				compounding,
+				returns: `${get(_returns, "currency")} ${get(
+					networkInfo,
+					"denom"
+				)} ($${get(_returns, "subCurrency")})`,
+				yieldPercentage: `${_yieldPercentage}%`,
+				// selectedValidators: selectedValidatorsList,
+				// validatorMap
+			});
+		}
 
 		setTransactionState({
 			stakingAmount: amount,
@@ -297,15 +318,14 @@ const Validators = () => {
 			returns: _returns,
 			yieldPercentage: _yieldPercentage,
 			selectedValidators: selectedValidatorsList,
-			validatorMap: transactionState.validatorMap,
+			validatorMap,
 		});
 	};
 
 	const onPayment = async () => {
-		updateTransactionState();
-		get(bondedAmount, "currency", 0) === 0
-			? router.push("/payment", "/payment", "shallow")
-			: openPaymentPopover();
+		updateTransactionState(Events.INTENT_STAKING);
+		if (transactionHash) setTransactionHash(null);
+		router.push("/payment", "/payment", "shallow");
 	};
 
 	return loading || accountInfoLoading ? (
