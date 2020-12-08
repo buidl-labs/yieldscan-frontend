@@ -11,7 +11,7 @@ export const networks = [
 		denom: "DOT",
 		coinGeckoDenom: "polkadot",
 		decimalPlaces: 10,
-		twitterUrl: "@polkadotnetwork",
+		twitterUrl: "@Polkadot",
 		addressPrefix: 0,
 		nodeWs: "wss://rpc.polkadot.io",
 		erasPerDay: 1,

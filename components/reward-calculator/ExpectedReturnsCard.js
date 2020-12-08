@@ -22,7 +22,7 @@ const ResultCardInsight = ({
 			<Popover trigger="hover">
 				<PopoverTrigger>
 					<HelpCircle
-						size="0.75rem"
+						size="12"
 						cursor="help"
 						opacity="0.5"
 						fill="white"

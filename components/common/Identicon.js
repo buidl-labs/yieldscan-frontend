@@ -1,16 +1,21 @@
 import { noop } from "lodash";
 import { useToast } from "@chakra-ui/core";
-import BaseIdenticon from '@polkadot/react-identicon';
+import BaseIdenticon from "@polkadot/react-identicon";
 
-const Identicon = ({ address, size = '2.5rem', onClick = noop, showToast = true }) => {
+const Identicon = ({
+	address,
+	size = "40",
+	onClick = noop,
+	showToast = true,
+}) => {
 	const toast = useToast();
 	const onCopy = () => {
 		if (showToast) {
 			toast({
 				duration: 2000,
-				status: 'success',
-				position: 'top-right',
-				description: 'Address copied',
+				status: "success",
+				position: "top-right",
+				description: "Address copied",
 			});
 		}
 
@@ -18,7 +23,7 @@ const Identicon = ({ address, size = '2.5rem', onClick = noop, showToast = true 
 	};
 
 	return (
-		<div onClick={ev => ev.stopPropagation()} className="-mb-1">
+		<div onClick={(ev) => ev.stopPropagation()} className="-mb-1">
 			<BaseIdenticon
 				size={size}
 				value={address}

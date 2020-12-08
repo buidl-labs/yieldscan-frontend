@@ -53,7 +53,7 @@ const ValidatorCard = ({
 		>
 			<div className="flex">
 				<div>
-					<Identicon address={stashId} size="2.5rem" />
+					<Identicon address={stashId} />
 				</div>
 				<div
 					className="text-gray-700 w-48 truncate cursor-pointer ml-2"

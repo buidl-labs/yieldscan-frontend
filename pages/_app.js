@@ -24,9 +24,9 @@ const customIcons = {
 					height="11679"
 					rx="538"
 					stroke="black"
-					stroke-width="30"
+					strokeWidth="30"
 				/>
-				<g clip-path="url(#clip0)">
+				<g clipPath="url(#clip0)">
 					<rect
 						width="1440"
 						height="900"
@@ -42,23 +42,23 @@ const customIcons = {
 							height="210.838"
 							rx="20"
 							fill="#2BCACA"
-							fill-opacity="0.2"
+							fillOpacity="0.2"
 						/>
 					</g>
 					<path
 						d="M9 21C9 21 17 17 17 11V4L9 1L1 4V11C1 17 9 21 9 21Z"
 						fill="#798594"
 						stroke="#798594"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
+						strokeWidth="2"
+						strokeLinecap="round"
+						strokeLinejoin="round"
 					/>
 					<path
 						d="M14 7L7.125 14L4 10.8182"
 						stroke="white"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
+						strokeWidth="2"
+						strokeLinecap="round"
+						strokeLinejoin="round"
 					/>
 					<rect
 						x="-22.5"
@@ -77,9 +77,9 @@ const customIcons = {
 						width="570.61"
 						height="360.838"
 						filterUnits="userSpaceOnUse"
-						color-interpolation-filters="sRGB"
+						colorInterpolationFilters="sRGB"
 					>
-						<feFlood flood-opacity="0" result="BackgroundImageFix" />
+						<feFlood floodOpacity="0" result="BackgroundImageFix" />
 						<feBlend
 							mode="normal"
 							in="SourceGraphic"

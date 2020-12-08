@@ -61,7 +61,7 @@ const Header = ({ isBase }) => {
 	const { setNominatorsData, setNomLoading } = useNominatorsData();
 	const { setCouncilMembers, setCouncilLoading } = useCouncil();
 	const networkInfo = getNetworkInfo(selectedNetwork);
-	const { setApiInstance } = usePolkadotApi();
+	const { apiInstance, setApiInstance } = usePolkadotApi();
 	const { isOpen, toggle } = useWalletConnect();
 	const {
 		accounts,
@@ -183,7 +183,7 @@ const Header = ({ isBase }) => {
 
 	useEffect(() => {
 		if (stashAccount) {
-			createPolkadotAPIInstance(networkInfo.name).then((api) => {
+			createPolkadotAPIInstance(networkInfo.name, apiInstance).then((api) => {
 				setApiInstance(api);
 				api.query.staking
 					.bonded(stashAccount.address)
@@ -221,7 +221,7 @@ const Header = ({ isBase }) => {
 					<>
 						<IconButton
 							ref={btnRef}
-							variantColor="gray.600"
+							colorScheme="gray"
 							variant="link"
 							onClick={navOnOpen}
 							icon={Menu}
@@ -243,7 +243,6 @@ const Header = ({ isBase }) => {
 									boxShadow="0 0 0 0 #fff"
 									color="gray.400"
 									backgroundColor="gray.100"
-									rounded="1rem"
 								/>
 								<DrawerHeader>
 									<Link href="/">
@@ -377,7 +376,7 @@ const Header = ({ isBase }) => {
 														setIsStashPopoverOpen(false);
 													}}
 												>
-													<Identicon address={account.address} size="2rem" />
+													<Identicon address={account.address} size="32" />
 													<span className="flex flex-col items-start w-1/2 ml-2">
 														<span className="truncate w-full text-left pr-1">
 															{account.meta.name}
@@ -483,7 +482,7 @@ const Header = ({ isBase }) => {
 														setIsStashPopoverOpen(false);
 													}}
 												>
-													<Identicon address={account.address} size="2rem" />
+													<Identicon address={account.address} size="32" />
 													<span className="flex flex-col items-start w-1/2 ml-2">
 														<span className="truncate w-full text-left pr-1">
 															{account.meta.name}

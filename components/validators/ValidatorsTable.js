@@ -39,7 +39,6 @@ const ValidatorCard = ({
 		>
 			<div className="ml-4 mr-2 flex items-center">
 				<Check
-					size="1.5rem"
 					className={`p-1 mr-2 rounded-full text-white bg-opacity-0 ${
 						selected && "bg-teal-500 bg-opacity-100"
 					}`}

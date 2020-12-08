@@ -23,7 +23,7 @@ const ValidatorCard = ({
 	return (
 		<div className="flex items-center justify-between rounded-lg border border-gray-200 py-2 w-full mb-2">
 			<div className="flex items-center ml-4">
-				<Identicon address={stashId} size="2rem" />
+				<Identicon address={stashId} size="32" />
 				<div className="text-gray-700 cursor-pointer ml-2" onClick={onProfile}>
 					<span className="text-xs font-semibold">{displayName}</span>
 					<div className="flex items-center">

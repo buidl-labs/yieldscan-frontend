@@ -124,7 +124,7 @@ const ValidatorInfo = ({
 }) => (
 	<div className="mr-2 flex items-center rounded-lg border border-gray-200 px-3 py-2 mb-2 w-full mt-1 text-gray-700">
 		<div className="mr-4">
-			<Identicon address={stashId} size="2.5rem" />
+			<Identicon address={stashId} />
 		</div>
 		<div className="flex flex-col items-start">
 			<h3 className="font-medium text-sm">
