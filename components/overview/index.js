@@ -234,7 +234,7 @@ const Overview = () => {
 	return !stashAccount ? (
 		<div className="flex-center w-full h-full">
 			<div className="flex-center flex-col">
-				<AlertTriangle size="2rem" className="text-orange-500" />
+				<AlertTriangle size="32" className="text-orange-500" />
 				<span className="text-gray-600 text-lg mb-10">
 					No account {isNil(accounts) ? "connected" : "selected"}!
 				</span>

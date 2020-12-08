@@ -1,21 +1,17 @@
 import { useDisclosure } from "@chakra-ui/core";
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
+	Modal,
+	ModalOverlay,
+	ModalContent,
+	ModalHeader,
+	ModalBody,
+	ModalCloseButton,
 } from "@chakra-ui/core";
 import Identicon from "@components/common/Identicon";
 import withSlideIn from "@components/common/withSlideIn";
 import Routes from "@lib/routes";
 
-const ValidatorCard = ({
-	name,
-	stashId,
-	onProfile = noop,
-}) => {
+const ValidatorCard = ({ name, stashId, onProfile = noop }) => {
 	return (
 		<div
 			className="flex items-center justify-between rounded-lg border border-gray-200 py-2 w-full mb-2 cursor-pointer"
@@ -29,9 +25,7 @@ const ValidatorCard = ({
 							{name || stashId.slice(0, 6) + "..." + stashId.slice(-6) || "-"}
 						</span>
 					</h3>
-					<p className="text-gray-600 text-xs">
-						{stashId || ""}
-					</p>
+					<p className="text-gray-600 text-xs">{stashId || ""}</p>
 				</div>
 			</div>
 		</div>
@@ -78,11 +72,13 @@ const LinkedValidatorsModal = withSlideIn(
 );
 
 const LinkedValidatorsGroup = ({ validators = [] }) => {
-	const { onToggle, isOpen, onClose } = useDisclosure()
-	
-	const onProfile = (validatorId) => window.open(`${Routes.VALIDATOR_PROFILE}/${validatorId}`, '_blank');
-	
-	const limitedValidators = validators.length > 5 ? validators.slice(0, 5) : validators;
+	const { onToggle, isOpen, onClose } = useDisclosure();
+
+	const onProfile = (validatorId) =>
+		window.open(`${Routes.VALIDATOR_PROFILE}/${validatorId}`, "_blank");
+
+	const limitedValidators =
+		validators.length > 5 ? validators.slice(0, 5) : validators;
 
 	return validators.length ? (
 		<div className="flex items-center">
@@ -98,16 +94,12 @@ const LinkedValidatorsGroup = ({ validators = [] }) => {
 			/>
 			<div className="flex items-center max-w-xs">
 				{limitedValidators.map((validator) => (
-					<div
-						style={{ marginLeft: -12 }}
-						className="cursor-pointer-ml-12"
-					>
+					<div style={{ marginLeft: -12 }} className="cursor-pointer-ml-12">
 						<Identicon
 							key={validator.stashId}
 							address={validator.stashId}
 							onClick={onProfile}
 							showToast={false}
-							size="2.5rem"
 						/>
 					</div>
 				))}
