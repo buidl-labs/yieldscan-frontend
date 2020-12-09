@@ -1,4 +1,4 @@
-import { InputGroup, Input, InputRightElement } from "@chakra-ui/core";
+import { InputGroup, Spinner, Input, InputRightElement } from "@chakra-ui/core";
 import formatCurrency from "@lib/format-currency";
 import { useAccounts } from "@lib/store";
 import { get } from "lodash";
@@ -16,10 +16,7 @@ const AmountInputDefault = ({
 		bonded === undefined ? true : bonded == 0 ? true : false;
 	const [isEditable, setIsEditable] = React.useState(initiallyEditable);
 	const [inputValue, setInputValue] = useState(value.currency);
-	const maxAmount = Math.max(
-		bonded + get(freeAmount, "currency") - 0.1,
-		0
-	);
+	const maxAmount = Math.max(bonded + get(freeAmount, "currency") - 0.1, 0);
 
 	useEffect(() => {
 		if (bonded) {
@@ -115,6 +112,85 @@ const AmountInputDefault = ({
 	);
 };
 
+const AmountInputAccountInfoLoading = ({
+	bonded,
+	value,
+	onChange,
+	networkInfo,
+	trackRewardCalculatedEvent,
+}) => {
+	const [inputValue, setInputValue] = useState(value.currency);
+
+	const handleChange = (value) => {
+		onChange(value);
+		setInputValue(value);
+		trackRewardCalculatedEvent({
+			investmentAmount: `${value} ${networkInfo.denom}`,
+		});
+	};
+
+	return (
+		<div>
+			<div className="flex items-center justify-between w-full">
+				<InputGroup className="border border-gray-200 rounded-full">
+					<Input
+						type="number"
+						rounded="full"
+						pt={6}
+						pb={10}
+						px={4}
+						pr={24}
+						textOverflow="ellipsis"
+						placeholder="0"
+						value={inputValue}
+						onChange={(e) => {
+							const { value } = e.target;
+							handleChange(value);
+						}}
+						border="none"
+						fontSize="lg"
+						isDisabled={true}
+						backgroundColor={"gray.200"}
+						color="gray.600"
+					/>
+					<h6
+						className={`absolute z-20 bottom-0 left-0 ml-4 mb-3 text-xs text-gray-600 cursor-not-allowed opacity-25`}
+					>
+						${formatCurrency.methods.formatNumber(value.subCurrency.toFixed(2))}
+					</h6>
+					<InputRightElement
+						opacity="0.4"
+						children={
+							<span className="flex min-w-fit-content">
+								<span className="ml-2 text-sm font-medium cursor-not-allowed text-gray-700">
+									{networkInfo.denom}
+								</span>
+							</span>
+						}
+						h="full"
+						rounded="full"
+						fontSize="xl"
+						w="fit-content"
+						px={4}
+					/>
+				</InputGroup>
+				<div className="ml-4 text-gray text-xs flex inline">
+					Loading...
+					<div className="ml-2">
+						<Spinner
+							thickness="4px"
+							speed="0.65s"
+							emptyColor="gray.200"
+							color="blue.500"
+							size="sm"
+						/>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+};
+
 // TODO: handle `subCurrency` properly
 const AmountInputAlreadyBonded = ({ value, bonded, total, onChange }) => (
 	<div className="flex flex-col">
@@ -166,7 +242,14 @@ const AmountInputAlreadyBonded = ({ value, bonded, total, onChange }) => (
 	</div>
 );
 
-const AmountInput = ({ value, bonded, networkInfo, onChange, trackRewardCalculatedEvent }) => {
+const AmountInput = ({
+	value,
+	bonded,
+	networkInfo,
+	onChange,
+	trackRewardCalculatedEvent,
+	accountInfoLoading,
+}) => {
 	return (
 		<div className="w-4/5">
 			{/* {get(bonded, 'currency') ? (
@@ -180,13 +263,23 @@ const AmountInput = ({ value, bonded, networkInfo, onChange, trackRewardCalculat
 					onChange={onChange}
 				/>
 			): ( */}
-			<AmountInputDefault
-				value={value}
-				bonded={bonded}
-				onChange={onChange}
-				networkInfo={networkInfo}
-				trackRewardCalculatedEvent={trackRewardCalculatedEvent}
-			/>
+			{accountInfoLoading ? (
+				<AmountInputAccountInfoLoading
+					value={value}
+					bonded={bonded}
+					onChange={onChange}
+					networkInfo={networkInfo}
+					trackRewardCalculatedEvent={trackRewardCalculatedEvent}
+				/>
+			) : (
+				<AmountInputDefault
+					value={value}
+					bonded={bonded}
+					onChange={onChange}
+					networkInfo={networkInfo}
+					trackRewardCalculatedEvent={trackRewardCalculatedEvent}
+				/>
+			)}
 		</div>
 	);
 };
