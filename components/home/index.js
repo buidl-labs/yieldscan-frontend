@@ -53,10 +53,10 @@ const HomePage = () => {
 			</button>
 			<div className="w-full max-w-65-rem">
 				<h1 className="text-4xl text-gray-700 font-bold text-center">
-					Designed to maximize staking yield
+					Built to maximize staking yield
 				</h1>
 				<p className="text-center text-gray-600 text-xl">
-					Simple. Non-custodial. Secure.
+					Designed to minimize effort
 					<br />
 					<ScrollLink
 						to="supported-networks"
@@ -85,20 +85,27 @@ const HomePage = () => {
 			<section name="Supported Networks" id="supported-networks">
 				<SupportedNetworks />
 			</section>
-			<hr className="w-screen" />
+			<hr className="w-full" />
 			<FAQs />
-			<div className="w-screen shadow-teal bg-teal-500 py-8 flex justify-center items-center mt-40">
-				<p className="text-2xl text-white mr-8">Ready to start earning?</p>
+			<div className="w-full px-24 rounded-xl bg-gray-100 pt-10 pb-12 flex justify-between items-center mt-32">
+				<span className="pr-16">
+					<h1 className="text-4xl font-semibold text-gray-700 mr-8">
+						Ready to start earning?
+					</h1>
+					<p className="text-gray-700 text-lg">
+						It's simple, non-custodial and secure.
+					</p>
+				</span>
 				<Button
-					className="rounded-md shadow-white min-w-max-content"
-					color="teal.500"
-					backgroundColor="white"
-					rounded="md"
+					className="shadow-teal min-w-max-content"
+					color="white"
+					backgroundColor="teal.500"
+					rounded="full"
 					fontWeight="normal"
 					fontSize="lg"
 					py={6}
-					px={12}
-					_hover={{ bg: "white", transform: "scale(1.03)" }}
+					px={20}
+					_hover={{ bg: "teal.400", transform: "scale(1.03)" }}
 					_disabled={{
 						bg: "white",
 						opacity: 0.5,
