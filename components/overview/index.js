@@ -246,7 +246,7 @@ const Overview = () => {
 				</button>
 			</div>
 		</div>
-	) : loading || nominationsLoading || isNil(bondedAmount) ? (
+	) : isNil(bondedAmount) || nominationsLoading ? (
 		<div className="flex-center w-full h-full">
 			<div className="flex-center flex-col">
 				<Spinner size="xl" color="teal.500" thickness="4px" />
@@ -257,7 +257,7 @@ const Overview = () => {
 		</div>
 	) : (
 		<div className="py-10 w-full h-full">
-			<RewardDestinationModal
+			{/* <RewardDestinationModal
 				isOpen={isRewardDestinationModalOpen}
 				close={closeRewardDestinationModal}
 				onEditController={onEditController}
@@ -266,7 +266,7 @@ const Overview = () => {
 				isOpen={editControllerModalOpen}
 				close={closeEditControllerModal}
 				networkInfo={networkInfo}
-			/>
+			/> */}
 			<FundsUpdate
 				isOpen={fundsUpdateModalOpen}
 				close={closeFundsUpdateModal}
@@ -275,7 +275,7 @@ const Overview = () => {
 				bondedAmount={bondedAmount}
 				networkInfo={networkInfo}
 			/>
-			<EditValidators
+			{/* <EditValidators
 				isOpen={editValidatorModalOpen}
 				close={closeEditValidatorsModal}
 				validators={validators}
@@ -286,8 +286,8 @@ const Overview = () => {
 					setTimeout(() => toggleChillAlert(), 500);
 				}}
 				networkInfo={networkInfo}
-			/>
-			<ChillAlert isOpen={chillAlertOpen} close={closeChillAlert} />
+			/> */}
+			{/* <ChillAlert isOpen={chillAlertOpen} close={closeChillAlert} /> */}
 			<div className="flex-col">
 				<div className="flex">
 					<OverviewCards
@@ -303,7 +303,7 @@ const Overview = () => {
 						networkInfo={networkInfo}
 					/>
 					<div className="flex ml-20 w-1/2">
-						{activeStake && validators && (
+						{activeStake && !isNil(userData) && (
 							<EarningsOutput
 								networkDenom={networkInfo.denom}
 								networkUrl={networkInfo.coinGeckoDenom}

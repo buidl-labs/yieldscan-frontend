@@ -73,6 +73,7 @@ const Header = ({ isBase }) => {
 		stashAccount,
 		freeAmount,
 		setFreeAmount,
+		setBondedAmount,
 		accountInfoLoading,
 		setStashAccount,
 		setAccounts,
@@ -468,6 +469,7 @@ const Header = ({ isBase }) => {
 												<button
 													className="flex items-center rounded px-4 py-2 w-full bg-gray-800 hover:bg-gray-700 hover:text-gray-200"
 													onClick={() => {
+														setBondedAmount(null);
 														setStashAccount(account);
 														setTransactionHash(null);
 														selectedNetwork == "Kusama"
@@ -588,6 +590,7 @@ const Header = ({ isBase }) => {
 													setCouncilLoading(true);
 													setStashAccount(null);
 													setFreeAmount(null);
+													setBondedAmount(null);
 													setAccounts(null);
 													setAccountsWithBalances(null);
 													setAccountInfoLoading(false);
@@ -629,6 +632,7 @@ const Header = ({ isBase }) => {
 													setCouncilLoading(true);
 													setStashAccount(null);
 													setFreeAmount(null);
+													setBondedAmount(null);
 													setAccounts(null);
 													setAccountsWithBalances(null);
 													setAccountInfoLoading(false);

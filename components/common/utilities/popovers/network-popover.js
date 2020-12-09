@@ -37,6 +37,7 @@ const NetworkPopover = ({ isExpanded, hasBorder }) => {
 		stashAccount,
 		freeAmount,
 		setFreeAmount,
+		setBondedAmount,
 		accountInfoLoading,
 		setStashAccount,
 		setAccounts,
@@ -111,6 +112,7 @@ const NetworkPopover = ({ isExpanded, hasBorder }) => {
 								setCouncilLoading(true);
 								setStashAccount(null);
 								setFreeAmount(null);
+								setBondedAmount(null);
 								setAccounts(null);
 								setAccountsWithBalances(null);
 								setAccountInfoLoading(false);
@@ -151,6 +153,7 @@ const NetworkPopover = ({ isExpanded, hasBorder }) => {
 								setCouncilLoading(true);
 								setStashAccount(null);
 								setFreeAmount(null);
+								setBondedAmount(null);
 								setAccounts(null);
 								setAccountsWithBalances(null);
 								setAccountInfoLoading(false);
