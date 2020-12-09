@@ -19,7 +19,7 @@ const EarningsOutput = ({
 	networkInfo,
 }) => {
 	const transactionState = useTransaction();
-	const [risk, setRisk] = useState(transactionState.riskPreference || "Medium");
+	const [risk, setRisk] = useState("Medium");
 	const [yearlyEarning, setYearlyEarning] = useState();
 	// const yearlyEarning = useYearlyEarning((state) => state.yearlyEarning);
 	// const setYearlyEarning = useYearlyEarning((state) => state.setYearlyEarning);
@@ -49,7 +49,7 @@ const EarningsOutput = ({
 			setDailyEarning(null);
 			setMonthlyEarning(null);
 			setSelectedValidators(null);
-			axios.get(`/${networkUrl}/rewards/risk-set`).then(({ data }) => {
+			axios.get(`/${networkUrl}/rewards/risk-set-only`).then(({ data }) => {
 				/**
 				 * `mapValues(keyBy(array), 'value-key')`:
 				 * 	O(N + N) operation, using since each risk set will have maximum 16 validators
@@ -58,7 +58,6 @@ const EarningsOutput = ({
 					Low: mapValues(keyBy(data.lowriskset, "stashId")),
 					Medium: mapValues(keyBy(data.medriskset, "stashId")),
 					High: mapValues(keyBy(data.highriskset, "stashId")),
-					total: data.totalset,
 				};
 
 				setValidatorMap(validatorMap);
