@@ -285,49 +285,53 @@ const RewardCalculatorPage = () => {
 						<div className="mt-8 mx-2">
 							<h3 className="text-gray-700 text-xs">I want to invest:</h3>
 							<div className="mt-2">
-								{stashAccount && amount > totalBalance - 0.1 && (
-									<Alert
-										status="error"
-										rounded="md"
-										flex
-										flexDirection="column"
-										alignItems="start"
-										my={4}
-									>
-										<AlertTitle color="red.500">
-											Insufficient Balance
-										</AlertTitle>
-										<AlertDescription color="red.500">
-											{`You need an additional of ${formatCurrency.methods.formatAmount(
-												Math.trunc(
-													Number(amount - (totalBalance - 0.1)) *
-														10 ** networkInfo.decimalPlaces
-												),
-												networkInfo
-											)} to proceed further.`}{" "}
-											<Popover trigger="hover" usePortal>
-												<PopoverTrigger>
-													<span className="underline cursor-help">Why?</span>
-												</PopoverTrigger>
-												<PopoverContent
-													zIndex={50}
-													_focus={{ outline: "none" }}
-													bg="gray.600"
-													border="none"
-												>
-													<PopoverArrow />
-													<PopoverBody>
-														<span className="text-white text-xs">
-															This is to ensure that you have a decent amout of
-															funds in your account to pay transaction fees for
-															claiming rewards, unbonding funds, changing
-															on-chain staking preferences, etc.
-														</span>
-													</PopoverBody>
-												</PopoverContent>
-											</Popover>
-										</AlertDescription>
-									</Alert>
+								{stashAccount && amount > totalBalance - 0.1 ? (
+									!accountInfoLoading && (
+										<Alert
+											status="error"
+											rounded="md"
+											flex
+											flexDirection="column"
+											alignItems="start"
+											my={4}
+										>
+											<AlertTitle color="red.500">
+												Insufficient Balance
+											</AlertTitle>
+											<AlertDescription color="red.500">
+												{`You need an additional of ${formatCurrency.methods.formatAmount(
+													Math.trunc(
+														Number(amount - (totalBalance - 0.1)) *
+															10 ** networkInfo.decimalPlaces
+													),
+													networkInfo
+												)} to proceed further.`}{" "}
+												<Popover trigger="hover" usePortal>
+													<PopoverTrigger>
+														<span className="underline cursor-help">Why?</span>
+													</PopoverTrigger>
+													<PopoverContent
+														zIndex={50}
+														_focus={{ outline: "none" }}
+														bg="gray.600"
+														border="none"
+													>
+														<PopoverArrow />
+														<PopoverBody>
+															<span className="text-white text-xs">
+																This is to ensure that you have a decent amout
+																of funds in your account to pay transaction fees
+																for claiming rewards, unbonding funds, changing
+																on-chain staking preferences, etc.
+															</span>
+														</PopoverBody>
+													</PopoverContent>
+												</Popover>
+											</AlertDescription>
+										</Alert>
+									)
+								) : (
+									<></>
 								)}
 
 								<AmountInput
@@ -336,6 +340,7 @@ const RewardCalculatorPage = () => {
 									networkInfo={networkInfo}
 									onChange={setAmount}
 									trackRewardCalculatedEvent={trackRewardCalculatedEvent}
+									accountInfoLoading={accountInfoLoading}
 								/>
 							</div>
 							<div className="flex mt-8 items-center">
