@@ -95,28 +95,28 @@ const RewardCalculatorPage = () => {
 	);
 	const [selectedValidators, setSelectedValidators] = useState({});
 
-	const { validatorMap, setValidatorMap } = useValidatorData();
+	const { validatorRiskSets, setValidatorRiskSets } = useValidatorData();
 	const [result, setResult] = useState({});
 
 	useEffect(() => {
 		convertCurrency(amount || 0, networkInfo.denom).then((convertedAmount) => {
 			setSubCurrency(convertedAmount);
 		});
-	}, [amount, networkInfo, validatorMap]);
+	}, [amount, networkInfo, validatorRiskSets]);
 
 	useEffect(() => {
-		if (get(validatorMap, risk)) {
-			const selectedValidators = cloneDeep(validatorMap[risk]);
+		if (get(validatorRiskSets, risk)) {
+			const selectedValidators = cloneDeep(validatorRiskSets[risk]);
 			setSelectedValidators(selectedValidators);
 		}
 	}, [risk]);
 
 	useEffect(() => {
-		if (!validatorMap) {
+		if (!validatorRiskSets) {
 			setLoading(true);
 			setHeaderLoading(true);
 			axios
-				.get(`/${networkInfo.coinGeckoDenom}/rewards/risk-set`)
+				.get(`/${networkInfo.coinGeckoDenom}/rewards/risk-set-only`)
 				.then(({ data }) => {
 					/**
 					 * `mapValues(keyBy(array), 'value-key')`:
@@ -129,7 +129,7 @@ const RewardCalculatorPage = () => {
 						total: data.totalset,
 					};
 
-					setValidatorMap(validatorMap);
+					setValidatorRiskSets(validatorMap);
 					setSelectedValidators(validatorMap["Medium"]);
 					setLoading(false);
 					setHeaderLoading(false);
@@ -137,7 +137,7 @@ const RewardCalculatorPage = () => {
 		} else {
 			console.info("Using previous validator map.");
 		}
-	}, [networkInfo, validatorMap]);
+	}, [networkInfo, validatorRiskSets]);
 
 	useEffect(() => {
 		if (risk && timePeriodValue) {
@@ -191,7 +191,6 @@ const RewardCalculatorPage = () => {
 				)} ($${get(_returns, "subCurrency")})`,
 				yieldPercentage: `${_yieldPercentage}%`,
 				// selectedValidators: selectedValidatorsList,
-				// validatorMap
 			});
 		}
 
@@ -204,7 +203,7 @@ const RewardCalculatorPage = () => {
 			returns: _returns,
 			yieldPercentage: _yieldPercentage,
 			selectedValidators: selectedValidatorsList,
-			validatorMap,
+			validatorRiskSets,
 		});
 	};
 
@@ -230,7 +229,7 @@ const RewardCalculatorPage = () => {
 		(amount || 0) > totalBalance - 0.1 ||
 		amount == 0;
 
-	return accountInfoLoading || loading ? (
+	return loading ? (
 		<div className="flex-center w-full h-full">
 			<div className="flex-center flex-col">
 				<Spinner size="xl" color="teal.500" thickness="4px" />
@@ -506,7 +505,7 @@ const RewardCalculatorPage = () => {
 					</button>
 				</div> */}
 			</div>
-			{isPaymentPopoverOpen && (
+			{/* {isPaymentPopoverOpen && (
 				<PaymentPopover
 					isPaymentPopoverOpen={isPaymentPopoverOpen}
 					stashAccount={stashAccount}
@@ -521,7 +520,7 @@ const RewardCalculatorPage = () => {
 					result={result}
 					networkInfo={networkInfo}
 				/>
-			)}
+			)} */}
 		</div>
 	);
 };
