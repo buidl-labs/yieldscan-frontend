@@ -285,8 +285,9 @@ const RewardCalculatorPage = () => {
 						<div className="mt-8 mx-2">
 							<h3 className="text-gray-700 text-xs">I want to invest:</h3>
 							<div className="mt-2">
-								{stashAccount && amount > totalBalance - 0.1 ? (
-									!accountInfoLoading && (
+								{!accountInfoLoading ? (
+									stashAccount &&
+									amount > totalBalance - 0.1 && (
 										<Alert
 											status="error"
 											rounded="md"
@@ -482,7 +483,9 @@ const RewardCalculatorPage = () => {
 								: "opacity-100"
 						}
 					`}
-							disabled={stashAccount && calculationDisabled}
+							disabled={
+								(stashAccount && calculationDisabled) || accountInfoLoading
+							}
 							onClick={() => (stashAccount ? onPayment() : toggle())}
 						>
 							{isNil(accounts)
