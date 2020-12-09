@@ -55,7 +55,11 @@ const currentNetwork = "Not Kusama";
 const Header = ({ isBase }) => {
 	const cookies = parseCookies();
 	const { selectedNetwork, setSelectedNetwork } = useSelectedNetwork();
-	const { setValidators, setValidatorMap } = useValidatorData();
+	const {
+		setValidators,
+		setValidatorMap,
+		setValidatorRiskSets,
+	} = useValidatorData();
 	const { setUserData, setAllNominations } = useOverviewData();
 	const { setTransactionHash } = useTransactionHash();
 	const { setNominatorsData, setNomLoading } = useNominatorsData();
@@ -570,6 +574,7 @@ const Header = ({ isBase }) => {
 												if (selectedNetwork !== "Kusama") {
 													setApiInstance(null);
 													setValidatorMap(undefined);
+													setValidatorRiskSets(undefined);
 													setValidators(undefined);
 													setUserData(null);
 													setAllNominations(null);
@@ -610,6 +615,7 @@ const Header = ({ isBase }) => {
 												if (selectedNetwork !== "Polkadot") {
 													setApiInstance(null);
 													setValidatorMap(undefined);
+													setValidatorRiskSets(undefined);
 													setValidators(undefined);
 													setUserData(null);
 													setAllNominations(null);

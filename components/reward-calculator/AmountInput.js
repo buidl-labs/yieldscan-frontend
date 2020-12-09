@@ -178,7 +178,7 @@ const AmountInputAccountInfoLoading = ({
 					Loading...
 					<div className="ml-2">
 						<Spinner
-							thickness="4px"
+							thickness="2px"
 							speed="0.65s"
 							emptyColor="gray.200"
 							color="blue.500"

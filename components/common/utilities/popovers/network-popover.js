@@ -23,7 +23,11 @@ const currentNetwork = "Not Kusama";
 
 const NetworkPopover = ({ isExpanded, hasBorder }) => {
 	const { setApiInstance } = usePolkadotApi();
-	const { setValidatorMap, setValidators } = useValidatorData();
+	const {
+		setValidatorMap,
+		setValidators,
+		setValidatorRiskSets,
+	} = useValidatorData();
 	const { setUserData, setAllNominations } = useOverviewData();
 	const { setNominatorsData, setNomLoading } = useNominatorsData();
 	const { setCouncilMembers, setCouncilLoading } = useCouncil();
@@ -94,6 +98,7 @@ const NetworkPopover = ({ isExpanded, hasBorder }) => {
 							if (selectedNetwork !== "Kusama") {
 								setApiInstance(null);
 								setValidatorMap(undefined);
+								setValidatorRiskSets(undefined);
 								setValidators(undefined);
 								setUserData(null);
 								setAllNominations(null);
@@ -133,6 +138,7 @@ const NetworkPopover = ({ isExpanded, hasBorder }) => {
 							if (selectedNetwork !== "Polkadot") {
 								setApiInstance(null);
 								setValidatorMap(undefined);
+								setValidatorRiskSets(undefined);
 								setValidators(undefined);
 								setUserData(null);
 								setAllNominations(null);
