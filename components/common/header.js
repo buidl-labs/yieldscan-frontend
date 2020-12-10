@@ -440,16 +440,21 @@ const Header = ({ isBase }) => {
 											<h3 className="flex items-center text-gray-700 font-medium -mb-1">
 												{get(stashAccount, "meta.name", "")}
 											</h3>
-											<span className="text-gray-600 text-xs">
-												Transferrable:{" "}
-												{formatCurrency.methods.formatAmount(
-													Math.trunc(
-														get(freeAmount, "currency", 0) *
-															10 ** networkInfo.decimalPlaces
-													),
-													networkInfo
-												)}
-											</span>
+											{accountsWithBalances && (
+												<span className="text-gray-600 text-xs">
+													Total:{" "}
+													{formatCurrency.methods.formatAmount(
+														parseInt(
+															accountsWithBalances.filter(
+																(account) =>
+																	stashAccount.address &&
+																	account.address == stashAccount.address
+															)[0].balances.freeBalance
+														),
+														networkInfo
+													)}
+												</span>
+											)}
 										</div>
 										<ChevronDown size="20px" className="ml-4" />
 									</button>
