@@ -9,11 +9,11 @@ const SideMenuFooter = () => {
 
 	return (
 		<div className="text-gray-600 px-4 w-full">
-			<MenuOption
+			{/* <MenuOption
 				label="Request Features"
 				href="https://yieldscan.upvoty.com/b/yieldscan/"
 				isExternal
-			/>
+			/> */}
 			<MenuOption
 				label="Settings"
 				selected={router.pathname === Routes.SETTINGS}
