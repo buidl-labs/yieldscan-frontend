@@ -3,7 +3,13 @@ import { Edit2, AlertTriangle, ChevronRight } from "react-feather";
 import OverviewCards from "./OverviewCards";
 import NominationsTable from "./NominationsTable";
 import ExpectedReturns from "./ExpectedReturns";
-import { Spinner, useDisclosure, useToast, Collapse } from "@chakra-ui/core";
+import {
+	Spinner,
+	useDisclosure,
+	useToast,
+	Collapse,
+	Button,
+} from "@chakra-ui/core";
 import axios from "@lib/axios";
 import {
 	useAccounts,
@@ -25,6 +31,8 @@ import { useRouter } from "next/router";
 import AllNominations from "./AllNominations";
 import { getNetworkInfo } from "yieldscan.config";
 import EarningsOutput from "./EarningsOutput";
+import { Events, trackEvent } from "@lib/analytics";
+import ProgressiveImage from "react-progressive-image";
 
 const Tabs = {
 	ACTIVE_VALIDATORS: "validators",
@@ -258,13 +266,50 @@ const Overview = () => {
 			</div>
 		</div>
 	) : isNil(allNominationsData) ? (
-		<div className="flex-center w-full h-full">
-			<div className="flex-center flex-col mt-12">
-				<img src="/images/unicorn-sweat.svg" height="300px"></img>
-				<span className="text-sm text-gray-600 mt-5">
-					No Nomination Data available!
-				</span>
-			</div>
+		<div className="flex items-center flex-col pt-24">
+			<ProgressiveImage
+				src="/images/unicorn-sweat/unicorn-sweat.png"
+				placeholder="/images/unicorn-sweat/unicorn-sweat@0.5x.png"
+			>
+				{(src) => (
+					<img src={src} alt="unicorn-sweat" width="200px" height="auto" />
+				)}
+			</ProgressiveImage>
+			<h2 className="text-2xl text-gray-700 font-semibold mt-4">
+				Hey! So, ummm...
+			</h2>
+			<p className="text-gray-600 mt-2 text-center">
+				You haven’t yet started staking. <br />
+				Try checking back after you’ve done that.
+			</p>
+			<Button
+				as="button"
+				className="min-w-max-content"
+				variantColor="teal"
+				rounded="full"
+				fontWeight="normal"
+				size="lg"
+				mt={12}
+				px={12}
+				_hover={{ bg: "#2bcaca" }}
+				onClick={() => {
+					trackEvent(Events.LANDING_CTA_CLICK, {
+						path: Routes.OVERVIEW,
+					}).then(() => router.push({ pathname: "/reward-calculator" }));
+				}}
+			>
+				Start staking
+			</Button>
+			<p className="mt-6 text-sm text-gray-600">
+				Think this is a mistake?{" "}
+				<a
+					className="text-gray-700 font-semibold"
+					href="mailto:karan@buidllabs.io"
+					target="_blank"
+				>
+					Contact us
+				</a>
+			</p>
 		</div>
 	) : (
 		<div className="py-10 w-full h-full">
