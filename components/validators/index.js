@@ -29,6 +29,7 @@ import {
 	useTransaction,
 	useAccounts,
 	usePaymentPopover,
+	useNetworkElection,
 	useSelectedNetwork,
 	useTransactionHash,
 	useValidatorData,
@@ -83,6 +84,7 @@ const Validators = () => {
 		};
 	});
 	const { setTransactionState } = transactionState;
+	const { isInElection } = useNetworkElection();
 
 	const [loading, setLoading] = useState(true);
 	const [validators, setValidators] = useState(
@@ -492,6 +494,7 @@ const Validators = () => {
 							rounded="full"
 							variant="outline"
 							backgroundColor="white"
+							isDisabled={isInElection}
 							color="teal.500"
 							borderColor="teal.500"
 							boxShadow="0 20px 25px -5px rgba(43, 202, 202, 0.1)"
@@ -500,7 +503,9 @@ const Validators = () => {
 							_hover={{ bg: "teal.500", color: "white" }}
 							onClick={onPayment}
 						>
-							Stake Now
+							{isInElection
+								? "Ongoing elections, can't stake now!"
+								: "Stake Now"}
 						</Button>
 					</div>
 				) : (
@@ -526,7 +531,7 @@ const Validators = () => {
 					</div>
 				)}
 			</div>
-			{isPaymentPopoverOpen && (
+			{/* {isPaymentPopoverOpen && (
 				<PaymentPopover
 					isPaymentPopoverOpen={isPaymentPopoverOpen}
 					stashAccount={stashAccount}
@@ -540,7 +545,7 @@ const Validators = () => {
 					result={result}
 					networkInfo={networkInfo}
 				/>
-			)}
+			)} */}
 		</div>
 	);
 };
