@@ -68,6 +68,7 @@ const Validators = () => {
 	const { validatorMap, setValidatorMap } = useValidatorData();
 	const { transactionHash, setTransactionHash } = useTransactionHash();
 	const { isOpen, onClose, onToggle } = useDisclosure();
+	const [errorFetching, setErrorFetching] = useState(false);
 	const transactionState = useTransaction((state) => {
 		let _returns = get(result, "returns"),
 			_yieldPercentage = get(result, "yieldPercentage");
@@ -151,6 +152,10 @@ const Validators = () => {
 					};
 
 					setValidatorMap(validatorMap);
+				})
+				.catch(() => {
+					setErrorFetching(true);
+					setLoading(false);
 				});
 		}
 	}, [validatorMap, networkInfo]);
@@ -334,6 +339,14 @@ const Validators = () => {
 				<Spinner size="xl" color="teal.500" thickness="4px" />
 				<span className="text-sm text-gray-600 mt-5">
 					Fetching validators...
+				</span>
+			</div>
+		</div>
+	) : errorFetching ? (
+		<div className="flex-center w-full h-full">
+			<div className="flex-center flex-col">
+				<span className="text-sm text-gray-600 mt-5">
+					Unable to fetch validators data, try refreshing the page.
 				</span>
 			</div>
 		</div>
