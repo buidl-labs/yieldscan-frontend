@@ -51,10 +51,12 @@ const TimePeriodInput = ({
 					rounded="full"
 					py={4}
 					px={4}
-					placeholder="0"
-					defaultValue={value === 0 ? null : value}
+					placeholder="1"
+					value={value}
 					onChange={(ev) => {
-						onChange(Number(ev.target.value));
+						ev.target.value < 1
+							? onChange("")
+							: onChange(Number(ev.target.value));
 						trackRewardCalculatedEvent({
 							timePeriod: `${Number(ev.target.value)} ${unit}`,
 						});
