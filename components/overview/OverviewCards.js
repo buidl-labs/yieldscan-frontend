@@ -1,9 +1,7 @@
 import { noop, get, isNil } from "lodash";
-import { Plus, Minus, Clock } from "react-feather";
-import { Popover, PopoverTrigger, PopoverContent } from "@chakra-ui/core";
 import formatCurrency from "@lib/format-currency";
 import convertCurrency from "@lib/convert-currency";
-import { useAccounts, usePolkadotApi } from "@lib/store";
+import { useAccounts, usePolkadotApi, useNetworkElection } from "@lib/store";
 import calculateReward from "@lib/calculate-reward";
 import { HelpPopover } from "@components/reward-calculator";
 
@@ -31,6 +29,7 @@ const OverviewCards = ({
 
 	const { apiInstance } = usePolkadotApi();
 	const { stashAccount } = useAccounts();
+	const { isInElection } = useNetworkElection();
 	const [compounding, setCompounding] = React.useState(false);
 
 	const isActivelyStaking = isNil(validators)
@@ -130,14 +129,21 @@ const OverviewCards = ({
 					</div>
 					<div className="flex">
 						<button
-							className="confirm rounded-lg mt-40 mb-40 text-white bg-teal-500 p-1"
+							className={`confirm rounded-lg mt-40 mb-40 text-white bg-teal-500 p-1 ${
+								isInElection ? "opacity-75 cursor-not-allowed" : "opacity-100"
+							}`}
 							onClick={bondFunds}
+							disabled={isInElection}
 						>
 							Invest more
 						</button>
+
 						<button
-							className="confirm rounded-lg mt-40 mb-40 border-teal border-solid-1 bg-white text-teal-500 p-1"
+							className={`confirm rounded-lg mt-40 mb-40 border-teal border-solid-1 bg-white text-teal-500 p-1 ${
+								isInElection ? "opacity-75 cursor-not-allowed" : "opacity-100"
+							}`}
 							onClick={unbondFunds}
+							disabled={isInElection}
 						>
 							Withdraw
 						</button>
