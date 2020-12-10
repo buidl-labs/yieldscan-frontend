@@ -257,6 +257,15 @@ const Overview = () => {
 				</span>
 			</div>
 		</div>
+	) : isNil(allNominationsData) ? (
+		<div className="flex-center w-full h-full">
+			<div className="flex-center flex-col mt-12">
+				<img src="/images/unicorn-sweat.svg" height="300px"></img>
+				<span className="text-sm text-gray-600 mt-5">
+					No Nomination Data available!
+				</span>
+			</div>
+		</div>
 	) : (
 		<div className="py-10 w-full h-full">
 			{/* <RewardDestinationModal

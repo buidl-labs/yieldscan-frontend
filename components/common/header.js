@@ -3,6 +3,7 @@ import {
 	useHeaderLoading,
 	usePolkadotApi,
 	useSelectedNetwork,
+	useNetworkElection,
 	useValidatorData,
 	useTransactionHash,
 	useNominatorsData,
@@ -67,6 +68,7 @@ const Header = ({ isBase }) => {
 	const networkInfo = getNetworkInfo(selectedNetwork);
 	const { apiInstance, setApiInstance } = usePolkadotApi();
 	const { isOpen, toggle } = useWalletConnect();
+	const { setIsInElection } = useNetworkElection();
 	const {
 		accounts,
 		accountsWithBalances,
@@ -198,6 +200,9 @@ const Header = ({ isBase }) => {
 					.catch((error) => {
 						alert("Something went wrong, please reload!");
 					});
+				api.query.staking.eraElectionStatus().then((data) => {
+					setIsInElection(data.isOpen);
+				});
 			});
 		}
 	}, [stashAccount, networkInfo]);
