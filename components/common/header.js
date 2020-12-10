@@ -390,15 +390,15 @@ const Header = ({ isBase }) => {
 															<p className="text-xs text-gray-500">
 																{formatCurrency.methods.formatAmount(
 																	Math.trunc(
-																		account.balances.freeBalance.toNumber() +
-																			account.balances.reservedBalance.toNumber()
+																		parseInt(account.balances.freeBalance) +
+																			parseInt(account.balances.reservedBalance)
 																	),
 																	networkInfo
 																)}{" "}
 																{formatCurrency.methods.formatAmount(
 																	Math.trunc(
-																		account.balances.freeBalance.toNumber() +
-																			account.balances.reservedBalance.toNumber()
+																		parseInt(account.balances.freeBalance) +
+																			parseInt(account.balances.reservedBalance)
 																	),
 																	networkInfo
 																) === "0" && get(networkInfo, "denom")}
@@ -496,13 +496,13 @@ const Header = ({ isBase }) => {
 														{account.balances ? (
 															<p className="text-xs text-gray-500">
 																{formatCurrency.methods.formatAmount(
-																	account.balances.freeBalance.toNumber() +
-																		account.balances.reservedBalance.toNumber(),
+																	parseInt(account.balances.freeBalance) +
+																		parseInt(account.balances.reservedBalance),
 																	networkInfo
 																)}{" "}
 																{formatCurrency.methods.formatAmount(
-																	account.balances.freeBalance.toNumber() +
-																		account.balances.reservedBalance.toNumber(),
+																	parseInt(account.balances.freeBalance) +
+																		parseInt(account.balances.reservedBalance),
 																	networkInfo
 																) === "0" && get(networkInfo, "denom")}
 															</p>
