@@ -163,30 +163,30 @@ const Overview = () => {
 		}
 	}, [stashAccount, apiInstance, selectedNetwork]);
 
-	useEffect(() => {
-		if (!validators) {
-			axios
-				.get(`/${networkInfo.coinGeckoDenom}/rewards/risk-set`)
-				.then(({ data }) => {
-					const validators = data.totalset;
-					setValidators(validators);
-					setSelectedValidatorsMap(allNominationsData);
-				})
-				.catch(() => {
-					// toast({
-					// 	title: "Error",
-					// 	description: "Something went wrong!",
-					// 	position: "top-right",
-					// 	duration: 3000,
-					// 	status: "error",
-					// });
-					close();
-				})
-				.finally(() => {
-					setValidatorsLoading(false);
-				});
-		}
-	}, [allNominationsData]);
+	// useEffect(() => {
+	// 	if (!validators) {
+	// 		axios
+	// 			.get(`/${networkInfo.coinGeckoDenom}/rewards/risk-set`)
+	// 			.then(({ data }) => {
+	// 				const validators = data.totalset;
+	// 				setValidators(validators);
+	// 				setSelectedValidatorsMap(allNominationsData);
+	// 			})
+	// 			.catch(() => {
+	// 				// toast({
+	// 				// 	title: "Error",
+	// 				// 	description: "Something went wrong!",
+	// 				// 	position: "top-right",
+	// 				// 	duration: 3000,
+	// 				// 	status: "error",
+	// 				// });
+	// 				close();
+	// 			})
+	// 			.finally(() => {
+	// 				setValidatorsLoading(false);
+	// 			});
+	// 	}
+	// }, [allNominationsData]);
 
 	// if (loading || accountInfoLoading || nominationsLoading) {
 	// 	return (
@@ -251,7 +251,9 @@ const Overview = () => {
 			<div className="flex-center flex-col">
 				<Spinner size="xl" color="teal.500" thickness="4px" />
 				<span className="text-sm text-gray-600 mt-5">
-					Fetching your data...
+					{isNil(apiInstance)
+						? "Instantiating API..."
+						: "Fetching your data..."}
 				</span>
 			</div>
 		</div>
