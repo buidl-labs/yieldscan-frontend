@@ -29,15 +29,15 @@ const SelectAccount = ({ accounts, onStashSelected, networkInfo }) => {
 											<p className="text-gray-600 text-sm">
 												{formatCurrency.methods.formatAmount(
 													Math.trunc(
-														account.balances.freeBalance.toNumber() +
-															account.balances.reservedBalance.toNumber()
+														parseInt(account.balances.freeBalance) +
+															parseInt(account.balances.reservedBalance)
 													),
 													networkInfo
 												)}
 												{formatCurrency.methods.formatAmount(
 													Math.trunc(
-														account.balances.freeBalance.toNumber() +
-															account.balances.reservedBalance.toNumber()
+														parseInt(account.balances.freeBalance) +
+															parseInt(account.balances.reservedBalance)
 													),
 													networkInfo
 												) === "0" && ` ${networkInfo.denom}`}
