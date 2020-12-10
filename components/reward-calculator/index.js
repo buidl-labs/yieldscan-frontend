@@ -13,6 +13,7 @@ import {
 	useHeaderLoading,
 	usePaymentPopover,
 	useSelectedNetwork,
+	useNetworkElection,
 	useTransactionHash,
 	useValidatorData,
 } from "@lib/store";
@@ -78,6 +79,7 @@ const RewardCalculatorPage = () => {
 		accountInfoLoading,
 	} = useAccounts();
 	const { setHeaderLoading } = useHeaderLoading();
+	const { isInElection } = useNetworkElection();
 	const { isPaymentPopoverOpen, closePaymentPopover } = usePaymentPopover();
 
 	const [loading, setLoading] = useState(false);
@@ -478,13 +480,17 @@ const RewardCalculatorPage = () => {
 							className={`
 						rounded-full font-medium px-12 py-3 bg-teal-500 text-white
 						${
-							stashAccount && calculationDisabled
+							(stashAccount && calculationDisabled) ||
+							accountInfoLoading ||
+							isInElection
 								? "opacity-75 cursor-not-allowed"
 								: "opacity-100"
 						}
 					`}
 							disabled={
-								(stashAccount && calculationDisabled) || accountInfoLoading
+								(stashAccount && calculationDisabled) ||
+								accountInfoLoading ||
+								isInElection
 							}
 							onClick={() => (stashAccount ? onPayment() : toggle())}
 						>
@@ -492,6 +498,8 @@ const RewardCalculatorPage = () => {
 								? "Connect Wallet"
 								: isNil(stashAccount)
 								? "Select Account"
+								: isInElection
+								? "Ongoing elections, can't invest now!"
 								: "Invest Now"}
 						</button>
 					</div>
