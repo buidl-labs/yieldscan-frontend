@@ -505,7 +505,7 @@ const Validators = () => {
 						>
 							{isInElection
 								? "Ongoing elections, can't stake now!"
-								: "Stake Now"}
+								: "Proceed to confirmation"}
 						</Button>
 					</div>
 				) : (
