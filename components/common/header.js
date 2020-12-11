@@ -455,7 +455,14 @@ const Header = ({ isBase }) => {
 																	stashAccount.address &&
 																	account.address == stashAccount.address
 															)[0].balances.freeBalance
-														),
+														) +
+															parseInt(
+																accountsWithBalances.filter(
+																	(account) =>
+																		stashAccount.address &&
+																		account.address == stashAccount.address
+																)[0].balances.reservedBalance
+															),
 														networkInfo
 													)}
 												</span>
