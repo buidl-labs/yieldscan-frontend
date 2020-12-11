@@ -116,7 +116,7 @@ const Overview = () => {
 					setError(true);
 				})
 				.finally(() => {
-					// setLoading(false);
+					setLoading(false);
 				});
 
 			let unsubscribe = noop;
@@ -162,7 +162,7 @@ const Overview = () => {
 					unsubscribe = _unsubscribe;
 				})
 				.finally(() => {
-					setLoading(false);
+					// setLoading(false);
 				});
 
 			return () => {
@@ -254,7 +254,7 @@ const Overview = () => {
 				</button>
 			</div>
 		</div>
-	) : isNil(bondedAmount) || nominationsLoading ? (
+	) : isNil(bondedAmount) || nominationsLoading || loading ? (
 		<div className="flex-center w-full h-full">
 			<div className="flex-center flex-col">
 				<Spinner size="xl" color="teal.500" thickness="4px" />
@@ -265,7 +265,7 @@ const Overview = () => {
 				</span>
 			</div>
 		</div>
-	) : isNil(allNominationsData) ? (
+	) : isNil(allNominationsData) && isNil(userData) ? (
 		<div className="flex items-center flex-col pt-24">
 			<ProgressiveImage
 				src="/images/unicorn-sweat/unicorn-sweat.png"
@@ -359,23 +359,21 @@ const Overview = () => {
 						networkInfo={networkInfo}
 					/>
 					<div className="flex ml-20 w-1/2">
-						{activeStake && !isNil(userData) && (
-							<EarningsOutput
-								networkDenom={networkInfo.denom}
-								networkUrl={networkInfo.coinGeckoDenom}
-								networkInfo={networkInfo}
-								validators={
-									isNil(userData)
-										? []
-										: userData.validatorsInfo.filter(
-												(validator) => validator.isElected
-										  )
-								}
-								inputValue={activeStake}
-								apiInstance={apiInstance}
-								address={stashAccount.address}
-							/>
-						)}
+						<EarningsOutput
+							networkDenom={networkInfo.denom}
+							networkUrl={networkInfo.coinGeckoDenom}
+							networkInfo={networkInfo}
+							validators={
+								isNil(userData)
+									? []
+									: userData.validatorsInfo.filter(
+											(validator) => validator.isElected
+									  )
+							}
+							inputValue={activeStake}
+							apiInstance={apiInstance}
+							address={stashAccount.address}
+						/>
 					</div>
 				</div>
 				<div className="w-full">
