@@ -336,7 +336,7 @@ const Confirmation = ({
 			</button>
 			<Collapse isOpen={showValidators}>
 				<div className="mt-2 rounded-xl mb-8">
-					<div className="mb-4 overflow-auto" style={{ height: "12rem" }}>
+					<div className="mb-4 overflow-auto">
 						{selectedValidators.map((validator) => (
 							<ValidatorCard
 								key={validator.stashId}
