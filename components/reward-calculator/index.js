@@ -500,7 +500,7 @@ const RewardCalculatorPage = () => {
 								? "Select Account"
 								: isInElection
 								? "Ongoing elections, can't invest now!"
-								: "Invest Now"}
+								: "Proceed to confirmation"}
 						</button>
 					</div>
 				</div>
