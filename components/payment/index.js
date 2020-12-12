@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ChevronRight, ChevronLeft } from "react-feather";
 import { get, map, size } from "lodash";
+import axios from "@lib/axios";
 import Confirmation from "./Confirmation";
 import RewardDestination from "./RewardDestination";
 import Transaction from "./Transaction";
@@ -169,6 +170,31 @@ const Payment = () => {
 	// 	});
 	// }, [currentStep]);
 
+	const updateTransactionData = (
+		stashId,
+		network,
+		alreadyBonded,
+		stakeAmount,
+		tranHash,
+		successful
+	) => {
+		axios
+			.put(`${networkInfo.coinGeckoDenom}/user/transaction/update`, {
+				stashId: stashId,
+				network: network,
+				alreadyBonded: alreadyBonded,
+				stake: stakeAmount,
+				transactionHash: tranHash,
+				successful: successful,
+			})
+			.then(() => {
+				console.info("successfully updated transaction info");
+			})
+			.catch((e) => {
+				console.info("unable to update transaction info");
+			});
+	};
+
 	useEffect(() => {
 		setLoading(false);
 		// To prevent the user from switching accounts or networks while in the middle of the payment process
@@ -277,6 +303,15 @@ const Payment = () => {
 				}, 2500);
 
 				if (status === 0) {
+					updateTransactionData(
+						stashAccount.address,
+						networkInfo.coinGeckoDenom,
+						get(bondedAmount, "currency", 0),
+						get(transactionState, "stakingAmount", 0) -
+							get(bondedAmount, "currency", 0),
+						transactionHash,
+						true
+					);
 					trackEvent(Events.TRANSACTION_SUCCESS, {
 						stakingAmount: get(transactionState, "stakingAmount"),
 						riskPreference: get(transactionState, "riskPreference"),
@@ -287,6 +322,15 @@ const Payment = () => {
 					// router.replace("/overview");
 				} else {
 					if (message !== "Cancelled") {
+						updateTransactionData(
+							stashAccount.address,
+							networkInfo.coinGeckoDenom,
+							get(bondedAmount, "currency", 0),
+							get(transactionState, "stakingAmount", 0) -
+								get(bondedAmount, "currency", 0),
+							transactionHash,
+							false
+						);
 						trackEvent(Events.TRANSACTION_FAILED, {
 							stakingAmount: get(transactionState, "stakingAmount"),
 							riskPreference: get(transactionState, "riskPreference"),
