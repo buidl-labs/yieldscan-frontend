@@ -13,6 +13,7 @@ import {
 	useHeaderLoading,
 	usePaymentPopover,
 	useSelectedNetwork,
+	useNetworkElection,
 	useTransactionHash,
 	useValidatorData,
 } from "@lib/store";
@@ -78,6 +79,7 @@ const RewardCalculatorPage = () => {
 		accountInfoLoading,
 	} = useAccounts();
 	const { setHeaderLoading } = useHeaderLoading();
+	const { isInElection } = useNetworkElection();
 	const { isPaymentPopoverOpen, closePaymentPopover } = usePaymentPopover();
 
 	const [loading, setLoading] = useState(false);
@@ -95,28 +97,28 @@ const RewardCalculatorPage = () => {
 	);
 	const [selectedValidators, setSelectedValidators] = useState({});
 
-	const { validatorMap, setValidatorMap } = useValidatorData();
+	const { validatorRiskSets, setValidatorRiskSets } = useValidatorData();
 	const [result, setResult] = useState({});
 
 	useEffect(() => {
 		convertCurrency(amount || 0, networkInfo.denom).then((convertedAmount) => {
 			setSubCurrency(convertedAmount);
 		});
-	}, [amount, networkInfo, validatorMap]);
+	}, [amount, networkInfo, validatorRiskSets]);
 
 	useEffect(() => {
-		if (get(validatorMap, risk)) {
-			const selectedValidators = cloneDeep(validatorMap[risk]);
+		if (get(validatorRiskSets, risk)) {
+			const selectedValidators = cloneDeep(validatorRiskSets[risk]);
 			setSelectedValidators(selectedValidators);
 		}
 	}, [risk]);
 
 	useEffect(() => {
-		if (!validatorMap) {
+		if (!validatorRiskSets) {
 			setLoading(true);
 			setHeaderLoading(true);
 			axios
-				.get(`/${networkInfo.coinGeckoDenom}/rewards/risk-set`)
+				.get(`/${networkInfo.coinGeckoDenom}/rewards/risk-set-only`)
 				.then(({ data }) => {
 					/**
 					 * `mapValues(keyBy(array), 'value-key')`:
@@ -129,7 +131,7 @@ const RewardCalculatorPage = () => {
 						total: data.totalset,
 					};
 
-					setValidatorMap(validatorMap);
+					setValidatorRiskSets(validatorMap);
 					setSelectedValidators(validatorMap["Medium"]);
 					setLoading(false);
 					setHeaderLoading(false);
@@ -137,7 +139,7 @@ const RewardCalculatorPage = () => {
 		} else {
 			console.info("Using previous validator map.");
 		}
-	}, [networkInfo, validatorMap]);
+	}, [networkInfo, validatorRiskSets]);
 
 	useEffect(() => {
 		if (risk && timePeriodValue) {
@@ -191,7 +193,6 @@ const RewardCalculatorPage = () => {
 				)} ($${get(_returns, "subCurrency")})`,
 				yieldPercentage: `${_yieldPercentage}%`,
 				// selectedValidators: selectedValidatorsList,
-				// validatorMap
 			});
 		}
 
@@ -204,7 +205,7 @@ const RewardCalculatorPage = () => {
 			returns: _returns,
 			yieldPercentage: _yieldPercentage,
 			selectedValidators: selectedValidatorsList,
-			validatorMap,
+			validatorRiskSets,
 		});
 	};
 
@@ -230,7 +231,7 @@ const RewardCalculatorPage = () => {
 		(amount || 0) > totalBalance - 0.1 ||
 		amount == 0;
 
-	return accountInfoLoading || loading ? (
+	return loading ? (
 		<div className="flex-center w-full h-full">
 			<div className="flex-center flex-col">
 				<Spinner size="xl" color="teal.500" thickness="4px" />
@@ -286,49 +287,54 @@ const RewardCalculatorPage = () => {
 						<div className="mt-8 mx-2">
 							<h3 className="text-gray-700 text-xs">I want to invest:</h3>
 							<div className="mt-2">
-								{stashAccount && amount > totalBalance - 0.1 && (
-									<Alert
-										status="error"
-										rounded="md"
-										flex
-										flexDirection="column"
-										alignItems="start"
-										my={4}
-									>
-										<AlertTitle color="red.500">
-											Insufficient Balance
-										</AlertTitle>
-										<AlertDescription color="red.500">
-											{`You need an additional of ${formatCurrency.methods.formatAmount(
-												Math.trunc(
-													Number(amount - (totalBalance - 0.1)) *
-														10 ** networkInfo.decimalPlaces
-												),
-												networkInfo
-											)} to proceed further.`}{" "}
-											<Popover trigger="hover" usePortal>
-												<PopoverTrigger>
-													<span className="underline cursor-help">Why?</span>
-												</PopoverTrigger>
-												<PopoverContent
-													zIndex={50}
-													_focus={{ outline: "none" }}
-													bg="gray.600"
-													border="none"
-												>
-													<PopoverArrow />
-													<PopoverBody>
-														<span className="text-white text-xs">
-															This is to ensure that you have a decent amout of
-															funds in your account to pay transaction fees for
-															claiming rewards, unbonding funds, changing
-															on-chain staking preferences, etc.
-														</span>
-													</PopoverBody>
-												</PopoverContent>
-											</Popover>
-										</AlertDescription>
-									</Alert>
+								{!accountInfoLoading ? (
+									stashAccount &&
+									amount > totalBalance - 0.1 && (
+										<Alert
+											status="error"
+											rounded="md"
+											flex
+											flexDirection="column"
+											alignItems="start"
+											my={4}
+										>
+											<AlertTitle color="red.500">
+												Insufficient Balance
+											</AlertTitle>
+											<AlertDescription color="red.500">
+												{`You need an additional of ${formatCurrency.methods.formatAmount(
+													Math.trunc(
+														Number(amount - (totalBalance - 0.1)) *
+															10 ** networkInfo.decimalPlaces
+													),
+													networkInfo
+												)} to proceed further.`}{" "}
+												<Popover trigger="hover" usePortal>
+													<PopoverTrigger>
+														<span className="underline cursor-help">Why?</span>
+													</PopoverTrigger>
+													<PopoverContent
+														zIndex={50}
+														_focus={{ outline: "none" }}
+														bg="gray.600"
+														border="none"
+													>
+														<PopoverArrow />
+														<PopoverBody>
+															<span className="text-white text-xs">
+																This is to ensure that you have a decent amout
+																of funds in your account to pay transaction fees
+																for claiming rewards, unbonding funds, changing
+																on-chain staking preferences, etc.
+															</span>
+														</PopoverBody>
+													</PopoverContent>
+												</Popover>
+											</AlertDescription>
+										</Alert>
+									)
+								) : (
+									<></>
 								)}
 
 								<AmountInput
@@ -337,6 +343,7 @@ const RewardCalculatorPage = () => {
 									networkInfo={networkInfo}
 									onChange={setAmount}
 									trackRewardCalculatedEvent={trackRewardCalculatedEvent}
+									accountInfoLoading={accountInfoLoading}
 								/>
 							</div>
 							<div className="flex mt-8 items-center">
@@ -473,19 +480,27 @@ const RewardCalculatorPage = () => {
 							className={`
 						rounded-full font-medium px-12 py-3 bg-teal-500 text-white
 						${
-							stashAccount && calculationDisabled
+							(stashAccount && calculationDisabled) ||
+							accountInfoLoading ||
+							isInElection
 								? "opacity-75 cursor-not-allowed"
 								: "opacity-100"
 						}
 					`}
-							disabled={stashAccount && calculationDisabled}
+							disabled={
+								(stashAccount && calculationDisabled) ||
+								accountInfoLoading ||
+								isInElection
+							}
 							onClick={() => (stashAccount ? onPayment() : toggle())}
 						>
 							{isNil(accounts)
 								? "Connect Wallet"
 								: isNil(stashAccount)
 								? "Select Account"
-								: "Invest Now"}
+								: isInElection
+								? "Ongoing elections, can't invest now!"
+								: "Proceed to confirmation"}
 						</button>
 					</div>
 				</div>
@@ -506,7 +521,7 @@ const RewardCalculatorPage = () => {
 					</button>
 				</div> */}
 			</div>
-			{isPaymentPopoverOpen && (
+			{/* {isPaymentPopoverOpen && (
 				<PaymentPopover
 					isPaymentPopoverOpen={isPaymentPopoverOpen}
 					stashAccount={stashAccount}
@@ -521,7 +536,7 @@ const RewardCalculatorPage = () => {
 					result={result}
 					networkInfo={networkInfo}
 				/>
-			)}
+			)} */}
 		</div>
 	);
 };

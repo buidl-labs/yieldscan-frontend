@@ -29,6 +29,7 @@ import {
 	useTransaction,
 	useAccounts,
 	usePaymentPopover,
+	useNetworkElection,
 	useSelectedNetwork,
 	useTransactionHash,
 	useValidatorData,
@@ -68,6 +69,7 @@ const Validators = () => {
 	const { validatorMap, setValidatorMap } = useValidatorData();
 	const { transactionHash, setTransactionHash } = useTransactionHash();
 	const { isOpen, onClose, onToggle } = useDisclosure();
+	const [errorFetching, setErrorFetching] = useState(false);
 	const transactionState = useTransaction((state) => {
 		let _returns = get(result, "returns"),
 			_yieldPercentage = get(result, "yieldPercentage");
@@ -82,6 +84,7 @@ const Validators = () => {
 		};
 	});
 	const { setTransactionState } = transactionState;
+	const { isInElection } = useNetworkElection();
 
 	const [loading, setLoading] = useState(true);
 	const [validators, setValidators] = useState(
@@ -151,6 +154,10 @@ const Validators = () => {
 					};
 
 					setValidatorMap(validatorMap);
+				})
+				.catch(() => {
+					setErrorFetching(true);
+					setLoading(false);
 				});
 		}
 	}, [validatorMap, networkInfo]);
@@ -337,6 +344,14 @@ const Validators = () => {
 				</span>
 			</div>
 		</div>
+	) : errorFetching ? (
+		<div className="flex-center w-full h-full">
+			<div className="flex-center flex-col">
+				<span className="text-sm text-gray-600 mt-5">
+					Unable to fetch validators data, try refreshing the page.
+				</span>
+			</div>
+		</div>
 	) : (
 		<div className="relative h-full px-10 py-5">
 			{advancedMode && (
@@ -479,6 +494,7 @@ const Validators = () => {
 							rounded="full"
 							variant="outline"
 							backgroundColor="white"
+							isDisabled={isInElection}
 							color="teal.500"
 							borderColor="teal.500"
 							boxShadow="0 20px 25px -5px rgba(43, 202, 202, 0.1)"
@@ -487,7 +503,9 @@ const Validators = () => {
 							_hover={{ bg: "teal.500", color: "white" }}
 							onClick={onPayment}
 						>
-							Stake Now
+							{isInElection
+								? "Ongoing elections, can't stake now!"
+								: "Proceed to confirmation"}
 						</Button>
 					</div>
 				) : (
@@ -513,7 +531,7 @@ const Validators = () => {
 					</div>
 				)}
 			</div>
-			{isPaymentPopoverOpen && (
+			{/* {isPaymentPopoverOpen && (
 				<PaymentPopover
 					isPaymentPopoverOpen={isPaymentPopoverOpen}
 					stashAccount={stashAccount}
@@ -527,7 +545,7 @@ const Validators = () => {
 					result={result}
 					networkInfo={networkInfo}
 				/>
-			)}
+			)} */}
 		</div>
 	);
 };

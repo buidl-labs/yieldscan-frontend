@@ -3,6 +3,7 @@ import {
 	useHeaderLoading,
 	usePolkadotApi,
 	useSelectedNetwork,
+	useNetworkElection,
 	useValidatorData,
 	useTransactionHash,
 	useNominatorsData,
@@ -55,7 +56,11 @@ const currentNetwork = "Not Kusama";
 const Header = ({ isBase }) => {
 	const cookies = parseCookies();
 	const { selectedNetwork, setSelectedNetwork } = useSelectedNetwork();
-	const { setValidators, setValidatorMap } = useValidatorData();
+	const {
+		setValidators,
+		setValidatorMap,
+		setValidatorRiskSets,
+	} = useValidatorData();
 	const { setUserData, setAllNominations } = useOverviewData();
 	const { setTransactionHash } = useTransactionHash();
 	const { setNominatorsData, setNomLoading } = useNominatorsData();
@@ -63,12 +68,14 @@ const Header = ({ isBase }) => {
 	const networkInfo = getNetworkInfo(selectedNetwork);
 	const { apiInstance, setApiInstance } = usePolkadotApi();
 	const { isOpen, toggle } = useWalletConnect();
+	const { setIsInElection } = useNetworkElection();
 	const {
 		accounts,
 		accountsWithBalances,
 		stashAccount,
 		freeAmount,
 		setFreeAmount,
+		setBondedAmount,
 		accountInfoLoading,
 		setStashAccount,
 		setAccounts,
@@ -193,6 +200,9 @@ const Header = ({ isBase }) => {
 					.catch((error) => {
 						alert("Something went wrong, please reload!");
 					});
+				api.query.staking.eraElectionStatus().then((data) => {
+					setIsInElection(data.isOpen);
+				});
 			});
 		}
 	}, [stashAccount, networkInfo]);
@@ -385,15 +395,15 @@ const Header = ({ isBase }) => {
 															<p className="text-xs text-gray-500">
 																{formatCurrency.methods.formatAmount(
 																	Math.trunc(
-																		account.balances.freeBalance.toNumber() +
-																			account.balances.reservedBalance.toNumber()
+																		parseInt(account.balances.freeBalance) +
+																			parseInt(account.balances.reservedBalance)
 																	),
 																	networkInfo
 																)}{" "}
 																{formatCurrency.methods.formatAmount(
 																	Math.trunc(
-																		account.balances.freeBalance.toNumber() +
-																			account.balances.reservedBalance.toNumber()
+																		parseInt(account.balances.freeBalance) +
+																			parseInt(account.balances.reservedBalance)
 																	),
 																	networkInfo
 																) === "0" && get(networkInfo, "denom")}
@@ -435,16 +445,28 @@ const Header = ({ isBase }) => {
 											<h3 className="flex items-center text-gray-700 font-medium -mb-1">
 												{get(stashAccount, "meta.name", "")}
 											</h3>
-											<span className="text-gray-600 text-xs">
-												Transferrable:{" "}
-												{formatCurrency.methods.formatAmount(
-													Math.trunc(
-														get(freeAmount, "currency", 0) *
-															10 ** networkInfo.decimalPlaces
-													),
-													networkInfo
-												)}
-											</span>
+											{accountsWithBalances && (
+												<span className="text-gray-600 text-xs">
+													Total:{" "}
+													{formatCurrency.methods.formatAmount(
+														parseInt(
+															accountsWithBalances.filter(
+																(account) =>
+																	stashAccount.address &&
+																	account.address == stashAccount.address
+															)[0].balances.freeBalance
+														) +
+															parseInt(
+																accountsWithBalances.filter(
+																	(account) =>
+																		stashAccount.address &&
+																		account.address == stashAccount.address
+																)[0].balances.reservedBalance
+															),
+														networkInfo
+													)}
+												</span>
+											)}
 										</div>
 										<ChevronDown size="20px" className="ml-4" />
 									</button>
@@ -464,6 +486,7 @@ const Header = ({ isBase }) => {
 												<button
 													className="flex items-center rounded px-4 py-2 w-full bg-gray-800 hover:bg-gray-700 hover:text-gray-200"
 													onClick={() => {
+														setBondedAmount(null);
 														setStashAccount(account);
 														setTransactionHash(null);
 														selectedNetwork == "Kusama"
@@ -490,13 +513,13 @@ const Header = ({ isBase }) => {
 														{account.balances ? (
 															<p className="text-xs text-gray-500">
 																{formatCurrency.methods.formatAmount(
-																	account.balances.freeBalance.toNumber() +
-																		account.balances.reservedBalance.toNumber(),
+																	parseInt(account.balances.freeBalance) +
+																		parseInt(account.balances.reservedBalance),
 																	networkInfo
 																)}{" "}
 																{formatCurrency.methods.formatAmount(
-																	account.balances.freeBalance.toNumber() +
-																		account.balances.reservedBalance.toNumber(),
+																	parseInt(account.balances.freeBalance) +
+																		parseInt(account.balances.reservedBalance),
 																	networkInfo
 																) === "0" && get(networkInfo, "denom")}
 															</p>
@@ -570,6 +593,7 @@ const Header = ({ isBase }) => {
 												if (selectedNetwork !== "Kusama") {
 													setApiInstance(null);
 													setValidatorMap(undefined);
+													setValidatorRiskSets(undefined);
 													setValidators(undefined);
 													setUserData(null);
 													setAllNominations(null);
@@ -583,6 +607,7 @@ const Header = ({ isBase }) => {
 													setCouncilLoading(true);
 													setStashAccount(null);
 													setFreeAmount(null);
+													setBondedAmount(null);
 													setAccounts(null);
 													setAccountsWithBalances(null);
 													setAccountInfoLoading(false);
@@ -610,6 +635,7 @@ const Header = ({ isBase }) => {
 												if (selectedNetwork !== "Polkadot") {
 													setApiInstance(null);
 													setValidatorMap(undefined);
+													setValidatorRiskSets(undefined);
 													setValidators(undefined);
 													setUserData(null);
 													setAllNominations(null);
@@ -623,6 +649,7 @@ const Header = ({ isBase }) => {
 													setCouncilLoading(true);
 													setStashAccount(null);
 													setFreeAmount(null);
+													setBondedAmount(null);
 													setAccounts(null);
 													setAccountsWithBalances(null);
 													setAccountInfoLoading(false);

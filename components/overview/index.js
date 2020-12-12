@@ -3,7 +3,13 @@ import { Edit2, AlertTriangle, ChevronRight } from "react-feather";
 import OverviewCards from "./OverviewCards";
 import NominationsTable from "./NominationsTable";
 import ExpectedReturns from "./ExpectedReturns";
-import { Spinner, useDisclosure, useToast, Collapse } from "@chakra-ui/core";
+import {
+	Spinner,
+	useDisclosure,
+	useToast,
+	Collapse,
+	Button,
+} from "@chakra-ui/core";
 import axios from "@lib/axios";
 import {
 	useAccounts,
@@ -25,6 +31,8 @@ import { useRouter } from "next/router";
 import AllNominations from "./AllNominations";
 import { getNetworkInfo } from "yieldscan.config";
 import EarningsOutput from "./EarningsOutput";
+import { Events, trackEvent } from "@lib/analytics";
+import ProgressiveImage from "react-progressive-image";
 
 const Tabs = {
 	ACTIVE_VALIDATORS: "validators",
@@ -108,7 +116,7 @@ const Overview = () => {
 					setError(true);
 				})
 				.finally(() => {
-					// setLoading(false);
+					setLoading(false);
 				});
 
 			let unsubscribe = noop;
@@ -154,7 +162,7 @@ const Overview = () => {
 					unsubscribe = _unsubscribe;
 				})
 				.finally(() => {
-					setLoading(false);
+					// setLoading(false);
 				});
 
 			return () => {
@@ -163,30 +171,30 @@ const Overview = () => {
 		}
 	}, [stashAccount, apiInstance, selectedNetwork]);
 
-	useEffect(() => {
-		if (!validators) {
-			axios
-				.get(`/${networkInfo.coinGeckoDenom}/rewards/risk-set`)
-				.then(({ data }) => {
-					const validators = data.totalset;
-					setValidators(validators);
-					setSelectedValidatorsMap(allNominationsData);
-				})
-				.catch(() => {
-					// toast({
-					// 	title: "Error",
-					// 	description: "Something went wrong!",
-					// 	position: "top-right",
-					// 	duration: 3000,
-					// 	status: "error",
-					// });
-					close();
-				})
-				.finally(() => {
-					setValidatorsLoading(false);
-				});
-		}
-	}, [allNominationsData]);
+	// useEffect(() => {
+	// 	if (!validators) {
+	// 		axios
+	// 			.get(`/${networkInfo.coinGeckoDenom}/rewards/risk-set`)
+	// 			.then(({ data }) => {
+	// 				const validators = data.totalset;
+	// 				setValidators(validators);
+	// 				setSelectedValidatorsMap(allNominationsData);
+	// 			})
+	// 			.catch(() => {
+	// 				// toast({
+	// 				// 	title: "Error",
+	// 				// 	description: "Something went wrong!",
+	// 				// 	position: "top-right",
+	// 				// 	duration: 3000,
+	// 				// 	status: "error",
+	// 				// });
+	// 				close();
+	// 			})
+	// 			.finally(() => {
+	// 				setValidatorsLoading(false);
+	// 			});
+	// 	}
+	// }, [allNominationsData]);
 
 	// if (loading || accountInfoLoading || nominationsLoading) {
 	// 	return (
@@ -246,18 +254,66 @@ const Overview = () => {
 				</button>
 			</div>
 		</div>
-	) : loading || nominationsLoading || isNil(bondedAmount) ? (
+	) : isNil(bondedAmount) || nominationsLoading || loading ? (
 		<div className="flex-center w-full h-full">
 			<div className="flex-center flex-col">
 				<Spinner size="xl" color="teal.500" thickness="4px" />
 				<span className="text-sm text-gray-600 mt-5">
-					Fetching your data...
+					{isNil(apiInstance)
+						? "Instantiating API..."
+						: "Fetching your data..."}
 				</span>
 			</div>
 		</div>
+	) : isNil(allNominationsData) && isNil(userData) ? (
+		<div className="flex items-center flex-col pt-24">
+			<ProgressiveImage
+				src="/images/unicorn-sweat/unicorn-sweat.png"
+				placeholder="/images/unicorn-sweat/unicorn-sweat@0.5x.png"
+			>
+				{(src) => (
+					<img src={src} alt="unicorn-sweat" width="200px" height="auto" />
+				)}
+			</ProgressiveImage>
+			<h2 className="text-2xl text-gray-700 font-semibold mt-4">
+				Hey! So, ummm...
+			</h2>
+			<p className="text-gray-600 mt-2 text-center">
+				You haven’t yet started staking. <br />
+				Try checking back after you’ve done that.
+			</p>
+			<Button
+				as="button"
+				className="min-w-max-content"
+				variantColor="teal"
+				rounded="full"
+				fontWeight="normal"
+				size="lg"
+				mt={12}
+				px={12}
+				_hover={{ bg: "#2bcaca" }}
+				onClick={() => {
+					trackEvent(Events.LANDING_CTA_CLICK, {
+						path: Routes.OVERVIEW,
+					}).then(() => router.push({ pathname: "/reward-calculator" }));
+				}}
+			>
+				Start staking
+			</Button>
+			<p className="mt-6 text-sm text-gray-600">
+				Think this is a mistake?{" "}
+				<a
+					className="text-gray-700 font-semibold"
+					href="mailto:karan@buidllabs.io"
+					target="_blank"
+				>
+					Contact us
+				</a>
+			</p>
+		</div>
 	) : (
 		<div className="py-10 w-full h-full">
-			<RewardDestinationModal
+			{/* <RewardDestinationModal
 				isOpen={isRewardDestinationModalOpen}
 				close={closeRewardDestinationModal}
 				onEditController={onEditController}
@@ -266,7 +322,7 @@ const Overview = () => {
 				isOpen={editControllerModalOpen}
 				close={closeEditControllerModal}
 				networkInfo={networkInfo}
-			/>
+			/> */}
 			<FundsUpdate
 				isOpen={fundsUpdateModalOpen}
 				close={closeFundsUpdateModal}
@@ -275,7 +331,7 @@ const Overview = () => {
 				bondedAmount={bondedAmount}
 				networkInfo={networkInfo}
 			/>
-			<EditValidators
+			{/* <EditValidators
 				isOpen={editValidatorModalOpen}
 				close={closeEditValidatorsModal}
 				validators={validators}
@@ -286,8 +342,8 @@ const Overview = () => {
 					setTimeout(() => toggleChillAlert(), 500);
 				}}
 				networkInfo={networkInfo}
-			/>
-			<ChillAlert isOpen={chillAlertOpen} close={closeChillAlert} />
+			/> */}
+			{/* <ChillAlert isOpen={chillAlertOpen} close={closeChillAlert} /> */}
 			<div className="flex-col">
 				<div className="flex">
 					<OverviewCards
@@ -303,23 +359,21 @@ const Overview = () => {
 						networkInfo={networkInfo}
 					/>
 					<div className="flex ml-20 w-1/2">
-						{activeStake && validators && (
-							<EarningsOutput
-								networkDenom={networkInfo.denom}
-								networkUrl={networkInfo.coinGeckoDenom}
-								networkInfo={networkInfo}
-								validators={
-									isNil(userData)
-										? []
-										: userData.validatorsInfo.filter(
-												(validator) => validator.isElected
-										  )
-								}
-								inputValue={activeStake}
-								apiInstance={apiInstance}
-								address={stashAccount.address}
-							/>
-						)}
+						<EarningsOutput
+							networkDenom={networkInfo.denom}
+							networkUrl={networkInfo.coinGeckoDenom}
+							networkInfo={networkInfo}
+							validators={
+								isNil(userData)
+									? []
+									: userData.validatorsInfo.filter(
+											(validator) => validator.isElected
+									  )
+							}
+							inputValue={activeStake}
+							apiInstance={apiInstance}
+							address={stashAccount.address}
+						/>
 					</div>
 				</div>
 				<div className="w-full">
