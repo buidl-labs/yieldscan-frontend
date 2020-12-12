@@ -282,21 +282,17 @@ const Payment = () => {
 						riskPreference: get(transactionState, "riskPreference"),
 						successMessage: message,
 					});
-				} else {
-					trackEvent(Events.TRANSACTION_FAILED, {
-						stakingAmount: get(transactionState, "stakingAmount"),
-						riskPreference: get(transactionState, "riskPreference"),
-						errorMessage: message,
-						eventLogs,
-					});
-				}
-
-				if (status === 0) {
 					// To allow the user to switch accounts and networks after the payment process is complete
 					setHeaderLoading(false);
 					// router.replace("/overview");
 				} else {
 					if (message !== "Cancelled") {
+						trackEvent(Events.TRANSACTION_FAILED, {
+							stakingAmount: get(transactionState, "stakingAmount"),
+							riskPreference: get(transactionState, "riskPreference"),
+							errorMessage: message,
+							eventLogs,
+						});
 						setTimeout(() => {
 							setStakingEvent("Transaction failed");
 							setLoaderError(true);
