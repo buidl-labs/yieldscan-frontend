@@ -307,8 +307,7 @@ const Payment = () => {
 						stashAccount.address,
 						networkInfo.coinGeckoDenom,
 						get(bondedAmount, "currency", 0),
-						get(transactionState, "stakingAmount", 0) -
-							get(bondedAmount, "currency", 0),
+						get(transactionState, "stakingAmount", 0),
 						tranHash,
 						true
 					);
@@ -326,8 +325,7 @@ const Payment = () => {
 							stashAccount.address,
 							networkInfo.coinGeckoDenom,
 							get(bondedAmount, "currency", 0),
-							get(transactionState, "stakingAmount", 0) -
-								get(bondedAmount, "currency", 0),
+							get(transactionState, "stakingAmount", 0),
 							tranHash,
 							false
 						);
