@@ -284,7 +284,7 @@ const Payment = () => {
 					)}.subscan.io/block/${transactionHash}`,
 				});
 			},
-			onFinish: (status, message, eventLogs) => {
+			onFinish: (status, message, eventLogs, tranHash) => {
 				// status = 0 for success, anything else for error code
 				if (status === 0) {
 					setStakingEvent("Your transaction was successful");
@@ -309,7 +309,7 @@ const Payment = () => {
 						get(bondedAmount, "currency", 0),
 						get(transactionState, "stakingAmount", 0) -
 							get(bondedAmount, "currency", 0),
-						transactionHash,
+						tranHash,
 						true
 					);
 					trackEvent(Events.TRANSACTION_SUCCESS, {
@@ -328,7 +328,7 @@ const Payment = () => {
 							get(bondedAmount, "currency", 0),
 							get(transactionState, "stakingAmount", 0) -
 								get(bondedAmount, "currency", 0),
-							transactionHash,
+							tranHash,
 							false
 						);
 						trackEvent(Events.TRANSACTION_FAILED, {
