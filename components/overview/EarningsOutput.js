@@ -41,6 +41,8 @@ const EarningsOutput = ({
 	const [risk, setRisk] = useState(transactionState.riskPreference || "Medium");
 	const [yearlyEarning, setYearlyEarning] = useState();
 	const [totalEarnings, setTotalEarnings] = useState();
+	const [dailyEarnings, setDailyEarnings] = useState();
+	const [weeklyEarnings, setWeeklyEarnings] = useState();
 	const { transactionHash } = useTransactionHash();
 	// const yearlyEarning = useYearlyEarning((state) => state.yearlyEarning);
 	// const setYearlyEarning = useYearlyEarning((state) => state.setYearlyEarning);
@@ -71,6 +73,39 @@ const EarningsOutput = ({
 	useEffect(() => {
 		if (!totalEarnings) {
 			getRewards(address, networkInfo).then((data) => {
+				const currentTimeStamp = Date.now() / 1000;
+				const oneDayEarnings = data
+					.filter((x) => x.block_timestamp > currentTimeStamp - 86400)
+					.reduce((a, b) => a + parseInt(b.amount), 0);
+				convertCurrency(
+					oneDayEarnings / Math.pow(10, networkInfo.decimalPlaces),
+					networkInfo.denom
+				)
+					.then((value) =>
+						setDailyEarnings({
+							currency: oneDayEarnings,
+							subCurrency: value,
+						})
+					)
+					.catch((err) => {
+						console.error(err);
+					});
+				const weekEarnings = data
+					.filter((x) => x.block_timestamp > currentTimeStamp - 604800)
+					.reduce((a, b) => a + parseInt(b.amount), 0);
+				convertCurrency(
+					weekEarnings / Math.pow(10, networkInfo.decimalPlaces),
+					networkInfo.denom
+				)
+					.then((value) =>
+						setWeeklyEarnings({
+							currency: weekEarnings,
+							subCurrency: value,
+						})
+					)
+					.catch((err) => {
+						console.error(err);
+					});
 				const total = data.reduce((a, b) => a + parseInt(b.amount), 0);
 				convertCurrency(
 					total / Math.pow(10, networkInfo.decimalPlaces),
@@ -242,36 +277,100 @@ const EarningsOutput = ({
 					</h2>
 				</div>
 			)}
-			<div className="mt-4">
-				<FormLabel fontSize="sm" className="font-medium text-gray-700">
-					7 day earnings
-				</FormLabel>
-				<h2
-					className={`${
-						validators.length !== 0 ? "text-gray-700" : "text-light-gray"
-					} font-bold`}
-				>
-					{!isNil(totalEarnings) ? (
-						<>
-							<div className="text-xl justify-between text">
-								{formatCurrency.methods.formatAmount(
-									Math.trunc(totalEarnings.currency),
-									networkInfo
-								)}
-							</div>
-							<div className="text-sm font-medium text-teal-500">
-								$
-								{formatCurrency.methods.formatNumber(
-									totalEarnings.subCurrency.toFixed(2)
-								)}
-							</div>
-						</>
-					) : (
-						<Skeleton>
-							<span>Loading...</span>
-						</Skeleton>
-					)}
-				</h2>
+			<div className="flex justify-between">
+				<div className="mt-4">
+					<FormLabel fontSize="sm" className="font-medium text-gray-700">
+						24 hour
+					</FormLabel>
+					<h2
+						className={`${
+							validators.length !== 0 ? "text-gray-700" : "text-light-gray"
+						} font-bold`}
+					>
+						{!isNil(dailyEarnings) ? (
+							<>
+								<div className="text-xl justify-between text">
+									{formatCurrency.methods.formatAmount(
+										Math.trunc(dailyEarnings.currency),
+										networkInfo
+									)}
+								</div>
+								<div className="text-sm font-medium text-teal-500">
+									$
+									{formatCurrency.methods.formatNumber(
+										dailyEarnings.subCurrency.toFixed(2)
+									)}
+								</div>
+							</>
+						) : (
+							<Skeleton>
+								<span>Loading...</span>
+							</Skeleton>
+						)}
+					</h2>
+				</div>
+				<div className="mt-4">
+					<FormLabel fontSize="sm" className="font-medium text-gray-700">
+						7 day
+					</FormLabel>
+					<h2
+						className={`${
+							validators.length !== 0 ? "text-gray-700" : "text-light-gray"
+						} font-bold`}
+					>
+						{!isNil(weeklyEarnings) ? (
+							<>
+								<div className="text-xl justify-between text">
+									{formatCurrency.methods.formatAmount(
+										Math.trunc(weeklyEarnings.currency),
+										networkInfo
+									)}
+								</div>
+								<div className="text-sm font-medium text-teal-500">
+									$
+									{formatCurrency.methods.formatNumber(
+										weeklyEarnings.subCurrency.toFixed(2)
+									)}
+								</div>
+							</>
+						) : (
+							<Skeleton>
+								<span>Loading...</span>
+							</Skeleton>
+						)}
+					</h2>
+				</div>
+				<div className="mt-4">
+					<FormLabel fontSize="sm" className="font-medium text-gray-700">
+						All time
+					</FormLabel>
+					<h2
+						className={`${
+							validators.length !== 0 ? "text-gray-700" : "text-light-gray"
+						} font-bold`}
+					>
+						{!isNil(totalEarnings) ? (
+							<>
+								<div className="text-xl justify-between text">
+									{formatCurrency.methods.formatAmount(
+										Math.trunc(totalEarnings.currency),
+										networkInfo
+									)}
+								</div>
+								<div className="text-sm font-medium text-teal-500">
+									$
+									{formatCurrency.methods.formatNumber(
+										totalEarnings.subCurrency.toFixed(2)
+									)}
+								</div>
+							</>
+						) : (
+							<Skeleton>
+								<span>Loading...</span>
+							</Skeleton>
+						)}
+					</h2>
+				</div>
 			</div>
 			{transactionHash && (
 				<div className="mt-4 flex">
