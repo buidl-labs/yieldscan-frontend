@@ -11,7 +11,6 @@ import {
 	useCouncil,
 } from "@lib/store";
 import { get, isNil } from "lodash";
-import { setCookie } from "nookies";
 import { ChevronDown, Settings, Menu } from "react-feather";
 import {
 	WalletConnectPopover,
@@ -45,7 +44,7 @@ import Routes from "@lib/routes";
 import Link from "next/link";
 import createPolkadotAPIInstance from "@lib/polkadot-api";
 import { getNetworkInfo } from "yieldscan.config";
-import { parseCookies } from "nookies";
+import { setCookie, parseCookies } from "nookies";
 import SideMenu from "./sidemenu";
 import SideMenuFooter from "./side-menu-footer";
 import ProgressiveImage from "react-progressive-image";
