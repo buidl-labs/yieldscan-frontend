@@ -60,6 +60,31 @@ const FundsUpdate = withSlideIn(
 				: "I want to withdraw"
 		}`;
 
+		const updateTransactionData = (
+			stashId,
+			network,
+			alreadyBonded,
+			stakeAmount,
+			tranHash,
+			successful
+		) => {
+			axios
+				.put(`${networkInfo.coinGeckoDenom}/user/transaction/update`, {
+					stashId: stashId,
+					network: network,
+					alreadyBonded: alreadyBonded,
+					stake: stakeAmount,
+					transactionHash: tranHash,
+					successful: successful,
+				})
+				.then(() => {
+					console.info("successfully updated transaction info");
+				})
+				.catch((e) => {
+					console.info("unable to update transaction info");
+				});
+		};
+
 		const handlePopoverClose = () => {
 			close();
 			setCurrentStep(0);
@@ -178,6 +203,16 @@ const FundsUpdate = withSlideIn(
 					});
 
 					if (status === 0) {
+						updateTransactionData(
+							stashAccount.address,
+							networkInfo.coinGeckoDenom,
+							get(bondedAmount, "currency", 0),
+							type == "bond"
+								? get(bondedAmount, "currency", 0) + amount
+								: get(bondedAmount, "currency", 0) - amount,
+							tranHash,
+							true
+						);
 						setProcessComplete(true);
 						setUpdatingFunds(false);
 						setCloseOnOverlayClick(true);
@@ -185,7 +220,19 @@ const FundsUpdate = withSlideIn(
 						setUpdatingFunds(false);
 						setCloseOnOverlayClick(true);
 						setErrMessage(message);
-						if (message !== "Cancelled") setChainError(true);
+						if (message !== "Cancelled") {
+							updateTransactionData(
+								stashAccount.address,
+								networkInfo.coinGeckoDenom,
+								get(bondedAmount, "currency", 0),
+								type == "bond"
+									? get(bondedAmount, "currency", 0) + amount
+									: get(bondedAmount, "currency", 0) - amount,
+								tranHash,
+								false
+							);
+							setChainError(true);
+						}
 					}
 				},
 			};
@@ -203,6 +250,9 @@ const FundsUpdate = withSlideIn(
 		const handleOnClickForSuccessfulTransaction = () => {
 			close();
 		};
+
+		console.log("amount");
+		console.log(amount);
 
 		return (
 			<Modal
