@@ -191,7 +191,7 @@ const FundsUpdate = withSlideIn(
 					// setCloseOnOverlayClick(true);
 					setTransactionHash(hash.message);
 				},
-				onFinish: (status, message, eventLogs) => {
+				onFinish: (status, message, eventLogs, tranHash) => {
 					// status = 0 for success, anything else for error code
 					toast({
 						title: status === 0 ? "Successful!" : "Error!",
