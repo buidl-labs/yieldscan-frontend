@@ -27,6 +27,26 @@ import { Twitter } from "react-feather";
 import convertCurrency from "@lib/convert-currency";
 import getErasHistoric from "@lib/getErasHistoric";
 import ProgressiveImage from "react-progressive-image";
+import PastEarningsTimeRange from "./PastEarningsTimeRange";
+
+const PastEarningsDisplay = ({ earnings, networkInfo }) =>
+	!isNil(earnings) ? (
+		<>
+			<div className="text-xl justify-between text">
+				{formatCurrency.methods.formatAmount(
+					Math.trunc(earnings.currency),
+					networkInfo
+				)}
+			</div>
+			<div className="text-sm font-medium text-teal-500">
+				${formatCurrency.methods.formatNumber(earnings.subCurrency.toFixed(2))}
+			</div>
+		</>
+	) : (
+		<Skeleton>
+			<span>Loading...</span>
+		</Skeleton>
+	);
 
 const EarningsOutput = ({
 	networkDenom,
@@ -39,6 +59,7 @@ const EarningsOutput = ({
 }) => {
 	const transactionState = useTransaction();
 	const [risk, setRisk] = useState(transactionState.riskPreference || "Medium");
+	const [timeRange, setTimeRange] = useState("all");
 	const [yearlyEarning, setYearlyEarning] = useState();
 	const [totalEarnings, setTotalEarnings] = useState();
 	const [dailyEarnings, setDailyEarnings] = useState();
@@ -277,43 +298,34 @@ const EarningsOutput = ({
 					</h2>
 				</div>
 			)}
-			<div className="flex justify-between">
-				<div className="mt-4">
-					<FormLabel fontSize="sm" className="font-medium text-gray-700">
-						24 hour
-					</FormLabel>
-					<h2
-						className={`${
-							validators.length !== 0 ? "text-gray-700" : "text-light-gray"
-						} font-bold`}
-					>
-						{!isNil(dailyEarnings) ? (
-							<>
-								<div className="text-xl justify-between text">
-									{formatCurrency.methods.formatAmount(
-										Math.trunc(dailyEarnings.currency),
-										networkInfo
-									)}
-								</div>
-								<div className="text-sm font-medium text-teal-500">
-									$
-									{formatCurrency.methods.formatNumber(
-										dailyEarnings.subCurrency.toFixed(2)
-									)}
-								</div>
-							</>
-						) : (
-							<Skeleton>
-								<span>Loading...</span>
-							</Skeleton>
-						)}
-					</h2>
-				</div>
-				<div className="mt-4">
-					<FormLabel fontSize="sm" className="font-medium text-gray-700">
-						7 day
-					</FormLabel>
-					<h2
+			<FormLabel fontSize="sm" className="mt-4 font-medium text-gray-700">
+				Your past earnings
+			</FormLabel>
+			<div className="flex justify-between items-center">
+				<h2
+					className={`${
+						validators.length !== 0 ? "text-gray-700" : "text-light-gray"
+					} font-bold`}
+				>
+					<PastEarningsDisplay
+						earnings={
+							timeRange === "24h"
+								? dailyEarnings
+								: timeRange === "week"
+								? weeklyEarnings
+								: totalEarnings
+						}
+						networkInfo={networkInfo}
+					/>
+				</h2>
+				<span>
+					<PastEarningsTimeRange
+						unit={timeRange}
+						onUnitChange={(val) => setTimeRange(val)}
+					/>
+				</span>
+
+				{/* <h2
 						className={`${
 							validators.length !== 0 ? "text-gray-700" : "text-light-gray"
 						} font-bold`}
@@ -339,8 +351,8 @@ const EarningsOutput = ({
 							</Skeleton>
 						)}
 					</h2>
-				</div>
-				<div className="mt-4">
+				</div> */}
+				{/* <div className="mt-4">
 					<FormLabel fontSize="sm" className="font-medium text-gray-700">
 						All time
 					</FormLabel>
@@ -370,7 +382,7 @@ const EarningsOutput = ({
 							</Skeleton>
 						)}
 					</h2>
-				</div>
+				</div> */}
 			</div>
 			{transactionHash && (
 				<div className="mt-4 flex">
