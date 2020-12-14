@@ -251,9 +251,6 @@ const FundsUpdate = withSlideIn(
 			close();
 		};
 
-		console.log("amount");
-		console.log(amount);
-
 		return (
 			<Modal
 				isOpen={true}
