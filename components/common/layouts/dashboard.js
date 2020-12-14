@@ -5,6 +5,7 @@ import {
 	usePolkadotApi,
 	useTransaction,
 	useSelectedNetwork,
+	useBetaInfo,
 } from "@lib/store";
 import createPolkadotAPIInstance from "@lib/polkadot-api";
 import convertCurrency from "@lib/convert-currency";
@@ -24,10 +25,11 @@ import { Alert, AlertIcon, CloseButton } from "@chakra-ui/core";
 import SideMenuFooter from "../side-menu-footer";
 import { useRouter } from "next/router";
 import Routes from "@lib/routes";
+import { setCookie } from "nookies";
 
 const withDashboardLayout = (children) => {
 	const router = useRouter();
-	const [showBetaMessage, setShowBetaMessage] = React.useState(true);
+	const { showBetaMessage, setShowBetaMessage } = useBetaInfo();
 	const { apiInstance, setApiInstance } = usePolkadotApi();
 	const { selectedNetwork, setSelectedNetwork } = useSelectedNetwork();
 	const networkInfo = getNetworkInfo(selectedNetwork);
@@ -243,7 +245,12 @@ const withDashboardLayout = (children) => {
 									position="absolute"
 									right="8px"
 									top="8px"
-									onClick={() => setShowBetaMessage(false)}
+									onClick={() => {
+										setShowBetaMessage(false);
+										setCookie(null, "showBeta", "false", {
+											maxAge: 7 * 24 * 60 * 60,
+										});
+									}}
 								/>
 							</Alert>
 						)}
