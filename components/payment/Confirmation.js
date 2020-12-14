@@ -16,6 +16,7 @@ import {
 	ListItem,
 	ListIcon,
 	Flex,
+	Spinner,
 } from "@chakra-ui/core";
 import { ChevronRight, ChevronDown, Circle } from "react-feather";
 import Identicon from "@components/common/Identicon";
@@ -417,15 +418,21 @@ const Confirmation = ({
 					</div>
 
 					<div className="flex flex-col">
-						<p className="text-sm font-semibold text-right">
-							{formatCurrency.methods.formatAmount(
-								Math.trunc(transactionFee),
-								networkInfo
-							)}
-						</p>
-						<p className="text-xs text-right text-gray-600">
-							${subFeeCurrency.toFixed(2)}
-						</p>
+						{transactionFee !== 0 ? (
+							<div>
+								<p className="text-sm font-semibold text-right">
+									{formatCurrency.methods.formatAmount(
+										Math.trunc(transactionFee),
+										networkInfo
+									)}
+								</p>
+								<p className="text-xs text-right text-gray-600">
+									${subFeeCurrency.toFixed(2)}
+								</p>
+							</div>
+						) : (
+							<Spinner />
+						)}
 					</div>
 				</div>
 				<Divider my={6} />

@@ -1,5 +1,5 @@
 import { ArrowRight } from "react-feather";
-import { Divider } from "@chakra-ui/core";
+import { Divider, Spinner } from "@chakra-ui/core";
 import formatCurrency from "@lib/format-currency";
 import convertCurrency from "@lib/convert-currency";
 import { useEffect, useState } from "react";
@@ -135,15 +135,21 @@ const AmountConfirmation = ({
 					<p className="text-gray-700 text-xs">Transaction Fee</p>
 
 					<div className="flex flex-col">
-						<p className="text-sm text-right">
-							{formatCurrency.methods.formatAmount(
-								Math.trunc(transactionFee),
-								networkInfo
-							)}
-						</p>
-						<p className="text-xs text-right text-gray-600">
-							${subFeeCurrency.toFixed(2)}
-						</p>
+						{transactionFee !== 0 ? (
+							<div>
+								<p className="text-sm text-right">
+									{formatCurrency.methods.formatAmount(
+										Math.trunc(transactionFee),
+										networkInfo
+									)}
+								</p>
+								<p className="text-xs text-right text-gray-600">
+									${subFeeCurrency.toFixed(2)}
+								</p>
+							</div>
+						) : (
+							<Spinner />
+						)}
 					</div>
 				</div>
 				<Divider my={6} />
