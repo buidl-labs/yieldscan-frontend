@@ -234,7 +234,7 @@ const RewardCalculatorPage = () => {
 	console.log("calculationDisabled");
 	console.log(calculationDisabled);
 	console.log("bondedAmount");
-	console.log(bondedAmount.currency);
+	console.log(get(bondedAmount, "currency", 0));
 	console.log("amount");
 	console.log(amount);
 
@@ -296,28 +296,63 @@ const RewardCalculatorPage = () => {
 							<div className="mt-2">
 								{!accountInfoLoading ? (
 									stashAccount &&
-									amount > totalBalance - 0.1 && (
+									(amount > totalBalance - 0.1 ||
+										get(freeAmount, "currency", 0) < 0.1) && (
 										<Alert
-											status="error"
+											status={
+												get(freeAmount, "currency", 0) < 0.1
+													? amount > totalBalance
+														? "error"
+														: "warning"
+													: "error"
+											}
 											rounded="md"
 											flex
 											flexDirection="column"
 											alignItems="start"
 											my={4}
 										>
-											<AlertTitle color="red.500">
-												Insufficient Balance
+											<AlertTitle
+												color={
+													get(freeAmount, "currency", 0) < 0.1
+														? amount > totalBalance
+															? "red.500"
+															: "#FDB808"
+														: "red.500"
+												}
+											>
+												{get(freeAmount, "currency", 0) < 0.1
+													? amount > totalBalance
+														? "Insufficient Balance"
+														: "Low Free Balance"
+													: "Insufficient Balance"}
 											</AlertTitle>
-											<AlertDescription color="red.500">
-												{amount !== bondedAmount.currency
-													? `You need an additional of ${formatCurrency.methods.formatAmount(
+											<AlertDescription
+												color={
+													get(freeAmount, "currency", 0) < 0.1
+														? amount > totalBalance
+															? "red.500"
+															: "#FDB808"
+														: "red.500"
+												}
+											>
+												{get(freeAmount, "currency", 0) < 0.1
+													? amount > totalBalance
+														? `You need an additional of ${formatCurrency.methods.formatAmount(
+																Math.trunc(
+																	Number(amount - (totalBalance - 0.1)) *
+																		10 ** networkInfo.decimalPlaces
+																),
+																networkInfo
+														  )} to proceed further.`
+														: `Your available balance is low, we recommend to add more ${networkInfo.denom}'s`
+													: `You need an additional of ${formatCurrency.methods.formatAmount(
 															Math.trunc(
 																Number(amount - (totalBalance - 0.1)) *
 																	10 ** networkInfo.decimalPlaces
 															),
 															networkInfo
-													  )} to proceed further.`
-													: `Your available balance is low, we recommend to add more ${networkInfo.denom}'s`}{" "}
+													  )} to proceed further.`}{" "}
 												<Popover trigger="hover" usePortal>
 													<PopoverTrigger>
 														<span className="underline cursor-help">Why?</span>
@@ -331,9 +366,11 @@ const RewardCalculatorPage = () => {
 														<PopoverArrow />
 														<PopoverBody>
 															<span className="text-white text-xs">
-																{amount !== bondedAmount.currency
-																	? "This is to ensure that you have a decent amount of funds in your account to pay transaction fees for claiming rewards, unbonding funds, changing on-chain staking preferences, etc."
-																	: "abc"}
+																{get(freeAmount, "currency", 0) < 0.1
+																	? amount > totalBalance
+																		? "This is to ensure that you have a decent amount of funds in your account to pay transaction fees for claiming rewards, unbonding funds, changing on-chain staking preferences, etc."
+																		: "abc"
+																	: "This is to ensure that you have a decent amount of funds in your account to pay transaction fees for claiming rewards, unbonding funds, changing on-chain staking preferences, etc."}
 															</span>
 														</PopoverBody>
 													</PopoverContent>
@@ -489,9 +526,11 @@ const RewardCalculatorPage = () => {
 						rounded-full font-medium px-12 py-3 bg-teal-500 text-white
 						${
 							(stashAccount &&
-								(amount !== bondedAmount.currency
-									? calculationDisabled
-									: false)) ||
+								(get(freeAmount, "currency", 0) < 0.1
+									? amount > totalBalance
+										? calculationDisabled
+										: false
+									: calculationDisabled)) ||
 							accountInfoLoading ||
 							isInElection
 								? "opacity-75 cursor-not-allowed"
@@ -500,9 +539,11 @@ const RewardCalculatorPage = () => {
 					`}
 							disabled={
 								(stashAccount &&
-									(amount !== bondedAmount.currency
-										? calculationDisabled
-										: false)) ||
+									(get(freeAmount, "currency", 0) < 0.1
+										? amount > totalBalance
+											? calculationDisabled
+											: false
+										: calculationDisabled)) ||
 								accountInfoLoading ||
 								isInElection
 							}
