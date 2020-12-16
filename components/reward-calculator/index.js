@@ -231,6 +231,13 @@ const RewardCalculatorPage = () => {
 		(amount || 0) > totalBalance - 0.1 ||
 		amount == 0;
 
+	console.log("calculationDisabled");
+	console.log(calculationDisabled);
+	console.log("bondedAmount");
+	console.log(bondedAmount.currency);
+	console.log("amount");
+	console.log(amount);
+
 	return loading ? (
 		<div className="flex-center w-full h-full">
 			<div className="flex-center flex-col">
@@ -302,13 +309,15 @@ const RewardCalculatorPage = () => {
 												Insufficient Balance
 											</AlertTitle>
 											<AlertDescription color="red.500">
-												{`You need an additional of ${formatCurrency.methods.formatAmount(
-													Math.trunc(
-														Number(amount - (totalBalance - 0.1)) *
-															10 ** networkInfo.decimalPlaces
-													),
-													networkInfo
-												)} to proceed further.`}{" "}
+												{amount !== bondedAmount.currency
+													? `You need an additional of ${formatCurrency.methods.formatAmount(
+															Math.trunc(
+																Number(amount - (totalBalance - 0.1)) *
+																	10 ** networkInfo.decimalPlaces
+															),
+															networkInfo
+													  )} to proceed further.`
+													: `Your available balance is low, we recommend to add more ${networkInfo.denom}'s`}{" "}
 												<Popover trigger="hover" usePortal>
 													<PopoverTrigger>
 														<span className="underline cursor-help">Why?</span>
@@ -322,10 +331,9 @@ const RewardCalculatorPage = () => {
 														<PopoverArrow />
 														<PopoverBody>
 															<span className="text-white text-xs">
-																This is to ensure that you have a decent amout
-																of funds in your account to pay transaction fees
-																for claiming rewards, unbonding funds, changing
-																on-chain staking preferences, etc.
+																{amount !== bondedAmount.currency
+																	? "This is to ensure that you have a decent amount of funds in your account to pay transaction fees for claiming rewards, unbonding funds, changing on-chain staking preferences, etc."
+																	: "abc"}
 															</span>
 														</PopoverBody>
 													</PopoverContent>
@@ -480,7 +488,10 @@ const RewardCalculatorPage = () => {
 							className={`
 						rounded-full font-medium px-12 py-3 bg-teal-500 text-white
 						${
-							(stashAccount && calculationDisabled) ||
+							(stashAccount &&
+								(amount !== bondedAmount.currency
+									? calculationDisabled
+									: false)) ||
 							accountInfoLoading ||
 							isInElection
 								? "opacity-75 cursor-not-allowed"
@@ -488,7 +499,10 @@ const RewardCalculatorPage = () => {
 						}
 					`}
 							disabled={
-								(stashAccount && calculationDisabled) ||
+								(stashAccount &&
+									(amount !== bondedAmount.currency
+										? calculationDisabled
+										: false)) ||
 								accountInfoLoading ||
 								isInElection
 							}
