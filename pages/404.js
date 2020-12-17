@@ -1,14 +1,11 @@
-import React from 'react'
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function NotFound() {
 	return (
 		<div className="w-full relative h-screen flex items-center justify-center px-8">
 			<div className="flex flex-col justify-center max-w-md relative -mt-16">
 				<h1 className="text-6xl font-bold">404</h1>
-				<h3 className="text-xl font-semibold">
-					You seem to be lost...
-				</h3>
+				<h3 className="text-xl font-semibold">You seem to be lost...</h3>
 				<p className="text-gray-600">
 					Either the internet has broken or we couldn't find the file that you
 					were looking for.
