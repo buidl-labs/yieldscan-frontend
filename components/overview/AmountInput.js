@@ -8,7 +8,11 @@ const AmountInputDefault = ({ bonded, type, value, onChange, networkInfo }) => {
 	const { freeAmount, stashAccount } = useAccounts();
 	const [inputValue, setInputValue] = useState(value.currency);
 	const maxAmount =
-		type === "bond" ? get(freeAmount, "currency") - 0.1 : bonded;
+		type === "bond"
+			? get(freeAmount, "currency") - networkInfo.minAmount < 0
+				? 0
+				: get(freeAmount, "currency") - networkInfo.minAmount
+			: bonded;
 
 	// useEffect(() => {
 	// 	if (bonded) {

@@ -228,7 +228,7 @@ const RewardCalculatorPage = () => {
 	const calculationDisabled =
 		!totalBalance ||
 		!timePeriodValue ||
-		(amount || 0) > totalBalance - 0.1 ||
+		(amount || 0) > totalBalance - networkInfo.minAmount ||
 		amount == 0;
 
 	console.log("calculationDisabled");
@@ -296,11 +296,11 @@ const RewardCalculatorPage = () => {
 							<div className="mt-2">
 								{!accountInfoLoading ? (
 									stashAccount &&
-									(amount > totalBalance - 0.1 ||
-										get(freeAmount, "currency", 0) < 0.1) && (
+									(amount > totalBalance - networkInfo.minAmount ||
+										get(freeAmount, "currency", 0) < networkInfo.minAmount) && (
 										<Alert
 											status={
-												get(freeAmount, "currency", 0) < 0.1
+												get(freeAmount, "currency", 0) < networkInfo.minAmount
 													? amount > totalBalance
 														? "error"
 														: "warning"
@@ -314,14 +314,14 @@ const RewardCalculatorPage = () => {
 										>
 											<AlertTitle
 												color={
-													get(freeAmount, "currency", 0) < 0.1
+													get(freeAmount, "currency", 0) < networkInfo.minAmount
 														? amount > totalBalance
 															? "red.500"
 															: "#FDB808"
 														: "red.500"
 												}
 											>
-												{get(freeAmount, "currency", 0) < 0.1
+												{get(freeAmount, "currency", 0) < networkInfo.minAmount
 													? amount > totalBalance
 														? "Insufficient Balance"
 														: "Low Free Balance"
@@ -329,18 +329,21 @@ const RewardCalculatorPage = () => {
 											</AlertTitle>
 											<AlertDescription
 												color={
-													get(freeAmount, "currency", 0) < 0.1
+													get(freeAmount, "currency", 0) < networkInfo.minAmount
 														? amount > totalBalance
 															? "red.500"
 															: "#FDB808"
 														: "red.500"
 												}
 											>
-												{get(freeAmount, "currency", 0) < 0.1
+												{get(freeAmount, "currency", 0) < networkInfo.minAmount
 													? amount > totalBalance
 														? `You need an additional of ${formatCurrency.methods.formatAmount(
 																Math.trunc(
-																	Number(amount - (totalBalance - 0.1)) *
+																	Number(
+																		amount -
+																			(totalBalance - networkInfo.minAmount)
+																	) *
 																		10 ** networkInfo.decimalPlaces
 																),
 																networkInfo
@@ -348,7 +351,10 @@ const RewardCalculatorPage = () => {
 														: `Your available balance is low, we recommend to add more ${networkInfo.denom}'s`
 													: `You need an additional of ${formatCurrency.methods.formatAmount(
 															Math.trunc(
-																Number(amount - (totalBalance - 0.1)) *
+																Number(
+																	amount -
+																		(totalBalance - networkInfo.minAmount)
+																) *
 																	10 ** networkInfo.decimalPlaces
 															),
 															networkInfo
@@ -366,10 +372,11 @@ const RewardCalculatorPage = () => {
 														<PopoverArrow />
 														<PopoverBody>
 															<span className="text-white text-xs">
-																{get(freeAmount, "currency", 0) < 0.1
+																{get(freeAmount, "currency", 0) <
+																networkInfo.minAmount
 																	? amount > totalBalance
 																		? "This is to ensure that you have a decent amount of funds in your account to pay transaction fees for claiming rewards, unbonding funds, changing on-chain staking preferences, etc."
-																		: "abc"
+																		: "This is to ensure that you have a decent amount of funds in your account to pay transaction fees for claiming rewards, unbonding funds, changing on-chain staking preferences, etc."
 																	: "This is to ensure that you have a decent amount of funds in your account to pay transaction fees for claiming rewards, unbonding funds, changing on-chain staking preferences, etc."}
 															</span>
 														</PopoverBody>
@@ -492,7 +499,7 @@ const RewardCalculatorPage = () => {
 							calculationDisabled={
 								!totalBalance ||
 								!timePeriodValue ||
-								(amount || 0) > totalBalance - 0.1 ||
+								(amount || 0) > totalBalance - networkInfo.minAmount ||
 								amount == 0
 							}
 							onWalletConnectClick={toggle}
@@ -526,7 +533,7 @@ const RewardCalculatorPage = () => {
 						rounded-full font-medium px-12 py-3 bg-teal-500 text-white
 						${
 							(stashAccount &&
-								(get(freeAmount, "currency", 0) < 0.1
+								(get(freeAmount, "currency", 0) < networkInfo.minAmount
 									? amount > totalBalance
 										? calculationDisabled
 										: false
@@ -539,7 +546,7 @@ const RewardCalculatorPage = () => {
 					`}
 							disabled={
 								(stashAccount &&
-									(get(freeAmount, "currency", 0) < 0.1
+									(get(freeAmount, "currency", 0) < networkInfo.minAmount
 										? amount > totalBalance
 											? calculationDisabled
 											: false
