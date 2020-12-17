@@ -16,7 +16,12 @@ const AmountInputDefault = ({
 		bonded === undefined ? true : bonded == 0 ? true : false;
 	const [isEditable, setIsEditable] = React.useState(initiallyEditable);
 	const [inputValue, setInputValue] = useState(value.currency);
-	const maxAmount = Math.max(bonded + get(freeAmount, "currency") - 0.1, 0);
+	const maxAmount = Math.max(
+		get(freeAmount, "currency") <= networkInfo.minAmount
+			? bonded
+			: bonded + get(freeAmount, "currency") - networkInfo.minAmount,
+		0
+	);
 
 	useEffect(() => {
 		if (bonded) {
