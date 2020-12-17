@@ -537,8 +537,7 @@ const RewardCalculatorPage = () => {
 										Non-custodial & Secure
 									</AlertTitle>
 									<AlertDescription fontSize="xs">
-										We do not own your private keys and cannot access your funds
-										without your confirmation.
+										We do not own your private keys and cannot access your funds. You are always in control.
 									</AlertDescription>
 								</div>
 							</Alert>
