@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronRight, ChevronLeft } from "react-feather";
 import { get, map, size } from "lodash";
 import axios from "@lib/axios";

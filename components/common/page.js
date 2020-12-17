@@ -1,4 +1,5 @@
 import Head from "next/head";
+import React from "react";
 import { isMobile, isTablet } from "react-device-detect";
 import { trackEvent, Events } from "@lib/analytics";
 import { useEffect } from "react";

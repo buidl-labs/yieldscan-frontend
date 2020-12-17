@@ -1,3 +1,4 @@
+import React from "react";
 const PrivacyComponent = () => (
 	<React.Fragment>
 		<h1 id="privacy-policy-for-yieldscan-onrender-com">
