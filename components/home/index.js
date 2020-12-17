@@ -1,3 +1,4 @@
+import React from "react";
 import { Box, Button, Image, Link } from "@chakra-ui/core";
 import { Link as ScrollLink, animateScroll as scroll } from "react-scroll";
 import Footer from "@components/common/footer";
