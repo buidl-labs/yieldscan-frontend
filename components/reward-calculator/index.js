@@ -231,13 +231,6 @@ const RewardCalculatorPage = () => {
 		(amount || 0) > totalBalance - networkInfo.minAmount ||
 		amount == 0;
 
-	console.log("calculationDisabled");
-	console.log(calculationDisabled);
-	console.log("bondedAmount");
-	console.log(get(bondedAmount, "currency", 0));
-	console.log("amount");
-	console.log(amount);
-
 	return loading ? (
 		<div className="flex-center w-full h-full">
 			<div className="flex-center flex-col">
