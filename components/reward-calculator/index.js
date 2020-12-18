@@ -294,9 +294,12 @@ const RewardCalculatorPage = () => {
 										<Alert
 											status={
 												get(freeAmount, "currency", 0) < networkInfo.minAmount
-													? amount > totalBalance
+													? amount > get(bondedAmount, "currency", 0)
 														? "error"
-														: "warning"
+														: get(freeAmount, "currency", 0) >
+														  networkInfo.minAmount / 2
+														? "warning"
+														: "error"
 													: "error"
 											}
 											rounded="md"
@@ -308,29 +311,38 @@ const RewardCalculatorPage = () => {
 											<AlertTitle
 												color={
 													get(freeAmount, "currency", 0) < networkInfo.minAmount
-														? amount > totalBalance
+														? amount > get(bondedAmount, "currency", 0)
 															? "red.500"
-															: "#FDB808"
+															: get(freeAmount, "currency", 0) >
+															  networkInfo.minAmount / 2
+															? "#FDB808"
+															: "red.500"
 														: "red.500"
 												}
 											>
 												{get(freeAmount, "currency", 0) < networkInfo.minAmount
-													? amount > totalBalance
+													? amount > get(bondedAmount, "currency", 0)
 														? "Insufficient Balance"
-														: "Low Free Balance"
+														: get(freeAmount, "currency", 0) >
+														  networkInfo.minAmount / 2
+														? "Low Balance"
+														: "Insufficient Balance"
 													: "Insufficient Balance"}
 											</AlertTitle>
 											<AlertDescription
 												color={
 													get(freeAmount, "currency", 0) < networkInfo.minAmount
-														? amount > totalBalance
+														? amount > get(bondedAmount, "currency", 0)
 															? "red.500"
-															: "#FDB808"
+															: get(freeAmount, "currency", 0) >
+															  networkInfo.minAmount / 2
+															? "#FDB808"
+															: "red.500"
 														: "red.500"
 												}
 											>
 												{get(freeAmount, "currency", 0) < networkInfo.minAmount
-													? amount > totalBalance
+													? amount > get(bondedAmount, "currency", 0)
 														? `You need an additional of ${formatCurrency.methods.formatAmount(
 																Math.trunc(
 																	Number(
@@ -341,7 +353,19 @@ const RewardCalculatorPage = () => {
 																),
 																networkInfo
 														  )} to proceed further.`
-														: `Your available balance is low, we recommend to add more ${networkInfo.denom}'s`
+														: get(freeAmount, "currency", 0) >
+														  networkInfo.minAmount / 2
+														? `Your available balance is low, we recommend to add more ${networkInfo.denom}'s`
+														: `You need an additional of ${formatCurrency.methods.formatAmount(
+																Math.trunc(
+																	Number(
+																		amount -
+																			(totalBalance - networkInfo.minAmount)
+																	) *
+																		10 ** networkInfo.decimalPlaces
+																),
+																networkInfo
+														  )} to proceed further.`
 													: `You need an additional of ${formatCurrency.methods.formatAmount(
 															Math.trunc(
 																Number(
@@ -367,7 +391,7 @@ const RewardCalculatorPage = () => {
 															<span className="text-white text-xs">
 																{get(freeAmount, "currency", 0) <
 																networkInfo.minAmount
-																	? amount > totalBalance
+																	? amount > get(bondedAmount, "currency", 0)
 																		? "This is to ensure that you have a decent amount of funds in your account to pay transaction fees for claiming rewards, unbonding funds, changing on-chain staking preferences, etc."
 																		: "This is to ensure that you have a decent amount of funds in your account to pay transaction fees for claiming rewards, unbonding funds, changing on-chain staking preferences, etc."
 																	: "This is to ensure that you have a decent amount of funds in your account to pay transaction fees for claiming rewards, unbonding funds, changing on-chain staking preferences, etc."}
@@ -527,9 +551,11 @@ const RewardCalculatorPage = () => {
 						${
 							(stashAccount &&
 								(get(freeAmount, "currency", 0) < networkInfo.minAmount
-									? amount > totalBalance
+									? amount > get(bondedAmount, "currency", 0)
 										? calculationDisabled
-										: false
+										: get(freeAmount, "currency", 0) > networkInfo.minAmount / 2
+										? false
+										: true
 									: calculationDisabled)) ||
 							accountInfoLoading ||
 							isInElection
@@ -540,9 +566,12 @@ const RewardCalculatorPage = () => {
 							disabled={
 								(stashAccount &&
 									(get(freeAmount, "currency", 0) < networkInfo.minAmount
-										? amount > totalBalance
+										? amount > get(bondedAmount, "currency", 0)
 											? calculationDisabled
-											: false
+											: get(freeAmount, "currency", 0) >
+											  networkInfo.minAmount / 2
+											? false
+											: true
 										: calculationDisabled)) ||
 								accountInfoLoading ||
 								isInElection
