@@ -161,7 +161,7 @@ const FundsUpdate = withSlideIn(
 				setCalculationDisabled(true);
 			} else if (
 				type === "bond" &&
-				amount > get(freeAmount, "currency", 0) - 0.1
+				amount > get(freeAmount, "currency", 0) - networkInfo.minAmount
 			) {
 				setCalculationDisabled(true);
 			} else if (amount === 0 || amount === undefined || amount === "") {
@@ -312,8 +312,9 @@ const FundsUpdate = withSlideIn(
 														</span>
 														<span hidden={type === "unbond"}>
 															We cannot stake this amount since you need to
-															maintain a minimum balance of 0.1{" "}
-															{networkInfo.denom} in your account at all times.{" "}
+															maintain a minimum balance of{" "}
+															{networkInfo.minAmount} {networkInfo.denom} in
+															your account at all times.{" "}
 														</span>
 													</div>
 													<div className="flex justify-between">

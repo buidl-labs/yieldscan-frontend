@@ -1,3 +1,4 @@
+import React from "react";
 const DisclaimerComponent = () => (
 	<React.Fragment>
 		<h1 className="heading">Legal Disclaimer</h1>

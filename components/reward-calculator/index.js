@@ -228,7 +228,7 @@ const RewardCalculatorPage = () => {
 	const calculationDisabled =
 		!totalBalance ||
 		!timePeriodValue ||
-		(amount || 0) > totalBalance - 0.1 ||
+		(amount || 0) > totalBalance - networkInfo.minAmount ||
 		amount == 0;
 
 	return loading ? (
@@ -289,26 +289,93 @@ const RewardCalculatorPage = () => {
 							<div className="mt-2">
 								{!accountInfoLoading ? (
 									stashAccount &&
-									amount > totalBalance - 0.1 && (
+									(amount > totalBalance - networkInfo.minAmount ||
+										get(freeAmount, "currency", 0) < networkInfo.minAmount) && (
 										<Alert
-											status="error"
+											status={
+												get(freeAmount, "currency", 0) < networkInfo.minAmount
+													? amount > get(bondedAmount, "currency", 0)
+														? "error"
+														: get(freeAmount, "currency", 0) >
+														  networkInfo.minAmount / 2
+														? "warning"
+														: "error"
+													: "error"
+											}
 											rounded="md"
 											flex
 											flexDirection="column"
 											alignItems="start"
 											my={4}
 										>
-											<AlertTitle color="red.500">
-												Insufficient Balance
+											<AlertTitle
+												color={
+													get(freeAmount, "currency", 0) < networkInfo.minAmount
+														? amount > get(bondedAmount, "currency", 0)
+															? "red.500"
+															: get(freeAmount, "currency", 0) >
+															  networkInfo.minAmount / 2
+															? "#FDB808"
+															: "red.500"
+														: "red.500"
+												}
+											>
+												{get(freeAmount, "currency", 0) < networkInfo.minAmount
+													? amount > get(bondedAmount, "currency", 0)
+														? "Insufficient Balance"
+														: get(freeAmount, "currency", 0) >
+														  networkInfo.minAmount / 2
+														? "Low Balance"
+														: "Insufficient Balance"
+													: "Insufficient Balance"}
 											</AlertTitle>
-											<AlertDescription color="red.500">
-												{`You need an additional of ${formatCurrency.methods.formatAmount(
-													Math.trunc(
-														Number(amount - (totalBalance - 0.1)) *
-															10 ** networkInfo.decimalPlaces
-													),
-													networkInfo
-												)} to proceed further.`}{" "}
+											<AlertDescription
+												color={
+													get(freeAmount, "currency", 0) < networkInfo.minAmount
+														? amount > get(bondedAmount, "currency", 0)
+															? "red.500"
+															: get(freeAmount, "currency", 0) >
+															  networkInfo.minAmount / 2
+															? "#FDB808"
+															: "red.500"
+														: "red.500"
+												}
+											>
+												{get(freeAmount, "currency", 0) < networkInfo.minAmount
+													? amount > get(bondedAmount, "currency", 0)
+														? `You need an additional of ${formatCurrency.methods.formatAmount(
+																Math.trunc(
+																	Number(
+																		amount -
+																			(totalBalance - networkInfo.minAmount)
+																	) *
+																		10 ** networkInfo.decimalPlaces
+																),
+																networkInfo
+														  )} to proceed further.`
+														: get(freeAmount, "currency", 0) >
+														  networkInfo.minAmount / 2
+														? `Your available balance is low, we recommend to add more ${networkInfo.denom}'s`
+														: `You need an additional of ${formatCurrency.methods.formatAmount(
+																Math.trunc(
+																	Number(
+																		amount -
+																			(totalBalance - networkInfo.minAmount)
+																	) *
+																		10 ** networkInfo.decimalPlaces
+																),
+																networkInfo
+														  )} to proceed further.`
+													: `You need an additional of ${formatCurrency.methods.formatAmount(
+															Math.trunc(
+																Number(
+																	amount -
+																		(totalBalance - networkInfo.minAmount)
+																) *
+																	10 ** networkInfo.decimalPlaces
+															),
+															networkInfo
+													  )} to proceed further.`}{" "}
 												<Popover trigger="hover" usePortal>
 													<PopoverTrigger>
 														<span className="underline cursor-help">Why?</span>
@@ -322,10 +389,12 @@ const RewardCalculatorPage = () => {
 														<PopoverArrow />
 														<PopoverBody>
 															<span className="text-white text-xs">
-																This is to ensure that you have a decent amout
-																of funds in your account to pay transaction fees
-																for claiming rewards, unbonding funds, changing
-																on-chain staking preferences, etc.
+																{get(freeAmount, "currency", 0) <
+																networkInfo.minAmount
+																	? amount > get(bondedAmount, "currency", 0)
+																		? "This is to ensure that you have a decent amount of funds in your account to pay transaction fees for claiming rewards, unbonding funds, changing on-chain staking preferences, etc."
+																		: "This is to ensure that you have a decent amount of funds in your account to pay transaction fees for claiming rewards, unbonding funds, changing on-chain staking preferences, etc."
+																	: "This is to ensure that you have a decent amount of funds in your account to pay transaction fees for claiming rewards, unbonding funds, changing on-chain staking preferences, etc."}
 															</span>
 														</PopoverBody>
 													</PopoverContent>
@@ -447,7 +516,7 @@ const RewardCalculatorPage = () => {
 							calculationDisabled={
 								!totalBalance ||
 								!timePeriodValue ||
-								(amount || 0) > totalBalance - 0.1 ||
+								(amount || 0) > totalBalance - networkInfo.minAmount ||
 								amount == 0
 							}
 							onWalletConnectClick={toggle}
@@ -479,7 +548,14 @@ const RewardCalculatorPage = () => {
 							className={`
 						rounded-full font-medium px-12 py-3 bg-teal-500 text-white
 						${
-							(stashAccount && calculationDisabled) ||
+							(stashAccount &&
+								(get(freeAmount, "currency", 0) < networkInfo.minAmount
+									? amount > get(bondedAmount, "currency", 0)
+										? calculationDisabled
+										: get(freeAmount, "currency", 0) > networkInfo.minAmount / 2
+										? false
+										: true
+									: calculationDisabled)) ||
 							accountInfoLoading ||
 							isInElection
 								? "opacity-75 cursor-not-allowed"
@@ -487,7 +563,15 @@ const RewardCalculatorPage = () => {
 						}
 					`}
 							disabled={
-								(stashAccount && calculationDisabled) ||
+								(stashAccount &&
+									(get(freeAmount, "currency", 0) < networkInfo.minAmount
+										? amount > get(bondedAmount, "currency", 0)
+											? calculationDisabled
+											: get(freeAmount, "currency", 0) >
+											  networkInfo.minAmount / 2
+											? false
+											: true
+										: calculationDisabled)) ||
 								accountInfoLoading ||
 								isInElection
 							}

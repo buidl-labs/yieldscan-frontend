@@ -148,34 +148,39 @@ const ValidatorsTable = ({
 	return (
 		<div>
 			<div className="mt-5 mb-2 table-container px-3 pb-16 overflow-y-scroll">
-				{validators.map((validator) => (
-					<ValidatorCard
-						key={validator.stashId}
-						name={validator.name}
-						stashId={validator.stashId}
-						riskScore={Number((validator.riskScore || 0).toFixed(2))}
-						ownStake={validator.ownStake ? Number(validator.ownStake) : "-"}
-						otherStake={
-							validator.othersStake ? Number(validator.othersStake) : "-"
-						}
-						commission={validator.commission}
-						nominators={validator.numOfNominators}
-						returnsPer100KSM={validator.rewardsPer100KSM}
-						selected={!isNil(selectedValidatorsMap[validator.stashId])}
-						toggleSelected={() => toggleSelected(validator)}
-						onProfile={() =>
-							window.open(
-								`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`,
-								"_blank"
-							)
-						}
-						networkInfo={networkInfo}
-					/>
-				))}
-				{!validators.length && (
+				{isNil(validators) ? (
+					<div className="flex-center font-thin py-5">
+						Unable to fetch validators, try refreshing the website!
+					</div>
+				) : !validators.length ? (
 					<div className="flex-center font-thin py-5">
 						No validators, try updating your filters
 					</div>
+				) : (
+					validators.map((validator) => (
+						<ValidatorCard
+							key={validator.stashId}
+							name={validator.name}
+							stashId={validator.stashId}
+							riskScore={Number((validator.riskScore || 0).toFixed(2))}
+							ownStake={validator.ownStake ? Number(validator.ownStake) : "-"}
+							otherStake={
+								validator.othersStake ? Number(validator.othersStake) : "-"
+							}
+							commission={validator.commission}
+							nominators={validator.numOfNominators}
+							returnsPer100KSM={validator.rewardsPer100KSM}
+							selected={!isNil(selectedValidatorsMap[validator.stashId])}
+							toggleSelected={() => toggleSelected(validator)}
+							onProfile={() =>
+								window.open(
+									`${Routes.VALIDATOR_PROFILE}/${validator.stashId}`,
+									"_blank"
+								)
+							}
+							networkInfo={networkInfo}
+						/>
+					))
 				)}
 			</div>
 			<style jsx>{`

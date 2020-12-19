@@ -24,6 +24,7 @@ import {
 	filter,
 	isNull,
 	cloneDeep,
+	debounce,
 } from "lodash";
 import {
 	useTransaction,
@@ -335,6 +336,10 @@ const Validators = () => {
 		router.push("/payment", "/payment", "shallow");
 	};
 
+	const trackRewardCalculatedEvent = debounce((eventData) => {
+		trackEvent(Events.REWARD_CALCULATED, eventData);
+	}, 1000);
+
 	return loading || accountInfoLoading ? (
 		<div className="flex-center w-full h-full">
 			<div className="flex-center flex-col">
@@ -374,6 +379,7 @@ const Validators = () => {
 				bondedAmount={get(bondedAmount, "currency", 0)}
 				stashAccount={stashAccount}
 				networkInfo={networkInfo}
+				trackRewardCalculatedEvent={trackRewardCalculatedEvent}
 			/>
 			<ValidatorsResult
 				stakingAmount={amount}
@@ -494,7 +500,10 @@ const Validators = () => {
 							rounded="full"
 							variant="outline"
 							backgroundColor="white"
-							isDisabled={isInElection}
+							isDisabled={
+								isInElection ||
+								get(freeAmount, "currency", 0) < networkInfo.minAmount / 2
+							}
 							color="teal.500"
 							borderColor="teal.500"
 							boxShadow="0 20px 25px -5px rgba(43, 202, 202, 0.1)"

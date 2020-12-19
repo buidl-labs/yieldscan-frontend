@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { get } from "lodash";
 import { Circle, CheckCircle } from "react-feather";
 import Identicon from "@components/common/Identicon";

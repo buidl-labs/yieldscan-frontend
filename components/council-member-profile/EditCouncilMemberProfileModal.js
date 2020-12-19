@@ -1,5 +1,5 @@
 import { Button, useToast, InputGroup, Input } from "@chakra-ui/core";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import withSlideIn from "@components/common/withSlideIn";
 import axios from "@lib/axios";
 import { ChevronLeft, MinusCircle } from "react-feather";

@@ -1,3 +1,4 @@
+import React from "react";
 import { noop, get, isNil } from "lodash";
 import formatCurrency from "@lib/format-currency";
 import convertCurrency from "@lib/convert-currency";

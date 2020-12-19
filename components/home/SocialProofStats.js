@@ -1,3 +1,4 @@
+import React from "react";
 import { Spinner } from "@chakra-ui/core";
 import axios from "@lib/axios";
 import convertCurrency from "@lib/convert-currency";
