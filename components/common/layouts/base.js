@@ -45,6 +45,17 @@ const withBaseLayout = (children) => {
 		pick(state, ["stakingAmount", "setTransactionState"])
 	);
 	useEffect(() => {
+		if (isNil(apiInstance) && !isNil(selectedNetwork)) {
+			createPolkadotAPIInstance(selectedNetwork, apiInstance)
+				.then(async (api) => {
+					setApiInstance(api);
+				})
+				.catch((err) => {
+					console.info("Unable to connect to polkadot api!");
+				});
+		}
+	}, [selectedNetwork]);
+	useEffect(() => {
 		if (accounts && accounts.length > 0) {
 			createPolkadotAPIInstance(selectedNetwork, apiInstance)
 				.then(async (api) => {
@@ -73,7 +84,7 @@ const withBaseLayout = (children) => {
 					throw err;
 				});
 		}
-	}, [accounts]);
+	}, [accounts, selectedNetwork]);
 
 	useEffect(() => {
 		// wallet connected state:
