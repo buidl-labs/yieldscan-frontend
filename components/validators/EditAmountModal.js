@@ -32,6 +32,7 @@ const EditAmountModal = withSlideIn(
 		amount = "",
 		setAmount,
 		networkInfo,
+		trackRewardCalculatedEvent,
 	}) => {
 		const [stakingAmount, setStakingAmount] = useState(amount);
 		const [subCurrency, setSubCurrency] = useState(0);
@@ -128,6 +129,7 @@ const EditAmountModal = withSlideIn(
 									bonded={bondedAmount}
 									onChange={setStakingAmount}
 									networkInfo={networkInfo}
+									trackRewardCalculatedEvent={trackRewardCalculatedEvent}
 								/>
 							</div>
 							<div className="">
