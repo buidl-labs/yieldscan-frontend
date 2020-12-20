@@ -38,7 +38,7 @@
 		"react-dom": "16.13.1",
 		"react-feather": "^2.0.8",
 		"react-konva": "^16.13.0-3",
-		"sass": "^1.26.11",
+		"sass": "^1.29.0",
 		"styled-components": "^5.2.0",
 		"zustand": "^3.1.2"
 	},
