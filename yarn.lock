@@ -2,10 +2,30 @@
 # yarn lockfile v1
 
 
+"@amplitude/eslint-config-typescript@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@amplitude/eslint-config-typescript/-/eslint-config-typescript-1.1.0.tgz#f6d876febda6f4470564e806576e43750d60a094"
+  integrity sha512-N8sKkwtFakPD2/cSOrBnM5Wudjp4qeDD69U1cG7dZ6DDczxBhUEqnJDJ0wiYmKMPXqr+bmFOsDdbCcOmb/CLYA==
+
+"@amplitude/types@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@amplitude/types/-/types-1.1.1.tgz#30a177fb4a20a9e477c885c678b17f8b734f0145"
+  integrity sha512-mTgIzQO1BOOgIhNyeXxNDRY2jx/Rzr0VZuwryvpbM7v7XY2RDZh2g3jzhk/b3fbKgYPY6L48Kf6e4hVtHsmIgA==
+  dependencies:
+    "@amplitude/eslint-config-typescript" "^1.1.0"
+
 "@amplitude/ua-parser-js@0.7.24":
   version "0.7.24"
   resolved "https://registry.yarnpkg.com/@amplitude/ua-parser-js/-/ua-parser-js-0.7.24.tgz#2ce605af7d2c38d4a01313fb2385df55fbbd69aa"
   integrity sha512-VbQuJymJ20WEw0HtI2np7EdC3NJGUWi8+Xdbc7uk8WfMIF308T0howpzkQ3JFMN7ejnrcSM/OyNGveeE3TP3TA==
+
+"@amplitude/utils@^1.0.5":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@amplitude/utils/-/utils-1.1.1.tgz#f5c41001031d7e90f97a48e09474ddd9a338fe6d"
+  integrity sha512-qAsyQLNjGSh98q/dQajnLVAanf2SdbXcjEDJuoiC/INnS/KhEr3ixkS/30WuabYyWxFRJmkhrGBxGuebuV7J1Q==
+  dependencies:
+    "@amplitude/types" "^1.1.1"
+    tslib "^1.9.3"
 
 "@ampproject/toolbox-core@^2.6.0":
   version "2.6.0"
@@ -2056,12 +2076,13 @@ ally.js@1.4.1:
     css.escape "^1.5.0"
     platform "1.3.3"
 
-amplitude-js@^7.1.1:
-  version "7.1.1"
-  resolved "https://registry.yarnpkg.com/amplitude-js/-/amplitude-js-7.1.1.tgz#3e3282be836aa4245eb2d6e52f16ecbb81c0b6d2"
-  integrity sha512-grEQf0p4V/q4aIcGYdGEJ6EquBXu91R/RorsYTQvh9O6sxjpwHf5vSDICQJq7twEElBrSHoSF77GUvC9ZTBj4A==
+amplitude-js@^7.3.3:
+  version "7.3.3"
+  resolved "https://registry.yarnpkg.com/amplitude-js/-/amplitude-js-7.3.3.tgz#ae4b35bd28231ccdc9713f8cc8675ae1ce64f19e"
+  integrity sha512-krSXUXeHqbQk15ozx0kC3h0K3i7wQ1ycSG08OfZBga2Vfbi3Y30CP6UXLdtJX4AiBB8EkjMePdMgU6kyuIpi/A==
   dependencies:
     "@amplitude/ua-parser-js" "0.7.24"
+    "@amplitude/utils" "^1.0.5"
     blueimp-md5 "^2.10.0"
     query-string "5"
 
