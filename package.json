@@ -14,7 +14,7 @@
 		"@emotion/core": "^10.0.28",
 		"@emotion/styled": "^10.0.27",
 		"@metomic/react": "^0.1.2",
-		"@polkadot/api": "^3.0.1",
+		"@polkadot/api": "^3.8.1",
 		"@polkadot/extension-dapp": "^0.35.1",
 		"@polkadot/react-identicon": "^0.58.1",
 		"@polkadot/ui-keyring": "^0.63.1",
