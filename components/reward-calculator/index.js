@@ -212,7 +212,7 @@ const RewardCalculatorPage = () => {
 	const onPayment = async () => {
 		updateTransactionState(Events.INTENT_STAKING);
 		if (transactionHash) setTransactionHash(null);
-		router.push("/payment", "/payment", "shallow");
+		router.push("/payment", "/payment", { shallow: true });
 		// get(bondedAmount, "currency", 0) === 0
 		// 	? router.push("/payment", "/payment", "shallow")
 		// 	: openPaymentPopover();
@@ -537,7 +537,8 @@ const RewardCalculatorPage = () => {
 										Non-custodial & Secure
 									</AlertTitle>
 									<AlertDescription fontSize="xs">
-										We do not own your private keys and cannot access your funds. You are always in control.
+										We do not own your private keys and cannot access your
+										funds. You are always in control.
 									</AlertDescription>
 								</div>
 							</Alert>
