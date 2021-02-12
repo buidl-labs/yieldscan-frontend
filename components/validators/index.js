@@ -333,7 +333,7 @@ const Validators = () => {
 	const onPayment = async () => {
 		updateTransactionState(Events.INTENT_STAKING);
 		if (transactionHash) setTransactionHash(null);
-		router.push("/payment", "/payment", "shallow");
+		router.push("/payment", "/payment", { shallow: true });
 	};
 
 	const trackRewardCalculatedEvent = debounce((eventData) => {
