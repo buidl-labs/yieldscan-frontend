@@ -144,18 +144,7 @@ const customTheme = {
 	},
 };
 
-if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
-	Sentry.init({
-		environment: process.env.NODE_ENV,
-		enabled: process.env.NODE_ENV === "production",
-		dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-	});
-}
-
 export default function YieldScanApp({ Component, pageProps, err }) {
-	useEffect(() => {
-		tawkTo(process.env.NEXT_PUBLIC_TAWK_PROP_ID);
-	}, []);
 	return (
 		<ThemeProvider theme={customTheme}>
 			<MetomicProvider projectId={process.env.NEXT_PUBLIC_METOMIC_PROJECT_ID}>

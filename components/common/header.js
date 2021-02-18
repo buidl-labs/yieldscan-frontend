@@ -269,7 +269,7 @@ const Header = ({ isBase }) => {
 											</ProgressiveImage>
 											<span className="ml-2 font-medium flex items-center">
 												YieldScan
-												<Badge
+												{/* <Badge
 													ml={2}
 													textTransform="lowercase"
 													fontWeight="normal"
@@ -277,7 +277,7 @@ const Header = ({ isBase }) => {
 													bg="blue.400"
 												>
 													beta
-												</Badge>
+												</Badge> */}
 											</span>
 										</a>
 									</Link>
@@ -312,7 +312,7 @@ const Header = ({ isBase }) => {
 						</ProgressiveImage>
 						<span className="ml-2 font-medium flex items-center">
 							YieldScan
-							<Badge
+							{/* <Badge
 								ml={2}
 								textTransform="lowercase"
 								fontWeight="normal"
@@ -320,17 +320,17 @@ const Header = ({ isBase }) => {
 								bg="blue.400"
 							>
 								beta
-							</Badge>
+							</Badge> */}
 						</span>
 					</a>
 				</Link>
 			</div>
-			{!accountInfoLoading && !headerLoading && isBase ? (
-				<Link href={Routes.OVERVIEW}>
-					<a className="border border-gray-200 rounded-full py-2 px-4">
-						Dashboard
-					</a>
-				</Link>
+			{!accountInfoLoading && !headerLoading && isBase ? (<></>
+				// <Link href={Routes.OVERVIEW}>
+				// 	<a className="border border-gray-200 rounded-full py-2 px-4">
+				// 		Dashboard
+				// 	</a>
+				// </Link>
 			) : (
 				!accountInfoLoading &&
 				!headerLoading && (

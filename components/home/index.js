@@ -11,6 +11,7 @@ import FAQs from "./FAQs";
 import SupportedNetworks from "./SupportedNetworks";
 import { ArrowUp, ChevronRight } from "react-feather";
 import { useRouter } from "next/router";
+import ProgressiveImage from "react-progressive-image";
 
 window.setImmediate = (cb) => cb();
 
@@ -42,8 +43,19 @@ const HomePage = () => {
 	window.addEventListener("scroll", checkScrollTop);
 
 	return (
-		<div className="pt-12 w-full min-h-full px-4 sm:px-8 md:px-12 lg:px-20 xl:px-32 flex flex-col items-center">
-			<button
+		<div className="w-full min-h-full px-4 sm:px-8 md:px-12 lg:px-20 xl:px-32 flex flex-col items-center">
+			<ProgressiveImage
+				src="/images/nobody-home/nobody-home.png"
+				placeholder="/images/nobody-home/nobody-home@0.5x.png"
+			>
+				{(src) => (
+					<img src={src} alt="unicorn-sweat" width="400px" height="auto" />
+				)}
+			</ProgressiveImage>
+			<h1 className="text-4xl font-bold text-gray-700">We've moved...</h1>
+			<p className="text-gray-600">You can find us on <Link className="text-teal-500" href="https://yieldscan.app/">https://yieldscan.app/</Link></p>
+			<a href="https://yieldscan.app/" className="no-underline text-white bg-teal-500 rounded-full px-12 py-3 text-lg mt-8">Take me there</a>
+			{/* <button
 				className={`fixed bottom-0 z-20 mb-24 px-4 py-2 bg-gray-700 rounded-full text-white flex items-center justify-center transition ease-in-out duration-500 ${
 					showScroll ? "opacity-75 hover:opacity-100" : "opacity-0"
 				}`}
@@ -161,7 +173,7 @@ const HomePage = () => {
 					</p>
 				</div>
 			</div>
-			<Footer />
+			<Footer /> */}
 		</div>
 	);
 };
